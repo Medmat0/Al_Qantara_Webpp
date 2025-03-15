@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: alqantara_db_container
+    environment:
+      POSTGRES_USER: yassine
+      POSTGRES_PASSWORD: yassine
+      POSTGRES_DB: alqantara_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

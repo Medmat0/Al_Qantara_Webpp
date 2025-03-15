@@ -1,14 +1,116 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      =  env("DATABASE_URL")
+}
+
+model Utilisateur {
+  id              Int       @id @default(autoincrement())
+  nom             String    @db.VarChar(100)
+  prenom          String    @db.VarChar(100)
+  email           String    @unique @db.VarChar(255)
+  motDePasse      String    @db.VarChar(255)
+  role            Role
+  dateInscription DateTime
+  statut          Statut
+  evenements      Evenement[]
+  revues          Revue[]
+  articles        Article[]
+  adhesion        Adhesion?
+  accesEvenements AccesEvenement[]
+}
+
+enum Role {
+  ADMIN
+  ADHERENT
+  USER
+}
+
+enum Statut {
+  ACTIF
+  INACTIF
+}
+
+model Evenement {
+  id          Int       @id @default(autoincrement())
+  titre       String    @db.VarChar(255)
+  description String
+  dateDebut   DateTime
+  dateFin     DateTime
+  lieu        String    @db.VarChar(255)
+  type        TypeEvenement
+  createdBy   Int
+  createur    Utilisateur @relation(fields: [createdBy], references: [id])
+  acces       AccesEvenement[]
+}
+
+enum TypeEvenement {
+  INTERNE
+  EXTERNE
+}
+
+model Newsletter {
+  id              Int    @id @default(autoincrement())
+  email           String @unique @db.VarChar(255)
+  dateInscription DateTime
+}
+
+model Adhesion {
+  id          Int      @id @default(autoincrement())
+  utilisateur Utilisateur @relation(fields: [utilisateurId], references: [id])
+  utilisateurId Int   @unique
+  dateDemande DateTime
+  statut      StatutAdhesion
+}
+
+enum StatutAdhesion {
+  EN_ATTENTE
+  ACCEPTE
+  REJETE
+}
+
+model Contact {
+  id        Int    @id @default(autoincrement())
+  nom       String @db.VarChar(100)
+  email     String @db.VarChar(255)
+  sujet     String @db.VarChar(255)
+  message   String
+  dateEnvoi DateTime
+}
+
+model Revue {
+  id              Int          @id @default(autoincrement())
+  titre           String       @db.VarChar(255)
+  fichier         String       @db.VarChar(255)
+  datePublication DateTime
+  createdBy       Int
+  createur        Utilisateur @relation(fields: [createdBy], references: [id])
+}
+
+model Article {
+  id             Int          @id @default(autoincrement())
+  titre          String       @db.VarChar(255)
+  contenu        String
+  auteur         String       @db.VarChar(100)
+  dateSoumission DateTime
+  statut         StatutArticle
+  createdBy      Int
+  createur       Utilisateur @relation(fields: [createdBy], references: [id])
+}
+
+enum StatutArticle {
+  EN_ATTENTE
+  APPROUVE
+  REJETE
+}
+
+model AccesEvenement {
+  id           Int        @id @default(autoincrement())
+  evenementId  Int
+  utilisateurId Int
+  evenement    Evenement  @relation(fields: [evenementId], references: [id])
+  utilisateur  Utilisateur @relation(fields: [utilisateurId], references: [id])
 }
