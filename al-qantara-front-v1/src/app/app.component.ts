@@ -9,9 +9,6 @@ import {HeaderComponent} from './components/header/header.component';
   template: `
     <main>
       <router-outlet></router-outlet>
-
-
-
     </main>
 
 
