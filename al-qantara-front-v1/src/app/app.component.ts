@@ -7,8 +7,13 @@ import {HeaderComponent} from './components/header/header.component';
   selector: 'app-root',
   imports: [RouterOutlet, HomeComponent, HeaderComponent],
   template: `
-    <app-header></app-header>
-    <app-home></app-home>
+    <main>
+      <router-outlet></router-outlet>
+
+
+
+    </main>
+
 
   `,
   styles: [],
