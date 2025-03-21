@@ -1,10 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap');
 
-html,body{
-  background-color: #3a0706;
-}
-
 .navbar{
   font-family: Inter, sans-serif;
   display: flex;
@@ -42,8 +38,8 @@ html,body{
 .main-container{
   display: flex;
   flex-direction: row;
+  background-color: #3a0706;
   width: 100%;
-  height: 94vh;
 }
 
 .left-container{
@@ -52,7 +48,7 @@ html,body{
   justify-content: center;
   align-items: center;
   width: 50%;
-  background: #ffffff;
+  background-color: white;
 }
 
 
@@ -70,7 +66,7 @@ html,body{
   max-width: 450px;
   font-size: larger;
   font-family: "Mulish", sans-serif;
-  background: #ffffff;
+  background: #ededed;
   padding: 20px;
   border-radius: 5%;
 
@@ -108,23 +104,10 @@ html,body{
   width: 100%;
 }
 
-.names-container{
-  display: flex;
-  width:fit-content;
-  flex-direction: row;
-}
-
-.names-container input{
-  width: 48%;
-}
-
-.names-inputs{
-  width: fit-content;
-}
-
 .right-container {
   display: flex;
   width: 50%;
+  height: 100vh;
   justify-content: center;
   align-items: center;
   background-color: #3a0706;
@@ -139,28 +122,39 @@ html,body{
 }
 
 @media (max-width: 768px) {
+
+  .form-container h2{
+    display: none;
+  }
+  .navbar {
+    flex-direction: column;
+    height: auto;
+    padding: 10px;
+    text-align: center;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    gap: 10px;
+  }
+
   .main-container {
     flex-direction: column;
-    height: 90vh;
+    align-items: center;
+    height: auto;
   }
 
   .left-container {
-    background-color: #3a0706;
     width: 100%;
-    height: 100vh;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 2;
-  }
-  .form-container {
-
+    height: auto;
+    padding: 20px;
   }
 
   .right-container {
-    display: none;
+    display: none; /* Cache l'image sur mobile */
   }
 
-
+  .form-container {
+    width: 90%;
+  }
 }
