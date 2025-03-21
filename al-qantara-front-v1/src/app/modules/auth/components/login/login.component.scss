@@ -2,19 +2,48 @@
 @import url('https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap');
 
 html{
-  background-color: #ededed;
+  background-color: #fbce9c;
 }
-.navbar{
 
+.navbar{
+  font-family: Inter, sans-serif;
+  display: flex;
+  height: 80px;
+  flex-direction: row;
   position: relative;
+  align-items: center;
   z-index: 10;
   background-color: white;
+}
+
+.nav-links{
+  margin-left: 3%;
+}
+.navbar h2{
+  font-family: "Cormorant Garamond", serif;
+  font-size: 2.5em;
+  font-weight: 400;
+
+}
+.navbar a{
+  font-family: Inter, sans-serif;
+  font-size: larger;
+  font-weight: 500;
+  text-decoration: none;
+  color: grey;
+  cursor: pointer;
+  padding-right: 17.5px;
+  transition: color 0.3s;
+}
+
+.navbar a:hover{
+  color: #000000;
 }
 .main-container{
   display: flex;
   flex-direction: row;
   width: 100%;
-  height: 93.5vh;
+  height: 94vh;
 }
 
 .left-container{
@@ -23,7 +52,7 @@ html{
   justify-content: center;
   align-items: center;
   width: 50%;
-  background: #ededed;
+  background: #ffffff;
 }
 
 
