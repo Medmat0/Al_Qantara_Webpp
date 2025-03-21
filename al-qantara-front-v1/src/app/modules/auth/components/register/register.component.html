@@ -1,1 +1,48 @@
-<p>register works!</p>
+<div class="navbar">
+  <div class="al-qantara-name">
+    <h2>Al&nbsp;Qantara</h2>
+  </div>
+  <div class="nav-links">
+    <a routerLink="/">Accueil</a>
+    <a routerLink="/revues">Revues</a>
+    <a routerLink="/contacts">Nous&nbsp;Contacter</a>
+  </div>
+</div>
+
+<div class="main-container">
+  <div class="left-container">
+    <div class="form-container">
+      <h2>Al Qantara</h2>
+      <h3>Création de votre compte</h3>
+      <h5>Remplissez le formulaire pour créer votre compte</h5>
+      <div class="names-container">
+        <div class="names-inputs">
+          <h5>Nom</h5>
+          <input type="text" placeholder="Nom" name="lastname" required>
+        </div>
+        <div class="names-inputs">
+          <h5>Prénom</h5>
+          <input type="text" placeholder="Prénom" name="firstname" required>
+        </div>
+        <div class="names-inputs">
+          <h5>Sexe</h5>
+          <select>
+            <option value="homme">Homme</option>
+            <option value="femme">Femme</option>
+          </select>
+        </div>
+      </div>
+      <h4>Pseudonyme</h4>
+      <input type="text" placeholder="Pseudonyme" name="username" required>
+      <h4>Adresse Email</h4>
+      <input type="text" placeholder="Email" name="username" required>
+      <h4>Mot de passe</h4>
+      <input type="password" placeholder="Password" name="password" required>
+      <button type="submit">Connexion</button>
+    </div>
+  </div>
+  <div class="right-container">
+    <img src="assets/main-icon.jpg" alt="Al Qantara logo">
+
+  </div>
+</div>
