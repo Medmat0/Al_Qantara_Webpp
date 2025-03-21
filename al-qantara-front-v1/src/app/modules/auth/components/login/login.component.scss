@@ -122,6 +122,9 @@
 }
 
 @media (max-width: 768px) {
+  .form-container h2{
+    display: none;
+  }
   .navbar {
     flex-direction: column;
     height: auto;
