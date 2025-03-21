@@ -9,7 +9,9 @@ export const routes: Routes = [
       return m.HomeComponent;
     },
   },
-  { path: 'auth', loadChildren: () => import('./modules/auth/auth.routes').then(m => m.default) },  {
+  { path: 'auth', loadChildren: () => import('./modules/auth/auth.routes').then(m => m.default)
+  },
+  {
     path: '**',
     redirectTo: '',
     pathMatch: 'full'
