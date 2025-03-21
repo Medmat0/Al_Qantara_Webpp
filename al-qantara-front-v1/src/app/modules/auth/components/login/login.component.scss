@@ -66,7 +66,7 @@
   max-width: 450px;
   font-size: larger;
   font-family: "Mulish", sans-serif;
-  background: #ededed;
+  background: #ffffff;
   padding: 20px;
   border-radius: 5%;
 
@@ -103,7 +103,14 @@
   touch-action: manipulation;
   width: 100%;
 }
+.form-container p{
+  margin-left: 10%;
+}
 
+.reset-link {
+  color: #e21d1c;
+  text-decoration: underline;
+}
 .right-container {
   display: flex;
   width: 50%;

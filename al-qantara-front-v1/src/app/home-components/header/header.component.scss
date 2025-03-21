@@ -115,74 +115,77 @@ ul li a:hover {
   background-color: #988C8C;
 }
 
-/* Media Queries pour la réactivité */
 @media (max-width: 1200px) {
   h2 {
-    font-size: 2em; /* Réduire la taille du titre sur les écrans plus petits */
-    margin-right: 30px; /* Réduire l'espace entre le titre et la navigation */
+    font-size: 2em;
+    margin-right: 30px;
   }
 
   ul {
-    gap: 15px; /* Réduire l'espacement entre les éléments de navigation */
+    gap: 15px;
   }
 
   .ConnectingOptions {
-    gap: 15px; /* Réduire l'espace entre les boutons */
+    gap: 15px;
   }
 
   .ConnectingOptions button {
-    padding: 10px 20px; /* Ajuster la taille des boutons */
-    font-size: 80%; /* Réduire la taille de la police des boutons */
+    padding: 10px 20px;
+    font-size: 80%;
   }
 }
 
 @media (max-width: 768px) {
   header {
-    flex-direction: column; /* Empiler les éléments header sur les petits écrans */
+    flex-direction: column;
     align-items: flex-start;
   }
 
   h2 {
-    font-size: 1.5em; /* Réduire davantage la taille du titre */
+    font-size: 1.5em;
     margin-right: 0;
-    margin-bottom: 10px; /* Espacement entre le titre et la navigation */
+    margin-bottom: 10px;
   }
 
   ul {
-    flex-direction: row; /* Placer les éléments de la navigation les uns en dessous des autres */
+    flex-direction: row;
     gap: 10px;
   }
 
   .ConnectingOptions {
-    width: 100%; /* Les boutons prennent toute la largeur disponible */
-    justify-content: space-between; /* Espacement entre les boutons */
+    width: 100%;
+    justify-content: space-between;
     gap: 10px;
   }
 
   .ConnectingOptions button {
-    width: 48%; /* Réduire la largeur des boutons pour les rendre responsives */
+    width: 48%;
     font-size: 90%;
   }
 }
 
 @media (max-width: 480px) {
   h2 {
-    font-size: 1.2em; /* Réduire la taille du titre pour les très petits écrans */
+    font-size: 1.2em;
   }
 
   ul {
-    gap: 10px; /* Réduire l'espace entre les éléments de navigation */
+    gap: 10px;
   }
 
   .ConnectingOptions {
-    flex-direction: column; /* Empiler les boutons verticalement */
+    flex-direction: column;
     width: 100%;
     gap: 10px;
   }
 
   .ConnectingOptions button {
-    width: 100%; /* Les boutons prennent toute la largeur disponible */
+    width: 100%;
     padding: 12px;
     font-size: 100%;
+  }
+
+  ul li a {
+    font-size: 1em;
   }
 }

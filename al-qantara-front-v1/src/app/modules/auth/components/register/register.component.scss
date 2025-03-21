@@ -66,7 +66,7 @@
   max-width: 450px;
   font-size: larger;
   font-family: "Mulish", sans-serif;
-  background: #ededed;
+  background: #ffffff;
   padding: 20px;
   border-radius: 5%;
 
@@ -155,11 +155,14 @@
   }
 
   .form-container {
-    width: 90%;
+    width: 80%;
   }
 
   .form-container input{
     width: 50%;
+  }
+  .form-container button{
+    margin-top: 2em;
   }
 
 }
