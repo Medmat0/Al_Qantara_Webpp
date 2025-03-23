@@ -49,7 +49,7 @@ const registerUser = asyncHandler(async (req, res) => {
     where: { email: user.email },
     data: { emailVerificationToken: hashedToken },
   });
-  const verifyLink = `http://localhost:3000/auth/verfiy/${plainVerifyToken}`; // ou remplacer par ton URL en production
+  const verifyLink = `http://localhost:3000/auth/verify/${plainVerifyToken}`; // ou remplacer par ton URL en production
 
 
   // Envoi de l'email de vérification

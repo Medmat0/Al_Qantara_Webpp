@@ -23,7 +23,6 @@ const login = asyncHandler(async (req, res, next) => {
   if (!utilisateur) return res.status(400).json({ message: "Wrong email or password." });
 
   // Comparaison du mot de passe
-  console.log(password, "hash $",utilisateur.motDePasse)
   const matchedPasswords = await comparePassword(password, utilisateur.motDePasse);
   if (!matchedPasswords) return res.status(400).json({ message: "Wrong email or password" });
 
@@ -44,7 +43,7 @@ const login = asyncHandler(async (req, res, next) => {
       },
     });
 
-    const verifyLink = `http://localhost:3000/auth/verfiy/${plainVerfiyToken}`; // ou remplacer par ton URL en production
+    const verifyLink = `http://localhost:3000/auth/verify/${plainVerfiyToken}`; // ou remplacer par ton URL en production
 
 
     // Envoi du mail de vérification
