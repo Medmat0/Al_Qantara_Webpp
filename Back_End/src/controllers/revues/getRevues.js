@@ -11,14 +11,15 @@ const getRevues = async (req, res) => {
   try {
     const revues = await prisma.revue.findMany({
       select: {
-        id: true,
-        titre: true,
-        description: true,
-        mois: true,
-        annee: true,
-        document: true, // URL du fichier PDF sur Cloudinary
+        titre : true,
+        //description,
+        //mois,
+        //annee: parseInt(annee),
+        fichier: true, 
+        datePublication : true,
+        createdBy: true,
       },
-      orderBy: { annee: "desc" },
+      orderBy: { datePublication: "desc" },
     });
 
     res.status(200).json(revues);

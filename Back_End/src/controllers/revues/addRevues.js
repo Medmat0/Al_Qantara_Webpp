@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 import cloudinary from "../../config/cloudinary.js";
-import { format } from 'date-fns';
 
 
 const prisma = new PrismaClient();
@@ -14,13 +13,11 @@ const addRevue = async (req, res) => {
   try {
     const { titre, description, mois, annee } = req.body;
 
-    // Vérifier si le titre existe déjà
     const existingRevue = await prisma.revue.findFirst({ where: { titre } });
     if (existingRevue) {
       return res.status(400).json({ message: "Une revue avec ce titre existe déjà." });
     }
 
-    // Vérifier la présence du fichier
     if (!req.file) {
       return res.status(400).json({ message: "Veuillez ajouter un fichier PDF." });
     }
@@ -30,14 +27,13 @@ const addRevue = async (req, res) => {
       resource_type: "raw",
       folder: "revues",
       format: "pdf",
-      access_mode: "public"  // Assure que le fichier est public
+      access_mode: "public"  
 
     });
 
     const datePublication = new Date().toISOString();
 
 
-    // Enregistrer la revue en BDD
     const nouvelleRevue = await prisma.revue.create({
       data: {
         titre,
@@ -46,7 +42,7 @@ const addRevue = async (req, res) => {
         //annee: parseInt(annee),
         fichier: uploadResult.secure_url, 
         datePublication : datePublication,
-        createdBy: 1,
+        createdBy: req.user.id,
       },
     });
 

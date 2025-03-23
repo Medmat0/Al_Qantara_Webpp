@@ -13,19 +13,15 @@ const prisma = new PrismaClient();
  * @access  Public
  */
 const registerUser = asyncHandler(async (req, res) => {
-  const { nom, prenom, email, motDePasse, role } = req.body;
+  const { nom, prenom, email, password, role } = req.body;
 
-  // Vérifier si l'email existe déjà
   const emailExist = await prisma.utilisateur.findUnique({ where: { email } });
   if (emailExist) return res.status(400).json({ message: "Email déjà utilisé" });
 
-  // Définir le rôle par défaut
   const userRole =  "USER";
 
-  // Hasher le mot de passe
-  const hashedPassword = await hashPassword(motDePasse);
+  const hashedPassword = await hashPassword(password);
 
-  // Création de l'utilisateur
   const user = await prisma.utilisateur.create({
     data: {
       nom,
@@ -41,7 +37,6 @@ const registerUser = asyncHandler(async (req, res) => {
   if (!user)
     return res.status(400).json({ message: "Erreur lors de l'inscription" });
 
-  // Génération et stockage du token de vérification
   const plainVerifyToken = crypto.randomBytes(64).toString("hex");
   const hashedToken = crypto.createHash("sha256").update(plainVerifyToken).digest("hex");
 
@@ -49,10 +44,9 @@ const registerUser = asyncHandler(async (req, res) => {
     where: { email: user.email },
     data: { emailVerificationToken: hashedToken },
   });
-  const verifyLink = `http://localhost:3000/auth/verify/${plainVerifyToken}`; // ou remplacer par ton URL en production
+  const verifyLink = `http://localhost:3000/auth/verify/${plainVerifyToken}`; 
 
 
-  // Envoi de l'email de vérification
   const emailInfo = {
     from: "Mailer Company",
     to: email,

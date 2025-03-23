@@ -13,11 +13,9 @@ const deleteRevue = async (req, res) => {
         return res.status(404).json({ message: "Revue non trouvée." });
       }
   
-      // Supprimer de Cloudinary
-      const publicId = revue.document.split("/").pop().split(".")[0]; // Extraire l'ID Cloudinary
+      const publicId = revue.document.split("/").pop().split(".")[0]; 
       await cloudinary.uploader.destroy(`revues/${publicId}`);
   
-      // Supprimer de la base de données
       await prisma.revue.delete({ where: { id: parseInt(id) } });
   
       res.status(200).json({ message: "Revue supprimée avec succès." });

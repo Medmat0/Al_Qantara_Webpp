@@ -13,7 +13,7 @@ const prisma = new PrismaClient();
  * @access  Public
  */
 const registerAdmin = asyncHandler(async (req, res) => {
-  const { nom, prenom, email, motDePasse, role } = req.body;
+  const { nom, prenom, email, password, role } = req.body;
 
   // Vérifier si l'email existe déjà
   const emailExist = await prisma.utilisateur.findUnique({ where: { email } });
@@ -23,7 +23,7 @@ const registerAdmin = asyncHandler(async (req, res) => {
   const userRole = "ADMIN";
 
   // Hasher le mot de passe
-  const hashedPassword = await hashPassword(motDePasse);
+  const hashedPassword = await hashPassword(password);
 
   // Création de l'utilisateur
   const user = await prisma.utilisateur.create({
@@ -31,7 +31,7 @@ const registerAdmin = asyncHandler(async (req, res) => {
       nom,
       prenom,
       email,
-      motDePasse: hashedPassword,
+      password: hashedPassword,
       role: userRole,
       dateInscription: new Date(),
       statut: "ACTIF",

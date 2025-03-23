@@ -24,14 +24,14 @@ const verifyEmail = asyncHandler(async (req, res, next) => {
 
   if (!user) return res.status(400).json({ message: "Token de vérification invalide" });
 
-  // Mise à jour de l'utilisateur après vérification de l'email
   await prisma.utilisateur.update({
     where: {
       id: user.id,
     },
     data: {
-      emailVerificationToken: null, // Réinitialisation du token
-      statut: "ACTIF", // L'utilisateur devient actif
+      emailVerificationToken: null, 
+      emailVerified: true,
+      statut: "ACTIF",
     },
   });
 
