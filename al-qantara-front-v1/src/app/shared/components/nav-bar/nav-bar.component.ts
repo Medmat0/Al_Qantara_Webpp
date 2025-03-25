@@ -2,7 +2,7 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NgIf } from '@angular/common';
-import { NavbarService } from '../../../member/services/navbar.service';
+import { NavbarService } from '../../services/navbar.service';
 
 @Component({
   selector: 'app-nav-bar',

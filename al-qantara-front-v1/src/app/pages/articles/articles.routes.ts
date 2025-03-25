@@ -5,5 +5,5 @@ import {ArticledescriptionComponent} from './components/articledescription/artic
 
 export default [
   {path: '', component:ArticlesComponent},
-  {path: 'article/:id', component:ArticledescriptionComponent},
+  {path: ':id', component:ArticledescriptionComponent},
 ] as Routes;
