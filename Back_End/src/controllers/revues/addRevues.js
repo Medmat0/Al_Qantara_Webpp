@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import cloudinary from "../../config/cloudinary.js";
+import { cp } from "fs";
 
 
 const prisma = new PrismaClient();
@@ -12,11 +13,15 @@ const prisma = new PrismaClient();
 const addRevue = async (req, res) => {
   try {
     const { titre, description, mois, annee } = req.body;
+    console.log("titre:", titre);
+    console.log("despcirption ,",description)
+    console.log("Req.file:", req.file);
+   // stocker la description 
 
     const existingRevue = await prisma.revue.findFirst({ where: { titre } });
     if (existingRevue) {
       return res.status(400).json({ message: "Une revue avec ce titre existe déjà." });
-    }
+    } 
 
     if (!req.file) {
       return res.status(400).json({ message: "Veuillez ajouter un fichier PDF." });
