@@ -1,11 +1,13 @@
 <header>
   <nav>
-    <button>
-      <svg>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z" /></svg>
-      </svg>
-    </button>
-    <h2>Al&nbsp;Qantara</h2>
+    <div class="logo">
+      <button>
+        <svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z" /></svg>
+        </svg>
+      </button>
+      <h2>Al&nbsp;Qantara</h2>
+    </div>
     <ul>
       <li><a routerLink="/">Accueil</a></li>
       <li><a routerLink="/revues">Revues</a></li>
@@ -13,7 +15,18 @@
     </ul>
   </nav>
   <div class="ConnectingOptions">
-    <button *ngIf="showButtons" class="register" routerLink="/auth/register">S'inscrire</button>
-    <button *ngIf="showButtons" class="login" routerLink="/auth/login">Se&nbsp;Connecter</button>
+    <div class="login-register">
+      <button *ngIf="showButtons" class="register" routerLink="/auth/register">S'inscrire</button>
+      <button *ngIf="showButtons" class="login " routerLink="/auth/login">Se Connecter</button>
+    </div>
+    <div>
+      <button *ngIf="showButtons" class="logout" >
+        <svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.58L17 17L22 12M4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z" /></svg>
+        </svg>
+      </button>
+    </div>
   </div>
+
+
 </header>
