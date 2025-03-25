@@ -8,19 +8,23 @@ datasource db {
 }
 
 model Utilisateur {
-  id              Int       @id @default(autoincrement())
-  nom             String    @db.VarChar(100)
-  prenom          String    @db.VarChar(100)
-  email           String    @unique @db.VarChar(255)
-  motDePasse      String    @db.VarChar(255)
-  role            Role
-  dateInscription DateTime
-  statut          Statut
-  evenements      Evenement[]
-  revues          Revue[]
-  articles        Article[]
-  adhesion        Adhesion?
-  accesEvenements AccesEvenement[]
+  id                      Int          @id @default(autoincrement())
+  nom                     String       @db.VarChar(100)
+  prenom                  String       @db.VarChar(100)
+  email                   String       @unique @db.VarChar(255)
+  motDePasse              String       @db.VarChar(255)
+  role                    Role
+  dateInscription         DateTime
+  statut                  Statut
+  emailVerificationToken  String?      @db.VarChar(255) 
+  emailVerified           Boolean      @default(false)    
+  passwordResetToken      String?      @db.VarChar(255)  
+  passwordResetTokenExpire String?    
+  evenements              Evenement[]
+  revues                  Revue[]
+  articles                Article[]
+  adhesion                Adhesion?
+  accesEvenements         AccesEvenement[]
 }
 
 enum Role {

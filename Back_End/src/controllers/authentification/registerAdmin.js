@@ -1,0 +1,70 @@
+import { PrismaClient } from "@prisma/client";
+import asyncHandler from "express-async-handler";
+import { hashPassword } from "../../utils/hashPassword.js";
+import crypto from "crypto";
+import { sendEmailToUser } from "../../utils/email.config.js";
+
+const prisma = new PrismaClient();
+
+/**
+ * @desc    Inscription des utilisateurs (USER / ADHERENT)
+ * @method  POST
+ * @route   /auth/register
+ * @access  Public
+ */
+const registerAdmin = asyncHandler(async (req, res) => {
+  const { nom, prenom, email, password, role } = req.body;
+
+  // Vérifier si l'email existe déjà
+  const emailExist = await prisma.utilisateur.findUnique({ where: { email } });
+  if (emailExist) return res.status(400).json({ message: "Email déjà utilisé" });
+
+  // Définir le rôle par défaut
+  const userRole = "ADMIN";
+
+  // Hasher le mot de passe
+  const hashedPassword = await hashPassword(password);
+
+  // Création de l'utilisateur
+  const user = await prisma.utilisateur.create({
+    data: {
+      nom,
+      prenom,
+      email,
+      password: hashedPassword,
+      role: userRole,
+      dateInscription: new Date(),
+      statut: "ACTIF",
+    },
+  });
+
+  if (!user)
+    return res.status(400).json({ message: "Erreur lors de l'inscription" });
+
+  // Génération et stockage du token de vérification
+  const plainVerifyToken = crypto.randomBytes(64).toString("hex");
+  const hashedToken = crypto.createHash("sha256").update(plainVerifyToken).digest("hex");
+
+  await prisma.utilisateur.update({
+    where: { email: user.email },
+    data: { emailVerificationToken: hashedToken },
+  });
+  const verifyLink = `http://localhost:3000/auth/verify/${plainVerifyToken}`; // ou remplacer par ton URL en production
+
+
+  // Envoi de l'email de vérification
+  const emailInfo = {
+    from: "Mailer Company",
+    to: email,
+    subject: "Vérification de votre email",
+    text: "Veuillez vérifier votre email",
+    html: `<h1>Vérification de l'email</h1>
+           <p>Bonjour ${nom}, cliquez sur le lien ci-dessous pour vérifier votre compte :</p>
+           <a href="${verifyLink}">Vérifier mon email</a>`,
+  };
+  await sendEmailToUser(emailInfo);
+
+  res.status(201).json({ message: "Inscription réussie", data: user });
+})
+
+export {registerAdmin}
