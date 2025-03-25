@@ -1,15 +1,8 @@
 import { Routes } from '@angular/router';
 
 export const routes: Routes = [
-  {
-    path: '',
-    pathMatch: 'full',
-    loadComponent: async () => {
-      const m = await import('./home/home.component');
-      return m.HomeComponent;
-    },
-  },
-  { path: 'auth', loadChildren: () => import('./modules/auth/auth.routes').then(m => m.default)
+  {path: '', loadChildren: () => import('./pages/home/home.routes').then(m => m.default)},
+  {path: 'auth', loadChildren: () => import('./pages/auth/auth.routes').then(m => m.default)
   },
   {
     path: '**',
