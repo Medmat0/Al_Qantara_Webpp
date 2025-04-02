@@ -31,7 +31,7 @@ const registerAdmin = asyncHandler(async (req, res) => {
       nom,
       prenom,
       email,
-      password: hashedPassword,
+      motDePasse: hashedPassword,
       role: userRole,
       dateInscription: new Date(),
       statut: "ACTIF",
