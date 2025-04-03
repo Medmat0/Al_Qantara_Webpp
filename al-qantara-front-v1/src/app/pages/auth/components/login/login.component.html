@@ -4,10 +4,12 @@
       <h2>Al Qantara</h2>
       <h3>Connexion</h3>
       <h4>Adresse&nbsp;Email</h4>
-      <input type="text" placeholder="Email" name="username" required>
-      <h4>Mot&nbsp;de&nbsp;passe</h4>
-      <input type="password" placeholder="Password" name="password" required>
-      <button type="submit">Connexion</button>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <input type="text" placeholder="Email" name="email" formControlName="email" required>
+        <h4>Mot&nbsp;de&nbsp;passe</h4>
+        <input type="password" placeholder="Password" name="password" formControlName="password" required>
+        <button type="submit">Connexion</button>
+      </form>
       <p>Mot de passe oublié ? <a routerLink="/auth/reset-password" class="reset-link">Réinitialisez le ici</a></p>
     </div>
   </div>
