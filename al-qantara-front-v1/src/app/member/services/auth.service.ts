@@ -18,10 +18,10 @@ export class AuthService {
   ) {}
 
 
-  login(email: string, password: string): Observable<any> {
+  login(email: string | null | undefined, password: string | null | undefined): Observable<any> {
     const body = { email, password };
     return this.http.post(`${this.apiUrl}/login`, body).pipe(
-      tap((response: any) => {
+      tap((response:any) => {
         if (response && response.token) {
           // Stocker le token JWT dans le stockage local
           localStorage.setItem('auth_token', response.token);

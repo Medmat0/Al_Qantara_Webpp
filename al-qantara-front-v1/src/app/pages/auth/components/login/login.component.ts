@@ -21,17 +21,32 @@ export class LoginComponent {
   authService = inject(AuthService);
 
   loginForm = this.fb.group({
-    email: ['',Validators.required, Validators.email],
-    password: ['',Validators.required]
+    email: ['', {
+      validators: [Validators.required, Validators.email], // Validateurs synchrones
+      updateOn: 'blur' // Quand la validation doit se déclencher
+    }],
+    password: ['', {
+      validators: [Validators.required], // Validateurs synchrones
+      updateOn: 'blur'
+    }]
   });
 
-  onSubmit() {
-    if (this.loginForm.valid) {
-      const email = this.loginForm.get('email')?.value;
-      const password = this.loginForm.get('password')?.value;
-      console.log('Login form submitted:', this.loginForm.value);
-
+  onSubmit(): void {
+    if (this.loginForm.invalid) {
+      return;
     }
 
+    const { email, password } = this.loginForm.value;
+
+    this.authService.login(email, password).subscribe({
+      next: (response) => {
+        // Handle successful login
+        console.log('Login successful', response);
+      },
+      error: (error) => {
+        // Handle login error
+        console.error('Login failed', error);
+      }
+    });
   }
 }
