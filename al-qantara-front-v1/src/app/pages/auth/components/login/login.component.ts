@@ -1,5 +1,5 @@
 import {Component, inject} from '@angular/core';
-import {RouterLink} from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {AuthService} from '../../../../member/services/auth.service';
 import {CommonModule} from '@angular/common';
@@ -19,6 +19,7 @@ export class LoginComponent {
   // Déclaration des dépendances
   fb : FormBuilder = inject(FormBuilder);
   authService = inject(AuthService);
+  router = inject(Router);
 
   loginForm = this.fb.group({
     email: ['', {
@@ -31,6 +32,7 @@ export class LoginComponent {
     }]
   });
 
+
   onSubmit(): void {
     if (this.loginForm.invalid) {
       return;
@@ -42,6 +44,7 @@ export class LoginComponent {
       next: (response) => {
         // Handle successful login
         console.log('Login successful', response);
+        this.router.navigate(['']).then(r => console.log(r));
       },
       error: (error) => {
         // Handle login error
