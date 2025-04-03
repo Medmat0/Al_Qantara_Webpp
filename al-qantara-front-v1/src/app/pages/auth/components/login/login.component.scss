@@ -107,6 +107,20 @@
   margin-left: 10%;
 }
 
+.invalid {
+  border: 2px solid #ff4444;
+}
+
+.error {
+  color: #ff4444;
+  font-size: 0.8em;
+}
+
+button.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .reset-link {
   color: #e21d1c;
   text-decoration: underline;
