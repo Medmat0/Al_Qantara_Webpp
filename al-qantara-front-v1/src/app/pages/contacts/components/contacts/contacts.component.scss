@@ -1,0 +1,32 @@
+.contacts-container {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.social-media-Instagram{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.social-media-Instagram img{
+  width: 30px;
+  height: 30px;
+  margin-right: 5px;
+}
+
+.social-media-Linkedin{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.social-media-Linkedin img{
+  width: 30px;
+  height: 30px;
+  margin-right: 5px;
+}
+
+.left-container-contacts, .right-container_form {
+  flex: 1;
+}

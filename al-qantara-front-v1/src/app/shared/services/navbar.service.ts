@@ -15,6 +15,13 @@ export class NavbarService {
       if (event instanceof NavigationEnd) {
         const hiddenRoutes = ['/auth/reset-password', '/auth/login', '/auth/register'];
         this.showButtonsSubject.next(!hiddenRoutes.includes(event.url));
+        if (event.url === '/contacts') {
+
+        } else if(event.url==='articles'){
+
+        } else if (event.url === '') {
+
+        }
       }
     });
   }

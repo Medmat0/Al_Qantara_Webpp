@@ -1,1 +1,49 @@
-<p>contacts works!</p>
+<div class="contacts-container">
+  <div class="left-container-contacts">
+    <h1>Contactez-nous !</h1>
+    <p>Vous avez une question ? Vous souhaitez nous faire part de vos remarques ?</p>
+    <p>Nous sommes à votre écoute !</p>
+    <div class = "social-media-Instagram">
+      <img src="assets/Instagram_logo.jpg" alt="Instagram Logo" />
+      <h3>Instagram</h3>
+    </div>
+    <div class = "social-media-Linkedin">
+      <img src="assets/LinkedIn_logo.png" alt="LinkedIn Logo" />
+      <h3>LinkedIn</h3>
+    </div>
+  </div>
+  <div class="right-container_form">
+    <form>
+      <p>Nom et Prénom</p>
+      <div>
+        <input
+          type="text"
+          placeholder="Nom"
+          name="name"
+          required>
+        <input
+          type="text"
+          placeholder="Prénom"
+          name="firstName"
+          >
+      </div>
+      <p>Adresse e-mail</p>
+      <input
+        type="email"
+        placeholder="Adresse e-mail"
+        name="email"
+        required>
+      <p>Message</p>
+      <textarea
+        placeholder="Votre message"
+        name="message"
+        required></textarea>
+      <button
+        type="submit"
+        class="btn btn-primary">
+        Envoyer
+      </button>
+    </form>
+
+  </div>
+</div>
