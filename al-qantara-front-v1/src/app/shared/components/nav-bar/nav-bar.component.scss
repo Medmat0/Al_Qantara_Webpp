@@ -235,10 +235,12 @@ ul li a:hover {
   }
 
   ul {
-    flex-direction: column;
+    margin-top: 10px;
+    flex-direction: row;
     gap: 10px;
     width: 100%;
     text-align: center;
+    justify-content: center;
   }
 
   .ConnectingOptions {

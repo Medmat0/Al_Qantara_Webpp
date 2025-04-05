@@ -1,13 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&display=swap');
+
+
 .contacts-container {
+  margin-left: 30px;
   display: flex;
   flex-direction: row;
   gap: 1rem;
+  font-family: Cormorant Garamond, serif;
+}
+
+.contacts-container p {
+}
+
+
+.left-container-contacts h1{
+
+  font-family: Cormorant Garamond, serif;
+}
+.left-container-contacts{
+
+  font-family: "Mulish", sans-serif;
 }
 
 .social-media-Instagram{
   display: flex;
   flex-direction: row;
   align-items: center;
+}
+
+.social-media-Instagram h3, .social-media-Linkedin h3{
+  color: #9e2e2c;
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 .social-media-Instagram img{
@@ -29,4 +53,16 @@
 
 .left-container-contacts, .right-container_form {
   flex: 1;
+}
+
+@media (max-width: 768px) {
+  .contacts-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .left-container-contacts, .right-container_form {
+    flex: none;
+    width: 100%;
+  }
 }
