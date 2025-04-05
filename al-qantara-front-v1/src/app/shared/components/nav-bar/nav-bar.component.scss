@@ -127,8 +127,16 @@ ul li a:hover {
   width: 100%;
   color: black;
   padding: 0 0;
+  margin-bottom: 10px;
 }
 
+.logout-container{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 20px;
+}
 
 
 @media (max-width: 1024px) {
