@@ -58,6 +58,7 @@
   font-weight: 400;
   margin-bottom: 20px;
 }
+
 .form-container{
   display: flex;
   flex-direction: column;
@@ -79,6 +80,11 @@
 .error {
   color: #ff4444;
   font-size: 0.8em;
+}
+
+.reset-link {
+  color: #e21d1c;
+  text-decoration: underline;
 }
 
 .form-container input{
