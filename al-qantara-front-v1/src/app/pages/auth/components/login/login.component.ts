@@ -1,5 +1,5 @@
 import {Component, inject} from '@angular/core';
-import {Router, RouterLink} from '@angular/router';
+import {Router} from '@angular/router';
 import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {AuthService} from '../../../../member/services/auth.service';
 import {CommonModule} from '@angular/common';
@@ -7,7 +7,6 @@ import {CommonModule} from '@angular/common';
 @Component({
   selector: 'app-login',
   imports: [
-    RouterLink,
     ReactiveFormsModule,
     CommonModule
   ],
@@ -23,11 +22,11 @@ export class LoginComponent {
 
   loginForm = this.fb.group({
     email: ['', {
-      validators: [Validators.required, Validators.email], // Validateurs synchrones
-      updateOn: 'blur' // Quand la validation doit se déclencher
+      validators: [Validators.required, Validators.email],
+      updateOn: 'blur'
     }],
     password: ['', {
-      validators: [Validators.required], // Validateurs synchrones
+      validators: [Validators.required],
       updateOn: 'blur'
     }]
   });

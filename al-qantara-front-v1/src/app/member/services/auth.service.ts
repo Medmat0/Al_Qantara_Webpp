@@ -36,6 +36,26 @@ export class AuthService {
       })
     );
   }
+  // Register a new user BASIC MEMBER SO BASE ROLE IS USER -----------------------------------------------------------
+  register(nom: string | null | undefined, prenom: string | null | undefined, email: string | null | undefined, password: string | null | undefined): Observable<any> {
+    // BY DEFAULT ROLE IS USER, IF OTHER ROLE WANTED, LIKE  ADMIN GO THROUGH ADMIN PAGE TO CHANGE ROLE
+    const role = 'USER';
+    const body = { nom, prenom, email, password, role };
+    return this.http.post(`${this.apiUrl}/register`, body).pipe(
+      tap((response: any) => {
+        if (response && response.token) {
+          //if registration succesful, user should verify their email before being able their account
+
+          console.log('Registration successful:', response);
+          this.authStatusSubject.next(true);
+        }
+      }),
+      catchError((error) => {
+        console.error('Registration failed', error);
+        return throwError(() => new Error('Registration failed'));
+      })
+    );
+  }
 
   logout(): void {
     // Remove the JWT token and user information from local storage

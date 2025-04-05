@@ -72,6 +72,15 @@
 
 }
 
+.invalid {
+  border: 2px solid #ff4444;
+}
+
+.error {
+  color: #ff4444;
+  font-size: 0.8em;
+}
+
 .form-container input{
   font-family: "Mulish", sans-serif;
 }
