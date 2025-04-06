@@ -72,8 +72,24 @@
 
 }
 
-.form-container input{
+.form-container input,
+.form-container select,
+.form-container textarea {
   font-family: "Mulish", sans-serif;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  margin-bottom: 10px;
+}
+
+.form-container input:focus,
+.form-container select:focus,
+.form-container textarea:focus {
+  outline: none;
+  border-color: #9e2e2c;
+  box-shadow: 0 0 0 2px rgba(158, 46, 44, 0.15);
 }
 
 .form-container button{
