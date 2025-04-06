@@ -58,6 +58,7 @@
   font-weight: 400;
   margin-bottom: 20px;
 }
+
 .form-container{
   display: flex;
   flex-direction: column;
@@ -70,6 +71,20 @@
   padding: 20px;
   border-radius: 5%;
 
+}
+
+.invalid {
+  border: 2px solid #ff4444;
+}
+
+.form-error {
+  color: #ff4444;
+  font-size: 0.8em;
+}
+
+.page-link {
+  color: #e21d1c;
+  text-decoration: underline;
 }
 
 .form-container input{

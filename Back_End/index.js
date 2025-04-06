@@ -6,9 +6,12 @@ import bodyParser from "body-parser";
 const PORT = process.env.PORT || 3000;
 const app = express();
 
-app.use(express.json());
 app.use(cors());   
 app.use(bodyParser.json()); 
+app.use(express.json());
+
+app.use(express.urlencoded({ extended: true })); // Pour form-data et x-www-form-urlencoded
+
 
 app.use("/auth", authRoutes);
 app.use("/revues", revuesRoutes)
