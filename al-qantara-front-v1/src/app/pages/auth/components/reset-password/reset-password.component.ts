@@ -4,7 +4,6 @@ import {NavigationEnd, Router, RouterLink} from "@angular/router";
 @Component({
   selector: 'app-reset-password',
     imports: [
-        RouterLink
     ],
   templateUrl: './reset-password.component.html',
   standalone: true,
