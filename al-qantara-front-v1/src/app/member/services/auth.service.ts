@@ -70,4 +70,36 @@ export class AuthService {
   isAuthenticated(): boolean {
     return !!localStorage.getItem('auth_token');
   }
+
+  sendVerificationCode(email: string | null | undefined): Observable<any> {
+    const body = { email };
+    return this.http.post(`${this.apiUrl}/forgotpassword`, body).pipe(
+      tap((response: any) => {
+        if (response && response.success) {
+          // Verification code sent successfully
+          console.log('Verification code sent successfully:', response);
+        }
+      }),
+      catchError((error) => {
+        console.error('Error sending verification code', error);
+        return throwError(() => new Error('Error sending verification code'));
+      })
+    );
+  }
+
+  resetPassword(password: string | null | undefined, accessCode: string | null | undefined): Observable<any> {
+    const body = { password, accessCode };
+    return this.http.patch(`${this.apiUrl}/changepassword`, body).pipe(
+      tap((response: any) => {
+        if (response && response.success) {
+          // Password reset successfully
+          console.log('Password reset successfully:', response);
+        }
+      }),
+      catchError((error) => {
+        console.error('Error resetting password', error);
+        return throwError(() => new Error('Error resetting password'));
+      })
+    );
+  }
 }

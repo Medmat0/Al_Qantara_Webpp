@@ -16,6 +16,9 @@
               required
               [class.invalid]="registerForm.get('nom')?.invalid && registerForm.get('nom')?.touched"
             >
+            <div *ngIf="registerForm.get('nom')?.invalid && registerForm.get('nom')?.touched" class="form-error">
+              Le nom ne peut pas être vide
+            </div>
           </div>
           <div class="names-inputs">
             <h5>Prénom</h5>
@@ -26,6 +29,9 @@
               required
               [class.invalid]="registerForm.get('prenom')?.invalid && registerForm.get('prenom')?.touched"
             >
+            <div *ngIf="registerForm.get('prenom')?.invalid && registerForm.get('prenom')?.touched" class="form-error">
+              Le prénom ne peut pas être vide
+            </div>
           </div>
         </div>
         <h4>Adresse Email</h4>
@@ -36,6 +42,10 @@
           required
           [class.invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
         >
+        <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="form-error">
+          Format de l'email invalide ou adresse email vide
+        </div>
+
         <h4>Mot de passe</h4>
         <input
           type="password"
@@ -44,6 +54,9 @@
           required
           [class.invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
         >
+        <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="form-error">
+          Le mot de passe ne peut pas être vide, il doit avoir au moins 8 caractères.
+        </div>
         <button type="submit" [disabled]="registerForm.invalid">Inscription</button>
       </form>
       <p>Déjà un compte ? <a routerLink="/auth/login" class="reset-link">Connectez-vous ici</a></p>

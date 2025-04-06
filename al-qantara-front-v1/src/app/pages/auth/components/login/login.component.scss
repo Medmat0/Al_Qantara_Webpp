@@ -111,7 +111,7 @@
   border: 2px solid #ff4444;
 }
 
-.error {
+.form-error {
   color: #ff4444;
   font-size: 0.8em;
 }
@@ -121,7 +121,7 @@ button.disabled {
   cursor: not-allowed;
 }
 
-.reset-link {
+.page-link {
   color: #e21d1c;
   text-decoration: underline;
 }
@@ -140,6 +140,11 @@ button.disabled {
   height: auto;
   max-height: 1200px;
   max-width: 1200px;
+}
+
+.form-error {
+  color: #ff4444;
+  font-size: 0.8em;
 }
 
 @media (max-width: 768px) {

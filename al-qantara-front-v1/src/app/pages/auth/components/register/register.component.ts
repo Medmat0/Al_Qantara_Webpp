@@ -35,7 +35,7 @@ export class RegisterComponent {
       updateOn: 'blur'
     }],
     password: ['',{
-      validators: [Validators.required],
+      validators: [Validators.required, Validators.minLength(8)],
       updateOn: 'blur'
     }]
   });
