@@ -35,6 +35,10 @@ export class ResetPasswordComponent{
       validators: [Validators.required],
       updateOn: 'blur'
     }],
+    confirmPassword: ['', {
+      validators: [Validators.required, Validators.minLength(8), this.authService.passwordMatchValidator('password', 'confirmPassword')],
+      updateOn: 'blur'
+    }]
   });
 
   onSendVerificationCode(): void {

@@ -4,6 +4,9 @@ import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {AuthService} from '../../../../member/services/auth.service';
 import {CommonModule} from '@angular/common';
 
+
+
+
 @Component({
   selector: 'app-register',
   imports: [
@@ -15,11 +18,14 @@ import {CommonModule} from '@angular/common';
   standalone: true,
   styleUrl: './register.component.scss'
 })
+
 export class RegisterComponent {
 
   fb : FormBuilder = inject(FormBuilder);
   authService = inject(AuthService);
   router = inject(Router);
+
+
 
   registerForm = this.fb.group({
     nom: ['', {
@@ -37,8 +43,15 @@ export class RegisterComponent {
     password: ['',{
       validators: [Validators.required, Validators.minLength(8)],
       updateOn: 'blur'
+    }],
+    confirmPassword: ['', {
+      validators: [Validators.required, Validators.minLength(8),this.authService.passwordMatchValidator('password', 'confirmPassword')],
+      updateOn: 'blur'
     }]
   });
+
+
+
   onSubmit(): void {
     if (this.registerForm.invalid) {
       return;

@@ -57,6 +57,16 @@
         <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="form-error">
           Le mot de passe ne peut pas être vide, il doit avoir au moins 8 caractères.
         </div>
+        <h4>Confirmez votre mot de passe</h4>
+        <input
+          type="password"
+          placeholder="Password"
+          formControlName="confirmPassword"
+          required
+          [class.invalid]="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched">
+        <div *ngIf="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched" class="form-error">
+          Les deux mots de passe ne correspondent pas, réessayez.
+        </div>
         <button type="submit" [disabled]="registerForm.invalid">Inscription</button>
       </form>
       <p>Déjà un compte ? <a routerLink="/auth/login" class="reset-link">Connectez-vous ici</a></p>

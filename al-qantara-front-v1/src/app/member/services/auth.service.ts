@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap, BehaviorSubject, catchError, throwError } from 'rxjs';
 import { API_URL } from '../utils/config';
 import { Router } from '@angular/router';
+import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
@@ -102,4 +103,23 @@ export class AuthService {
       })
     );
   }
+
+  passwordMatchValidator(password: string, confirmPassword: string): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const formGroup = control.parent;
+      if (formGroup) {
+        const passwordControl = formGroup.get(password);
+        const confirmPasswordControl = formGroup.get(confirmPassword);
+        if (passwordControl && confirmPasswordControl) {
+          const passwordValue = passwordControl.value;
+          const confirmPasswordValue = confirmPasswordControl.value;
+          if (passwordValue !== confirmPasswordValue) {
+            return { passwordMismatch: true };
+          }
+        }
+      }
+      return null;
+    };
+  }
+
 }
