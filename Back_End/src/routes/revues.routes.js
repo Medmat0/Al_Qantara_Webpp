@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.post("/add", isAdmin ,upload.single("document"), addRevue);
 router.delete("/delete/:id", isAdmin ,deleteRevue);
-router.get("/",authMiddleware,getRevues);
+router.get("/",getRevues);
 
 
 
