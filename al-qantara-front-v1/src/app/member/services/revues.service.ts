@@ -17,7 +17,7 @@ export class RevueService {
   ) {}
 
   getAllRevues(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/revues`).pipe(
+    return this.http.get(`${this.apiUrl}`).pipe(
       tap((response) => {
         console.log('Fetched revues:', response);
       }),

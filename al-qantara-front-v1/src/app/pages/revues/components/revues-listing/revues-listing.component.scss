@@ -1,0 +1,18 @@
+
+.revues-main-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+}
+
+.filters-bar{
+  display: flex;
+  flex-direction: row;
+}
+
+.revue-listing {
+  display: flex;
+  flex-direction: row;
+  width: 50%;
+}

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-revue-item',
@@ -8,5 +8,6 @@ import { Component } from '@angular/core';
   styleUrl: './revue-item.component.scss'
 })
 export class RevueItemComponent {
+  @Input() revue: any;
 
 }
