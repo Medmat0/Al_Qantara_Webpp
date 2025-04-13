@@ -1,23 +1,21 @@
-/* Center the container in the screen */
-div {
+.revue-item{
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  padding: 2rem;
   text-align: center;
   background-color: #f9f9f9;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Style the SVG */
+
+
 svg {
   margin-bottom: 1rem;
   fill: #333;
 }
 
-/* Headings */
 h1 {
   font-size: 1.8rem;
   color: #a21212;
@@ -36,7 +34,6 @@ h3 {
   margin-bottom: 1rem;
 }
 
-/* Paragraphs */
 p {
   max-width: 600px;
   color: #000000;
@@ -44,7 +41,6 @@ p {
   margin: 0.5rem 0;
 }
 
-/* Button styling */
 button {
   margin-top: 2rem;
   padding: 0.6rem 1.2rem;

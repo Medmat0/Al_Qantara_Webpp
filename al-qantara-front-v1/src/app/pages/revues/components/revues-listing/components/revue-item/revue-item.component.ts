@@ -8,6 +8,6 @@ import { Component, Input } from '@angular/core';
   styleUrl: './revue-item.component.scss'
 })
 export class RevueItemComponent {
-  @Input() revue: any;
+  @Input() revue:any;
 
 }
