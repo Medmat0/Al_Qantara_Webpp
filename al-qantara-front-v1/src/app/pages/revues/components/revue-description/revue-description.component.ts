@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { RevueService } from '../../../../member/services/revues.service';
+import { Revue } from "../../../../shared/models/revue";
 
 @Component({
   selector: 'app-revue-description',
@@ -10,37 +11,40 @@ import { RevueService } from '../../../../member/services/revues.service';
   styleUrls: ['./revue-description.component.css']
 })
 export class RevueDescriptionComponent implements OnInit {
-  revueId: number | null = null;
   revueService = inject(RevueService);
-  // Placeholder for revue img, replace later on
-  revueImg = null;
-  revueTitle: string = "Title";
-  revueDescription: string = "Description";
+  revue = new Revue('', 0, '', '', 0);
+  dateRegex = /\d{4}-(\d{2})-(\d{2})/;
+
 
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    // Subscribe to route parameter changes
     this.route.paramMap.subscribe((paramMap) => {
-      this.revueId = Number(paramMap.get('id'));
-      if (this.revueId) {
-        this.fetchRevueDetails(this.revueId);
+      this.revue.id = Number(paramMap.get('id'));
+      if (this.revue.id) {
+        this.fetchRevueDetails(this.revue.id);
       }
     });
   }
 
   private fetchRevueDetails(id: number): void {
     this.revueService.getRevueById(id).subscribe({
-      next: (response: { img: null; title: string; description: string }) => {
+      next: (response: { fichier: string; title: string; datePublication: string; description: string; createdBy: number }) => {
         // Handle successful response
         console.log('Revue fetched successfully:', response);
-        // Update when API is updated
-        // this.revueImg = response.img;
-        this.revueTitle = response.title;
-        this.revueDescription = response.description;
+        const match = response.datePublication.match(this.dateRegex);
+        if (match) {
+          // Format date as MM-DD
+          this.revue.datePublication = `${match[1]}-${match[2]}`;
+        } else {
+          console.error('Date format is incorrect:', response.datePublication);
+        }
+        // Update other fields
+        this.revue.titre = response.title;
+        this.revue.fichier = response.fichier;
+        this.revue.createdBy = response.createdBy;
       },
       error: (error: any) => {
-        // Handle error
         console.error('Error fetching revue:', error);
       }
     });
