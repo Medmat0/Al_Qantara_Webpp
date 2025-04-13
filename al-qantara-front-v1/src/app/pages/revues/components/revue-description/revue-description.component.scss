@@ -1,0 +1,62 @@
+/* Center the container in the screen */
+div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  text-align: center;
+  background-color: #f9f9f9;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Style the SVG */
+svg {
+  margin-bottom: 1rem;
+  fill: #333;
+}
+
+/* Headings */
+h1 {
+  font-size: 1.8rem;
+  color: #a21212;
+  margin-bottom: 0.5rem;
+}
+
+h2 {
+  font-size: 1.4rem;
+  margin-top: 1.5rem;
+  color: #444;
+}
+
+h3 {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+/* Paragraphs */
+p {
+  max-width: 600px;
+  color: #000000;
+  line-height: 1.6;
+  margin: 0.5rem 0;
+}
+
+/* Button styling */
+button {
+  margin-top: 2rem;
+  padding: 0.6rem 1.2rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+button:hover {
+  background-color: #0056b3;
+}

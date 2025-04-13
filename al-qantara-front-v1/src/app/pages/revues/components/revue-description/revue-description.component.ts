@@ -8,7 +8,7 @@ import { Revue } from "../../../../shared/models/revue";
   imports: [],
   templateUrl: './revue-description.component.html',
   standalone: true,
-  styleUrls: ['./revue-description.component.css']
+  styleUrls: ['./revue-description.component.scss']
 })
 export class RevueDescriptionComponent implements OnInit {
   revueService = inject(RevueService);
@@ -29,7 +29,7 @@ export class RevueDescriptionComponent implements OnInit {
 
   private fetchRevueDetails(id: number): void {
     this.revueService.getRevueById(id).subscribe({
-      next: (response: { fichier: string; title: string; datePublication: string; description: string; createdBy: number }) => {
+      next: (response: { fichier: string; titre: string; datePublication: string; description: string; createdBy: number }) => {
         // Handle successful response
         console.log('Revue fetched successfully:', response);
         const match = response.datePublication.match(this.dateRegex);
@@ -40,13 +40,24 @@ export class RevueDescriptionComponent implements OnInit {
           console.error('Date format is incorrect:', response.datePublication);
         }
         // Update other fields
-        this.revue.titre = response.title;
+        this.revue.titre = response.titre;
+        console.log('Revue title:', this.revue.titre);
         this.revue.fichier = response.fichier;
+        console.log('Revue file:', this.revue.fichier);
         this.revue.createdBy = response.createdBy;
+        console.log('Revue created by:', this.revue.createdBy);
       },
       error: (error: any) => {
         console.error('Error fetching revue:', error);
       }
     });
+  }
+
+  downloadFile(): void {
+    if (this.revue.fichier) {
+      window.location.href = this.revue.fichier;
+    } else {
+      console.error('File URL is not available');
+    }
   }
 }
