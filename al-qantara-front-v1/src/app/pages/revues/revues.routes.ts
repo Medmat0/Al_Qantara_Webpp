@@ -7,6 +7,5 @@ export default [
   {path:'',component:RevuesListingComponent},
   {path:'add-revue',component:AddRevueComponent},
   // DO DYNAMIC Impl later
-  {path:'revue-description',component:RevueDescriptionComponent},
-
+  { path: 'revue-description/:id', component: RevueDescriptionComponent },
 ] as Routes;
