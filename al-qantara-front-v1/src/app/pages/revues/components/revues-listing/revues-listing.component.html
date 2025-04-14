@@ -15,9 +15,9 @@
   </div>
   <div class="revue-listing">
 
-    <span *ngFor="let revue of revues" (click)="onRevueClick(revue)">
+    <div class="revue-item-container" *ngFor="let revue of revues" (click)="onRevueClick(revue)">
       <app-revue-item [revue]="revue"></app-revue-item>
-    </span>
+    </div>
 
   </div>
   <div class="pages-number">

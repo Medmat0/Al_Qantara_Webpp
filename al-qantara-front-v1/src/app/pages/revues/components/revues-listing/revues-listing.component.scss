@@ -9,21 +9,35 @@
 }
 
 .filters-bar{
+  margin-top: 15em;
   display: flex;
   flex-direction: row;
 }
 
 .revue-listing {
   display: flex;
-  flex-wrap: wrap; /* Allows wrapping to the next row */
-  justify-content: space-between; /* Adds spacing between items */
-  gap: 1rem; /* Adds spacing between spans */
-  width: 80%; /* Adjust width as needed */
-  max-width: 1200px; /* Optional: Limit the maximum width */
+  flex-wrap: wrap;
+  justify-content: flex-start; /* aligne à gauche */
+  gap: 1rem;
+  width: 80%;
+  max-width: 1200px;
 }
 
-span {
-  flex: 1 1 calc(25% - 1rem); /* Each span takes 25% of the row minus the gap */
-  box-sizing: border-box; /* Ensures padding and border are included in width */
-  margin: 0; /* Removes default margin */
+
+.revue-item-container {
+  padding-top: 2em;
+  flex: 0 1 calc(25% - 1rem); /* '0 1' évite que ça grandisse pour combler */
+}
+
+
+@media (max-width: 768px) {
+  .filters-bar{
+    margin-top: 55em;
+  }
+
+  .revue-listing {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
 }
