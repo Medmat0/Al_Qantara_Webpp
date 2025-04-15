@@ -72,8 +72,14 @@ const login = asyncHandler(async (req, res, next) => {
     httpOnly: true,
   });
 
+  res.cookie("accessToken", accessToken, {
+    httpOnly: true,
+    maxAge: 120 * 24 * 60 * 60 * 1000, 
+  });
+
+
   // Réponse avec le user et l'access token
-  res.status(200).json({ utilisateur, token: accessToken });
+  res.status(200).json({ utilisateur});
 });
 
 export { login };
