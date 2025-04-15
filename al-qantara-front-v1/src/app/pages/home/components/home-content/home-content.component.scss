@@ -39,13 +39,17 @@
   margin-left: 10%;
 }
 .text-container{
-  font-family: Cormorant Garamond, serif;
-  font-weight: bolder;
+  font-family: "Mulish","sans-serif";
+  font-size: 1.25em;
   color: #3a0706;
   text-align: justify;
 }
 
-
+.title-introduction{
+  margin-left: 10%;
+  font-family: Cormorant Garamond, serif;
+  font-size: 2.5em
+}
 
 .right-image-container{
   margin-left: 5%;
@@ -66,6 +70,41 @@
   margin: 50px 5% 2.5%;
 }
 
+.fonctionnalites-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  flex-direction: row;
+  padding: 50px 5% 2.5%;
+  background-color: #fff0eb;
+}
+
+.fonctionnalite{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1em;
+  margin: 0 1.5%;
+  background-color: white;
+  padding: 30px 20px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+}
+
+.done{
+ cursor: pointer;
+}
+
+.not-finished{
+  cursor: not-allowed;
+}
+
+.fonctionnalite:hover {
+  transform: translateY(-5px);
+}
 
 @media (max-width: 768px) {
   .right-image-container, .left-image-container {
@@ -77,6 +116,30 @@
     margin-top: 1em;
   }
 
+  .fonctionnalites-container {
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .fonctionnalite {
+
+    width: 40%;
+    max-width: 40%;
+  }
+
+  .fonctionnalite svg {
+    width: 50px;
+    height: 50px;
+  }
+
+    .fonctionnalite h3 {
+        font-size: 0.75em;
+    }
+
+    .fonctionnalite p {
+      font-size: 0.75em;
+    }
 
   .right-image-container .image-container img,
   .left-image-container .image-container img {
