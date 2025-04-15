@@ -1,62 +1,50 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap');
-
-form{
-  margin-top: 100px;
-}
-
-
-p{
-  font-family: "Mulish", sans-serif;
-}
-
-.message-container textarea {
+.request-form {
   display: flex;
-  width: 20em;
+  flex-direction: column;
+  gap: 1.5rem;
+  font-family: 'Mulish', sans-serif;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.form-group {
+  display: flex;
   flex-direction: column;
 
+  label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+
+  input,
+  textarea {
+    padding: 0.75rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+
+    &:focus {
+      outline: none;
+      border-color: #9e2e2c;
+      box-shadow: 0 0 0 2px rgba(158, 46, 44, 0.15);
+    }
+  }
 }
 
-.message-container button {
-  backface-visibility: hidden;
+button {
+  padding: 0.75rem;
+  background-color: #9e2e2c;
+  color: white;
+  border: none;
   border-radius: 6px;
-  border-width: 0;
-  box-shadow: rgba(50, 50, 93, .1) 0 0 0 1px inset, rgba(50, 50, 93, .1) 0 2px 5px 0, rgba(0, 0, 0, .07) 0 1px 1px 0;
-  box-sizing: border-box;
-  color: #fff;
-  background-color: #3a0706;
+  font-size: 1rem;
   cursor: pointer;
-  font-family: -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Ubuntu, sans-serif;
-  font-size: 90%;
-  height: 44px;
-  width: 10em;
-  line-height: 1.15;
-  margin: 12px 0 0;
-  outline: none;
-  overflow: hidden;
-  padding: 0 25px;
-  position: relative;
-  text-align: center;
-  text-transform: none;
-  transform: translateZ(0);
-  transition: all .2s, box-shadow .08s ease-in;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  margin-right: 1em;
-}
+  transition: background-color 0.3s;
 
-@media (max-width: 768px) {
-  form{
-    margin-top: 10px;
-  }
-  .contacts-container {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .left-container-contacts, .right-container_form {
-    flex: none;
-    width: 100%;
+  &:hover {
+    background-color: #7d1f1d;
   }
 }

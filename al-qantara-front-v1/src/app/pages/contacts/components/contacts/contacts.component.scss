@@ -1,68 +1,68 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&display=swap');
-
-
 .contacts-container {
-  margin-left: 30px;
   display: flex;
   flex-direction: row;
-  gap: 1rem;
-  font-family: Cormorant Garamond, serif;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 4rem 2rem;
+  background-color: #f9f9f9;
+  gap: 2rem;
+  flex-wrap: wrap;
 }
 
-.contacts-container p {
-}
-
-
-.left-container-contacts h1{
-
-  font-family: Cormorant Garamond, serif;
-}
-.left-container-contacts{
-
-  font-family: "Mulish", sans-serif;
-}
-
-.social-media-Instagram{
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-.social-media-Instagram h3, .social-media-Linkedin h3{
-  color: #9e2e2c;
-  cursor: pointer;
-  text-decoration: underline;
-}
-
-.social-media-Instagram img{
-  width: 30px;
-  height: 30px;
-  margin-right: 5px;
-}
-
-.social-media-Linkedin{
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-.social-media-Linkedin img{
-  width: 30px;
-  height: 30px;
-  margin-right: 5px;
-}
-
-.left-container-contacts, .right-container_form {
+.left-container-contacts {
   flex: 1;
+  font-family: 'Mulish', sans-serif;
+
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+    color: #444;
+  }
+}
+
+.social-media-Instagram,
+.social-media-Linkedin {
+  display: flex;
+  align-items: center;
+  margin-top: 1rem;
+
+  img {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+  }
+
+  h3 {
+    color: #9e2e2c;
+    cursor: pointer;
+    text-decoration: underline;
+    font-weight: 500;
+    font-size: 1.1rem;
+  }
+}
+
+.right-container_form {
+  flex: 1;
+  display: flex;
+  justify-content: center;
 }
 
 @media (max-width: 768px) {
   .contacts-container {
     flex-direction: column;
     align-items: center;
+    padding: 2rem 1rem;
   }
 
-  .left-container-contacts, .right-container_form {
-    flex: none;
+  .left-container-contacts,
+  .right-container_form {
     width: 100%;
+    text-align: center;
   }
 }
