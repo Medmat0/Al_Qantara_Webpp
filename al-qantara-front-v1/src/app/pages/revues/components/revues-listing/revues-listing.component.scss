@@ -1,0 +1,43 @@
+
+.revues-main-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* Centers the content vertically */
+  height: 50vh;
+  width: 100%;
+}
+
+.filters-bar{
+  margin-top: 15em;
+  display: flex;
+  flex-direction: row;
+}
+
+.revue-listing {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start; /* aligne à gauche */
+  gap: 1rem;
+  width: 80%;
+  max-width: 1200px;
+}
+
+
+.revue-item-container {
+  padding-top: 2em;
+  flex: 0 1 calc(25% - 1rem); /* '0 1' évite que ça grandisse pour combler */
+}
+
+
+@media (max-width: 768px) {
+  .filters-bar{
+    margin-top: 55em;
+  }
+
+  .revue-listing {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+}

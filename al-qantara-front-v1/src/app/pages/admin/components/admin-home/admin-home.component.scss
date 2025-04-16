@@ -1,0 +1,22 @@
+.admin-content {
+  margin-left: 250px; 
+  padding: 2rem;
+  padding-top: 100px; 
+  font-family: 'Mulish', sans-serif;
+
+  h1 {
+    font-size: 2rem;
+    color: #9e2e2c;
+  }
+
+  p {
+    font-size: 1.1rem;
+    color: #444;
+  }
+}
+.iframe-container {
+  width: 100%;
+  height: calc(100vh - 100px); 
+  border: none;
+}
+

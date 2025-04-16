@@ -1,0 +1,171 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&display=swap');
+
+
+.home-img{
+  position: relative;
+  width: 100%;
+  height: auto;
+
+}
+
+.home-img img {
+  opacity: 0.8;
+  width: 100%;
+  height: auto;
+  filter: blur(0.5px);
+
+}
+
+.content-in_img{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #000000;
+  font-family: Cormorant Garamond, serif;
+  font-weight: bolder;
+  font-size: 30px;
+}
+
+.image-container img {
+  flex: 1;
+  width: 80%;
+  height: auto;
+  max-width: 900px;
+
+}
+.right-image-container .image-container img {
+  margin-left: 10%;
+}
+.text-container{
+  font-family: "Mulish","sans-serif";
+  font-size: 1.25em;
+  color: #3a0706;
+  text-align: justify;
+}
+
+.title-introduction{
+  margin-left: 10%;
+  font-family: Cormorant Garamond, serif;
+  font-size: 2.5em
+}
+
+.right-image-container{
+  margin-left: 5%;
+  margin-right: 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 50px;
+  flex-direction: row;
+}
+
+
+.left-image-container{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row-reverse;
+  margin: 50px 5% 2.5%;
+}
+
+.fonctionnalites-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  flex-direction: row;
+  padding: 50px 5% 2.5%;
+  background-color: #fff0eb;
+}
+
+.fonctionnalite{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1em;
+  margin: 0 1.5%;
+  background-color: white;
+  padding: 30px 20px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+}
+
+.done{
+ cursor: pointer;
+}
+
+.not-finished{
+  cursor: not-allowed;
+}
+
+.fonctionnalite:hover {
+  transform: translateY(-5px);
+}
+
+@media (max-width: 768px) {
+  .right-image-container, .left-image-container {
+    flex-direction: column-reverse;
+    align-items: center;
+  }
+
+  .home-img img{
+    margin-top: 1em;
+  }
+
+  .fonctionnalites-container {
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .fonctionnalite {
+
+    width: 40%;
+    max-width: 40%;
+  }
+
+  .fonctionnalite svg {
+    width: 50px;
+    height: 50px;
+  }
+
+    .fonctionnalite h3 {
+        font-size: 0.75em;
+    }
+
+    .fonctionnalite p {
+      font-size: 0.75em;
+    }
+
+  .right-image-container .image-container img,
+  .left-image-container .image-container img {
+    width: 80%;
+    margin-left: 10%;
+    max-width: 600px;
+  }
+
+  .text-container {
+    max-width: 90%;
+    font-size: 14px;
+  }
+
+  .content-in_img h2{
+    font-size: 22px;
+  }
+
+  .content-in_img h3{
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .text-container {
+    font-size: 12px;
+  }
+
+
+}
