@@ -6,7 +6,11 @@ import bodyParser from "body-parser";
 const PORT = process.env.PORT || 3000;
 const app = express();
 
-app.use(cors());   
+app.use(cors({
+
+  origin: "http://localhost:4200",
+  credentials: true,
+}));
 app.use(bodyParser.json()); 
 app.use(express.json());
 

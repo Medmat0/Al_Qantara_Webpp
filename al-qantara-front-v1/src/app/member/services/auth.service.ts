@@ -20,11 +20,10 @@ export class AuthService {
 
   login(email: string | null | undefined, password: string | null | undefined): Observable<any> {
     const body = { email, password };
-    return this.http.post(`${this.apiUrl}/login`, body).pipe(
-      tap((response: any) => {
-        if (response && response.token) {
-          // Store the JWT token and user information in local storage
-          localStorage.setItem('auth_token', response.token);
+    return this.http.post(`${this.apiUrl}/login`, body,{
+      withCredentials:true //envoi des credentials et reception cookies
+    }).pipe(tap((response: any) => {
+        if (response.utilisateur) {
           localStorage.setItem('user', JSON.stringify(response.utilisateur));
           console.log('Login successful:', response);
           this.authStatusSubject.next(true);
@@ -43,11 +42,10 @@ export class AuthService {
     const body = { nom, prenom, email, password, role };
     return this.http.post(`${this.apiUrl}/register`, body).pipe(
       tap((response: any) => {
-        if (response && response.token) {
+        if (response) {
           //if registration succesful, user should verify their email before being able their account
 
           console.log('Registration successful:', response);
-          this.authStatusSubject.next(true);
         }
       }),
       catchError((error) => {
@@ -59,9 +57,7 @@ export class AuthService {
 
   logout(): void {
     // Remove the JWT token and user information from local storage
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('user');
-    console.log('Logout successful');
+    // TODO: implement logout logic
     this.authStatusSubject.next(false);
     this.router.navigate(['']).then(r => console.log(r));
   }
