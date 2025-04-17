@@ -4,3 +4,4 @@ export { registerUser } from "./registerUser.js";
 export {verifyEmail} from "./emailverify.js"
 export {forgotPassword} from "./forgotpassword.js"
 export {changePassword} from "./changepassword.js"
+export { checkAuthStatus } from "./authCheck.js";

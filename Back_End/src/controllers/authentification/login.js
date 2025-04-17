@@ -12,7 +12,7 @@ const prisma = new PrismaClient();
 /**
  * @desc    User type email and password to login
  * @method  post
- * @route   /login
+ * @route   /auth/login
  * @access  public
  */
 const login = asyncHandler(async (req, res, next) => {
@@ -74,10 +74,12 @@ const login = asyncHandler(async (req, res, next) => {
   });
 
   res.cookie("accessToken", accessToken, {
-    httpOnly: true,
+    maxAge: 15 * 60 * 1000,
     // secure: true, décommenter lorsque l'application est en production
-    maxAge: 120 * 24 * 60 * 60 * 1000, 
+    httpOnly: true,
   });
+
+
 
 
   // Réponse avec le user et l'access token

@@ -24,7 +24,9 @@ export class AuthService {
       withCredentials:true //envoi des credentials et reception cookies
     }).pipe(tap((response: any) => {
         if (response.utilisateur) {
+
           localStorage.setItem('user', JSON.stringify(response.utilisateur));
+
           console.log('Login successful:', response);
           this.authStatusSubject.next(true);
         }
@@ -35,6 +37,26 @@ export class AuthService {
       })
     );
   }
+
+  checkAuthStatus(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/auth-check`, {
+      withCredentials: true //envoi des credentials et reception cookies
+    }).pipe(
+      tap((response: any) => {
+        if (response && response.authenticated) {
+          localStorage.setItem('user', JSON.stringify(response.utilisateur));
+          this.authStatusSubject.next(true);
+        } else {
+          this.authStatusSubject.next(false);
+        }
+      }),
+      catchError((error) => {
+        console.error('Error checking authentication status', error);
+        return throwError(() => new Error('Error checking authentication status'));
+      })
+    );
+  }
+
   // Register a new user BASIC MEMBER SO BASE ROLE IS USER -----------------------------------------------------------
   register(nom: string | null | undefined, prenom: string | null | undefined, email: string | null | undefined, password: string | null | undefined): Observable<any> {
     // BY DEFAULT ROLE IS USER, IF OTHER ROLE WANTED, LIKE  ADMIN GO THROUGH ADMIN PAGE TO CHANGE ROLE

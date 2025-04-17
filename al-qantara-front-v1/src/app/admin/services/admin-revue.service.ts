@@ -25,12 +25,8 @@ export class adminRevueService{
     formData.append('document', document);
     formData.append('mois', mois);
     formData.append('annee', annee);
-    const headers = {
-      Authorization:'Bearer '
-    };
 
     return this.http.post(this.apiUrl, formData, {
-      headers: headers,
       withCredentials: true,
       reportProgress: true,
       observe: 'events'
