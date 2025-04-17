@@ -1,14 +1,19 @@
 import express from "express";
 import authRoutes from "./src/routes/auth.routes.js";  
-import revuesRoutes from './src/routes/revues.routes.js' 
+import revuesRoutes from './src/routes/revues.routes.js';
 import cors from "cors";
+
+import cookieParser from "cookie-parser";
+
+
 import bodyParser from "body-parser";
+import helmet from "helmet";
 const PORT = process.env.PORT || 3000;
 const app = express();
 
 // donne une sécurité supplémentaire à l'application backend
-const helmet = require("helmet");
 app.use(helmet());
+app.use(cookieParser());
 // A voir si on en a besoin
 /*
 // Configure une CSP personnalisée
@@ -29,9 +34,11 @@ app.use(
  */
 
 app.use(cors({
-
+  // Autorise les requêtes CORS seulement depuis le frontend
   origin: "http://localhost:4200",
   credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 }));
 app.use(bodyParser.json()); 
 app.use(express.json());

@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { RevueService } from '../../../../member/services/revues.service';
+import { RevueService } from '../../../../member/services/revue.service';
 import { Revue } from "../../../../shared/models/revue";
 
 @Component({

@@ -69,11 +69,13 @@ const login = asyncHandler(async (req, res, next) => {
   // Stockage du refresh token dans un cookie
   res.cookie("refreshToken", refreshToken, {
     maxAge: 90 * 24 * 60 * 60 * 1000,
+    // secure: true, décommenter lorsque l'application est en production
     httpOnly: true,
   });
 
   res.cookie("accessToken", accessToken, {
     httpOnly: true,
+    // secure: true, décommenter lorsque l'application est en production
     maxAge: 120 * 24 * 60 * 60 * 1000, 
   });
 
