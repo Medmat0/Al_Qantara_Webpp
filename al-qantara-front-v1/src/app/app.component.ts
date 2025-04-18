@@ -16,7 +16,7 @@ import { AuthService } from './member/services/auth.service';
   standalone: true
 })
 export class AppComponent implements OnInit {
-  title = 'al-qantara-front-v1-root';
+  title = 'Al Qantara';
 
   constructor(private authService: AuthService) {}
 

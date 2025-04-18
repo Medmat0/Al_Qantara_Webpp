@@ -12,6 +12,7 @@ export class AuthService {
   private apiUrl = `${API_URL}/auth`; // URL of the authentication API
   private authStatusSubject = new BehaviorSubject<boolean>(this.isAuthenticated());
   authStatus$ = this.authStatusSubject.asObservable();
+  errorMessage: string | null = null;
 
   constructor(
     private http: HttpClient,
@@ -32,6 +33,7 @@ export class AuthService {
         }
       }),
       catchError((error) => {
+        this.errorMessage = error.error.message;
         console.error('Login failed', error);
         return throwError(() => new Error('Login failed'));
       })
@@ -85,7 +87,7 @@ export class AuthService {
   // Register a new user BASIC MEMBER SO BASE ROLE IS USER -----------------------------------------------------------
   register(nom: string | null | undefined, prenom: string | null | undefined, email: string | null | undefined, password: string | null | undefined): Observable<any> {
     // BY DEFAULT ROLE IS USER, IF OTHER ROLE WANTED, LIKE  ADMIN GO THROUGH ADMIN PAGE TO CHANGE ROLE
-    const role = 'Utilisateur';
+    const role = 'USER';
     const body = { nom, prenom, email, password, role };
     return this.http.post(`${this.apiUrl}/register`, body).pipe(
       tap((response: any) => {
@@ -96,7 +98,8 @@ export class AuthService {
         }
       }),
       catchError((error) => {
-        console.error('Registration failed', error);
+        this.errorMessage = error.error.message;
+
         return throwError(() => new Error('Registration failed'));
       })
     );

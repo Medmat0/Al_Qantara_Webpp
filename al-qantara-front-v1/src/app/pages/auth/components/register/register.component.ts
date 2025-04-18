@@ -24,6 +24,7 @@ export class RegisterComponent {
   fb : FormBuilder = inject(FormBuilder);
   authService = inject(AuthService);
   router = inject(Router);
+  errorMessage: string | null = null;
 
 
 
@@ -66,6 +67,8 @@ export class RegisterComponent {
         this.router.navigate(['']).then(r => console.log(r));
       },
       error: (error) => {
+        this.errorMessage = this.authService.errorMessage;
+        console.log(this.errorMessage);
         // Handle registration error
         console.error('Registration failed', error);
       }
