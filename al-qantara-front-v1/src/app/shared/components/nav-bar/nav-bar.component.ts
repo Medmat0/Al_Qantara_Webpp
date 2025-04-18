@@ -30,23 +30,16 @@ export class NavBarComponent {
       this.showButtons = show;
     });
 
-    this.authService.checkAuthStatus().subscribe({
-      next: () => {
-        this.authService.authStatus$.subscribe((status) => {
-          this.isAuthenticated = status;
-          if (status) {
-            const user = localStorage.getItem('user');
-            if (user) {
-              this.username = JSON.parse(user).prenom;
-              this.cdr.detectChanges();
-            }
-          } else {
-            this.username = null;
-          }
-        });
-      },
-      error: (err) => {
-        console.error('Error checking auth status:', err);
+    this.authService.authStatus$.subscribe((status) => {
+      this.isAuthenticated = status;
+      if (status) {
+        const user = localStorage.getItem('user');
+        if (user) {
+          this.username = JSON.parse(user).prenom;
+          this.cdr.detectChanges();
+        }
+      } else {
+        this.username = null;
       }
     });
   }

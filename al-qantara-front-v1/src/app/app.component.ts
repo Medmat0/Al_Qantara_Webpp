@@ -23,7 +23,9 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.authService.checkAuthStatus().subscribe({
       next: () => console.log('Auth status checked successfully'),
-      error: (err) => console.error('Error checking auth status:', err)
+      error: (err) => {
+        console.warn('User is not authenticated:', err.message || err);
+      }
     });
   }
 }

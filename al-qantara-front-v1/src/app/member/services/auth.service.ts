@@ -66,7 +66,11 @@ export class AuthService {
           localStorage.setItem('user', JSON.stringify(response.utilisateur));
           console.log('User is authenticated:', response);
           this.authStatusSubject.next(true);
-        } else {
+        }else if(response && response.authenticated===false){
+          console.log('User is not authenticated:', response);
+          this.authStatusSubject.next(false);
+        }
+        else {
           this.authStatusSubject.next(false);
         }
       }),
