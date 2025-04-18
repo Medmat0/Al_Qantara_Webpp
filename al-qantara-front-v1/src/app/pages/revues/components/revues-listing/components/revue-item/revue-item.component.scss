@@ -29,6 +29,13 @@ h3{
   color: #606060;
 }
 
+@media (max-width: 607px) {
+  .revue-item{
+    padding: 10px;
+  }
+}
+
+
 @media (max-width: 768px) {
   h2{
     font-size: 1rem;
@@ -38,3 +45,5 @@ h3{
     font-size: 0.8rem;
   }
 }
+
+

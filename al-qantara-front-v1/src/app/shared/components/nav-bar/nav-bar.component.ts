@@ -4,6 +4,7 @@ import {Router, RouterLink} from '@angular/router';
 import { NgIf } from '@angular/common';
 import { NavbarService } from '../../services/navbar.service';
 import { AuthService } from '../../../member/services/auth.service';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-nav-bar',
@@ -20,7 +21,8 @@ export class NavBarComponent {
   constructor(
     private authService: AuthService,
     private navbarService: NavbarService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -36,6 +38,7 @@ export class NavBarComponent {
             const user = localStorage.getItem('user');
             if (user) {
               this.username = JSON.parse(user).prenom;
+              this.cdr.detectChanges();
             }
           } else {
             this.username = null;
