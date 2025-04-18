@@ -25,7 +25,7 @@ export class AuthService {
     }).pipe(tap((response: any) => {
         if (response.utilisateur) {
 
-          localStorage.setItem('user', JSON.stringify(response.utilisateur));
+          localStorage.setItem('utilisateur', JSON.stringify(response.utilisateur));
 
           console.log('Login successful:', response);
           this.authStatusSubject.next(true);
@@ -45,7 +45,7 @@ export class AuthService {
     }).pipe(
       tap(() => {
         console.log('test');
-        localStorage.removeItem('user');
+        localStorage.removeItem('utilisateur');
         this.authStatusSubject.next(false);
         console.log('Logout successful');
       }),
@@ -63,19 +63,20 @@ export class AuthService {
     }).pipe(
       tap((response: any) => {
         if (response && response.authenticated===true) {
-          localStorage.setItem('user', JSON.stringify(response.utilisateur));
+          localStorage.setItem('utilisateur', JSON.stringify(response.utilisateur));
           console.log('User is authenticated:', response);
           this.authStatusSubject.next(true);
-        }else if(response && response.authenticated===false){
-          console.log('User is not authenticated:', response);
-          this.authStatusSubject.next(false);
         }
         else {
+          console.log('User is not authenticated:', response);
           this.authStatusSubject.next(false);
+          localStorage.removeItem('utilisateur'); // Clear user data if not authenticated
         }
       }),
       catchError((error) => {
         console.error('Error checking authentication status', error);
+        this.authStatusSubject.next(false);
+        localStorage.removeItem('utilisateur');
         return throwError(() => new Error('Error checking authentication status'));
       })
     );
@@ -84,7 +85,7 @@ export class AuthService {
   // Register a new user BASIC MEMBER SO BASE ROLE IS USER -----------------------------------------------------------
   register(nom: string | null | undefined, prenom: string | null | undefined, email: string | null | undefined, password: string | null | undefined): Observable<any> {
     // BY DEFAULT ROLE IS USER, IF OTHER ROLE WANTED, LIKE  ADMIN GO THROUGH ADMIN PAGE TO CHANGE ROLE
-    const role = 'USER';
+    const role = 'Utilisateur';
     const body = { nom, prenom, email, password, role };
     return this.http.post(`${this.apiUrl}/register`, body).pipe(
       tap((response: any) => {

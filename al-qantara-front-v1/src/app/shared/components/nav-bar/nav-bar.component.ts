@@ -33,7 +33,7 @@ export class NavBarComponent {
     this.authService.authStatus$.subscribe((status) => {
       this.isAuthenticated = status;
       if (status) {
-        const user = localStorage.getItem('user');
+        const user = localStorage.getItem('utilisateur');
         if (user) {
           this.username = JSON.parse(user).prenom;
           this.cdr.detectChanges();
@@ -47,7 +47,6 @@ export class NavBarComponent {
   logout() {
     this.authService.logout().subscribe({
       next: () => {
-        localStorage.removeItem('user');
         this.router.navigate(['']);
       },
       error: (err) => {
