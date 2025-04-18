@@ -38,13 +38,33 @@ export class AuthService {
     );
   }
 
+
+  logout(): Observable<any> {
+    return this.http.post(`${this.apiUrl}/logout`, {}, {
+      withCredentials: true //envoi des credentials et reception cookies
+    }).pipe(
+      tap(() => {
+        console.log('test');
+        localStorage.removeItem('user');
+        this.authStatusSubject.next(false);
+        console.log('Logout successful');
+      }),
+      catchError((error) => {
+        console.error('Logout failed', error);
+        return throwError(() => new Error('Logout failed'));
+      })
+    );
+  }
+
+
   checkAuthStatus(): Observable<any> {
     return this.http.get(`${this.apiUrl}/auth-check`, {
       withCredentials: true //envoi des credentials et reception cookies
     }).pipe(
       tap((response: any) => {
-        if (response && response.authenticated) {
+        if (response && response.authenticated===true) {
           localStorage.setItem('user', JSON.stringify(response.utilisateur));
+          console.log('User is authenticated:', response);
           this.authStatusSubject.next(true);
         } else {
           this.authStatusSubject.next(false);
@@ -77,12 +97,6 @@ export class AuthService {
     );
   }
 
-  logout(): void {
-    // Remove the JWT token and user information from local storage
-    // TODO: implement logout logic
-    this.authStatusSubject.next(false);
-    this.router.navigate(['']).then(r => console.log(r));
-  }
 
   //used for dynamic front end like login register and logout buttons in navbar
   isAuthenticated(): boolean {

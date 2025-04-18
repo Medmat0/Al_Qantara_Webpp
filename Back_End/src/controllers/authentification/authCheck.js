@@ -27,15 +27,9 @@ export const checkAuthStatus = asyncHandler(async (req, res) => {
         if (!user) {
             return res.status(401).json({ authenticated: false, message: "User not found" });
         }
-
         res.status(200).json({
             authenticated: true,
-            utilisateur: {
-                id: user.id,
-                email: user.email,
-                nom: user.nom,
-                role: user.role,
-            },
+            utilisateur: user,
         });
     } catch (error) {
         res.status(401).json({ authenticated: false, message: "Invalid or expired token" });
