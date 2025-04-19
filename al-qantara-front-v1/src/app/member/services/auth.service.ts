@@ -10,7 +10,7 @@ import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
 })
 export class AuthService {
   private apiUrl = `${API_URL}/auth`; // URL of the authentication API
-  private authStatusSubject = new BehaviorSubject<boolean>(this.isAuthenticated());
+  private authStatusSubject = new BehaviorSubject<boolean>(false);
   authStatus$ = this.authStatusSubject.asObservable();
   errorMessage: string | null = null;
 
@@ -46,7 +46,6 @@ export class AuthService {
       withCredentials: true //envoi des credentials et reception cookies
     }).pipe(
       tap(() => {
-        console.log('test');
         localStorage.removeItem('utilisateur');
         this.authStatusSubject.next(false);
         console.log('Logout successful');
@@ -84,6 +83,23 @@ export class AuthService {
     );
   }
 
+  refreshAccessToken(): Observable<any> {
+    return this.http.post(`${this.apiUrl}/refresh-accesstoken`, {}, {
+      withCredentials: true //envoi des credentials et reception cookies
+    }).pipe(
+      tap((response: any) => {
+        if (response && response.utilisateur) {
+          localStorage.setItem('utilisateur', JSON.stringify(response.utilisateur));
+          console.log('Token refreshed successfully:', response);
+        }
+      }),
+      catchError((error) => {
+        console.error('Error refreshing token', error);
+        return throwError(() => new Error('Error refreshing token'));
+      })
+    );
+  }
+
   // Register a new user BASIC MEMBER SO BASE ROLE IS USER -----------------------------------------------------------
   register(nom: string | null | undefined, prenom: string | null | undefined, email: string | null | undefined, password: string | null | undefined): Observable<any> {
     // BY DEFAULT ROLE IS USER, IF OTHER ROLE WANTED, LIKE  ADMIN GO THROUGH ADMIN PAGE TO CHANGE ROLE
@@ -106,10 +122,7 @@ export class AuthService {
   }
 
 
-  //used for dynamic front end like login register and logout buttons in navbar
-  isAuthenticated(): boolean {
-    return !!localStorage.getItem('auth_token');
-  }
+
 
   sendVerificationCode(email: string | null | undefined): Observable<any> {
     const body = { email };
