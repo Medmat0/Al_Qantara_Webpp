@@ -17,6 +17,8 @@ const getRevueById = async (req, res) => {
         select: {
           titre: true,
           id: true,
+          nombreVues : true,
+          nombreTelechargements : true,
           fichier: true,
           datePublication: true,
           createdBy: true,

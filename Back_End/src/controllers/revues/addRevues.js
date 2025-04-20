@@ -29,7 +29,7 @@ const addRevue = async (req, res) => {
 
     console.log(req.file.path);
     const uploadResult = await cloudinary.uploader.upload(req.file.path, {
-      resource_type: "raw",
+      resource_type: "auto",
       folder: "revues",
       format: "pdf",
       access_mode: "public"  
