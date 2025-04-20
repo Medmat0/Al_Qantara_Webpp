@@ -3,20 +3,20 @@
     <h2>Ajouter une Revue</h2>
     <p class="description">Remplissez les informations ci-dessous pour publier une revue</p>
 
-    <form>
+    <form [formGroup]="addRevueForm" (ngSubmit)="onSubmit()">
       <div class="form-group">
         <label for="titre">Titre</label>
-        <input id="titre" type="text" placeholder="Titre de la revue" />
+        <input id="titre" type="text" formControlName="titre" placeholder="Titre de la revue" />
       </div>
 
       <div class="form-group">
         <label for="description">Description</label>
-        <input id="description" type="text" placeholder="Description de la revue" />
+        <input id="description" type="text" formControlName="description" placeholder="Description de la revue" />
       </div>
 
       <div class="form-group">
         <label for="mois">Mois</label>
-        <select id="mois" required>
+        <select id="mois" formControlName="mois" required>
           <option value="">-- Sélectionnez un mois --</option>
           <option value="Janvier">Janvier</option>
           <option value="Février">Février</option>
@@ -35,15 +35,15 @@
 
       <div class="form-group">
         <label for="annee">Année</label>
-        <input id="annee" type="text" placeholder="Ex : 2025" />
+        <input id="annee" type="text" formControlName="annee" placeholder="Ex : 2025" />
       </div>
 
       <div class="form-group">
         <label for="document">Document</label>
-        <input id="document" type="file" />
+        <input id="document" type="file" (change)="onFileChange($event)" />
       </div>
 
-      <button type="submit">Ajouter la revue</button>
+      <button type="submit" [disabled]="addRevueForm.invalid">Ajouter la revue</button>
     </form>
   </div>
 </div>

@@ -20,6 +20,7 @@ export class LoginComponent {
   fb : FormBuilder = inject(FormBuilder);
   authService = inject(AuthService);
   router = inject(Router);
+  errorMessage: string | null = null;
 
   loginForm = this.fb.group({
     email: ['', {
@@ -47,6 +48,8 @@ export class LoginComponent {
         this.router.navigate(['']).then(r => console.log(r));
       },
       error: (error) => {
+        this.errorMessage = this.authService.errorMessage;
+        console.log(this.errorMessage);
         // Handle login error
         console.error('Login failed', error);
       }

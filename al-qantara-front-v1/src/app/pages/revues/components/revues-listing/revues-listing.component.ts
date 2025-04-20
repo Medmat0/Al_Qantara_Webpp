@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { RevueService } from '../../../../member/services/revues.service';
+import { RevueService } from '../../../../member/services/revue.service';
 import {Router, RouterLink} from '@angular/router';
 import {NgForOf} from '@angular/common';
 import {RevueItemComponent} from './components/revue-item/revue-item.component';

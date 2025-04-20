@@ -3,16 +3,19 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center; /* Centers the content vertically */
-  height: 50vh;
+  justify-content: flex-start;
   width: 100%;
+  padding-top: 8em; /* remplace le margin-top de .filters-bar */
 }
 
-.filters-bar{
-  margin-top: 15em;
+.filters-bar {
+  margin-top: 0;
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1em;
 }
+
 
 .revue-listing {
   display: flex;
@@ -30,14 +33,49 @@
 }
 
 
-@media (max-width: 768px) {
-  .filters-bar{
-    margin-top: 55em;
-  }
+@media (max-width: 380px) {
 
   .revue-listing {
     flex-direction: column;
     align-items: center;
     width: 100%;
   }
+
+  .revues-main-container {
+    padding-top: 2em;
+  }
+
+
 }
+
+
+@media (max-width: 607px) {
+
+  .revue-listing {
+    align-items: center;
+    width: 100%;
+  }
+
+  .revues-main-container {
+    padding-top: 2em;
+  }
+
+
+}
+
+
+
+@media (max-width: 768px) {
+
+  .revue-listing {
+    align-items: center;
+    width: 100%;
+  }
+
+  .revues-main-container {
+    padding-top: 2em;
+  }
+
+
+}
+
