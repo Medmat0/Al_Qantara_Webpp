@@ -5,7 +5,7 @@
   align-items: center;
   justify-content: flex-start;
   width: 100%;
-  padding-top: 8em; /* remplace le margin-top de .filters-bar */
+  padding-top: 8em;
 }
 
 .filters-bar {
@@ -20,7 +20,7 @@
 .revue-listing {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start; /* aligne à gauche */
+  justify-content: flex-start;
   gap: 1rem;
   width: 80%;
   max-width: 1200px;
@@ -29,8 +29,8 @@
 
 .revue-item-container {
   padding-top: 2em;
-  flex: 1 1 100%; /* Force à prendre toute la ligne si trop étroit */
-  min-width: 500px; /* à ajuster selon ton design */
+  flex: 1 1 100%;
+  min-width: 500px;
 }
 
 
