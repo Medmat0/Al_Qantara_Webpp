@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import {Component, Input} from '@angular/core';
 
 @Component({
   selector: 'app-revue-item',
@@ -9,5 +9,10 @@ import { Component, Input } from '@angular/core';
 })
 export class RevueItemComponent {
   @Input() revue:any;
+
+  getPreviewUrl(pdfUrl: string): string {
+    const onePage = pdfUrl.replace('/upload/', '/upload/pg_1/');
+    return onePage.replace('.pdf', '.jpg');
+  }
 
 }

@@ -42,7 +42,7 @@ export class RevueDescriptionComponent implements OnInit {
         // Update other fields
         this.revue.titre = response.titre;
         console.log('Revue title:', this.revue.titre);
-        this.revue.fichier = response.fichier;
+        this.revue.fichier = this.getPreviewUrl(response.fichier);
         console.log('Revue file:', this.revue.fichier);
         this.revue.createdBy = response.createdBy;
         console.log('Revue created by:', this.revue.createdBy);
@@ -59,5 +59,10 @@ export class RevueDescriptionComponent implements OnInit {
     } else {
       console.error('File URL is not available');
     }
+  }
+
+  getPreviewUrl(pdfUrl: string): string {
+    const onePage = pdfUrl.replace('/upload/', '/upload/pg_1/');
+    return onePage.replace('.pdf', '.jpg');
   }
 }

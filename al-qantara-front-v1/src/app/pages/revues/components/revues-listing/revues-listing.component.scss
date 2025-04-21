@@ -29,7 +29,8 @@
 
 .revue-item-container {
   padding-top: 2em;
-  flex: 0 1 calc(25% - 1rem); /* '0 1' évite que ça grandisse pour combler */
+  flex: 1 1 100%; /* Force à prendre toute la ligne si trop étroit */
+  min-width: 500px; /* à ajuster selon ton design */
 }
 
 
