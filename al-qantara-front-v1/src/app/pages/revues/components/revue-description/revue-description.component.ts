@@ -42,7 +42,7 @@ export class RevueDescriptionComponent implements OnInit {
         // Update other fields
         this.revue.titre = response.titre;
         console.log('Revue title:', this.revue.titre);
-        this.revue.fichier = this.getPreviewUrl(response.fichier);
+        this.revue.fichier = response.fichier;
         console.log('Revue file:', this.revue.fichier);
         this.revue.createdBy = response.createdBy;
         console.log('Revue created by:', this.revue.createdBy);
