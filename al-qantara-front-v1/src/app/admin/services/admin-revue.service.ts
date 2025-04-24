@@ -1,4 +1,4 @@
-import {API_URL} from '../../member/utils/config';
+import {API_URL} from '../../utils/config';
 import {HttpClient} from '@angular/common/http';
 import {Router} from '@angular/router';
 import {Injectable} from '@angular/core';
@@ -11,7 +11,7 @@ import {catchError, Observable, tap, throwError} from 'rxjs';
 
 export class adminRevueService{
 
-  private apiUrl = `${API_URL}/revues/add`;
+  private readonly apiUrl = `${API_URL}/revues/add`;
 
   constructor(
     private http: HttpClient,

@@ -48,7 +48,7 @@
   justify-content: center;
   align-items: center;
   width: 50%;
-  background-color: white;
+  background-color: #f9f9f9;
 }
 
 
@@ -59,18 +59,19 @@
   margin-bottom: 20px;
 }
 
-.form-container{
+.form-container {
   display: flex;
   flex-direction: column;
-  width:50%;
+  width: 50%;
   font-weight: 100;
   max-width: 450px;
   font-size: larger;
   font-family: "Mulish", sans-serif;
   background: #ffffff;
+  margin-top: 1em;
   padding: 20px;
   border-radius: 5%;
-
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
 }
 
 .invalid {

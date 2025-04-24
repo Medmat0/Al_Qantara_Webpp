@@ -1,6 +1,6 @@
 <div class="revue-item">
 
-    <img [src]="revue.fichier" alt="Image de la revue" class="revue-image">
+    <img [src]="getPreviewUrl(revue.fichier)" alt="Image de la revue" class="revue-image">
     <h1>Titre: {{ revue.titre }}</h1>
     <h3>Date: {{ revue.datePublication }}</h3>
     <h2>Résumé</h2>

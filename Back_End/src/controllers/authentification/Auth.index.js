@@ -7,3 +7,4 @@ export {changePassword} from "./changepassword.js"
 export { checkAuthStatus } from "./authCheck.js";
 export {logout} from "./logout.js"
 export {refreshAccessToken} from "./refreshAccessToken.js"
+export {adminCheck} from "./adminCheck.js"
