@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {API_URL} from '../utils/config';
+import {API_URL} from '../../utils/config';
 import {HttpClient} from '@angular/common/http';
 import {Router} from '@angular/router';
 import {catchError, Observable, tap, throwError} from 'rxjs';
@@ -10,7 +10,7 @@ import {catchError, Observable, tap, throwError} from 'rxjs';
 })
 
 export class RevueService {
-  private apiUrl = `${API_URL}/revues`;
+  private readonly apiUrl = `${API_URL}/revues`;
   constructor(
     private http: HttpClient,
     private router: Router

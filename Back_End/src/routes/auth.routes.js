@@ -11,7 +11,7 @@ import {
     changePassword,
     checkAuthStatus,
     logout,
-    refreshAccessToken
+    refreshAccessToken, adminCheck
 } from "../controllers/authentification/Auth.index.js";
 
   
@@ -23,6 +23,7 @@ router.post("/register",registerUser)
 router.post("/login",  login);
 router.post("/logout",logout);
 router.get("/auth-check", checkAuthStatus);
+router.get("/admin-check", adminCheck);
 router.post("/refresh-accesstoken", refreshAccessToken);
 router.get("/verify/:token", verifyEmail)
 router.post("/forgotpassword", forgotPassword);
