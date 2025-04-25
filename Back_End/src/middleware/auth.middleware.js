@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import asyncHandler from "express-async-handler";
 import { verifyAccessToken } from "../utils/token.js";
-
+import { ROLES } from "../utils/role.enum.js";
 const prisma = new PrismaClient();
 
 const authMiddleware = asyncHandler(async (req, res, next) => {
@@ -24,7 +24,7 @@ const isAdmin = asyncHandler(async (req, res, next) => {
   const user = await prisma.utilisateur.findUnique({ where: { id: decodedToken.id } });
   if (!user) return res.status(403).json({ message: "User not allowed" });
 
-  if (user.role !== "ADMIN") {
+  if (user.role !== ROLES.ADMIN) {
     return res.status(403).json({ message: "You are not admin" });
   }
 

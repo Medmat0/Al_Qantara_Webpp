@@ -18,6 +18,7 @@ const addRevue = async (req, res) => {
     console.log("mois:", mois);
     console.log("annee:", annee);
     console.log("Req.file:", req.file);
+
    // stocker la description 
 
     const existingRevue = await prisma.revue.findFirst({ where: { titre } });
@@ -44,9 +45,9 @@ const addRevue = async (req, res) => {
     const nouvelleRevue = await prisma.revue.create({
       data: {
         titre,
-        //description,
-        //mois,
-        //annee: parseInt(annee),
+        description,
+        mois,
+        annee: parseInt(annee),
         fichier: uploadResult.secure_url, 
         datePublication : datePublication,
         createdBy: req.user.id,
