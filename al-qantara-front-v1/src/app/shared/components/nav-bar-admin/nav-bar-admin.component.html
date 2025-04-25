@@ -1,9 +1,9 @@
 <nav class="admin-nav">
     <h2 class="admin-logo">Al Qantara Admin</h2>
     <ul>
-      <li><a (click)="goTo('/users')">Utilisateurs</a></li>
-      <li><a (click)="goTo('/revues')">Revues</a></li>
-      <li><a (click)="goTo('/revues/add-revue')">➕ Ajouter Revue</a></li>
-      <li><a (click)="goTo('/articles')">Articles</a></li>
+      <li><a [routerLink]="['users']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Utilisateurs</a></li>
+      <li><a [routerLink]="['revues']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Revues</a></li>
+      <li><a [routerLink]="['revues/add-revue']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">➕ Ajouter Revue</a></li>
+      <li><a [routerLink]="['articles']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Articles</a></li>
     </ul>
   </nav>

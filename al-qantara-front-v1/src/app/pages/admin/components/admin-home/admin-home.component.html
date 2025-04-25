@@ -1,9 +1,5 @@
-<app-nav-bar-admin (navigateTo)="updateIframe($event)"></app-nav-bar-admin>
+<app-nav-bar-admin></app-nav-bar-admin>
 
 <div class="admin-content">
-  <iframe
-    [src]="iframeSrc | safeUrl"
-    frameborder="0"
-    class="iframe-container"
-  ></iframe>
+  <router-outlet></router-outlet>
 </div>

@@ -6,7 +6,14 @@ export default [
   {
     path: '',
     canActivate:[AdminGuard],
-    component: AdminHomeComponent
-
+    component: AdminHomeComponent,
+    
+    children: [
+      { path: 'users', loadComponent: () => import('./components/users/users.component').then(m => m.UsersComponent) },
+      { path: 'revues', loadComponent: () => import('../revues/components/revues-listing/revues-listing.component').then(m => m.RevuesListingComponent) },
+      { path: 'revues/add-revue', loadComponent: () => import('../revues/components/addRevue/add-revue.component').then(m => m.AddRevueComponent) },
+      { path: 'articles', loadComponent: () => import('./components/articles/articles.component').then(m => m.ArticlesComponent) },
+      { path: '', redirectTo: 'users', pathMatch: 'full' }
+    ]
   }
 ] as Routes;
