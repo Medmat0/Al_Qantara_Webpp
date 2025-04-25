@@ -3,6 +3,9 @@ import asyncHandler from "express-async-handler";
 import { hashPassword } from "../../utils/hashPassword.js";
 import crypto from "crypto";
 import { sendEmailToUser } from "../../utils/email.config.js";
+import {BASE_URL} from "../../utils/urls.js"
+import { ROLES } from "../../utils/roles.enum.js";
+import { STATUS } from "../../utils/status.enum.js";
 
 const prisma = new PrismaClient();
 
@@ -20,7 +23,7 @@ const registerAdmin = asyncHandler(async (req, res) => {
   if (emailExist) return res.status(400).json({ message: "Email déjà utilisé" });
 
   // Définir le rôle par défaut
-  const userRole = "ADMIN";
+  const userRole = ROLES.ADMIN;
 
   // Hasher le mot de passe
   const hashedPassword = await hashPassword(password);
@@ -34,7 +37,7 @@ const registerAdmin = asyncHandler(async (req, res) => {
       motDePasse: hashedPassword,
       role: userRole,
       dateInscription: new Date(),
-      statut: "ACTIF",
+      statut: STATUS.ACTIF,
     },
   });
 
@@ -49,7 +52,7 @@ const registerAdmin = asyncHandler(async (req, res) => {
     where: { email: user.email },
     data: { emailVerificationToken: hashedToken },
   });
-  const verifyLink = `http://localhost:3000/auth/verify/${plainVerifyToken}`; // ou remplacer par ton URL en production
+  const verifyLink = `${BASE_URL}/auth/verify/${plainVerifyToken}`; 
 
 
   // Envoi de l'email de vérification

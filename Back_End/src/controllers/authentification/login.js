@@ -7,6 +7,8 @@ import {
   createRefreshToken,
 } from "../../utils/token.js";
 import { sendEmailToUser } from "../../utils/email.config.js";
+import {BASE_URL} from "../../utils/urls.js"
+
 const prisma = new PrismaClient();
 
 /**
@@ -43,7 +45,7 @@ const login = asyncHandler(async (req, res, next) => {
       },
     });
 
-    const verifyLink = `http://localhost:3000/auth/verify/${plainVerfiyToken}`; // ou remplacer par ton URL en production
+    const verifyLink = `${BASE_URL}/auth/verify/${plainVerfiyToken}`; 
 
 
     // Envoi du mail de vérification
