@@ -1,10 +1,13 @@
 import { Routes } from '@angular/router';
 import { AdminHomeComponent } from './components/admin-home/admin-home.component';
+import {AdminGuard} from '../../member/guards/admin.guard';
 
 export default [
   {
     path: '',
+    canActivate:[AdminGuard],
     component: AdminHomeComponent,
+    
     children: [
       { path: 'users', loadComponent: () => import('./components/users/users.component').then(m => m.UsersComponent) },
       { path: 'revues', loadComponent: () => import('../revues/components/revues-listing/revues-listing.component').then(m => m.RevuesListingComponent) },

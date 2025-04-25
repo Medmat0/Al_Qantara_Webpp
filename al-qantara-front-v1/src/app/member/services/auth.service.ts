@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap, BehaviorSubject, catchError, throwError } from 'rxjs';
-import { API_URL } from '../utils/config';
+import { API_URL } from '../../utils/config';
 import { Router } from '@angular/router';
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
 
@@ -9,9 +9,10 @@ import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = `${API_URL}/auth`; // URL of the authentication API
-  private authStatusSubject = new BehaviorSubject<boolean>(this.isAuthenticated());
+  private readonly apiUrl = `${API_URL}/auth`; // URL of the authentication API
+  private authStatusSubject = new BehaviorSubject<boolean>(false);
   authStatus$ = this.authStatusSubject.asObservable();
+  errorMessage: string | null = null;
 
   constructor(
     private http: HttpClient,
@@ -20,22 +21,85 @@ export class AuthService {
 
   login(email: string | null | undefined, password: string | null | undefined): Observable<any> {
     const body = { email, password };
-    return this.http.post(`${this.apiUrl}/login`, body).pipe(
-      tap((response: any) => {
-        if (response && response.token) {
-          // Store the JWT token and user information in local storage
-          localStorage.setItem('auth_token', response.token);
-          localStorage.setItem('user', JSON.stringify(response.utilisateur));
+    return this.http.post(`${this.apiUrl}/login`, body,{
+      withCredentials:true //envoi des credentials et reception cookies
+    }).pipe(tap((response: any) => {
+        if (response.utilisateur) {
+
+          localStorage.setItem('utilisateur', JSON.stringify(response.utilisateur));
+
           console.log('Login successful:', response);
           this.authStatusSubject.next(true);
         }
       }),
       catchError((error) => {
+        this.errorMessage = error.error.message;
         console.error('Login failed', error);
         return throwError(() => new Error('Login failed'));
       })
     );
   }
+
+
+  logout(): Observable<any> {
+    return this.http.post(`${this.apiUrl}/logout`, {}, {
+      withCredentials: true //envoi des credentials et reception cookies
+    }).pipe(
+      tap(() => {
+        localStorage.removeItem('utilisateur');
+        this.authStatusSubject.next(false);
+        console.log('Logout successful');
+      }),
+      catchError((error) => {
+        console.error('Logout failed', error);
+        return throwError(() => new Error('Logout failed'));
+      })
+    );
+  }
+
+
+  checkAuthStatus(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/auth-check`, {
+      withCredentials: true //envoi des credentials et reception cookies
+    }).pipe(
+      tap((response: any) => {
+        if (response && response.authenticated===true) {
+          localStorage.setItem('utilisateur', JSON.stringify(response.utilisateur));
+          console.log('User is authenticated:', response);
+          this.authStatusSubject.next(true);
+        }
+        else {
+          console.log('User is not authenticated:', response);
+          this.authStatusSubject.next(false);
+          localStorage.removeItem('utilisateur'); // Clear user data if not authenticated
+        }
+      }),
+      catchError((error) => {
+        console.error('Error checking authentication status', error);
+        this.authStatusSubject.next(false);
+        localStorage.removeItem('utilisateur');
+        return throwError(() => new Error('Error checking authentication status'));
+      })
+    );
+  }
+
+  refreshAccessToken(): Observable<any> {
+    return this.http.post(`${this.apiUrl}/refresh-accesstoken`, {}, {
+      withCredentials: true //envoi des credentials et reception cookies
+    }).pipe(
+      tap((response: any) => {
+        if (response && response.utilisateur) {
+          localStorage.setItem('utilisateur', JSON.stringify(response.utilisateur));
+          console.log('Token refreshed successfully:', response);
+        }
+      }),
+      catchError((error) => {
+        console.error('Error refreshing token', error);
+        return throwError(() => new Error('Error refreshing token'));
+      })
+    );
+  }
+
   // Register a new user BASIC MEMBER SO BASE ROLE IS USER -----------------------------------------------------------
   register(nom: string | null | undefined, prenom: string | null | undefined, email: string | null | undefined, password: string | null | undefined): Observable<any> {
     // BY DEFAULT ROLE IS USER, IF OTHER ROLE WANTED, LIKE  ADMIN GO THROUGH ADMIN PAGE TO CHANGE ROLE
@@ -43,33 +107,22 @@ export class AuthService {
     const body = { nom, prenom, email, password, role };
     return this.http.post(`${this.apiUrl}/register`, body).pipe(
       tap((response: any) => {
-        if (response && response.token) {
+        if (response) {
           //if registration succesful, user should verify their email before being able their account
 
           console.log('Registration successful:', response);
-          this.authStatusSubject.next(true);
         }
       }),
       catchError((error) => {
-        console.error('Registration failed', error);
+        this.errorMessage = error.error.message;
+
         return throwError(() => new Error('Registration failed'));
       })
     );
   }
 
-  logout(): void {
-    // Remove the JWT token and user information from local storage
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('user');
-    console.log('Logout successful');
-    this.authStatusSubject.next(false);
-    this.router.navigate(['']).then(r => console.log(r));
-  }
 
-  //used for dynamic front end like login register and logout buttons in navbar
-  isAuthenticated(): boolean {
-    return !!localStorage.getItem('auth_token');
-  }
+
 
   sendVerificationCode(email: string | null | undefined): Observable<any> {
     const body = { email };

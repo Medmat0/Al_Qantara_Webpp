@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { RevueService } from '../../../../member/services/revues.service';
+import { RevueService } from '../../../../member/services/revue.service';
 import { Revue } from "../../../../shared/models/revue";
 
 @Component({
@@ -59,5 +59,10 @@ export class RevueDescriptionComponent implements OnInit {
     } else {
       console.error('File URL is not available');
     }
+  }
+
+  getPreviewUrl(pdfUrl: string): string {
+    const onePage = pdfUrl.replace('/upload/', '/upload/pg_1/');
+    return onePage.replace('.pdf', '.jpg');
   }
 }

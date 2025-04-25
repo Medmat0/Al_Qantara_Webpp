@@ -13,6 +13,8 @@ const getRevues = async (req, res) => {
     const revues = await prisma.revue.findMany({
       select: {
         titre : true,
+        nombreVues : true,
+        nombreTelechargements : true,
         //description,
         //mois,
         //annee: parseInt(annee),

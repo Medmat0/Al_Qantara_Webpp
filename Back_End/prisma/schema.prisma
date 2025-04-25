@@ -90,6 +90,8 @@ model Revue {
   titre           String       @db.VarChar(255)
   fichier         String       @db.VarChar(255)
   datePublication DateTime
+  nombreVues         Int      @default(0)
+  nombreTelechargements Int   @default(0)
   createdBy       Int
   createur        Utilisateur @relation(fields: [createdBy], references: [id])
 }
