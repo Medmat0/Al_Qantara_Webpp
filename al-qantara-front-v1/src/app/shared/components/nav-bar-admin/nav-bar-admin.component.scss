@@ -13,7 +13,6 @@
     flex-direction: column;
   }
   
-  
   .admin-logo {
     font-family: "Cormorant Garamond", serif;
     font-size: 1.8rem;
@@ -36,10 +35,13 @@
     padding: 0.5rem 1rem;
     border-radius: 6px;
     transition: background-color 0.3s;
+    display: block;
   }
   
-  .admin-nav li a:hover,
+  .admin-nav li a:hover {
+    background-color: rgba(158, 46, 44, 0.5);
+  }
+
   .admin-nav li a.active {
     background-color: #9e2e2c;
   }
-  

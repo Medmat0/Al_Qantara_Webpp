@@ -1,49 +1,106 @@
-.revue-item{
+.revue-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2em;
+  border: 1px solid #ddd;
+  padding: 1em;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  max-width: 100%;
+  font-family: "Mulish", sans-serif;
+  cursor: pointer;
+}
+
+.revue-item img {
+  width: 200px;
+  height: auto;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.revue-description {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  font-family: "Mulish", sans-serif;
-  background-color: white;
-  padding: 30px 20px;
-  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
-
-
+  gap: 0.5em;
 }
 
-.revue-item:hover {
-  transform: translateY(-5px);
+.revue-description h2 {
+  margin: 0;
+  font-size: 1.5em;
 }
 
-h2{
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #000;
+.revue-description h3 {
+  margin: 0;
+  color: #666;
+  font-size: 1em;
 }
 
-h3{
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #606060;
-}
-
-@media (max-width: 607px) {
-  .revue-item{
-    padding: 10px;
-  }
+.revue-description p {
+  margin-top: 0.5em;
+  line-height: 1.6;
 }
 
 
 @media (max-width: 768px) {
-  h2{
-    font-size: 1rem;
+  .revue-item {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
   }
 
-  h3{
-    font-size: 0.8rem;
+  .revue-item img {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .revue-description {
+    align-items: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .revue-item {
+    padding: 0.5em;
+    max-width: 80%;
+  }
+
+  .revue-item img {
+    width: 100%;
+    max-width: 200px;
+  }
+
+  .revue-description h2 {
+    font-size: 1.2em;
+  }
+
+  .revue-description h3 {
+    font-size: 0.9em;
+  }
+  .revue-description p {
+    display: none;
   }
 }
 
 
+@media (max-width: 470px) {
+  .revue-item {
+    padding: 0.5em;
+  }
+
+  .revue-item img {
+    width: 100%;
+    max-width: 200px;
+  }
+
+  .revue-description h2 {
+    font-size: 1.2em;
+  }
+
+  .revue-description h3 {
+    font-size: 0.9em;
+  }
+}
