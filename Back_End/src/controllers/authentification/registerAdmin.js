@@ -4,7 +4,7 @@ import { hashPassword } from "../../utils/hashPassword.js";
 import crypto from "crypto";
 import { sendEmailToUser } from "../../utils/email.config.js";
 import {BASE_URL} from "../../utils/urls.js"
-import { ROLES } from "../../utils/roles.enum.js";
+import { ROLES } from "../../utils/role.enum.js";
 import { STATUS } from "../../utils/status.enum.js";
 
 const prisma = new PrismaClient();
