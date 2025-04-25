@@ -11,7 +11,7 @@ import {catchError, Observable, tap, throwError} from 'rxjs';
 
 export class adminRevueService{
 
-  private readonly apiUrl = `${API_URL}/revues/add`;
+  private readonly apiUrl = `${API_URL}/revues`;
 
   constructor(
     private http: HttpClient,
@@ -19,6 +19,8 @@ export class adminRevueService{
   ) {}
 
   addRevue(titre: string, description: string, document: File, mois: string, annee: string): Observable<any> {
+    const url = `${this.apiUrl}/add`;
+
     const formData = new FormData();
     formData.append('titre', titre);
     formData.append('description', description);
@@ -26,7 +28,8 @@ export class adminRevueService{
     formData.append('mois', mois);
     formData.append('annee', annee);
 
-    return this.http.post(this.apiUrl, formData, {
+
+    return this.http.post(url, formData, {
       withCredentials: true,
       reportProgress: true,
       observe: 'events'
@@ -40,9 +43,18 @@ export class adminRevueService{
       })
     );
   }
-  // TODO: implement the deleteRevue method
-  deleteRevue(id: number): any {
 
+  deleteRevueById(id: number): Observable<any> {
+    const url = `${this.apiUrl}/delete/${id}`;
+    return this.http.delete(url, { withCredentials: true }).pipe(
+      tap(() => {
+        console.log(`Revue with ID ${id} deleted successfully.`);
+      }),
+      catchError((error) => {
+        console.error(`Error deleting revue with ID ${id}:`, error);
+        return throwError(() => error);
+      })
+    );
   }
 
 

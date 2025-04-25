@@ -1,6 +1,5 @@
 <div class="revues-main-container">
   <div class="filters-bar">
-
     <div class="search-bar">
       <input
         type="text"
@@ -24,9 +23,15 @@
     <div
       class="revue-item-container"
       *ngFor="let revue of filteredRevues"
-      (click)="onRevueClick(revue)"
     >
       <app-revue-item [revue]="revue"></app-revue-item>
+      <button
+        class="delete-btn"
+        (click)="onDeleteRevue(revue.id)"
+        aria-label="Delete Revue"
+      >
+        🗑️
+      </button>
     </div>
   </div>
   <div class="pagination">

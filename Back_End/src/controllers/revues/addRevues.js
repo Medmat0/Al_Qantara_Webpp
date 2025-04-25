@@ -14,7 +14,9 @@ const addRevue = async (req, res) => {
   try {
     const { titre, description, mois, annee } = req.body;
     console.log("titre:", titre);
-    console.log("despcirption ,",description)
+    console.log("description ,",description)
+    console.log("mois:", mois);
+    console.log("annee:", annee);
     console.log("Req.file:", req.file);
    // stocker la description 
 
