@@ -73,14 +73,14 @@ const login = asyncHandler(async (req, res, next) => {
     maxAge: 90 * 24 * 60 * 60 * 1000,
     // secure: true, décommenter lorsque l'application est en production
     httpOnly: true,
-    sameSite: "strict",
+    sameSite: "None",
   });
 
   res.cookie("accessToken", accessToken, {
     maxAge: 15 * 60 * 1000,
     // secure: true, décommenter lorsque l'application est en production
     httpOnly: true,
-    sameSite: "strict",
+    sameSite: "None",
   });
 
 

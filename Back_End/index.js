@@ -35,7 +35,7 @@ app.use(
 
 app.use(cors({
   // Autorise les requêtes CORS seulement depuis le frontend
-  origin: "http://localhost:4200",
+  origin: "https://alqantara.vercel.app/",
   credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],

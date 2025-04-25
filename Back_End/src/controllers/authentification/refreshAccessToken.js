@@ -35,7 +35,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
         res.cookie("accessToken", newAccessToken, {
             maxAge: 15 * 60 * 1000, // 15 minutes
             httpOnly: true,
-            sameSite: "strict",
+            sameSite: "None",
             // secure: true, // Uncomment in production
         });
 
