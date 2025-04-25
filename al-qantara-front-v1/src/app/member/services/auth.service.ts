@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap, BehaviorSubject, catchError, throwError } from 'rxjs';
-import { API_URL } from '../utils/config';
+import { API_URL } from '../../utils/config';
 import { Router } from '@angular/router';
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
 
@@ -9,7 +9,7 @@ import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = `${API_URL}/auth`; // URL of the authentication API
+  private readonly apiUrl = `${API_URL}/auth`; // URL of the authentication API
   private authStatusSubject = new BehaviorSubject<boolean>(false);
   authStatus$ = this.authStatusSubject.asObservable();
   errorMessage: string | null = null;

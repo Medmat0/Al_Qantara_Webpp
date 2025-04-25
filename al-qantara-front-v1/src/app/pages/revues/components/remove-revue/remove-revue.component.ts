@@ -1,19 +1,25 @@
 import { Component, inject } from '@angular/core';
 import { RevueService } from '../../../../member/services/revue.service';
-import { Router, RouterLink } from '@angular/router';
-import { NgForOf } from '@angular/common';
-import { RevueItemComponent } from './components/revue-item/revue-item.component';
+import { Router } from '@angular/router';
+import { NgForOf, CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RevueItemComponent } from '../revues-listing/components/revue-item/revue-item.component';
+import {adminRevueService} from '../../../../admin/services/admin-revue.service';
 
 @Component({
-  selector: 'app-revues-listing',
-  imports: [RouterLink, NgForOf, RevueItemComponent, FormsModule],
-  templateUrl: './revues-listing.component.html',
+  selector: 'app-remove-revue',
+  imports: [
+    CommonModule, // Import CommonModule to use *ngFor and *ngIf
+    FormsModule,
+    RevueItemComponent
+  ],
+  templateUrl: './remove-revue.component.html',
   standalone: true,
-  styleUrls: ['./revues-listing.component.scss']
+  styleUrl: './remove-revue.component.scss'
 })
-export class RevuesListingComponent {
+export class RemoveRevueComponent {
   revueService = inject(RevueService);
+  adminRevueService = inject(adminRevueService);
   router = inject(Router);
 
   revues: any[] = [];
@@ -91,5 +97,20 @@ export class RevuesListingComponent {
   onRevueClick(revue: any): void {
     console.log('Revue clicked:', revue);
     this.router.navigate(['/revues/revue-description/', revue.id]).then(r => console.log(r));
+  }
+
+  onDeleteRevue(revueId: number): void {
+    if (confirm('Are you sure you want to delete this revue?')) {
+      this.adminRevueService.deleteRevueById(revueId).subscribe({
+        next: () => {
+          this.revues = this.revues.filter(revue => revue.id !== revueId);
+          console.log('Revue deleted successfully.');
+        },
+        error: (error) => {
+          console.error('Error deleting revue:', error);
+          alert('An error occurred while deleting the revue.');
+        }
+      });
+    }
   }
 }
