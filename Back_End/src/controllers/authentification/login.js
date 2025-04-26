@@ -74,6 +74,7 @@ const login = asyncHandler(async (req, res, next) => {
     // secure: true, décommenter lorsque l'application est en production
     httpOnly: true,
     sameSite: "None",
+    secure: true,
   });
 
   res.cookie("accessToken", accessToken, {
@@ -81,6 +82,7 @@ const login = asyncHandler(async (req, res, next) => {
     // secure: true, décommenter lorsque l'application est en production
     httpOnly: true,
     sameSite: "None",
+    secure: true,
   });
 
 
