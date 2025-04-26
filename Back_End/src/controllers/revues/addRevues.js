@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 import cloudinary from "../../config/cloudinary.js";
-import { cp } from "fs";
 
 
 const prisma = new PrismaClient();
@@ -47,7 +46,7 @@ const addRevue = async (req, res) => {
         titre,
         description,
         mois,
-        annee: parseInt(annee),
+        annee: annee.toString(),
         fichier: uploadResult.secure_url, 
         datePublication : datePublication,
         createdBy: req.user.id,
