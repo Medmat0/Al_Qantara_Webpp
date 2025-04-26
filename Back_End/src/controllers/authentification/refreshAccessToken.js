@@ -37,6 +37,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
             httpOnly: true,
             sameSite: "None",
             secure: true, // Uncomment in production
+
         });
 
         res.status(200).json({ message: "Access token refreshed" });
