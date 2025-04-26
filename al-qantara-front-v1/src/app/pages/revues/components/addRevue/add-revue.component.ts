@@ -20,7 +20,7 @@ export class AddRevueComponent {
       titre: ['', Validators.required],
       description: ['', Validators.required],
       mois: ['', Validators.required],
-      annee: ['', [Validators.required, Validators.pattern(/^\d{4}$/)]],
+      annee: ['', [Validators.pattern(/^\d{4}$/)]],
       document: [null, Validators.required]
     });
   }
@@ -35,6 +35,7 @@ export class AddRevueComponent {
         },
         error: (error) => {
           console.error('Error adding revue:', error);
+
         }
       });
     }
