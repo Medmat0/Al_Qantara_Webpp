@@ -89,8 +89,8 @@ model Revue {
   id              Int          @id @default(autoincrement())
   titre           String       @db.VarChar(255)
   description     String?      @db.Text            
-  mois            Int?                            
-  annee           Int?         
+  mois            String?                            
+  annee           String?         
   fichier         String       @db.VarChar(255)
   datePublication DateTime
   nombreVues         Int      @default(0)
