@@ -15,15 +15,15 @@ const getRevueById = async (req, res) => {
       const revue = await prisma.revue.findUnique({
         where: { id: parseInt(id) },
         select: {
-          titre: true,
-          id: true,
-          description,
-          mois,
-          annee: parseInt(annee),
+          titre : true,
           nombreVues : true,
           nombreTelechargements : true,
+          description : true,
+          mois : true ,
+          annee: true,
+          id: true,
           fichier: true,
-          datePublication: true,
+          datePublication : true,
           createdBy: true,
         },
       });
