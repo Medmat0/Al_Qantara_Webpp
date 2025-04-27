@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { adminRevueService } from '../../../../admin/services/admin-revue.service';
-import { NgClass } from '@angular/common';
+import {NgClass, NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-add-revue',
   standalone: true,
-  imports: [ReactiveFormsModule, NgClass],
+  imports: [ReactiveFormsModule, NgClass, NgIf],
   templateUrl: './add-revue.component.html',
   styleUrls: ['./add-revue.component.scss']
 })
