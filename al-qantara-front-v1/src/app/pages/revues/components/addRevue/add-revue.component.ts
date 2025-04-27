@@ -40,7 +40,7 @@ export class AddRevueComponent {
         },
         error: (error) => {
           this.isError = true;
-          this.statusMessage = 'Error adding revue. Please try again.';
+          this.statusMessage = error.error.message || 'An error occurred while adding the revue.';
           console.error('Error adding revue:', error);
         }
       });
