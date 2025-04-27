@@ -1,54 +1,63 @@
-<div class="form-group">
-  <label for="titre">Titre</label>
-  <input id="titre" type="text" formControlName="titre" placeholder="Titre de la revue" />
-  <div *ngIf="addRevueForm.get('titre')?.invalid && addRevueForm.get('titre')?.touched" class="error-message">
-    Le titre est requis.
-  </div>
-</div>
+<div class="add-revue-container">
+  <div class="form-box">
+    <h2>Ajouter une Revue</h2>
+    <p class="description">Remplissez les informations ci-dessous pour publier une revue</p>
 
-<div class="form-group">
-  <label for="description">Description</label>
-  <input id="description" type="text" formControlName="description" placeholder="Description de la revue" />
-  <div *ngIf="addRevueForm.get('description')?.invalid && addRevueForm.get('description')?.touched" class="error-message">
-    La description est requise.
-  </div>
-</div>
+    <form [formGroup]="addRevueForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="titre">Titre</label>
+        <input id="titre" type="text" formControlName="titre" placeholder="Titre de la revue" />
+        <div *ngIf="addRevueForm.get('titre')?.invalid && addRevueForm.get('titre')?.touched" class="error-message">
+          Le titre est requis.
+        </div>
+      </div>
 
-<div class="form-group">
-  <label for="mois">Mois</label>
-  <select id="mois" formControlName="mois" required>
-    <option value="">-- Sélectionnez un mois --</option>
-    <option value="Janvier">Janvier</option>
-    <option value="Février">Février</option>
-    <option value="Mars">Mars</option>
-    <option value="Avril">Avril</option>
-    <option value="Mai">Mai</option>
-    <option value="Juin">Juin</option>
-    <option value="Juillet">Juillet</option>
-    <option value="Août">Août</option>
-    <option value="Septembre">Septembre</option>
-    <option value="Octobre">Octobre</option>
-    <option value="Novembre">Novembre</option>
-    <option value="Décembre">Décembre</option>
-  </select>
-  <div *ngIf="addRevueForm.get('mois')?.invalid && addRevueForm.get('mois')?.touched" class="error-message">
-    Le mois est requis.
-  </div>
-</div>
+      <div class="form-group">
+        <label for="description">Description</label>
+        <input id="description" type="text" formControlName="description" placeholder="Description de la revue" />
+        <div *ngIf="addRevueForm.get('description')?.invalid && addRevueForm.get('description')?.touched" class="error-message">
+          La description est requise.
+        </div>
+      </div>
 
-<div class="form-group">
-  <label for="annee">Année</label>
-  <input id="annee" type="text" formControlName="annee" placeholder="Ex : 2025" />
-  <div *ngIf="addRevueForm.get('annee')?.invalid && addRevueForm.get('annee')?.touched" class="error-message">
-    <span *ngIf="addRevueForm.get('annee')?.errors?.['required']">L'année est requise.</span>
-    <span *ngIf="addRevueForm.get('annee')?.errors?.['pattern']">L'année doit être au format AAAA.</span>
-  </div>
-</div>
+      <div class="form-group">
+        <label for="mois">Mois</label>
+        <select id="mois" formControlName="mois" required>
+          <option value="">-- Sélectionnez un mois --</option>
+          <option value="Janvier">Janvier</option>
+          <option value="Février">Février</option>
+          <option value="Mars">Mars</option>
+          <option value="Avril">Avril</option>
+          <option value="Mai">Mai</option>
+          <option value="Juin">Juin</option>
+          <option value="Juillet">Juillet</option>
+          <option value="Août">Août</option>
+          <option value="Septembre">Septembre</option>
+          <option value="Octobre">Octobre</option>
+          <option value="Novembre">Novembre</option>
+          <option value="Décembre">Décembre</option>
+        </select>
+        <div *ngIf="addRevueForm.get('mois')?.invalid && addRevueForm.get('mois')?.touched" class="error-message">
+          Le mois est requis.
+        </div>
+      </div>
 
-<div class="form-group">
-  <label for="document">Document</label>
-  <input id="document" type="file" (change)="onFileChange($event)" />
-  <div *ngIf="addRevueForm.get('document')?.invalid && addRevueForm.get('document')?.touched" class="error-message">
-    Le document est requis.
+      <div class="form-group">
+        <label for="annee">Année</label>
+        <input id="annee" type="text" formControlName="annee" placeholder="Ex : 2025" />
+        <div *ngIf="addRevueForm.get('annee')?.invalid && addRevueForm.get('annee')?.touched" class="error-message">
+          <span *ngIf="addRevueForm.get('annee')?.errors?.['required']">L'année est requise.</span>
+          <span *ngIf="addRevueForm.get('annee')?.errors?.['pattern']">L'année doit être au format AAAA.</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="document">Document</label>
+        <input id="document" type="file" (change)="onFileChange($event)" />
+        <div *ngIf="addRevueForm.get('document')?.invalid && addRevueForm.get('document')?.touched" class="error-message">
+          Le document est requis.
+        </div>
+      </div>
+    </form>
   </div>
 </div>
