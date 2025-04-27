@@ -42,7 +42,7 @@
         <label for="document">Document</label>
         <input id="document" type="file" (change)="onFileChange($event)" />
       </div>
-
+      <h3 [ngClass]="{'error': isError, 'success': !isError}">{{statusMessage}}</h3>
       <button type="submit" [disabled]="addRevueForm.invalid">Ajouter la revue</button>
     </form>
   </div>

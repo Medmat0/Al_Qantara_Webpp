@@ -1,16 +1,19 @@
 import { Component } from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import { adminRevueService } from '../../../../admin/services/admin-revue.service';
+import {NgClass} from '@angular/common';
 
 @Component({
   selector: 'app-add-revue',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, NgClass],
   templateUrl: './add-revue.component.html',
   styleUrls: ['./add-revue.component.scss']
 })
 export class AddRevueComponent {
   addRevueForm: FormGroup;
+  statusMessage: string = '';
+  isError: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -20,7 +23,7 @@ export class AddRevueComponent {
       titre: ['', Validators.required],
       description: ['', Validators.required],
       mois: ['', Validators.required],
-      annee: ['', [Validators.required,Validators.pattern(/^\d{4}$/)]],
+      annee: ['', [Validators.required, Validators.pattern(/^\d{4}$/)]],
       document: [null, Validators.required]
     });
   }
@@ -30,12 +33,15 @@ export class AddRevueComponent {
       const { titre, description, mois, annee, document } = this.addRevueForm.value;
       this.revueService.addRevue(titre, description, document, mois, annee).subscribe({
         next: (response) => {
+          this.isError = false;
+          this.statusMessage = 'Revue added successfully!';
           console.log('Revue added successfully:', response);
           this.addRevueForm.reset();
         },
         error: (error) => {
+          this.isError = true;
+          this.statusMessage = 'Error adding revue. Please try again.';
           console.error('Error adding revue:', error);
-
         }
       });
     }

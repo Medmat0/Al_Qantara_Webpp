@@ -46,6 +46,9 @@
   color: #333;
 }
 
+
+
+
 .form-box .form-group input[type="text"],
 .form-box .form-group input[type="file"],
 .form-box .form-group select {
@@ -78,4 +81,12 @@
 
 .form-box button:hover {
   background-color: #7d1f1d;
+}
+
+.error {
+  color: red;
+}
+
+.success {
+  color: green;
 }

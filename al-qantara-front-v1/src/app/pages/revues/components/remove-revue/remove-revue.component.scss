@@ -67,6 +67,8 @@
 
 
 .revue-item-container {
+  display: flex;
+  flex-direction: row;
   padding-top: 2em;
   flex: 1 1 100%;
   min-width: 500px;
@@ -128,6 +130,27 @@
 .pagination span {
   font-size: 1rem;
   color: #444;
+}
+
+.delete-btn {
+  background-color: #9e2e2c;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+
+  svg {
+    fill: white;
+  }
+}
+
+.delete-btn:hover {
+  background-color: #7c2323;
 }
 
 @media (max-width: 380px) {
