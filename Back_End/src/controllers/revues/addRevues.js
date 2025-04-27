@@ -29,10 +29,7 @@ const addRevue = async (req, res) => {
       return res.status(400).json({ message: "Veuillez ajouter un fichier PDF." });
     }
 
-    // Ensure the upload was successful
-    if (!uploadResult || !uploadResult.secure_url) {
-      return res.status(500).json({ message: "Erreur lors du téléchargement du fichier." });
-    }
+
 
     console.log(req.file.path);
     const uploadResult = await cloudinary.uploader.upload(req.file.path, {
@@ -42,6 +39,10 @@ const addRevue = async (req, res) => {
       access_mode: "public"  
 
     });
+    // Ensure the upload was successful
+    if (!uploadResult || !uploadResult.secure_url) {
+      return res.status(500).json({ message: "Erreur lors du téléchargement du fichier." });
+    }
 
     const datePublication = new Date().toISOString();
 
