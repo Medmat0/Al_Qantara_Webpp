@@ -58,6 +58,9 @@
           Le document est requis.
         </div>
       </div>
+
+      <h3 [ngClass]="{'error': isError, 'success': !isError}">{{statusMessage}}</h3>
+      <button type="submit" [disabled]="addRevueForm.invalid">Ajouter la revue</button>
     </form>
   </div>
 </div>
