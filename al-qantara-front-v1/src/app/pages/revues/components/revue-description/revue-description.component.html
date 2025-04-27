@@ -1,17 +1,19 @@
 <div class="revue-item">
 
     <img [src]="getPreviewUrl(revue.fichier)" alt="Image de la revue" class="revue-image">
-    <h1>Titre: {{ revue.titre }}</h1>
-    <h3>Date: {{ revue.mois }} {{revue.annee}}</h3>
-    <h2>Résumé</h2>
-    <p>
-        {{ revue.description }}
-    <p>
-        Créé par : {{ revue.createdBy }}
-    </p>
-  <button (click)="downloadFile()" type="button">
-    Télécharger
-  </button>
+    <div class="revue-details">
+      <h1>Titre: {{ revue.titre }}</h1>
+      <h3>Date: {{ revue.mois }} {{revue.annee}}</h3>
+      <h2>Résumé</h2>
+      <p>
+          {{ revue.description }}
+      </p>
+      <button (click)="downloadFile()" type="button">
+        Télécharger
+      </button>
+    </div>
+
+
 
 
 </div>

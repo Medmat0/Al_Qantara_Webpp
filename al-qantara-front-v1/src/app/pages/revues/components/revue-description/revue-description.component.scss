@@ -12,6 +12,14 @@
   border-radius: 8px;
 }
 
+.revue-details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 800px;
+  margin: auto;
+}
+
 img {
   width: 100%;
   max-width: 500px;
