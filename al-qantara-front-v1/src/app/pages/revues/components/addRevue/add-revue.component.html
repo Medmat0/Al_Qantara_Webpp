@@ -78,6 +78,7 @@
         <input
           id="document"
           type="file"
+          formControlName="document"
           (change)="onFileChange($event)"
           [class.invalid]="addRevueForm.get('document')?.invalid && addRevueForm.get('document')?.touched"
         />

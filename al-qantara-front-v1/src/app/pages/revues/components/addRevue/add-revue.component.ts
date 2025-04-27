@@ -44,6 +44,8 @@ export class AddRevueComponent {
           console.error('Error adding revue:', error);
         }
       });
+    }else {
+      this.addRevueForm.markAllAsTouched();
     }
   }
 
