@@ -32,10 +32,12 @@ export class AddRevueComponent {
     if (this.addRevueForm.valid) {
       const { titre, description, mois, annee, document } = this.addRevueForm.value;
       this.revueService.addRevue(titre, description, document, mois, annee).subscribe({
-        next: (response='Revue ajoutée avec succès.') => {
-          this.isError = false;
-          this.statusMessage = 'Revue ajoutée avec succès !';
-          this.addRevueForm.reset();
+        next: (response) => {
+          if (response && response.message === "Revue ajoutée avec succès.") {
+            this.isError = false;
+            this.statusMessage = 'Revue ajoutée avec succès !';
+            this.addRevueForm.reset();
+          }
         },
         error: (error) => {
           this.isError = true;
