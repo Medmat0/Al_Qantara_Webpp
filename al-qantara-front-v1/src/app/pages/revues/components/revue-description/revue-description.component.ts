@@ -13,7 +13,7 @@ import { Revue } from "../../../../shared/models/revue";
 export class RevueDescriptionComponent implements OnInit {
   revueService = inject(RevueService);
   revue = new Revue(0, '', '', '', '', '', '', 0, 0, 0);
-  dateRegex = /\d{4}-(\d{2})-(\d{2})/;
+
 
 
 
@@ -28,10 +28,6 @@ export class RevueDescriptionComponent implements OnInit {
       }
     });
 
-    const match = this.revue.datePublication.match(this.dateRegex);
-    if (match) {
-      this.revue.datePublication = `${match[1]}-${match[2]}`;
-    }
 
   }
 

@@ -29,16 +29,11 @@ export class RevuesListingComponent {
   ngOnInit() {
     this.revueService.getAllRevues().subscribe({
       next: (response) => {
-        this.revues = response.map((revue: { datePublication: string }) => {
-          const dateRegex = /\d{4}-(\d{2})-(\d{2})/;
-          const match = revue.datePublication.match(dateRegex);
-          if (match) {
-            revue.datePublication = `${match[1]}-${match[2]}`;
-          }
-          return revue;
-        });
+        //creation d'un tableau de revues
+        this.revues = response;
         console.log('Revues fetched and formatted successfully:', this.revues);
-      },
+
+        },
       error: (error) => {
         console.error('Error fetching revues:', error);
       }
