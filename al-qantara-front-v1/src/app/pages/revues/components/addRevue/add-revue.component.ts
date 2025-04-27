@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { adminRevueService } from '../../../../admin/services/admin-revue.service';
 import {NgClass, NgIf} from '@angular/common';
-
+import { HttpEventType } from '@angular/common/http';
 @Component({
   selector: 'app-add-revue',
   standalone: true,
@@ -32,8 +32,8 @@ export class AddRevueComponent {
     if (this.addRevueForm.valid) {
       const { titre, description, mois, annee, document } = this.addRevueForm.value;
       this.revueService.addRevue(titre, description, document, mois, annee).subscribe({
-        next: (response) => {
-          if (response && response.message === "Revue ajoutée avec succès.") {
+        next: (event) => {
+          if (event.type === HttpEventType.Response && event.body?.message === "Revue ajoutée avec succès.") {
             this.isError = false;
             this.statusMessage = 'Revue ajoutée avec succès !';
             this.addRevueForm.reset();
@@ -41,7 +41,7 @@ export class AddRevueComponent {
         },
         error: (error) => {
           this.isError = true;
-          this.statusMessage = error.error.message || 'Erreur lors de l\'ajout de la revue.';
+          this.statusMessage = error.error?.message || 'Erreur lors de l\'ajout de la revue.';
         }
       });
     } else {
