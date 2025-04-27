@@ -10,8 +10,8 @@
           id="titre"
           type="text"
           formControlName="titre"
-          placeholder="Titre de la revue"
           [class.invalid]="addRevueForm.get('titre')?.invalid && addRevueForm.get('titre')?.touched"
+          placeholder="Titre de la revue"
         />
         <div *ngIf="addRevueForm.get('titre')?.invalid && addRevueForm.get('titre')?.touched" class="form-error">
           Le titre est requis.
@@ -24,8 +24,8 @@
           id="description"
           type="text"
           formControlName="description"
-          placeholder="Description de la revue"
           [class.invalid]="addRevueForm.get('description')?.invalid && addRevueForm.get('description')?.touched"
+          placeholder="Description de la revue"
         />
         <div *ngIf="addRevueForm.get('description')?.invalid && addRevueForm.get('description')?.touched" class="form-error">
           La description est requise.
@@ -64,8 +64,8 @@
           id="annee"
           type="text"
           formControlName="annee"
-          placeholder="Ex : 2025"
           [class.invalid]="addRevueForm.get('annee')?.invalid && addRevueForm.get('annee')?.touched"
+          placeholder="Ex : 2025"
         />
         <div *ngIf="addRevueForm.get('annee')?.invalid && addRevueForm.get('annee')?.touched" class="form-error">
           <span *ngIf="addRevueForm.get('annee')?.errors?.['required']">L'année est requise.</span>
@@ -78,7 +78,6 @@
         <input
           id="document"
           type="file"
-          formControlName="document"
           (change)="onFileChange($event)"
           [class.invalid]="addRevueForm.get('document')?.invalid && addRevueForm.get('document')?.touched"
         />
@@ -91,7 +90,7 @@
         {{ statusMessage }}
       </div>
 
-      <button type="submit" [disabled]="addRevueForm.invalid">Ajouter la revue</button>
+      <button type="submit">Ajouter la revue</button>
     </form>
   </div>
 </div>

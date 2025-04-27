@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { adminRevueService } from '../../../../admin/services/admin-revue.service';
-import {NgClass} from '@angular/common';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-add-revue',
@@ -34,17 +34,15 @@ export class AddRevueComponent {
       this.revueService.addRevue(titre, description, document, mois, annee).subscribe({
         next: (response) => {
           this.isError = false;
-          this.statusMessage = 'Revue added successfully!';
-          console.log('Revue added successfully:', response);
+          this.statusMessage = 'Revue ajoutée avec succès !';
           this.addRevueForm.reset();
         },
         error: (error) => {
           this.isError = true;
-          this.statusMessage = error.error.message || 'An error occurred while adding the revue.';
-          console.error('Error adding revue:', error);
+          this.statusMessage = error.error.message || 'Erreur lors de l\'ajout de la revue.';
         }
       });
-    }else {
+    } else {
       this.addRevueForm.markAllAsTouched();
     }
   }
@@ -53,6 +51,7 @@ export class AddRevueComponent {
     const input = event.target as HTMLInputElement;
     if (input?.files?.length) {
       this.addRevueForm.patchValue({ document: input.files[0] });
+      this.addRevueForm.get('document')?.markAsTouched();
     }
   }
 }
