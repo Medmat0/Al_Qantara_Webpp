@@ -6,23 +6,39 @@
     <form [formGroup]="addRevueForm" (ngSubmit)="onSubmit()">
       <div class="form-group">
         <label for="titre">Titre</label>
-        <input id="titre" type="text" formControlName="titre" placeholder="Titre de la revue" />
-        <div *ngIf="addRevueForm.get('titre')?.invalid && addRevueForm.get('titre')?.touched" class="error-message">
+        <input
+          id="titre"
+          type="text"
+          formControlName="titre"
+          placeholder="Titre de la revue"
+          [class.invalid]="addRevueForm.get('titre')?.invalid && addRevueForm.get('titre')?.touched"
+        />
+        <div *ngIf="addRevueForm.get('titre')?.invalid && addRevueForm.get('titre')?.touched" class="form-error">
           Le titre est requis.
         </div>
       </div>
 
       <div class="form-group">
         <label for="description">Description</label>
-        <input id="description" type="text" formControlName="description" placeholder="Description de la revue" />
-        <div *ngIf="addRevueForm.get('description')?.invalid && addRevueForm.get('description')?.touched" class="error-message">
+        <input
+          id="description"
+          type="text"
+          formControlName="description"
+          placeholder="Description de la revue"
+          [class.invalid]="addRevueForm.get('description')?.invalid && addRevueForm.get('description')?.touched"
+        />
+        <div *ngIf="addRevueForm.get('description')?.invalid && addRevueForm.get('description')?.touched" class="form-error">
           La description est requise.
         </div>
       </div>
 
       <div class="form-group">
         <label for="mois">Mois</label>
-        <select id="mois" formControlName="mois" required>
+        <select
+          id="mois"
+          formControlName="mois"
+          [class.invalid]="addRevueForm.get('mois')?.invalid && addRevueForm.get('mois')?.touched"
+        >
           <option value="">-- Sélectionnez un mois --</option>
           <option value="Janvier">Janvier</option>
           <option value="Février">Février</option>
@@ -37,15 +53,21 @@
           <option value="Novembre">Novembre</option>
           <option value="Décembre">Décembre</option>
         </select>
-        <div *ngIf="addRevueForm.get('mois')?.invalid && addRevueForm.get('mois')?.touched" class="error-message">
+        <div *ngIf="addRevueForm.get('mois')?.invalid && addRevueForm.get('mois')?.touched" class="form-error">
           Le mois est requis.
         </div>
       </div>
 
       <div class="form-group">
         <label for="annee">Année</label>
-        <input id="annee" type="text" formControlName="annee" placeholder="Ex : 2025" />
-        <div *ngIf="addRevueForm.get('annee')?.invalid && addRevueForm.get('annee')?.touched" class="error-message">
+        <input
+          id="annee"
+          type="text"
+          formControlName="annee"
+          placeholder="Ex : 2025"
+          [class.invalid]="addRevueForm.get('annee')?.invalid && addRevueForm.get('annee')?.touched"
+        />
+        <div *ngIf="addRevueForm.get('annee')?.invalid && addRevueForm.get('annee')?.touched" class="form-error">
           <span *ngIf="addRevueForm.get('annee')?.errors?.['required']">L'année est requise.</span>
           <span *ngIf="addRevueForm.get('annee')?.errors?.['pattern']">L'année doit être au format AAAA.</span>
         </div>
@@ -53,13 +75,21 @@
 
       <div class="form-group">
         <label for="document">Document</label>
-        <input id="document" type="file" (change)="onFileChange($event)" />
-        <div *ngIf="addRevueForm.get('document')?.invalid && addRevueForm.get('document')?.touched" class="error-message">
+        <input
+          id="document"
+          type="file"
+          (change)="onFileChange($event)"
+          [class.invalid]="addRevueForm.get('document')?.invalid && addRevueForm.get('document')?.touched"
+        />
+        <div *ngIf="addRevueForm.get('document')?.invalid && addRevueForm.get('document')?.touched" class="form-error">
           Le document est requis.
         </div>
       </div>
 
-      <h3 [ngClass]="{'error': isError, 'success': !isError}">{{statusMessage}}</h3>
+      <div *ngIf="statusMessage" [ngClass]="{'error': isError, 'success': !isError}" class="form-status">
+        {{ statusMessage }}
+      </div>
+
       <button type="submit" [disabled]="addRevueForm.invalid">Ajouter la revue</button>
     </form>
   </div>
