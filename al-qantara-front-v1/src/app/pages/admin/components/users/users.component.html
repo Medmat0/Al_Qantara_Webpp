@@ -1,0 +1,97 @@
+<div class="users-container">
+  <h2>Gestion des Utilisateurs</h2>
+  
+  <!-- Barre de recherche -->
+  <div class="search-container">
+    <input 
+      type="text" 
+      [(ngModel)]="searchTerm" 
+      placeholder="Rechercher un utilisateur..." 
+      (input)="filterUsers()"
+      class="search-input">
+  </div>
+
+  <!-- Tableau des utilisateurs -->
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Prénom</th>
+          <th>Email</th>
+          <th>Rôle</th>
+          <th>Statut</th>
+          <th>Date d'inscription</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of filteredUsers">
+          <td>{{user.nom}}</td>
+          <td>{{user.prenom}}</td>
+          <td>{{user.email}}</td>
+          <td>
+            <span [class.admin-role]="user.role === 'ADMIN'">
+              {{user.role}}
+            </span>
+          </td>
+          <td>
+            <span [class.status-active]="user.statut === 'ACTIF'"
+                  [class.status-inactive]="user.statut === 'INACTIF'">
+              {{user.statut}}
+            </span>
+          </td>
+          <td>{{user.dateInscription}}</td>
+          <td class="actions">
+            <!-- Bouton Supprimer -->
+            <button (click)="openDeleteModal(user)" class="icon-button delete-btn" title="Supprimer">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
+              </svg>
+            </button>
+            
+            <!-- Bouton Promouvoir/Rétrograder -->
+            <button *ngIf="user.role !== 'ADMIN'" 
+                    (click)="openPromoteModal(user)" 
+                    class="icon-button promote-btn" 
+                    title="Promouvoir">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M16,11.78L20.24,4.45L21.97,5.45L16.74,14.5L10.23,10.75L5.46,19H22V21H2V3H4V17.54L9.5,8L16,11.78Z" />
+              </svg>
+            </button>
+            <button *ngIf="user.role === 'ADMIN'" 
+                    (click)="openDemoteModal(user)" 
+                    class="icon-button demote-btn" 
+                    title="Rétrograder">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M16,13V11.5A2.5,2.5 0 0,0 13.5,9A2.5,2.5 0 0,0 16,6.5V5A2,2 0 0,0 14,3H10A2,2 0 0,0 8,5V6.5A2.5,2.5 0 0,0 10.5,9A2.5,2.5 0 0,0 8,11.5V13A2,2 0 0,0 10,15H14A2,2 0 0,0 16,13M14,13H10V11.5A0.5,0.5 0 0,1 10.5,11H13.5A0.5,0.5 0 0,1 14,11.5V13M14,6.5A0.5,0.5 0 0,1 13.5,7H10.5A0.5,0.5 0 0,1 10,6.5V5H14V6.5Z" />
+              </svg>
+            </button>
+
+            <!-- Bouton Activer/Désactiver -->
+            <button (click)="openStatusModal(user)" 
+                    [class.active]="user.statut === 'ACTIF'"
+                    class="icon-button status-btn" 
+                    [title]="user.statut === 'ACTIF' ? 'Désactiver' : 'Activer'">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M17,7H7A5,5 0 0,0 2,12A5,5 0 0,0 7,17H17A5,5 0 0,0 22,12A5,5 0 0,0 17,7M17,15A3,3 0 0,1 14,12A3,3 0 0,1 17,9A3,3 0 0,1 20,12A3,3 0 0,1 17,15Z" />
+              </svg>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal de confirmation -->
+<div class="modal" *ngIf="showModal">
+  <div class="modal-content">
+    <h3>{{modalTitle}}</h3>
+    <p>{{modalMessage}}</p>
+    <div class="modal-actions">
+      <button (click)="confirmModal()" class="confirm-btn">Confirmer</button>
+      <button (click)="closeModal()" class="cancel-btn">Annuler</button>
+    </div>
+  </div>
+</div>
