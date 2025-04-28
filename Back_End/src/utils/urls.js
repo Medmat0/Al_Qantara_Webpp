@@ -1,1 +1,1 @@
-export const BASE_URL = 'https://al-qantara-webpp.onrender.com'
+export const BASE_URL = process.env.BACKEND_URL
