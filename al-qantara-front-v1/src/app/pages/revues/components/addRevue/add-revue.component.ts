@@ -1,16 +1,19 @@
 import { Component } from '@angular/core';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { adminRevueService } from '../../../../admin/services/admin-revue.service';
-
+import {NgClass, NgIf} from '@angular/common';
+import { HttpEventType } from '@angular/common/http';
 @Component({
   selector: 'app-add-revue',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, NgClass, NgIf],
   templateUrl: './add-revue.component.html',
   styleUrls: ['./add-revue.component.scss']
 })
 export class AddRevueComponent {
   addRevueForm: FormGroup;
+  statusMessage: string = '';
+  isError: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -29,14 +32,20 @@ export class AddRevueComponent {
     if (this.addRevueForm.valid) {
       const { titre, description, mois, annee, document } = this.addRevueForm.value;
       this.revueService.addRevue(titre, description, document, mois, annee).subscribe({
-        next: (response) => {
-          console.log('Revue added successfully:', response);
-          this.addRevueForm.reset();
+        next: (event) => {
+          if (event.type === HttpEventType.Response && event.body?.message === "Revue ajoutée avec succès.") {
+            this.isError = false;
+            this.statusMessage = 'Revue ajoutée avec succès !';
+            this.addRevueForm.reset();
+          }
         },
         error: (error) => {
-          console.error('Error adding revue:', error);
+          this.isError = true;
+          this.statusMessage = error.error?.message || 'Erreur lors de l\'ajout de la revue.';
         }
       });
+    } else {
+      this.addRevueForm.markAllAsTouched();
     }
   }
 
@@ -44,6 +53,7 @@ export class AddRevueComponent {
     const input = event.target as HTMLInputElement;
     if (input?.files?.length) {
       this.addRevueForm.patchValue({ document: input.files[0] });
+      this.addRevueForm.get('document')?.markAsTouched();
     }
   }
 }

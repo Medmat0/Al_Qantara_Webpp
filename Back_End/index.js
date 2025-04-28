@@ -1,6 +1,7 @@
 import express from "express";
 import authRoutes from "./src/routes/auth.routes.js";  
 import revuesRoutes from './src/routes/revues.routes.js';
+import adminRoutes from './src/routes/admin.routes.js'
 import cors from "cors";
 
 import cookieParser from "cookie-parser";
@@ -35,7 +36,7 @@ app.use(
 
 app.use(cors({
   // Autorise les requêtes CORS seulement depuis le frontend
-  origin: "http://localhost:4200",
+  origin: process.env.FRONT_URL,
   credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
@@ -47,7 +48,8 @@ app.use(express.urlencoded({ extended: true })); // Pour form-data et x-www-form
 
 
 app.use("/auth", authRoutes);
-app.use("/revues", revuesRoutes)
+app.use("/revues", revuesRoutes);
+app.use("/admin",adminRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);

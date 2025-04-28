@@ -76,3 +76,27 @@
 .form-box button:hover {
   background-color: #7d1f1d;
 }
+
+.invalid {
+  border: 2px solid #ff4444;
+}
+
+.form-error {
+  color: #ff4444;
+  font-size: 0.8em;
+  margin-top: -5px;
+  margin-bottom: 10px;
+}
+
+.form-status {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.error {
+  color: #ff4444;
+}
+
+.success {
+  color: #4caf50;
+}

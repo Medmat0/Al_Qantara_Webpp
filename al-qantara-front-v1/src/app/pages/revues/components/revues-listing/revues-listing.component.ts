@@ -29,16 +29,11 @@ export class RevuesListingComponent {
   ngOnInit() {
     this.revueService.getAllRevues().subscribe({
       next: (response) => {
-        this.revues = response.map((revue: { datePublication: string }) => {
-          const dateRegex = /\d{4}-(\d{2})-(\d{2})/;
-          const match = revue.datePublication.match(dateRegex);
-          if (match) {
-            revue.datePublication = `${match[1]}-${match[2]}`;
-          }
-          return revue;
-        });
+        //creation d'un tableau de revues
+        this.revues = response;
         console.log('Revues fetched and formatted successfully:', this.revues);
-      },
+
+        },
       error: (error) => {
         console.error('Error fetching revues:', error);
       }
@@ -50,23 +45,32 @@ export class RevuesListingComponent {
       revue.titre.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
 
-    switch (this.selectedFilter) {
-      case 'les plus récents':
-        filtered = filtered.sort((a, b) => new Date(a.datePublication).getTime() - new Date(b.datePublication).getTime());
-        break;
-      case 'les plus anciens':
-        filtered = filtered.sort((a, b) => new Date(b.datePublication).getTime() - new Date(a.datePublication).getTime());
-        break;
-      case 'les plus populaires':
-        filtered = filtered.sort((a, b) => b.nombreVues - a.nombreVues);
-        break;
-      case 'les plus téléchargés':
-        filtered = filtered.sort((a, b) => b.nombreTelechargements - a.nombreTelechargements);
-        break;
+    // Sort by most recent or most old
+    if (this.selectedFilter === 'most-recent') {
+      filtered = filtered.sort((a, b) => {
+        const dateA = new Date(`${a.annee}-${this.getMonthNumber(a.mois)}-01`);
+        const dateB = new Date(`${b.annee}-${this.getMonthNumber(b.mois)}-01`);
+        return dateB.getTime() - dateA.getTime(); // Descending order
+      });
+    } else if (this.selectedFilter === 'most-old') {
+      filtered = filtered.sort((a, b) => {
+        const dateA = new Date(`${a.annee}-${this.getMonthNumber(a.mois)}-01`);
+        const dateB = new Date(`${b.annee}-${this.getMonthNumber(b.mois)}-01`);
+        return dateA.getTime() - dateB.getTime(); // Ascending order
+      });
     }
 
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     return filtered.slice(startIndex, startIndex + this.itemsPerPage);
+  }
+
+// Helper method to convert month name to month number
+  getMonthNumber(mois: string): number {
+    const moisOrder = [
+      'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+      'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+    ];
+    return moisOrder.indexOf(mois) + 1; // Months are 1-based in Date
   }
 
   get totalPages() {

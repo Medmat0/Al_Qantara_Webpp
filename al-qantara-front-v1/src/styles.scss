@@ -8,3 +8,20 @@ html, body {
   outline: none;
 
 }
+
+
+/* Mulish */
+@font-face {
+  font-family: 'Mulish';
+  src: url('/assets/fonts/Mulish/Mulish-VariableFont_wght.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* Cormorant Garamond */
+@font-face {
+  font-family: 'Cormorant Garamond';
+  src: url('/assets/fonts/Cormorant_Garamond/CormorantGaramond-VariableFont_wght.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}

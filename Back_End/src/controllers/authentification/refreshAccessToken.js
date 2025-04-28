@@ -35,8 +35,9 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
         res.cookie("accessToken", newAccessToken, {
             maxAge: 15 * 60 * 1000, // 15 minutes
             httpOnly: true,
-            sameSite: "strict",
-            // secure: true, // Uncomment in production
+            sameSite: "None",
+            //secure: true, // Uncomment in production
+
         });
 
         res.status(200).json({ message: "Access token refreshed" });

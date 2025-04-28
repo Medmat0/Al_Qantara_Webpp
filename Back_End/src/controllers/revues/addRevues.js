@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 import cloudinary from "../../config/cloudinary.js";
-import { cp } from "fs";
 
 
 const prisma = new PrismaClient();
@@ -30,6 +29,8 @@ const addRevue = async (req, res) => {
       return res.status(400).json({ message: "Veuillez ajouter un fichier PDF." });
     }
 
+
+
     console.log(req.file.path);
     const uploadResult = await cloudinary.uploader.upload(req.file.path, {
       resource_type: "auto",
@@ -38,6 +39,10 @@ const addRevue = async (req, res) => {
       access_mode: "public"  
 
     });
+    // Ensure the upload was successful
+    if (!uploadResult || !uploadResult.secure_url) {
+      return res.status(500).json({ message: "Erreur lors du téléchargement du fichier." });
+    }
 
     const datePublication = new Date().toISOString();
 
@@ -47,7 +52,7 @@ const addRevue = async (req, res) => {
         titre,
         description,
         mois,
-        annee: parseInt(annee),
+        annee: annee.toString(),
         fichier: uploadResult.secure_url, 
         datePublication : datePublication,
         createdBy: req.user.id,

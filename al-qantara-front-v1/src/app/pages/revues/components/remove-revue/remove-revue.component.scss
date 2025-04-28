@@ -65,11 +65,22 @@
   max-width: 1200px;
 }
 
+app-revue-item {
+  flex: 1;
+  width: 100%;
+}
+
+
 
 .revue-item-container {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
   padding-top: 2em;
   flex: 1 1 100%;
   min-width: 500px;
+
+  width: 100%;
 }
 
 
@@ -128,6 +139,29 @@
 .pagination span {
   font-size: 1rem;
   color: #444;
+}
+
+.delete-btn {
+  background-color: #9e2e2c;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+  max-height: 40px;
+  margin-left: 10px;
+
+  svg {
+    fill: white;
+  }
+}
+
+.delete-btn:hover {
+  background-color: #7c2323;
 }
 
 @media (max-width: 380px) {

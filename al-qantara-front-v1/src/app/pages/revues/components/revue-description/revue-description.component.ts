@@ -12,8 +12,10 @@ import { Revue } from "../../../../shared/models/revue";
 })
 export class RevueDescriptionComponent implements OnInit {
   revueService = inject(RevueService);
-  revue = new Revue('', 0, '', '', 0);
-  dateRegex = /\d{4}-(\d{2})-(\d{2})/;
+  revue = new Revue(0, '', '', '', '', '', '', 0, 0, 0);
+
+
+
 
 
   constructor(private route: ActivatedRoute) {}
@@ -25,27 +27,28 @@ export class RevueDescriptionComponent implements OnInit {
         this.fetchRevueDetails(this.revue.id);
       }
     });
+
+
   }
 
   private fetchRevueDetails(id: number): void {
     this.revueService.getRevueById(id).subscribe({
-      next: (response: { fichier: string; titre: string; datePublication: string; description: string; createdBy: number }) => {
-        // Handle successful response
+      next: (response: Revue) => {
         console.log('Revue fetched successfully:', response);
-        const match = response.datePublication.match(this.dateRegex);
-        if (match) {
-          // Format date as MM-DD
-          this.revue.datePublication = `${match[1]}-${match[2]}`;
-        } else {
-          console.error('Date format is incorrect:', response.datePublication);
-        }
-        // Update other fields
+
+        // Map response directly to the Revue model
+        this.revue.id = response.id;
         this.revue.titre = response.titre;
-        console.log('Revue title:', this.revue.titre);
+        this.revue.description = response.description;
+        this.revue.mois = response.mois;
+        this.revue.annee = response.annee;
         this.revue.fichier = response.fichier;
-        console.log('Revue file:', this.revue.fichier);
+        this.revue.datePublication = response.datePublication;
+        this.revue.nombreVues = response.nombreVues;
+        this.revue.nombreTelechargements = response.nombreTelechargements;
         this.revue.createdBy = response.createdBy;
-        console.log('Revue created by:', this.revue.createdBy);
+
+        console.log('Mapped Revue:', this.revue);
       },
       error: (error: any) => {
         console.error('Error fetching revue:', error);

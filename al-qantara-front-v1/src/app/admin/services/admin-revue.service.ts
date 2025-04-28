@@ -18,7 +18,7 @@ export class adminRevueService{
     private router: Router
   ) {}
 
-  addRevue(titre: string, description: string, document: File, mois: string, annee: string): Observable<any> {
+  addRevue(titre: string, description: string, document: File, mois: string, annee: string | null): Observable<any> {
     const url = `${this.apiUrl}/add`;
 
     const formData = new FormData();
@@ -26,8 +26,7 @@ export class adminRevueService{
     formData.append('description', description);
     formData.append('document', document);
     formData.append('mois', mois);
-    formData.append('annee', annee);
-
+    formData.append('annee', annee ? annee.toString() : ''); // Convert to string or send an empty string
 
     return this.http.post(url, formData, {
       withCredentials: true,
