@@ -60,4 +60,9 @@ export class RevueDescriptionComponent implements OnInit {
       console.error('File URL is not available');
     }
   }
+
+  getPreviewUrl(pdfUrl: string): string {
+    const onePage = pdfUrl.replace('/upload/', '/upload/pg_1/');
+    return onePage.replace('.pdf', '.jpg');
+  }
 }

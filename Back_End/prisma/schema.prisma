@@ -88,8 +88,13 @@ model Contact {
 model Revue {
   id              Int          @id @default(autoincrement())
   titre           String       @db.VarChar(255)
+  description     String?      @db.Text            
+  mois            Int?                            
+  annee           Int?         
   fichier         String       @db.VarChar(255)
   datePublication DateTime
+  nombreVues         Int      @default(0)
+  nombreTelechargements Int   @default(0)
   createdBy       Int
   createur        Utilisateur @relation(fields: [createdBy], references: [id])
 }

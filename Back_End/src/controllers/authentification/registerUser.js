@@ -3,6 +3,9 @@ import asyncHandler from "express-async-handler";
 import { hashPassword } from "../../utils/hashPassword.js";
 import crypto from "crypto";
 import { sendEmailToUser } from "../../utils/email.config.js";
+import { ROLES } from "../../utils/role.enum.js";
+import {STATUS} from "../../utils/status.enum.js"
+
 
 const prisma = new PrismaClient();
 
@@ -18,7 +21,7 @@ const registerUser = asyncHandler(async (req, res) => {
   const emailExist = await prisma.utilisateur.findUnique({ where: { email } });
   if (emailExist) return res.status(400).json({ message: "Email déjà utilisé" });
 
-  const userRole =  "USER";
+  const userRole =   ROLES.USER;
 
   const hashedPassword = await hashPassword(password);
 
@@ -30,7 +33,7 @@ const registerUser = asyncHandler(async (req, res) => {
       motDePasse: hashedPassword,
       role: userRole,
       dateInscription: new Date(),
-      statut: "ACTIF",
+      statut: STATUS.ACTIF,
     },
   });
 
@@ -44,7 +47,8 @@ const registerUser = asyncHandler(async (req, res) => {
     where: { email: user.email },
     data: { emailVerificationToken: hashedToken },
   });
-  const verifyLink = `http://localhost:3000/auth/verify/${plainVerifyToken}`; 
+  // to change 
+  const verifyLink = `${BASE_URL}/auth/verify/${plainVerifyToken}`; 
 
 
   const emailInfo = {

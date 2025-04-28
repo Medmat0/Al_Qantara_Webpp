@@ -7,6 +7,8 @@ import {
   createRefreshToken,
 } from "../../utils/token.js";
 import { sendEmailToUser } from "../../utils/email.config.js";
+import {BASE_URL} from "../../utils/urls.js"
+
 const prisma = new PrismaClient();
 
 /**
@@ -43,7 +45,7 @@ const login = asyncHandler(async (req, res, next) => {
       },
     });
 
-    const verifyLink = `http://localhost:3000/auth/verify/${plainVerfiyToken}`; // ou remplacer par ton URL en production
+    const verifyLink = `${BASE_URL}/auth/verify/${plainVerfiyToken}`; 
 
 
     // Envoi du mail de vérification
@@ -71,14 +73,14 @@ const login = asyncHandler(async (req, res, next) => {
     maxAge: 90 * 24 * 60 * 60 * 1000,
     // secure: true, décommenter lorsque l'application est en production
     httpOnly: true,
-    sameSite: "strict",
+    sameSite: "None",
   });
 
   res.cookie("accessToken", accessToken, {
     maxAge: 15 * 60 * 1000,
     // secure: true, décommenter lorsque l'application est en production
     httpOnly: true,
-    sameSite: "strict",
+    sameSite: "None",
   });
 
 

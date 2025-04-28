@@ -1,0 +1,52 @@
+<div class="revues-main-container">
+  <div class="filters-bar">
+    <div class="search-bar">
+      <input
+        type="text"
+        placeholder="Search..."
+        [(ngModel)]="searchTerm"
+      />
+      <button type="button">Search</button>
+    </div>
+    <div class="filters">
+      <label for="filter">Filter by:</label>
+      <select id="filter" [(ngModel)]="selectedFilter" (change)="onFilterChange(selectedFilter)">
+        <option value="Aucun">Aucun</option>
+        <option value="les plus récents">les plus récents</option>
+        <option value="les plus anciens">les plus anciens</option>
+        <option value="les plus populaires">les plus populaires</option>
+        <option value="les plus téléchargés">les plus téléchargés</option>
+      </select>
+    </div>
+  </div>
+  <div class="revue-listing">
+    <div
+      class="revue-item-container"
+      *ngFor="let revue of filteredRevues"
+    >
+      <app-revue-item [revue]="revue"></app-revue-item>
+      <button
+        class="delete-btn"
+        (click)="onDeleteRevue(revue.id)"
+        aria-label="Delete Revue"
+      >
+        🗑️
+      </button>
+    </div>
+  </div>
+  <div class="pagination">
+    <button
+      [disabled]="currentPage === 1"
+      (click)="changePage(currentPage - 1)"
+    >
+      Previous
+    </button>
+    <span>Page {{ currentPage }} of {{ totalPages }}</span>
+    <button
+      [disabled]="currentPage === totalPages"
+      (click)="changePage(currentPage + 1)"
+    >
+      Next
+    </button>
+  </div>
+</div>
