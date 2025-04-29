@@ -58,6 +58,15 @@ export class RevuesListingComponent {
         const dateB = new Date(`${b.annee}-${this.getMonthNumber(b.mois)}-01`);
         return dateA.getTime() - dateB.getTime(); // Ascending order
       });
+    } else if(this.selectedFilter==='les plus populaires'){
+      filtered = filtered.sort((a, b) => {
+        return b.nombreVues - a.nombreVues; // Descending order
+      });
+    } else if(this.selectedFilter==='les plus téléchargés'){
+      filtered = filtered.sort((a, b) => {
+        return b.nombreTelechargements - a.nombreTelechargements; // Descending order
+      });
+
     }
 
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
