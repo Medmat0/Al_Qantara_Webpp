@@ -23,6 +23,7 @@
     <div
       class="revue-item-container"
       *ngFor="let revue of filteredRevues"
+      (click)="onRevueClick(revue)"
     >
       <app-revue-item [revue]="revue"></app-revue-item>
       <button

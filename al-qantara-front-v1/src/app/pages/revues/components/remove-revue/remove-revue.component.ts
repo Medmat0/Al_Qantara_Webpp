@@ -121,4 +121,9 @@ export class RemoveRevueComponent {
       });
     }
   }
+
+  onRevueClick(revue: any): void {
+    console.log('Revue clicked:', revue);
+    this.router.navigate(['/revues/revue-description/', revue.id]);
+  }
 }
