@@ -11,6 +11,7 @@ export default [
     children: [
       { path: 'users', loadComponent: () => import('./components/users/users.component').then(m => m.UsersComponent) },
       { path: 'revues', loadComponent: () => import('../revues/components/revues-listing/revues-listing.component').then(m => m.RevuesListingComponent) },
+      { path: 'revues/revue-description/:id', loadComponent: () => import('../revues/components/revue-description/revue-description.component').then(m => m.RevueDescriptionComponent)},
       { path: 'revues/add-revue', loadComponent: () => import('../revues/components/addRevue/add-revue.component').then(m => m.AddRevueComponent) },
       { path: 'revues/remove-revue', loadComponent: () => import('../revues/components/remove-revue/remove-revue.component').then(m => m.RemoveRevueComponent)},
       { path: 'articles', loadComponent: () => import('./components/articles/articles.component').then(m => m.ArticlesComponent) },

@@ -39,4 +39,30 @@ export class RevueService {
       })
     );
   }
+
+  addVueToRevue(revueId: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${revueId}/view`, {}).pipe(
+      tap((response) => {
+        console.log('Added view to revue:', response);
+      }),
+      catchError((error) => {
+        console.error('Error adding view to revue:', error);
+        return throwError(() => new Error('Error adding view to revue'));
+      })
+    );
+  }
+
+  addDownloadToRevue(revueId: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${revueId}/download`, {}).pipe(
+      tap((response) => {
+        console.log('Added download to revue:', response);
+      }),
+      catchError((error) => {
+        console.error('Error adding download to revue:', error);
+        return throwError(() => new Error('Error adding download to revue'));
+      })
+    );
+  }
+
+
 }

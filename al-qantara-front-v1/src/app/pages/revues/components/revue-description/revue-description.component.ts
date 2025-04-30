@@ -61,6 +61,19 @@ export class RevueDescriptionComponent implements OnInit {
       window.location.href = this.revue.fichier;
     } else {
       console.error('File URL is not available');
+      return;
+    }
+
+    const isAdminRoute = window.location.pathname.startsWith('/admin');
+    if (!isAdminRoute) {
+      this.revueService.addDownloadToRevue(this.revue.id).subscribe({
+        next: (response) => {
+          console.log('Download count updated successfully:', response);
+        },
+        error: (error) => {
+          console.error('Error updating download count:', error);
+        }
+      });
     }
   }
 
