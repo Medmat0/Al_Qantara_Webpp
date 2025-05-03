@@ -1,7 +1,6 @@
 import {Component, Input} from '@angular/core';
-import {BehaviorSubject} from 'rxjs';
-import {NavigationEnd, Router} from '@angular/router';
 import {AsyncPipe, NgIf} from '@angular/common';
+import {AdminStateService} from '../../../../../../shared/services/admin.state.service';
 
 @Component({
   selector: 'app-revue-item',
@@ -15,16 +14,16 @@ import {AsyncPipe, NgIf} from '@angular/common';
 })
 export class RevueItemComponent {
   @Input() revue:any;
-  private ShowStatsSubject = new BehaviorSubject<boolean>(false);
-  protected showRevueStats = this.ShowStatsSubject.asObservable();
+  protected showStats : boolean = false;
 
-  constructor(private router: Router) {
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        const isAdmin = event.url.startsWith('/admin');
-        console.log('is in /admin:', isAdmin);
-        this.ShowStatsSubject.next(isAdmin);
-      }
+
+  constructor(private adminStateService: AdminStateService) {
+
+  }
+
+  ngOnInit() {
+    this.adminStateService.isAdmin$.subscribe(isAdmin => {
+      this.showStats = isAdmin;
     });
   }
 

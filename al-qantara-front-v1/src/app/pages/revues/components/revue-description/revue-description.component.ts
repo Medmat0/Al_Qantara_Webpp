@@ -64,6 +64,9 @@ export class RevueDescriptionComponent implements OnInit {
       this.revueService.addDownloadToRevue(this.revue.id).subscribe({
         next: (response) => {
           console.log('Download count updated successfully:', response);
+
+          // Proceed with file download after successful response
+          this.downloadRevueFile();
         },
         error: (error) => {
           console.error('Error updating download count:', error);
@@ -71,8 +74,11 @@ export class RevueDescriptionComponent implements OnInit {
       });
     } else {
       console.log('On admin page, skipping request.');
+      this.downloadRevueFile();
     }
+  }
 
+  private downloadRevueFile(): void {
     const allowedDomains = ['res.cloudinary.com'];
     if (this.revue.fichier) {
       const fileUrl = new URL(this.revue.fichier);
@@ -83,7 +89,6 @@ export class RevueDescriptionComponent implements OnInit {
       }
     } else {
       console.error('File URL is not available');
-      return;
     }
   }
 
