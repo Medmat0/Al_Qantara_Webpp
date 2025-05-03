@@ -57,13 +57,6 @@ export class RevueDescriptionComponent implements OnInit {
   }
 
   downloadFile(): void {
-    if (this.revue.fichier) {
-      window.location.href = this.revue.fichier;
-    } else {
-      console.error('File URL is not available');
-      return;
-    }
-
     const isAdminRoute = window.location.pathname.startsWith('/admin');
     console.log('Is Admin Route:', isAdminRoute);
 
@@ -79,6 +72,19 @@ export class RevueDescriptionComponent implements OnInit {
       });
     } else {
       console.log('On admin page, skipping request.');
+    }
+
+    const allowedDomains = ['cloudinary.com'];
+    if (this.revue.fichier) {
+      const fileUrl = new URL(this.revue.fichier);
+      if (allowedDomains.some(domain => fileUrl.hostname === domain)) {
+        window.location.href = this.revue.fichier;
+      } else {
+        console.error('Invalid file URL');
+      }
+    } else {
+      console.error('File URL is not available');
+      return;
     }
   }
 
