@@ -20,8 +20,9 @@ export class RevueItemComponent {
   constructor(private router: Router) {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        this.ShowStatsSubject.next(event.url.startsWith('/admin'));
-
+        const isAdmin = event.url.startsWith('/admin');
+        console.log('is in /admin:', isAdmin);
+        this.ShowStatsSubject.next(isAdmin);
       }
     });
   }

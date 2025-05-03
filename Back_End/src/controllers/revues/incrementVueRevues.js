@@ -4,7 +4,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 /**
  * @desc    Ajouter vue pour chaque revue 
- * @method  GET
+ * @method  POST
  * @route   /revues/:id/view
  */
 
@@ -39,7 +39,7 @@ const incrementVue = async (req, res) => {
 
   /**
  * @desc    Ajouter telechargement pour chaque revue 
- * @method  GET
+ * @method  POST
  * @route   /revues/:id/download
  */
 
