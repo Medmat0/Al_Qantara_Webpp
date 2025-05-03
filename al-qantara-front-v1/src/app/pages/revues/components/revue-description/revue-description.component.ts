@@ -61,7 +61,6 @@ export class RevueDescriptionComponent implements OnInit {
     console.log('Is Admin Route:', isAdminRoute);
 
     if (!isAdminRoute) {
-      console.log('Not on admin page, making request...');
       this.revueService.addDownloadToRevue(this.revue.id).subscribe({
         next: (response) => {
           console.log('Download count updated successfully:', response);
@@ -74,7 +73,7 @@ export class RevueDescriptionComponent implements OnInit {
       console.log('On admin page, skipping request.');
     }
 
-    const allowedDomains = ['cloudinary.com'];
+    const allowedDomains = ['res.cloudinary.com'];
     if (this.revue.fichier) {
       const fileUrl = new URL(this.revue.fichier);
       if (allowedDomains.some(domain => fileUrl.hostname === domain)) {
