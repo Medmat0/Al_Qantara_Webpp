@@ -65,7 +65,10 @@ export class RevueDescriptionComponent implements OnInit {
     }
 
     const isAdminRoute = window.location.pathname.startsWith('/admin');
+    console.log('Is Admin Route:', isAdminRoute);
+
     if (!isAdminRoute) {
+      console.log('Not on admin page, making request...');
       this.revueService.addDownloadToRevue(this.revue.id).subscribe({
         next: (response) => {
           console.log('Download count updated successfully:', response);
@@ -74,6 +77,8 @@ export class RevueDescriptionComponent implements OnInit {
           console.error('Error updating download count:', error);
         }
       });
+    } else {
+      console.log('On admin page, skipping request.');
     }
   }
 
