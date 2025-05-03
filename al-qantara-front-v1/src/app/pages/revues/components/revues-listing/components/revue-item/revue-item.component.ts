@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {AsyncPipe, NgIf} from '@angular/common';
-import {AdminStateService} from '../../../../../../shared/services/admin.state.service';
+import {RevueStatsStateService} from '../../../../../../shared/services/revue-stats.state.service';
 
 @Component({
   selector: 'app-revue-item',
@@ -17,15 +17,17 @@ export class RevueItemComponent {
   protected showStats : boolean = false;
 
 
-  constructor(private adminStateService: AdminStateService) {
+  constructor(private revueStatsStateService: RevueStatsStateService) {
 
   }
 
   ngOnInit() {
-    this.adminStateService.isAdmin$.subscribe(isAdmin => {
-      this.showStats = isAdmin;
+   this.revueStatsStateService.showStats$.subscribe((show) => {
+      this.showStats = show;
     });
-  }
+   }
+
+
 
   getPreviewUrl(pdfUrl: string): string {
     const onePage = pdfUrl.replace('/upload/', '/upload/pg_1/');
