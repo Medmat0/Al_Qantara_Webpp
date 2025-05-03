@@ -1,6 +1,6 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit } from '@angular/core';
 import {AsyncPipe, NgIf} from '@angular/common';
-import {RevueStatsStateService} from '../../../../../../shared/services/revue-stats.state.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-revue-item',
@@ -12,28 +12,21 @@ import {RevueStatsStateService} from '../../../../../../shared/services/revue-st
   standalone: true,
   styleUrl: './revue-item.component.scss'
 })
-export class RevueItemComponent {
-  @Input() revue:any;
-  protected showStats : boolean = false;
+export class RevueItemComponent implements OnInit {
+  @Input() revue: any;
+  protected showStats: boolean = false;
 
+  constructor(private router: Router) {}
 
-  constructor(private revueStatsStateService: RevueStatsStateService) {
-
+  ngOnInit(): void {
+    const currentUrl = this.router.url;
+    this.showStats =
+      currentUrl.startsWith('/admin/revues') || currentUrl === '/admin/revues/remove-revue';
   }
-
-  ngOnInit() {
-   this.revueStatsStateService.showStats$.subscribe((show) => {
-      this.showStats = show;
-    });
-   }
-
-
 
   getPreviewUrl(pdfUrl: string): string {
     const onePage = pdfUrl.replace('/upload/', '/upload/pg_1/');
     return onePage.replace('.pdf', '.jpg');
   }
-
-
-
 }
+
