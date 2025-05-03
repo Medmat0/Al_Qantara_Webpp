@@ -70,10 +70,19 @@ export class AuthService {
         } else if (response.message === 'Invalid or expired token' && response.authenticated === false) {
           console.error('Invalid or Expired access Token');
           localStorage.removeItem('utilisateur');
-          this.router.navigate(['/']); // Redirect to home
-          confirm('Your session has expired. Please log in again.')
-          this.authStatusSubject.next(false);
-        } else if (response.message === 'User not authenticated' && response.authenticated === false){
+          this.logout().subscribe({
+            next: () => {
+              console.log('User logged out due to invalid or expired token');
+              confirm('Your session has expired. Please log in again.');
+              this.authStatusSubject.next(false);
+              this.router.navigate(['/']); // Redirect to home
+            },
+            error: (err) => {
+              console.error('Error during logout:', err);
+            }
+          });
+          confirm('Your session has expired. Please log in again.');
+          }else if (response.message === 'User not authenticated' && response.authenticated === false){
           console.log('User is not authenticated:', response);
           this.authStatusSubject.next(false);
           localStorage.removeItem('utilisateur');
