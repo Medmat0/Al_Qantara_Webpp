@@ -12,10 +12,11 @@ export class RevueStatsStateService {
   constructor(private router: Router) {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        const hiddenRoutes =['/revues'];
-        this.showStatsSubject.next(!hiddenRoutes.includes(event.url));
+        const hiddenRoutes = ['/revues'];
+        const shouldShowStats = !hiddenRoutes.includes(event.url);
+        console.log(`NavigationEnd event: ${event.url}, shouldShowStats: ${shouldShowStats}`);
+        this.showStatsSubject.next(shouldShowStats);
       }
     });
   }
-
 }
