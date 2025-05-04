@@ -78,11 +78,18 @@ export class ResetPasswordComponent{
         this.router.navigate(['/auth/login']).then(r => console.log(r));
       },
       error: (error) => {
-        // Safely handle the error object
         this.isError = true;
-        this.message = error?.error?.message || 'An unexpected error occurred';
         console.error('Error resetting password', error);
+
+        const messageFromServer = error?.error?.message;
+
+        if (typeof messageFromServer === 'string') {
+          this.message = messageFromServer;
+        } else {
+          this.message = 'Une erreur est survenue.';
+        }
       }
+
     });
   }
 }
