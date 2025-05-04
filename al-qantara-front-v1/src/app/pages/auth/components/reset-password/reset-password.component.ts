@@ -24,22 +24,22 @@ export class ResetPasswordComponent{
   validationCodeForm = this.fb.group({
     email: ['', {
       validators: [Validators.required, Validators.email],
-      updateOn: 'blur'
+      updateOn: 'change'
     }],
   });
 
   resetPasswordForm = this.fb.group({
     password: ['', {
       validators: [Validators.required, Validators.minLength(8)],
-      updateOn: 'blur'
+      updateOn: 'change'
     }],
     accessCode: ['', {
       validators: [Validators.required],
-      updateOn: 'blur'
+      updateOn: 'change'
     }],
     confirmPassword: ['', {
       validators: [Validators.required, Validators.minLength(8), this.authService.passwordMatchValidator('password', 'confirmPassword')],
-      updateOn: 'blur'
+      updateOn: 'change'
     }]
   });
 

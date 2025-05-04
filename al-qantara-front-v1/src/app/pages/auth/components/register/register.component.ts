@@ -31,23 +31,23 @@ export class RegisterComponent {
   registerForm = this.fb.group({
     nom: ['', {
       validators: [Validators.required],
-      updateOn: 'blur'
+      updateOn: 'change'
     }],
     prenom: ['',{
       validators: [Validators.required],
-      updateOn: 'blur'
+      updateOn: 'change'
     }],
     email: ['',{
       validators: [Validators.required, Validators.email],
-      updateOn: 'blur'
+      updateOn: 'change'
     }],
     password: ['',{
       validators: [Validators.required, Validators.minLength(8)],
-      updateOn: 'blur'
+      updateOn: 'change'
     }],
     confirmPassword: ['', {
       validators: [Validators.required, Validators.minLength(8),this.authService.passwordMatchValidator('password', 'confirmPassword')],
-      updateOn: 'blur'
+      updateOn: 'change'
     }]
   });
 
