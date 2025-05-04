@@ -16,16 +16,39 @@
 
 }
 
-.content-in_img{
+.glass-overlay {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 20px;
+  padding: 30px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  color: #000;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.content-in_img {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  font-family: "Cormorant Garamond", serif;
   text-align: center;
-  color: #000000;
-  font-family: Cormorant Garamond, serif;
-  font-weight: bolder;
-  font-size: 30px;
+  padding: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.content-in_img h2 {
+  font-size: 2.2em;
+  margin-bottom: 10px;
+}
+
+.content-in_img h3 {
+  font-size: 1.1em;
+  font-weight: normal;
 }
 
 .image-container img {

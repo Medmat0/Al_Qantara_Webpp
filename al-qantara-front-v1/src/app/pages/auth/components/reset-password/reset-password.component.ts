@@ -2,20 +2,22 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../../member/services/auth.service';
 import { Router } from '@angular/router';
-import { AsyncPipe, NgIf } from '@angular/common';
+import {AsyncPipe, NgIf, NgStyle} from '@angular/common';
 
 @Component({
   selector: 'app-reset-password',
   templateUrl: './reset-password.component.html',
   styleUrls: ['./reset-password.component.scss'],
   standalone: true,
-  imports: [ReactiveFormsModule, AsyncPipe, NgIf]
+  imports: [ReactiveFormsModule, AsyncPipe, NgIf, NgStyle]
 })
 export class ResetPasswordComponent{
   fb: FormBuilder = inject(FormBuilder);
   authService = inject(AuthService);
   router = inject(Router);
   showResetForm: boolean = false;
+  message: string = '';
+  isError: boolean = false;
 
 
 
@@ -72,11 +74,14 @@ export class ResetPasswordComponent{
     this.authService.resetPassword(password,accessCode).subscribe({
       next: (response) => {
         // Handle successful password reset
+        this.isError = false;
+        this.message = 'Password reset successfully';
         console.log('Password reset successfully', response);
         this.router.navigate(['/auth/login']).then(r => console.log(r));
       },
       error: (error) => {
-        // Handle error in resetting password
+        this.isError = true;
+        this.message = error.error.message;
         console.error('Error resetting password', error);
       }
     });
