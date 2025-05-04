@@ -152,6 +152,7 @@ export class AuthService {
         }
       }),
       catchError((error) => {
+        this.errorMessage = error.error.message;
         console.error('Error sending verification code', error);
         return throwError(() => new Error('Error sending verification code'));
       })
@@ -168,6 +169,7 @@ export class AuthService {
         }
       }),
       catchError((error) => {
+        this.errorMessage = error.error.message;
         console.error('Error resetting password', error);
         return throwError(() => new Error('Error resetting password'));
       })
