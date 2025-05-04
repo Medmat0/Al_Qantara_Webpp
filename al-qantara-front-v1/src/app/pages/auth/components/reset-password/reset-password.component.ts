@@ -17,6 +17,7 @@ export class ResetPasswordComponent{
   router = inject(Router);
   showResetForm: boolean = false;
   message: string = '';
+  emailSent:string | null = '';
   isError: boolean = false;
 
 
@@ -53,10 +54,14 @@ export class ResetPasswordComponent{
       next: (response) => {
         // Handle successful sending of verification code
         this.showResetForm = true;
+        this.isError = false;
+        this.emailSent = 'Un email de vérification a été envoyé à ' + email;
         console.log('Verification code sent successfully', response);
       },
       error: (error) => {
+        this.isError = true;
         // Handle error in sending verification code
+        this.emailSent = this.authService.errorMessage;
         console.error('Error sending verification code', error);
       }
     });
@@ -80,8 +85,7 @@ export class ResetPasswordComponent{
       error: (error) => {
         this.isError = true;
         console.error('Error resetting password', error);
-
-        const messageFromServer = error?.error?.message;
+        const messageFromServer = this.authService.errorMessage;
 
         if (typeof messageFromServer === 'string') {
           this.message = messageFromServer;
