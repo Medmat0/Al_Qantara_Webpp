@@ -67,11 +67,9 @@ export class ResetPasswordComponent{
       return;
     }
 
-    const { password, accessCode} = this.resetPasswordForm.value;
-    console.log(password, accessCode);
+    const { password, accessCode } = this.resetPasswordForm.value;
 
-    // Handle submitting new password
-    this.authService.resetPassword(password,accessCode).subscribe({
+    this.authService.resetPassword(password, accessCode).subscribe({
       next: (response) => {
         // Handle successful password reset
         this.isError = false;
@@ -80,8 +78,9 @@ export class ResetPasswordComponent{
         this.router.navigate(['/auth/login']).then(r => console.log(r));
       },
       error: (error) => {
+        // Safely handle the error object
         this.isError = true;
-        this.message = error.error.message;
+        this.message = error?.error?.message || 'An unexpected error occurred';
         console.error('Error resetting password', error);
       }
     });
