@@ -58,6 +58,15 @@ export class RevuesListingComponent {
         const dateB = new Date(`${b.annee}-${this.getMonthNumber(b.mois)}-01`);
         return dateA.getTime() - dateB.getTime(); // Ascending order
       });
+    } else if(this.selectedFilter==='les plus populaires'){
+      filtered = filtered.sort((a, b) => {
+        return b.nombreVues - a.nombreVues; // Descending order
+      });
+    } else if(this.selectedFilter==='les plus téléchargés'){
+      filtered = filtered.sort((a, b) => {
+        return b.nombreTelechargements - a.nombreTelechargements; // Descending order
+      });
+
     }
 
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
@@ -95,5 +104,16 @@ export class RevuesListingComponent {
   onRevueClick(revue: any): void {
     console.log('Revue clicked:', revue);
     this.router.navigate(['/revues/revue-description/', revue.id]).then(r => console.log(r));
+    const isAdminRoute = window.location.pathname.startsWith('/admin');
+    if (!isAdminRoute) {
+      this.revueService.addVueToRevue(revue.id).subscribe({
+        next: (response) => {
+          console.log('View count updated successfully:', response);
+        },
+        error: (error) => {
+          console.error('Error updating view count:', error);
+        }
+      });
+    }
   }
 }

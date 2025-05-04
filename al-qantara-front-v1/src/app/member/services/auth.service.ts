@@ -60,29 +60,46 @@ export class AuthService {
 
   checkAuthStatus(): Observable<any> {
     return this.http.get(`${this.apiUrl}/auth-check`, {
-      withCredentials: true //envoi des credentials et reception cookies
+      withCredentials: true // Send credentials and receive cookies
     }).pipe(
       tap((response: any) => {
-        if (response && response.authenticated===true) {
+        if (response && response.authenticated === true) {
           localStorage.setItem('utilisateur', JSON.stringify(response.utilisateur));
           console.log('User is authenticated:', response);
           this.authStatusSubject.next(true);
-        }
-        else {
+        } else if (response.message === 'Invalid or expired token' && response.authenticated === false) {
+          console.error('Invalid or Expired access Token');
+          localStorage.removeItem('utilisateur');
+          this.logout().subscribe({
+            next: () => {
+              console.log('User logged out due to invalid or expired token');
+              confirm('Your session has expired. Please log in again.');
+              this.authStatusSubject.next(false);
+              this.router.navigate(['/']); // Redirect to home
+            },
+            error: (err) => {
+              console.error('Error during logout:', err);
+            }
+          });
+          confirm('Your session has expired. Please log in again.');
+          }else if (response.message === 'User not authenticated' && response.authenticated === false){
           console.log('User is not authenticated:', response);
           this.authStatusSubject.next(false);
-          localStorage.removeItem('utilisateur'); // Clear user data if not authenticated
+          localStorage.removeItem('utilisateur');
+          this.router.navigate(['/']); // Redirect to home
         }
       }),
       catchError((error) => {
         console.error('Error checking authentication status', error);
         this.authStatusSubject.next(false);
         localStorage.removeItem('utilisateur');
+        this.router.navigate(['/']); // Redirect to home on error
+
         return throwError(() => new Error('Error checking authentication status'));
       })
     );
   }
-
+  /*
   refreshAccessToken(): Observable<any> {
     return this.http.post(`${this.apiUrl}/refresh-accesstoken`, {}, {
       withCredentials: true //envoi des credentials et reception cookies
@@ -99,6 +116,7 @@ export class AuthService {
       })
     );
   }
+   */
 
   // Register a new user BASIC MEMBER SO BASE ROLE IS USER -----------------------------------------------------------
   register(nom: string | null | undefined, prenom: string | null | undefined, email: string | null | undefined, password: string | null | undefined): Observable<any> {
@@ -134,6 +152,7 @@ export class AuthService {
         }
       }),
       catchError((error) => {
+        this.errorMessage = error.error.message;
         console.error('Error sending verification code', error);
         return throwError(() => new Error('Error sending verification code'));
       })
@@ -150,6 +169,7 @@ export class AuthService {
         }
       }),
       catchError((error) => {
+        this.errorMessage = error.error.message;
         console.error('Error resetting password', error);
         return throwError(() => new Error('Error resetting password'));
       })

@@ -25,11 +25,11 @@ export class LoginComponent {
   loginForm = this.fb.group({
     email: ['', {
       validators: [Validators.required, Validators.email],
-      updateOn: 'blur'
+      updateOn: 'change'
     }],
     password: ['', {
       validators: [Validators.required],
-      updateOn: 'blur'
+      updateOn: 'change'
     }]
   });
 
