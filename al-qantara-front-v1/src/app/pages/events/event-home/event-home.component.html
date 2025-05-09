@@ -1,0 +1,25 @@
+<div class="view-toggle-container">
+  <button
+    [class.active]="isCalendarView"
+    (click)="toggleView(true)">
+    Calendrier
+  </button>
+  <button
+    [class.active]="!isCalendarView"
+    (click)="toggleView(false)">
+    Liste des événements
+  </button>
+</div>
+
+
+<div class="view-container">
+  <ng-container *ngIf="isCalendarView; else listView">
+    <p>Calendrier</p>
+    <app-event-calendar></app-event-calendar>
+  </ng-container>
+
+  <ng-template #listView>
+    <p>Liste des événements</p>
+    <app-event-listing></app-event-listing>
+  </ng-template>
+</div>
