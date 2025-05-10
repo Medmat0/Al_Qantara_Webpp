@@ -1,1 +1,22 @@
-<p>event-listing works!</p>
+<h2>Evénements à venir</h2>
+<div class="event-listing">
+  <div
+    class="event-item-container"
+    *ngFor="let event of filteredEvents">
+    <app-event-item [event]="event"></app-event-item>
+  </div>
+</div>
+
+<div class="pagination">
+  <button
+    [disabled]="currentPage === 1"
+    (click)="changePage(currentPage - 1)">
+    Previous
+  </button>
+  <span>Page {{ currentPage }} of {{ totalPages }}</span>
+  <button
+    [disabled]="currentPage === totalPages"
+    (click)="changePage(currentPage + 1)">
+    Next
+  </button>
+</div>
