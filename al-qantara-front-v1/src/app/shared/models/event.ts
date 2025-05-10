@@ -5,7 +5,7 @@ export class Event {
         public description: string,
         public image: string,
         public nombrePlaces: number,
-        public tags: [string],
+        public tags: string[],
         public dateDebut: Date,
         public dateFin: Date,
         public lieu: string,
