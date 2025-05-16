@@ -1,1 +1,6 @@
-<p>event-description works!</p>
+<div class="modal-backdrop" (click)="close.emit()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="close.emit()">×</button>
+    <ng-content></ng-content>
+  </div>
+</div>

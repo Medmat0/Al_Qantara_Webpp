@@ -1,0 +1,26 @@
+.modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-content {
+  font-family: 'Segoe UI', sans-serif;
+  background: #fff;
+  border-radius: 8px;
+  padding: 2rem;
+  min-width: 300px;
+  min-height: 150px;
+  position: relative;
+}
+.close-btn {
+  position: absolute;
+  top: 8px; right: 12px;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+}
