@@ -1,24 +1,64 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import {Component, EventEmitter, Input, OnChanges, Output} from '@angular/core';
+import {DatePipe, NgForOf, NgIf} from '@angular/common';
+import {FormsModule} from '@angular/forms';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-event-description',
   standalone: true,
-  imports: [],
   templateUrl: './event-description.component.html',
+  imports: [
+    NgIf,
+    FormsModule,
+    DatePipe,
+    NgForOf
+  ],
   styleUrl: './event-description.component.scss'
 })
-export class EventDescriptionComponent implements OnInit {
-  constructor(private route: ActivatedRoute, private router: Router) {}
+export class EventDescriptionComponent implements OnChanges {
+  @Input() event: any;
+  @Input() participation: any;
+  @Input() isParticipating = false;
+  @Input() loading = false;
+  @Input() error = '';
   @Output() close = new EventEmitter<void>();
+  @Output() like = new EventEmitter<void>();
+  @Output() comment = new EventEmitter<string>();
+  @Output() participate = new EventEmitter<void>();
 
+  safeMapUrl: SafeResourceUrl | null = null;
+  constructor(private sanitizer: DomSanitizer) {}
+  commentText = '';
+  showCommentForm = false;
 
-  ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.router.navigate(['/events'], {
-        state: { openEventId: +id }
-      });
+  ngOnChanges() {
+    if (this.event) {
+      this.safeMapUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+        'https://www.openstreetmap.org/export/embed.html?bbox=' +
+        (this.event.longitude - 0.01) + ',' +
+        (this.event.latitude - 0.01) + ',' +
+        (this.event.longitude + 0.01) + ',' +
+        (this.event.latitude + 0.01) +
+        '&layer=mapnik&marker=' + this.event.latitude + ',' + this.event.longitude
+      );
     }
+  }
+
+  formatDateTime(dateStr: string) {
+    return new Date(dateStr).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' });
+  }
+
+  handleCommentSubmit() {
+    if (this.commentText.trim()) {
+      this.comment.emit(this.commentText);
+      this.commentText = '';
+      this.showCommentForm = false;
+    }
+  }
+
+  handleShare() {
+    const subject = `Invitation à l'événement: ${this.event.titre}`;
+    const body = `Bonjour,\n\nJe vous invite à l'événement "${this.event.titre}" qui se déroulera le ${this.formatDateTime(this.event.dateDebut)} à ${this.event.lieu}.\n\nPour plus d'informations, visitez notre site web.\n\nCordialement`;
+    window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   }
 }

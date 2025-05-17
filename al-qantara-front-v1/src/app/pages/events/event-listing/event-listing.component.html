@@ -25,7 +25,6 @@
 <!-- Modal -->
 <app-event-description
   *ngIf="showModal"
+  [event]="selectedEvent"
   (close)="closeModal()">
-  <h3>{{ selectedEvent?.titre }}</h3>
-  <p>{{ selectedEvent?.description }}</p>
 </app-event-description>

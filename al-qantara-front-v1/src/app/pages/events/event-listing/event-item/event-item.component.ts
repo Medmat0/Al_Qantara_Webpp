@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {Event} from '../../../../shared/models/event';
+import {Evenement} from '../../../../member/models/evenement';
 
 @Component({
   selector: 'app-event-item',
@@ -9,6 +9,6 @@ import {Event} from '../../../../shared/models/event';
   styleUrl: './event-item.component.scss'
 })
 export class EventItemComponent {
-  @Input() event!: Event;
+  @Input() event!: Evenement;
 
 }

@@ -2,9 +2,9 @@ import {Component, inject} from '@angular/core';
 import { EventItemComponent } from './event-item/event-item.component';
 import {NgForOf, NgIf} from '@angular/common';
 import {EventDescriptionComponent} from '../event-description/event-description.component';
-import {EventService} from '../../../member/services/event.service';
-import {Event} from '../../../shared/models/event';
+import {EvenementService} from '../../../member/services/evenement.service';
 import { Router } from '@angular/router';
+import {Evenement} from '../../../member/models/evenement';
 @Component({
   selector: 'app-event-listing',
   imports: [
@@ -18,10 +18,10 @@ import { Router } from '@angular/router';
   styleUrl: './event-listing.component.scss'
 })
 export class EventListingComponent {
-  eventService = inject(EventService);
+  eventService = inject(EvenementService);
   router = inject(Router);
 
-  events:Event[] = [];
+  events:Evenement[] = [];
 
   showModal = false;
   selectedEvent: any = null;
@@ -36,7 +36,15 @@ export class EventListingComponent {
   }
 
   ngOnInit() {
-    this.events = this.eventService.getAllEvents();
+    this.eventService.getAllEvenements().subscribe({
+      next: (response) => {
+        this.events = response;
+        console.log('Liste des événements récupérée avec succès', response);
+      },
+      error: (error) => {
+        console.error('Erreur lors de la récupération des événements', error);
+      }
+    });
 
     // Récupère l'id depuis le state de l'historique
     const openEventId = history.state?.openEventId;
