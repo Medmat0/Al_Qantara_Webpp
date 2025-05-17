@@ -25,6 +25,11 @@ model Utilisateur {
   articles                Article[]
   adhesion                Adhesion?
   accesEvenements         AccesEvenement[]
+  likes                   LikeEvenement[]
+  commentaires            CommentaireEvenement[]
+  ratings                 RatingEvenement[]
+  partages                PartageEvenement[]
+  participations          ParticipationEvenement[]
 }
 
 enum Role {
@@ -49,6 +54,17 @@ model Evenement {
   createdBy   Int
   createur    Utilisateur @relation(fields: [createdBy], references: [id])
   acces       AccesEvenement[]
+  images      String[]  @db.VarChar(255)
+  video       String?   @db.VarChar(255)
+  latitude    Float?
+  longitude   Float?
+  placesTotal Int?
+  placesRestantes Int?
+  likes       LikeEvenement[]
+  comments    CommentaireEvenement[]
+  ratings     RatingEvenement[]
+  partages    PartageEvenement[]
+  participations ParticipationEvenement[]
 }
 
 enum TypeEvenement {
@@ -122,4 +138,71 @@ model AccesEvenement {
   utilisateurId Int
   evenement    Evenement  @relation(fields: [evenementId], references: [id])
   utilisateur  Utilisateur @relation(fields: [utilisateurId], references: [id])
+}
+
+model LikeEvenement {
+  id          Int       @id @default(autoincrement())
+  evenementId Int
+  utilisateurId Int
+  dateLike    DateTime  @default(now())
+  evenement   Evenement @relation(fields: [evenementId], references: [id])
+  utilisateur Utilisateur @relation(fields: [utilisateurId], references: [id])
+
+  @@unique([evenementId, utilisateurId])
+}
+
+model CommentaireEvenement {
+  id          Int       @id @default(autoincrement())
+  evenementId Int
+  utilisateurId Int
+  contenu     String
+  dateCommentaire DateTime @default(now())
+  evenement   Evenement @relation(fields: [evenementId], references: [id])
+  utilisateur Utilisateur @relation(fields: [utilisateurId], references: [id])
+}
+
+model RatingEvenement {
+  id          Int       @id @default(autoincrement())
+  evenementId Int
+  utilisateurId Int
+  noteOrganisateur Int
+  noteLieu    Int
+  noteAmbiance Int
+  noteEvenement Int
+  commentaire String?
+  dateRating  DateTime  @default(now())
+  evenement   Evenement @relation(fields: [evenementId], references: [id])
+  utilisateur Utilisateur @relation(fields: [utilisateurId], references: [id])
+
+  @@unique([evenementId, utilisateurId])
+}
+
+model PartageEvenement {
+  id          Int       @id @default(autoincrement())
+  evenementId Int
+  utilisateurId Int
+  emailDestinataire String
+  message     String?
+  datePartage DateTime  @default(now())
+  evenement   Evenement @relation(fields: [evenementId], references: [id])
+  utilisateur Utilisateur @relation(fields: [utilisateurId], references: [id])
+}
+
+model ParticipationEvenement {
+  id          Int       @id @default(autoincrement())
+  evenementId Int
+  utilisateurId Int
+  statut      StatutParticipation @default(EN_ATTENTE)
+  qrCode      String?   @db.Text
+  dateParticipation DateTime @default(now())
+  evenement   Evenement @relation(fields: [evenementId], references: [id])
+  utilisateur Utilisateur @relation(fields: [utilisateurId], references: [id])
+
+  @@unique([evenementId, utilisateurId])
+}
+
+enum StatutParticipation {
+  EN_ATTENTE
+  CONFIRME
+  ANNULE
 }
