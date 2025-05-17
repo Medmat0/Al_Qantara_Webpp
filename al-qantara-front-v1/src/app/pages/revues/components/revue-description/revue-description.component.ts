@@ -57,8 +57,36 @@ export class RevueDescriptionComponent implements OnInit {
   }
 
   downloadFile(): void {
+    const isAdminRoute = window.location.pathname.startsWith('/admin');
+    console.log('Is Admin Route:', isAdminRoute);
+
+    if (!isAdminRoute) {
+      this.revueService.addDownloadToRevue(this.revue.id).subscribe({
+        next: (response) => {
+          console.log('Download count updated successfully:', response);
+
+          // Proceed with file download after successful response
+          this.downloadRevueFile();
+        },
+        error: (error) => {
+          console.error('Error updating download count:', error);
+        }
+      });
+    } else {
+      console.log('On admin page, skipping request.');
+      this.downloadRevueFile();
+    }
+  }
+
+  private downloadRevueFile(): void {
+    const allowedDomains = ['res.cloudinary.com'];
     if (this.revue.fichier) {
-      window.location.href = this.revue.fichier;
+      const fileUrl = new URL(this.revue.fichier);
+      if (allowedDomains.some(domain => fileUrl.hostname === domain)) {
+        window.location.href = this.revue.fichier;
+      } else {
+        console.error('Invalid file URL');
+      }
     } else {
       console.error('File URL is not available');
     }

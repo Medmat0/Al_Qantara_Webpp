@@ -9,9 +9,9 @@ const router = express.Router();
 router.post("/add", isAdmin ,upload.single("document"), addRevue);
 router.delete("/delete/:id", isAdmin ,deleteRevue);
 router.get("/",getRevues);
-router.get("/:id", getRevueById); 
-router.get("/:id/download", incrementTelechargement);
-router.get("/:id/view", incrementVue);
+router.get("/:id", getRevueById);
+router.post("/:id/download", incrementTelechargement);
+router.post("/:id/view", incrementVue);
 
 
 export default router;

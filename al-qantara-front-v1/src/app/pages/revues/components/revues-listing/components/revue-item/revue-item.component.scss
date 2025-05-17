@@ -44,6 +44,11 @@
   line-height: 1.6;
 }
 
+.download-numbers{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
 
 @media (max-width: 768px) {
   .revue-item {
