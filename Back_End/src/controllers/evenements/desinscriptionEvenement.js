@@ -10,8 +10,8 @@ const prisma = new PrismaClient();
 const desinscriptionEvenement = async (req, res) => {
   try {
     const { id } = req.params;
-    const utilisateurId = req.user.id;
-    //const utilisateurId = 1; // Pour test
+    //const utilisateurId = req.user.id;
+    const utilisateurId = 1; // Pour test
 
     // Vérifier si l'événement existe
     const evenement = await prisma.evenement.findUnique({

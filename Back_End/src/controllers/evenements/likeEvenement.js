@@ -11,8 +11,8 @@ const toggleLikeEvenement = async (req, res) => {
   try {
     const { id } = req.params;
     console.log(id);
-     const utilisateurId = req.user.id;
-    //const utilisateurId = 5;
+    // const utilisateurId = req.user.id;
+    const utilisateurId = 5;
     // Vérifier si l'événement existe
     const evenement = await prisma.evenement.findUnique({
       where: { id: parseInt(id) }

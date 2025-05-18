@@ -109,8 +109,8 @@ const addEvenement = async (req, res) => {
     }
 
     // Utiliser un utilisateur par défaut (ID 1) pour les tests
-    //const defaultUserId = 1;
-    const defaultUserId = req.user.id;
+    const defaultUserId = 1;
+    //const defaultUserId = req.user.id;
     const nouvelEvenement = await prisma.evenement.create({
       data: {
         titre,

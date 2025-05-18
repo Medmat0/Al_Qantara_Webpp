@@ -46,8 +46,8 @@ const checkParticipation = async (req, res) => {
 const participerEvenement = async (req, res) => {
   try {
     const { id } = req.params;
-    const utilisateurId = req.user.id;
-    //const utilisateurId = 1; // Pour test
+    //const utilisateurId = req.user.id;
+    const utilisateurId = 1; // Pour test
 
     const evenement = await prisma.evenement.findUnique({
       where: { id: parseInt(id) },

@@ -11,8 +11,8 @@ const addCommentEvenement = async (req, res) => {
   try {
     const { id } = req.params;
     const { contenu } = req.body;
-    const utilisateurId = req.user.id;
-    //const utilisateurId = 5;
+    //const utilisateurId = req.user.id;
+    const utilisateurId = 5;
 
     // Vérifier si l'événement existe
     const evenement = await prisma.evenement.findUnique({

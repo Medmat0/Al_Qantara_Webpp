@@ -19,7 +19,7 @@ router.get("/:id", getEvenementById);
 router.get("/cloudinary-signature", getCloudinarySignature);
 
 // Routes protégées (nécessitent une authentification)
-router.use(authMiddleware);
+//router.use(authMiddleware);
 
 // Routes pour les likes
 router.post("/:id/like", toggleLikeEvenement);
@@ -40,7 +40,7 @@ router.post("/:id/participer", participerEvenement);
 router.delete("/:id/desinscription", desinscriptionEvenement);
 
 // Routes admin uniquement
-router.use(isAdmin);
+//router.use(isAdmin);
 router.post("/", addEvenement);
 router.delete("/:id", deleteEvenement);
 router.get("/:id/ratings", getEvenementRatings);
