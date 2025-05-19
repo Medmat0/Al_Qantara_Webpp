@@ -81,12 +81,10 @@ export class AuthService {
               console.error('Error during logout:', err);
             }
           });
-          confirm('Your session has expired. Please log in again.');
           }else if (response.message === 'User not authenticated' && response.authenticated === false){
           console.log('User is not authenticated:', response);
           this.authStatusSubject.next(false);
           localStorage.removeItem('utilisateur');
-          this.router.navigate(['/']); // Redirect to home
         }
       }),
       catchError((error) => {
