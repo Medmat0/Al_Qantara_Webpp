@@ -86,4 +86,20 @@ export class EvenementService {
     );
 
   }
+
+  likeEvenement(EvenementId: number): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/${EvenementId}/like`,
+      {},
+      { withCredentials: true }
+    ).pipe(
+      tap((response) => {
+        console.log('Liked event:', response);
+      }),
+      catchError((error) => {
+        console.error('Error liking event:', error);
+        return throwError(() => new Error('Error liking event'));
+      })
+    );
+  }
 }

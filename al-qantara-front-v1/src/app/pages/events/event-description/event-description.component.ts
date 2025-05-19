@@ -45,10 +45,6 @@ export class EventDescriptionComponent implements OnChanges {
       );
     }
 
-    if(this.unsubscribeConfirmed) {
-      setTimeout(() => this.unsubscribeConfirmed = false, 3000); // cache après 3s
-
-    }
 
   }
 

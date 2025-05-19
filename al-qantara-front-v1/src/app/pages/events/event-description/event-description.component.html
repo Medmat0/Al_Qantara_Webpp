@@ -40,7 +40,7 @@
       </div>
 
       <div class="actions mb-2">
-        <button (click)="like.emit()" class="btn-like">❤️ {{ event.nombreLikes || 0 }}</button>
+        <button (click)="like.emit()" class="btn-like">❤️ {{ event.likes?.length || 0 }}</button>
         <button (click)="showCommentForm = !showCommentForm" class="btn-comment">💬 {{ event.nombreCommentaires || 0 }} Commentaires</button>
         <button (click)="handleShare()" class="btn-share">📤 Partager</button>
       </div>

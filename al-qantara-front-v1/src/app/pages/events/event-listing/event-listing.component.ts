@@ -36,6 +36,7 @@ export class EventListingComponent {
   openModal(event: any) {
     this.selectedEvent = event;
     this.showModal = true;
+    this.unsubscribeConfirmed = false;
     this.onEvenementClick(event);
   }
   closeModal() {
@@ -74,6 +75,7 @@ export class EventListingComponent {
         }
         else {
           this.isParticipating = true;
+          this.participation = res.participation;
         }
       },
       error: (err) => {
@@ -131,6 +133,11 @@ export class EventListingComponent {
         this.loading = false;
         this.unsubscribeConfirmed = true;
 
+        // Cache la notif de désinscription après 3s
+        setTimeout(() => {
+          this.unsubscribeConfirmed = false;
+        }, 3000);
+
         // Met à jour l’événement dans la liste
         const idx = this.events.findIndex(e => e.id === Evenement.id);
         if (idx !== -1) {
@@ -157,10 +164,39 @@ export class EventListingComponent {
     });
   }
 
+  onLikeEvenement(Evenement: Evenement) {
+    this.evenementService.likeEvenement(Evenement.id).subscribe({
+      next: (res) => {
+        // Met à jour dans la liste
+        const idx = this.events.findIndex(e => e.id === Evenement.id);
+        if (idx !== -1) {
+          this.events[idx] = {
+            ...this.events[idx],
+            likes: Array.isArray(this.events[idx].likes)
+              ? [...this.events[idx].likes, {} as any]
+              : [{} as any]
+          };
+        }
+        // Met à jour dans la modale si besoin
+        if (this.selectedEvent && this.selectedEvent.id === Evenement.id) {
+          this.selectedEvent = {
+            ...this.selectedEvent,
+            likes: Array.isArray(this.selectedEvent.likes)
+              ? [...this.selectedEvent.likes, {} as any]
+              : [{} as any]
+          };
+        }
+      },
+      error: (err) => {
+        console.error('Erreur lors de l\'ajout du like', err);
+      }
+    });
+  }
 
 
 
 
+  // Pagination-----------------
   currentPage: number = 1;
   itemsPerPage: number = 6;
 

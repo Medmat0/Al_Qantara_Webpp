@@ -29,6 +29,7 @@
   [isParticipating]="isParticipating"
   [participation]="participation"
   [loading]="loading"
+  (like)="onLikeEvenement(selectedEvent)"
   [error]="error"
   (participate)="onParticipateToEvenement(selectedEvent)"
   (unsubscribe)="onUnsubscribeEvenement(selectedEvent)"

@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import {Router, RouterLink} from '@angular/router';
 import { NgIf } from '@angular/common';
 import { NavbarService } from '../../services/navbar.service';
-import { AuthService } from '../../../member/services/auth.service';
+import { AuthService } from '../../services/auth.service';
 import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
