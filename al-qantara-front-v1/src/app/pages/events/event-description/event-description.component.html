@@ -45,19 +45,39 @@
         <button (click)="handleShare()" class="btn-share">📤 Partager</button>
       </div>
 
-      <div *ngIf="!isParticipating && event.placesRestantes > 0" class="mb-2">
-        <button (click)="participate.emit()" [disabled]="loading" class="btn-participate">
+      <div class="mb-2">
+        <button
+          *ngIf="!isParticipating && event.placesRestantes > 0"
+          (click)="participate.emit()"
+          [disabled]="loading"
+          class="btn-participate">
           {{ loading ? 'Participation en cours...' : '🎫 Participer à l\'événement' }}
+        </button>
+        <button
+          *ngIf="isParticipating"
+          (click)="unsubscribe.emit()"
+          [disabled]="loading"
+          class="btn-unsubscribe">
+          {{ loading ? 'Désinscription en cours...' : '❌ Se désinscrire' }}
         </button>
       </div>
 
       <div *ngIf="isParticipating && participation" class="mb-2">
-        <strong>Votre participation est confirmée !</strong>
-        <div>
-          <img [src]="participation.qrCode" alt="QR Code" class="qr-code" />
-          <div class="text-xs text-green-500 mt-2">
-            Un email de confirmation a été envoyé à votre adresse email.
+        <div class="confirmed-green-box">
+          <strong>Votre participation est confirmée !</strong>
+          <div>
+            <img [src]="participation.qrCode" alt="QR Code" class="qr-code" />
+            <div class="text-xs text-green-500 mt-2">
+              Un email de confirmation a été envoyé à votre adresse email.
+            </div>
           </div>
+        </div>
+      </div>
+
+      <div *ngIf="unsubscribeConfirmed" class="unsubscribe-confirmed-red-box">
+        <strong>Désinscription confirmée&nbsp;!</strong>
+        <div class="text-xs text-red-500 mt-2">
+          Vous avez bien été désinscrit de l’événement.
         </div>
       </div>
 

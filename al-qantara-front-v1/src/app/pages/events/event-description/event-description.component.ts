@@ -25,11 +25,13 @@ export class EventDescriptionComponent implements OnChanges {
   @Output() like = new EventEmitter<void>();
   @Output() comment = new EventEmitter<string>();
   @Output() participate = new EventEmitter<void>();
-
+  @Output() unsubscribe = new EventEmitter<void>();
+  @Input() unsubscribeConfirmed = false;
   safeMapUrl: SafeResourceUrl | null = null;
   constructor(private sanitizer: DomSanitizer) {}
   commentText = '';
   showCommentForm = false;
+
 
   ngOnChanges() {
     if (this.event) {
@@ -42,7 +44,15 @@ export class EventDescriptionComponent implements OnChanges {
         '&layer=mapnik&marker=' + this.event.latitude + ',' + this.event.longitude
       );
     }
+
+    if(this.unsubscribeConfirmed) {
+      setTimeout(() => this.unsubscribeConfirmed = false, 3000); // cache après 3s
+
+    }
+
   }
+
+
 
   formatDateTime(dateStr: string) {
     return new Date(dateStr).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' });

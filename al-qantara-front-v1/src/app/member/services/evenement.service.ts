@@ -39,5 +39,51 @@ export class EvenementService {
     );
   }
 
+  addParticipationToEvenement(EvenementId: number): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/${EvenementId}/participer`,
+      {},
+      { withCredentials: true }
+    ).pipe(
+      tap((response) => {
+        console.log('Added participation:', response);
+      }),
+      catchError((error) => {
+        console.error('Error adding participation:', error);
+        return throwError(() => new Error('Error adding participation'));
+      })
+    );
+  }
 
+  checkParticipation(EvenementId: number): Observable<any> {
+    return this.http.get(
+      `${this.apiUrl}/${EvenementId}/participation`,
+      { withCredentials: true }
+    ).pipe(
+      tap((response) => {
+        console.log('Checked participation:', response);
+      }),
+      catchError((error) => {
+        console.error('Error checking participation:', error);
+        return throwError(() => new Error('Error checking participation'));
+      })
+    );
+  }
+
+
+  removeParticipationFromEvenement(EvenementId:number): Observable<any>{
+    return this.http.delete(
+      `${this.apiUrl}/${EvenementId}/desinscription`,
+      { withCredentials: true }
+    ).pipe(
+      tap((response) => {
+        console.log('Removed participation successfully', response);
+      }),
+      catchError((error) => {
+        console.error('Error removing participation:', error);
+        return throwError(() => new Error('Error removing participation'));
+      })
+    );
+
+  }
 }

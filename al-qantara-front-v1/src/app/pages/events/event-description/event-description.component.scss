@@ -169,3 +169,35 @@ textarea.form-control {
 .btn-participate:hover {
   background: #e5e7eb;
 }
+
+.btn-unsubscribe {
+  color: #ef4444; /* même couleur que .btn-close */
+  background: #f3f4f6;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.btn-unsubscribe:hover {
+  background: #e5e7eb;
+}
+
+.confirmed-green-box{
+  background-color: #e6ffed;
+  border-left: 4px solid #34d399;
+  padding: 1rem;
+  margin: 1.5rem 0;
+  text-align: center;
+  border-radius: 8px;
+}
+
+.unsubscribe-confirmed-red-box{
+  background-color: #ffe6e6;
+  border-left: 4px solid #ef4444;
+  padding: 1rem;
+  margin: 1.5rem 0;
+  text-align: center;
+  border-radius: 8px;
+}

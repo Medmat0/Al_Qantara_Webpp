@@ -18,17 +18,25 @@ import {Evenement} from '../../../member/models/evenement';
   styleUrl: './event-listing.component.scss'
 })
 export class EventListingComponent {
-  eventService = inject(EvenementService);
+  evenementService = inject(EvenementService);
   router = inject(Router);
 
   events:Evenement[] = [];
 
   showModal = false;
   selectedEvent: any = null;
+  // propriétés pour la gestion de la participation
+  loading = false;
+  error = '';
+  isParticipating = false;
+  participation: any = null;
+  unsubscribeConfirmed = false;
+
 
   openModal(event: any) {
     this.selectedEvent = event;
     this.showModal = true;
+    this.onEvenementClick(event);
   }
   closeModal() {
     this.showModal = false;
@@ -36,7 +44,7 @@ export class EventListingComponent {
   }
 
   ngOnInit() {
-    this.eventService.getAllEvenements().subscribe({
+    this.evenementService.getAllEvenements().subscribe({
       next: (response) => {
         this.events = response;
         console.log('Liste des événements récupérée avec succès', response);
@@ -56,10 +64,107 @@ export class EventListingComponent {
     }
   }
 
+
+
+  onEvenementClick(Evenement: Evenement) {
+    this.evenementService.checkParticipation(Evenement.id).subscribe({
+      next: (res) => {
+        if(res.participation === null) {
+          this.isParticipating = false;
+        }
+        else {
+          this.isParticipating = true;
+        }
+      },
+      error: (err) => {
+        this.error = err.message;
+        console.error('Erreur lors de la vérification de la participation', err);
+      }
+    });
+  }
+
+  // Méthode pour ajouter une participation
+  onParticipateToEvenement(Evenement: any) {
+    this.loading = true;
+    this.error = '';
+    this.evenementService.addParticipationToEvenement(Evenement.id).subscribe({
+      next: (res) => {
+        this.isParticipating = true;
+        this.participation = res.participation;
+        this.loading = false;
+
+        // Met à jour l’événement dans la liste
+        const idx = this.events.findIndex(e => e.id === Evenement.id);
+        if (idx !== -1) {
+          this.events[idx] = {
+            ...this.events[idx],
+            placesRestantes: this.events[idx].placesRestantes != null
+              ? this.events[idx].placesRestantes - 1
+              : 0,
+            // Ajout d’autres propriétés si besoin
+          };
+        }
+
+        // Met à jour l’événement sélectionné dans la modale
+        if (this.selectedEvent && this.selectedEvent.id === Evenement.id) {
+          this.selectedEvent = {
+            ...this.selectedEvent,
+            placesRestantes: this.selectedEvent.placesRestantes - 1,
+          };
+        }
+      },
+      error: (err) => {
+        this.error = err.message;
+        this.loading = false;
+      }
+    });
+  }
+
+  onUnsubscribeEvenement(Evenement: Evenement) {
+    this.loading = true;
+    this.error = '';
+
+    this.evenementService.removeParticipationFromEvenement(Evenement.id).subscribe({
+      next: () => {
+        this.isParticipating = false;
+        this.participation = null;
+        this.loading = false;
+        this.unsubscribeConfirmed = true;
+
+        // Met à jour l’événement dans la liste
+        const idx = this.events.findIndex(e => e.id === Evenement.id);
+        if (idx !== -1) {
+          this.events[idx] = {
+            ...this.events[idx],
+            placesRestantes: this.events[idx].placesRestantes != null
+              ? this.events[idx].placesRestantes + 1
+              : 0,
+          };
+        }
+
+        // Met à jour l’événement sélectionné dans la modale
+        if (this.selectedEvent && this.selectedEvent.id === Evenement.id) {
+          this.selectedEvent = {
+            ...this.selectedEvent,
+            placesRestantes: this.selectedEvent.placesRestantes + 1,
+          };
+        }
+      },
+      error: (err) => {
+        this.error = err.message;
+        this.loading = false;
+      }
+    });
+  }
+
+
+
+
+
   currentPage: number = 1;
   itemsPerPage: number = 6;
 
-  get filteredEvents() {
+  get filteredEvenements() {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     return this.events.slice(startIndex, startIndex + this.itemsPerPage);
   }
