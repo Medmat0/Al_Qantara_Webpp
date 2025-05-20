@@ -40,7 +40,9 @@
       </div>
 
       <div class="actions mb-2">
-        <button (click)="like.emit()" class="btn-like">❤️ {{ event.likes?.length || 0 }}</button>
+        <div [ngClass]="{'like-container': true, 'liked': hasLikedEvenement}">
+          <button (click)="like.emit()" class="btn-like">❤️ {{ event.likes?.length || 0 }}</button>
+        </div>
         <button (click)="showCommentForm = !showCommentForm" class="btn-comment">💬 {{ event.nombreCommentaires || 0 }} Commentaires</button>
         <button (click)="handleShare()" class="btn-share">📤 Partager</button>
       </div>

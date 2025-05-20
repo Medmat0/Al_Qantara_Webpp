@@ -20,7 +20,6 @@
   max-width: 640px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.2);
   position: relative;
-  overflow: hidden;
 }
 
 .close-btn {
@@ -137,10 +136,23 @@ textarea.form-control {
   cursor: not-allowed;
 }
 
-.btn-like{
+.like-container {
+  display: inline-block;
+  background: #f3f4f6;
+  border-radius: 8px;
+  padding: 2px;
+  transition: background 0.2s;
+}
+.like-container.liked {
+  background: #dc2626;
+}
+.btn-like {
+  background: transparent;
   color: red;
 }
-
+.like-container.liked .btn-like {
+  color: #dc2626;
+}
 .btn-comment{
   color: #3b82f6;
 }

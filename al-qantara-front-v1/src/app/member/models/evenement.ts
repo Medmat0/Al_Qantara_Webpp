@@ -29,7 +29,7 @@ export interface Evenement {
 export interface LikeEvenement {
   id: number;
   evenementId: number;
-  utilisateurId: number;
+  utilisateurId: number| null ;
   dateLike: string;
 }
 

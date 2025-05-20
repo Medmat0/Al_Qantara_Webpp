@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnChanges, Output} from '@angular/core';
 import {DatePipe, NgForOf, NgIf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-event-description',
@@ -11,7 +12,8 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
     NgIf,
     FormsModule,
     DatePipe,
-    NgForOf
+    NgForOf,
+    CommonModule
   ],
   styleUrl: './event-description.component.scss'
 })
@@ -21,6 +23,7 @@ export class EventDescriptionComponent implements OnChanges {
   @Input() isParticipating = false;
   @Input() loading = false;
   @Input() error = '';
+  @Input() hasLikedEvenement = false;
   @Output() close = new EventEmitter<void>();
   @Output() like = new EventEmitter<void>();
   @Output() comment = new EventEmitter<string>();

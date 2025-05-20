@@ -4,7 +4,7 @@ import {NgForOf, NgIf} from '@angular/common';
 import {EventDescriptionComponent} from '../event-description/event-description.component';
 import {EvenementService} from '../../../member/services/evenement.service';
 import { Router } from '@angular/router';
-import {Evenement} from '../../../member/models/evenement';
+import {Evenement, LikeEvenement} from '../../../member/models/evenement';
 @Component({
   selector: 'app-event-listing',
   imports: [
@@ -28,10 +28,23 @@ export class EventListingComponent {
   // propriétés pour la gestion de la participation
   loading = false;
   error = '';
+  hasLikedEvenement = false;
   isParticipating = false;
   participation: any = null;
   unsubscribeConfirmed = false;
 
+
+  userId: number | null = null;
+  constructor() {
+    const user = localStorage.getItem('utilisateur');
+    if (user) {
+      try {
+        this.userId = JSON.parse(user).id;
+      } catch {
+        this.userId = null;
+      }
+    }
+  }
 
   openModal(event: any) {
     this.selectedEvent = event;
@@ -67,36 +80,39 @@ export class EventListingComponent {
 
 
 
-  onEvenementClick(Evenement: Evenement) {
-    this.evenementService.checkParticipation(Evenement.id).subscribe({
+  onEvenementClick(evenement: Evenement) {
+    this.evenementService.checkParticipation(evenement.id).subscribe({
       next: (res) => {
-        if(res.participation === null) {
-          this.isParticipating = false;
-        }
-        else {
-          this.isParticipating = true;
-          this.participation = res.participation;
-        }
+        this.isParticipating = !!res.participation;
+        this.participation = res.participation;
       },
       error: (err) => {
         this.error = err.message;
         console.error('Erreur lors de la vérification de la participation', err);
       }
     });
+
+    // Vérifie si l'utilisateur a liké cet événement
+    if (this.userId && Array.isArray(evenement.likes)) {
+      this.hasLikedEvenement = evenement.likes.some(like => like.utilisateurId === this.userId);
+    } else {
+      this.hasLikedEvenement = false;
+    }
+    console.log("liked status: ", this.hasLikedEvenement);
   }
 
   // Méthode pour ajouter une participation
-  onParticipateToEvenement(Evenement: any) {
+  onParticipateToEvenement(evenement: any) {
     this.loading = true;
     this.error = '';
-    this.evenementService.addParticipationToEvenement(Evenement.id).subscribe({
+    this.evenementService.addParticipationToEvenement(evenement.id).subscribe({
       next: (res) => {
         this.isParticipating = true;
         this.participation = res.participation;
         this.loading = false;
 
         // Met à jour l’événement dans la liste
-        const idx = this.events.findIndex(e => e.id === Evenement.id);
+        const idx = this.events.findIndex(e => e.id === evenement.id);
         if (idx !== -1) {
           this.events[idx] = {
             ...this.events[idx],
@@ -108,7 +124,7 @@ export class EventListingComponent {
         }
 
         // Met à jour l’événement sélectionné dans la modale
-        if (this.selectedEvent && this.selectedEvent.id === Evenement.id) {
+        if (this.selectedEvent && this.selectedEvent.id === evenement.id) {
           this.selectedEvent = {
             ...this.selectedEvent,
             placesRestantes: this.selectedEvent.placesRestantes - 1,
@@ -122,11 +138,11 @@ export class EventListingComponent {
     });
   }
 
-  onUnsubscribeEvenement(Evenement: Evenement) {
+  onUnsubscribeEvenement(evenement: Evenement) {
     this.loading = true;
     this.error = '';
 
-    this.evenementService.removeParticipationFromEvenement(Evenement.id).subscribe({
+    this.evenementService.removeParticipationFromEvenement(evenement.id).subscribe({
       next: () => {
         this.isParticipating = false;
         this.participation = null;
@@ -139,7 +155,7 @@ export class EventListingComponent {
         }, 3000);
 
         // Met à jour l’événement dans la liste
-        const idx = this.events.findIndex(e => e.id === Evenement.id);
+        const idx = this.events.findIndex(e => e.id === evenement.id);
         if (idx !== -1) {
           this.events[idx] = {
             ...this.events[idx],
@@ -150,7 +166,7 @@ export class EventListingComponent {
         }
 
         // Met à jour l’événement sélectionné dans la modale
-        if (this.selectedEvent && this.selectedEvent.id === Evenement.id) {
+        if (this.selectedEvent && this.selectedEvent.id === evenement.id) {
           this.selectedEvent = {
             ...this.selectedEvent,
             placesRestantes: this.selectedEvent.placesRestantes + 1,
@@ -164,31 +180,58 @@ export class EventListingComponent {
     });
   }
 
-  onLikeEvenement(Evenement: Evenement) {
-    this.evenementService.likeEvenement(Evenement.id).subscribe({
-      next: (res) => {
-        // Met à jour dans la liste
-        const idx = this.events.findIndex(e => e.id === Evenement.id);
-        if (idx !== -1) {
-          this.events[idx] = {
-            ...this.events[idx],
-            likes: Array.isArray(this.events[idx].likes)
-              ? [...this.events[idx].likes, {} as any]
-              : [{} as any]
-          };
-        }
-        // Met à jour dans la modale si besoin
-        if (this.selectedEvent && this.selectedEvent.id === Evenement.id) {
-          this.selectedEvent = {
-            ...this.selectedEvent,
-            likes: Array.isArray(this.selectedEvent.likes)
-              ? [...this.selectedEvent.likes, {} as any]
-              : [{} as any]
-          };
-        }
-      },
+  onLikeEvenement(evenement: Evenement) {
+    if (!Array.isArray(evenement.likes)) {
+      evenement.likes = [];
+    }
+    const likes = evenement.likes!;
+    const idx = this.events.findIndex(e => e.id === evenement.id);
+
+    if (!this.hasLikedEvenement) {
+      // Ajoute un fake like localement
+      const fakeLike: LikeEvenement = {
+        id: (evenement.likes.length ? evenement.likes.length : 0) + 1,
+        evenementId: evenement.id,
+        utilisateurId: this.userId,
+        dateLike: new Date().toString(),
+      };
+      evenement.likes = [...evenement.likes, fakeLike];
+      if (idx !== -1) this.events[idx].likes = [...evenement.likes];
+      if (this.selectedEvent && this.selectedEvent.id === evenement.id) {
+        this.selectedEvent.likes = [...evenement.likes];
+      }
+      this.hasLikedEvenement = true;
+    } else {
+      // Retire le like localement
+      evenement.likes = likes.filter(like => like.utilisateurId !== this.userId);
+      if (idx !== -1) this.events[idx].likes = [...evenement.likes];
+      if (this.selectedEvent && this.selectedEvent.id === evenement.id) {
+        this.selectedEvent.likes = [...evenement.likes];
+      }
+      this.hasLikedEvenement = false;
+    }
+
+    // Appel API pour like/dislike
+    this.evenementService.likeEvenement(evenement.id).subscribe({
       error: (err) => {
-        console.error('Erreur lors de l\'ajout du like', err);
+        if (this.hasLikedEvenement) {
+          evenement.likes = likes.filter(like => like.utilisateurId !== this.userId);
+          this.hasLikedEvenement = false;
+        } else {
+          const fakeLike: LikeEvenement = {
+            id: (likes.length ? likes.length : 0) + 1,
+            evenementId: evenement.id,
+            utilisateurId: this.userId,
+            dateLike: new Date().toString(),
+          };
+          evenement.likes = [...likes, fakeLike];
+          this.hasLikedEvenement = true;
+        }
+        if (idx !== -1) this.events[idx].likes = [...evenement.likes];
+        if (this.selectedEvent && this.selectedEvent.id === evenement.id) {
+          this.selectedEvent.likes = [...evenement.likes];
+        }
+        console.error('Erreur lors du like/delike', err);
       }
     });
   }
