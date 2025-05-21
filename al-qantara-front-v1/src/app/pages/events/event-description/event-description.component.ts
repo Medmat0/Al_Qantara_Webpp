@@ -31,9 +31,16 @@ export class EventDescriptionComponent implements OnChanges {
   @Output() unsubscribe = new EventEmitter<void>();
   @Input() unsubscribeConfirmed = false;
   safeMapUrl: SafeResourceUrl | null = null;
-  constructor(private sanitizer: DomSanitizer) {}
   commentText = '';
   showCommentForm = false;
+  constructor(private sanitizer: DomSanitizer) {
+    if (this.event && !Array.isArray(this.event.comments)) {
+      this.event.comments = [];
+    }
+
+  }
+
+
 
 
   ngOnChanges() {
@@ -64,6 +71,8 @@ export class EventDescriptionComponent implements OnChanges {
       this.showCommentForm = false;
     }
   }
+
+
 
   handleShare() {
     const subject = `Invitation à l'événement: ${this.event.titre}`;

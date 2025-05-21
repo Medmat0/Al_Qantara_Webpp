@@ -71,9 +71,9 @@ export class EvenementService {
   }
 
 
-  removeParticipationFromEvenement(EvenementId:number): Observable<any>{
+  removeParticipationFromEvenement(evenementId:number): Observable<any>{
     return this.http.delete(
-      `${this.apiUrl}/${EvenementId}/desinscription`,
+      `${this.apiUrl}/${evenementId}/desinscription`,
       { withCredentials: true }
     ).pipe(
       tap((response) => {
@@ -87,9 +87,9 @@ export class EvenementService {
 
   }
 
-  likeEvenement(EvenementId: number): Observable<any> {
+  likeEvenement(evenementId: number): Observable<any> {
     return this.http.post(
-      `${this.apiUrl}/${EvenementId}/like`,
+      `${this.apiUrl}/${evenementId}/like`,
       {},
       { withCredentials: true }
     ).pipe(
@@ -99,6 +99,37 @@ export class EvenementService {
       catchError((error) => {
         console.error('Error liking event:', error);
         return throwError(() => new Error('Error liking event'));
+      })
+    );
+  }
+
+  addCommentToEvenement(evenementId: number, comment: string): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/${evenementId}/comment`,
+      { contenu: comment },
+      { withCredentials: true }
+    ).pipe(
+      tap((response) => {
+        console.log('Added comment:', response);
+      }),
+      catchError((error) => {
+        console.error('Error adding comment:', error);
+        return throwError(() => new Error('Error adding comment'));
+      })
+    );
+  }
+
+  deleteEvenementComment(evenementId: number, commentId: number): Observable<any> {
+    return this.http.delete(
+      `${this.apiUrl}/${evenementId}/comment/${commentId}`,
+      { withCredentials: true }
+    ).pipe(
+      tap((response) => {
+        console.log('Deleted comment:', response);
+      }),
+      catchError((error) => {
+        console.error('Error deleting comment:', error);
+        return throwError(() => new Error('Error deleting comment'));
       })
     );
   }

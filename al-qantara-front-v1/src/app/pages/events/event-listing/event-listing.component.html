@@ -26,14 +26,15 @@
 <app-event-description
   *ngIf="showModal"
   [event]="selectedEvent"
+  (participate)="onParticipateToEvenement(selectedEvent)"
   [isParticipating]="isParticipating"
   [participation]="participation"
   [loading]="loading"
   (like)="onLikeEvenement(selectedEvent)"
   [hasLikedEvenement]="hasLikedEvenement"
   [error]="error"
-  (participate)="onParticipateToEvenement(selectedEvent)"
   (unsubscribe)="onUnsubscribeEvenement(selectedEvent)"
   [unsubscribeConfirmed]="unsubscribeConfirmed"
+  (comment)="onAddComment(selectedEvent,$event)"
   (close)="closeModal()">
 </app-event-description>

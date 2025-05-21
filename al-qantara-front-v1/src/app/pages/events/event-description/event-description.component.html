@@ -43,7 +43,6 @@
         <div [ngClass]="{'like-container': true, 'liked': hasLikedEvenement}">
           <button (click)="like.emit()" class="btn-like">❤️ {{ event.likes?.length || 0 }}</button>
         </div>
-        <button (click)="showCommentForm = !showCommentForm" class="btn-comment">💬 {{ event.nombreCommentaires || 0 }} Commentaires</button>
         <button (click)="handleShare()" class="btn-share">📤 Partager</button>
       </div>
 
@@ -85,10 +84,9 @@
 
       <div class="mb-2">
         <strong>Commentaires</strong>
-        <form *ngIf="showCommentForm" (ngSubmit)="handleCommentSubmit()" class="mb-2">
+        <form (ngSubmit)="handleCommentSubmit()" class="mb-2">
           <textarea [(ngModel)]="commentText" name="comment" rows="2" class="form-control" placeholder="Écrivez votre commentaire..."></textarea>
           <div class="mt-1">
-            <button type="button" (click)="showCommentForm = false" class="btn-cancel">Annuler</button>
             <button type="submit" [disabled]="!commentText.trim()" class="btn-send">Envoyer</button>
           </div>
         </form>

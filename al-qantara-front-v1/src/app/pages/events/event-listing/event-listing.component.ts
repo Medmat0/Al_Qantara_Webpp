@@ -25,7 +25,9 @@ export class EventListingComponent {
 
   showModal = false;
   selectedEvent: any = null;
-  // propriétés pour la gestion de la participation
+  //texte du commentaire
+  commentText = '';
+  // propriétés pour la gestion visuelle de la modale
   loading = false;
   error = '';
   hasLikedEvenement = false;
@@ -232,6 +234,24 @@ export class EventListingComponent {
           this.selectedEvent.likes = [...evenement.likes];
         }
         console.error('Erreur lors du like/delike', err);
+      }
+    });
+  }
+
+  onAddComment(evenement: Evenement, commentText: string) {
+
+    this.evenementService.addCommentToEvenement(evenement.id,commentText).subscribe({
+      next: (res) => {
+        console.log('Commentaire ajouté avec succès', res);
+        // Ajoute le commentaire à l'événement localement
+        if (!Array.isArray(evenement.comments)) {
+          evenement.comments = [];
+        }
+        evenement.comments.push(res.commentaire);
+
+      },
+      error: (err) => {
+        console.error('Erreur lors de l\'ajout du commentaire', err);
       }
     });
   }

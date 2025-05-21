@@ -16,6 +16,7 @@
   border-radius: 12px;
   padding: 2rem;
   width: 100%;
+  max-height: 80vh;
   overflow-y: auto;
   max-width: 640px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.2);
@@ -92,6 +93,10 @@ iframe {
   border-radius: 6px;
   padding: 0.75rem;
   margin-top: 0.5rem;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .comment .font-semibold {
