@@ -15,10 +15,10 @@
 <div class="view-container">
   <ng-container *ngIf="isCalendarView; else listView">
     <p>Calendrier</p>
-    <app-event-calendar></app-event-calendar>
+    <app-event-calendar [events]="events" ></app-event-calendar>
   </ng-container>
 
   <ng-template #listView>
-    <app-event-listing></app-event-listing>
+    <app-event-listing [events]="events"></app-event-listing>
   </ng-template>
 </div>

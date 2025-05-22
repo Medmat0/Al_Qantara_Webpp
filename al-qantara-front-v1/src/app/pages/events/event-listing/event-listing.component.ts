@@ -1,10 +1,12 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, Input} from '@angular/core';
+
 import { EventItemComponent } from './event-item/event-item.component';
 import {NgForOf, NgIf} from '@angular/common';
 import {EventDescriptionComponent} from '../event-description/event-description.component';
 import {EvenementService} from '../../../member/services/evenement.service';
 import { Router } from '@angular/router';
 import {Evenement, LikeEvenement} from '../../../member/models/evenement';
+import {AuthService} from '../../../member/services/auth.service';
 @Component({
   selector: 'app-event-listing',
   imports: [
@@ -18,10 +20,13 @@ import {Evenement, LikeEvenement} from '../../../member/models/evenement';
   styleUrl: './event-listing.component.scss'
 })
 export class EventListingComponent {
+
+  @Input() events: Evenement[] = [];
+
   evenementService = inject(EvenementService);
+  authService = inject(AuthService);
   router = inject(Router);
 
-  events:Evenement[] = [];
 
   showModal = false;
   selectedEvent: any = null;
@@ -34,18 +39,30 @@ export class EventListingComponent {
   isParticipating = false;
   participation: any = null;
   unsubscribeConfirmed = false;
-
+  isAuthenticated = false;
 
   userId: number | null = null;
   constructor() {
-    const user = localStorage.getItem('utilisateur');
-    if (user) {
-      try {
-        this.userId = JSON.parse(user).id;
-      } catch {
+    this.authService.authStatus$.subscribe((status) => {
+      this.isAuthenticated = status;
+      if (status) {
+        const user = localStorage.getItem('utilisateur');
+        if (user) {
+          this.userId = JSON.parse(user).id;
+        }
+      } else {
         this.userId = null;
       }
+    });
+  }
+
+  checkAuthentication(): boolean {
+    if (!this.isAuthenticated) {
+      confirm('Vous devez être connecté pour interagir avec cet événement');
+      this.router.navigate(['auth/login']);
+      return false;
     }
+    return true;
   }
 
   openModal(event: any) {
@@ -60,16 +77,6 @@ export class EventListingComponent {
   }
 
   ngOnInit() {
-    this.evenementService.getAllEvenements().subscribe({
-      next: (response) => {
-        this.events = response;
-        console.log('Liste des événements récupérée avec succès', response);
-      },
-      error: (error) => {
-        console.error('Erreur lors de la récupération des événements', error);
-      }
-    });
-
     // Récupère l'id depuis le state de l'historique
     const openEventId = history.state?.openEventId;
     if (openEventId) {
@@ -83,28 +90,37 @@ export class EventListingComponent {
 
 
   onEvenementClick(evenement: Evenement) {
-    this.evenementService.checkParticipation(evenement.id).subscribe({
-      next: (res) => {
-        this.isParticipating = !!res.participation;
-        this.participation = res.participation;
-      },
-      error: (err) => {
-        this.error = err.message;
-        console.error('Erreur lors de la vérification de la participation', err);
-      }
-    });
+    if(!this.isAuthenticated) {
 
-    // Vérifie si l'utilisateur a liké cet événement
-    if (this.userId && Array.isArray(evenement.likes)) {
-      this.hasLikedEvenement = evenement.likes.some(like => like.utilisateurId === this.userId);
-    } else {
-      this.hasLikedEvenement = false;
-    }
-    console.log("liked status: ", this.hasLikedEvenement);
+      return;
+    }else{
+      this.evenementService.checkParticipation(evenement.id).subscribe({
+        next: (res) => {
+          this.isParticipating = !!res.participation;
+          this.participation = res.participation;
+        },
+        error: (err) => {
+          this.error = err.message;
+          console.error('Erreur lors de la vérification de la participation', err);
+        }
+      });
+
+      // Vérifie si l'utilisateur a liké cet événement
+      if (this.userId && Array.isArray(evenement.likes)) {
+        this.hasLikedEvenement = evenement.likes.some(like => like.utilisateurId === this.userId);
+      } else {
+        this.hasLikedEvenement = false;
+      }
+      console.log("liked status: ", this.hasLikedEvenement);
+
+      }
   }
 
   // Méthode pour ajouter une participation
   onParticipateToEvenement(evenement: any) {
+
+    if (!this.checkAuthentication()) return;
+
     this.loading = true;
     this.error = '';
     this.evenementService.addParticipationToEvenement(evenement.id).subscribe({
@@ -138,9 +154,16 @@ export class EventListingComponent {
         this.loading = false;
       }
     });
+
+
+
+
   }
 
   onUnsubscribeEvenement(evenement: Evenement) {
+
+    if (!this.checkAuthentication()) return;
+
     this.loading = true;
     this.error = '';
 
@@ -183,6 +206,9 @@ export class EventListingComponent {
   }
 
   onLikeEvenement(evenement: Evenement) {
+
+    if (!this.checkAuthentication()) return;
+
     if (!Array.isArray(evenement.likes)) {
       evenement.likes = [];
     }
@@ -239,6 +265,8 @@ export class EventListingComponent {
   }
 
   onAddComment(evenement: Evenement, commentText: string) {
+
+    if (!this.checkAuthentication()) return;
 
     this.evenementService.addCommentToEvenement(evenement.id,commentText).subscribe({
       next: (res) => {
