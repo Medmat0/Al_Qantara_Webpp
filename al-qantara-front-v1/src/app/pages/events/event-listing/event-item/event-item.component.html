@@ -1,12 +1,12 @@
 <div class="event-card">
-  <img [src]="event.images" alt="Event Image" class="event-image" />
+  <img [src]="event.images" alt="Evenement Image" class="event-image" />
 
   <div class="event-content">
     <h2 class="event-title">{{ event.titre }}</h2>
 
     <div class="event-info">
       <p><svg xmlns="http://www.w3.org/2000/svg" height="15px" width="15px" viewBox="0 0 24 24"><title>calendar-blank-outline</title><path d="M19 3H18V1H16V3H8V1H6V3H5C3.89 3 3 3.9 3 5V19C3 20.11 3.9 21 5 21H19C20.11 21 21 20.11 21 19V5C21 3.9 20.11 3 19 3M19 19H5V9H19V19M19 7H5V5H19V7Z" /></svg>
-        {{ event.dateDebut}}</p>
+        {{ event.dateDebut | date:'dd/MM/yyyy à HH:mm' }}
       <p><svg xmlns="http://www.w3.org/2000/svg" height="15px" width="15px" viewBox="0 0 24 24"><title>map-marker</title><path d="M12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5M12,2A7,7 0 0,0 5,9C5,14.25 12,22 12,22C12,22 19,14.25 19,9A7,7 0 0,0 12,2Z" /></svg>
         {{ event.lieu }}</p>
       <p class="event-description">{{ event.description }}</p>
