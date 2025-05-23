@@ -30,8 +30,7 @@ export class EventListingComponent {
 
   showModal = false;
   selectedEvent: any = null;
-  //texte du commentaire
-  commentText = '';
+
   // propriétés pour la gestion visuelle de la modale
   loading = false;
   error = '';
@@ -75,19 +74,6 @@ export class EventListingComponent {
     this.showModal = false;
     this.selectedEvent = null;
   }
-
-  ngOnInit() {
-    // Récupère l'id depuis le state de l'historique
-    const openEventId = history.state?.openEventId;
-    if (openEventId) {
-      const event = this.events.find(e => e.id === openEventId);
-      if (event) {
-        this.openModal(event);
-      }
-    }
-  }
-
-
 
   onEvenementClick(evenement: Evenement) {
     if(!this.isAuthenticated) {
