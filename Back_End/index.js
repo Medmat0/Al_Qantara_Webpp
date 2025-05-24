@@ -3,7 +3,7 @@ import authRoutes from "./src/routes/auth.routes.js";
 import revuesRoutes from './src/routes/revues.routes.js';
 import adminRoutes from './src/routes/admin.routes.js'
 import cors from "cors";
-
+import evenementsRoutes from './src/routes/evenements.routes.js';
 import cookieParser from "cookie-parser";
 
 
@@ -50,7 +50,7 @@ app.use(express.urlencoded({ extended: true })); // Pour form-data et x-www-form
 app.use("/auth", authRoutes);
 app.use("/revues", revuesRoutes);
 app.use("/admin",adminRoutes);
-
+app.use("/evenements", evenementsRoutes);
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });

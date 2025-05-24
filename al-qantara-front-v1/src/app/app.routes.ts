@@ -10,6 +10,7 @@ export const routes: Routes = [
   { path: 'admin', loadChildren: () => import('./pages/admin/admin.routes').then(m => m.default) },
 
   {path: 'contacts', loadChildren: () => import('./pages/contacts/contacts.routes').then(m => m.default)},
+  {path: 'events', loadChildren: () => import('./pages/events/events.routes').then(m => m.default)},
   {
     path: '**',
     redirectTo: '',

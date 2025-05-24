@@ -1,0 +1,58 @@
+.event-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+  overflow: hidden;
+  max-width: 600px;
+  margin: auto;
+  font-family: 'Segoe UI', sans-serif;
+  cursor: pointer;
+}
+
+.event-image {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+}
+
+.event-content {
+  padding: 16px;
+}
+
+.event-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.event-info p {
+  margin: 4px 0;
+  color: #555;
+  font-size: 14px;
+}
+
+.event-description {
+  margin-top: 10px;
+  color: #666;
+}
+
+.event-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+  font-size: 14px;
+}
+
+.event-interactions span {
+  margin-right: 12px;
+  color: #888;
+}
+
+.event-seats {
+  background: #f0f4ff;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+  color: #0044cc;
+}

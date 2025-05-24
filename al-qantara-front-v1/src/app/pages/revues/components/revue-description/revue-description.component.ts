@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { RevueService } from '../../../../member/services/revue.service';
-import { Revue } from "../../../../shared/models/revue";
+import { Revue } from "../../../../member/models/revue";
 
 @Component({
   selector: 'app-revue-description',

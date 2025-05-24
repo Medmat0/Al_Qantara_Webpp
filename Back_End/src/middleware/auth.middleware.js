@@ -2,33 +2,54 @@ import { PrismaClient } from "@prisma/client";
 import asyncHandler from "express-async-handler";
 import { verifyAccessToken } from "../utils/token.js";
 import { ROLES } from "../utils/role.enum.js";
+
 const prisma = new PrismaClient();
 
 const authMiddleware = asyncHandler(async (req, res, next) => {
-  const token = req.cookies["accessToken"]; // Extract token from cookies
-  if (!token) return res.status(401).json({ message: "Access token not found in cookies" });
+  try {
+    const token = req.cookies["accessToken"];
+    if (!token) {
+      return res.status(401).json({ message: "Access token not found in cookies" });
+    }
 
-  const decodedToken = await verifyAccessToken(token);
-  const user = await prisma.utilisateur.findUnique({ where: { id: decodedToken.id } });
-  if (!user) return res.status(403).json({ message: "User not allowed" });
+    const decodedToken = await verifyAccessToken(token);
+    if (!decodedToken) {
+      return res.status(401).json({ message: "Invalid token" });
+    }
 
-  req.user = user; // Attach user to the request object
-  next();
+    const user = await prisma.utilisateur.findUnique({ 
+      where: { id: decodedToken.id },
+      select: {
+        id: true,
+        email: true,
+        nom: true,
+        prenom: true,
+        role: true,
+        emailVerified: true
+      }
+    });
+
+    if (!user) {
+      return res.status(403).json({ message: "User not found" });
+    }
+
+    req.user = user;
+    next();
+  } catch (error) {
+    console.error("Auth middleware error:", error);
+    return res.status(401).json({ message: "Authentication failed" });
+  }
 });
 
 const isAdmin = asyncHandler(async (req, res, next) => {
-  const token = req.cookies["accessToken"]; // Extract token from cookies
-  if (!token) return res.status(401).json({ message: "Access token not found in cookies" });
-
-  const decodedToken = await verifyAccessToken(token);
-  const user = await prisma.utilisateur.findUnique({ where: { id: decodedToken.id } });
-  if (!user) return res.status(403).json({ message: "User not allowed" });
-
-  if (user.role !== ROLES.ADMIN) {
-    return res.status(403).json({ message: "You are not admin" });
+  if (!req.user) {
+    return res.status(401).json({ message: "Authentication required" });
   }
 
-  req.user = user; // Attach user to the request object
+  if (req.user.role !== ROLES.ADMIN) {
+    return res.status(403).json({ message: "Admin access required" });
+  }
+
   next();
 });
 
