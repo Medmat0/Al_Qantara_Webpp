@@ -41,7 +41,7 @@ router.delete("/:id/desinscription", desinscriptionEvenement);
 
 // Routes admin uniquement
 router.use(isAdmin);
-router.post("/", addEvenement);
+router.post("/add", addEvenement);
 router.delete("/:id", deleteEvenement);
 router.get("/:id/ratings", getEvenementRatings);
 

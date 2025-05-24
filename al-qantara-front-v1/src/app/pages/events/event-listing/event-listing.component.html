@@ -2,7 +2,7 @@
 <div class="event-listing">
   <div
     class="event-item-container"
-    *ngFor="let event of filteredEvents"
+    *ngFor="let event of filteredEvenements"
     (click)="openModal(event)">
     <app-event-item [event]="event"></app-event-item>
   </div>
@@ -25,7 +25,16 @@
 <!-- Modal -->
 <app-event-description
   *ngIf="showModal"
+  [event]="selectedEvent"
+  (participate)="onParticipateToEvenement(selectedEvent)"
+  [isParticipating]="isParticipating"
+  [participation]="participation"
+  [loading]="loading"
+  (like)="onLikeEvenement(selectedEvent)"
+  [hasLikedEvenement]="hasLikedEvenement"
+  [error]="error"
+  (unsubscribe)="onUnsubscribeEvenement(selectedEvent)"
+  [unsubscribeConfirmed]="unsubscribeConfirmed"
+  (comment)="onAddComment(selectedEvent,$event)"
   (close)="closeModal()">
-  <h3>{{ selectedEvent?.titre }}</h3>
-  <p>{{ selectedEvent?.description }}</p>
 </app-event-description>
