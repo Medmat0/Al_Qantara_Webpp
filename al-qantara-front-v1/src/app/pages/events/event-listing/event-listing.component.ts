@@ -2,7 +2,7 @@ import {Component, inject, Input} from '@angular/core';
 
 import { EventItemComponent } from './event-item/event-item.component';
 import {NgForOf, NgIf} from '@angular/common';
-import {EventDescriptionComponent} from '../event-description/event-description.component';
+import {EventModalComponent} from '../event-modal/event-modal.component';
 import {EvenementService} from '../../../member/services/evenement.service';
 import { Router } from '@angular/router';
 import {Evenement, LikeEvenement} from '../../../member/models/evenement';
@@ -12,7 +12,7 @@ import {AuthService} from '../../../member/services/auth.service';
   imports: [
     EventItemComponent,
     NgForOf,
-    EventDescriptionComponent,
+    EventModalComponent,
     NgIf
   ],
   templateUrl: './event-listing.component.html',

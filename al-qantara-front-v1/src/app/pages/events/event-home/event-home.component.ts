@@ -2,7 +2,7 @@ import {Component, inject, OnInit} from '@angular/core';
 import {NgIf} from '@angular/common';
 import {EventCalendarComponent} from '../event-calendar/event-calendar.component';
 import {EventListingComponent} from '../event-listing/event-listing.component';
-import {EventDescriptionComponent} from '../event-description/event-description.component';
+import {EventModalComponent} from '../event-modal/event-modal.component';
 import {Evenement, LikeEvenement} from '../../../member/models/evenement';
 import {EvenementService} from '../../../member/services/evenement.service';
 import {AuthService} from '../../../member/services/auth.service';
@@ -14,7 +14,7 @@ import {ActivatedRoute, Router} from '@angular/router';
     NgIf,
     EventCalendarComponent,
     EventListingComponent,
-    EventDescriptionComponent
+    EventModalComponent
   ],
   templateUrl: './event-home.component.html',
   standalone: true,

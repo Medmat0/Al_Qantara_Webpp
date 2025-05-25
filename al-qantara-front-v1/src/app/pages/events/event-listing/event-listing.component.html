@@ -23,7 +23,7 @@
 </div>
 
 <!-- Modal -->
-<app-event-description
+<app-event-modal
   *ngIf="showModal"
   [event]="selectedEvent"
   (participate)="onParticipateToEvenement(selectedEvent)"
@@ -37,4 +37,4 @@
   [unsubscribeConfirmed]="unsubscribeConfirmed"
   (comment)="onAddComment(selectedEvent,$event)"
   (close)="closeModal()">
-</app-event-description>
+</app-event-modal>
