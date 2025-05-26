@@ -13,6 +13,7 @@ model Utilisateur {
   prenom                  String       @db.VarChar(100)
   email                   String       @unique @db.VarChar(255)
   motDePasse              String       @db.VarChar(255)
+  photoProfil             String?      @db.VarChar(255)
   role                    Role
   dateInscription         DateTime
   statut                  Statut
