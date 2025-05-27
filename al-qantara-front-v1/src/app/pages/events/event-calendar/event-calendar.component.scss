@@ -1,0 +1,37 @@
+.calendar-container {
+  padding: 20px;
+  height: calc(100vh - 100px);
+  
+  ::ng-deep {
+    .fc {
+      height: 100%;
+    }
+    
+    .fc-toolbar-title {
+      font-size: 1.5em;
+      margin: 0;
+    }
+
+    .fc-event {
+      cursor: pointer;
+      
+      &:hover {
+        opacity: 0.9;
+      }
+    }
+
+    .fc-day-today {
+      background-color: rgba(0, 0, 0, 0.02) !important;
+    }
+    
+    .fc-button-primary {
+      background-color: #1a73e8;
+      border-color: #1a73e8;
+      
+      &:hover {
+        background-color: #1557b0;
+        border-color: #1557b0;
+      }
+    }
+  }
+}

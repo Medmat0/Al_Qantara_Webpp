@@ -2,16 +2,29 @@ import {Injectable} from '@angular/core';
 import {API_URL} from '../../utils/config';
 import {Router} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
-import {catchError, Observable, tap, throwError} from 'rxjs';
+import {catchError, firstValueFrom, Observable, tap, throwError} from 'rxjs';
+import { CloudinaryService } from './cloudinary.service';
+
+export interface CreateEvenementDto {
+  titre: string;
+  description: string;
+  dateDebut: string;
+  dateFin: string;
+  type: string;
+  adresse: string;
+  placesTotal?: number;
+  images: string[];
+  video?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
-
-export class EvenementService {
-  private readonly apiUrl = `${API_URL}/evenements`;
+export class EvenementService {  private readonly apiUrl = `${API_URL}/evenements`;
   constructor(
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private cloudinaryService: CloudinaryService
   ) {}
 
 
@@ -132,5 +145,63 @@ export class EvenementService {
         return throwError(() => new Error('Error deleting comment'));
       })
     );
+  }
+
+  async createEvenement(
+    evenement: CreateEvenementDto, 
+    imageFiles: File[],
+    videoFile?: File
+  ): Promise<any> {
+    try {
+      console.log('Création d\'événement - Données reçues:', {
+        evenement,
+        nombreImages: imageFiles.length,
+        detailsImages: imageFiles.map(f => ({
+          nom: f.name,
+          taille: f.size,
+          type: f.type
+        })),
+        videoFile: videoFile ? {
+          nom: videoFile.name,
+          taille: videoFile.size,
+          type: videoFile.type
+        } : 'Aucune vidéo'
+      });
+
+      // Upload images
+      console.log(' upload images Cloudinary...');
+      const imageUrls = await this.cloudinaryService.uploadFiles(imageFiles);
+      console.log('images uploadées:', imageUrls);
+      
+      // Upload video if provided
+      let videoUrl: string | undefined;
+      if (videoFile) {
+        console.log(' upload vidéo Cloudinary...');
+        videoUrl = await this.cloudinaryService.uploadFile(videoFile);
+        console.log('vidéo uploadée:', videoUrl);
+      }
+
+      const payload = {
+        ...evenement,
+        images: imageUrls,
+        video: videoUrl
+      };
+        console.log('Payload :', payload);
+
+      return firstValueFrom(
+        this.http.post(`${this.apiUrl}/add`, payload, { withCredentials: true }).pipe(
+          tap((response) => {
+            console.log('Événement créé avec succès:', response);
+          }),
+          catchError((error) => {
+            console.error('Erreur lors de la création de l\'événement:', error);
+            return throwError(() => new Error('Error creating event'));
+          })
+        )
+      );
+    } catch (error) {
+      console.error('Erreur pendant l\'upload des fichiers:', error);
+      throw new Error('Error uploading files');
+    }
   }
 }

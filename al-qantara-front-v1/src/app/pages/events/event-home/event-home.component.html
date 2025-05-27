@@ -1,21 +1,24 @@
 <div class="view-toggle-container">
-  <button
-    [class.active]="isCalendarView"
-    (click)="toggleView(true)">
-    Calendrier
-  </button>
-  <button
-    [class.active]="!isCalendarView"
-    (click)="toggleView(false)">
-    Liste des événements
+  <div class="button-group">
+    <button
+      [class.active]="isCalendarView"
+      (click)="toggleView(true)">
+      Calendrier
+    </button>
+    <button
+      [class.active]="!isCalendarView"
+      (click)="toggleView(false)">
+      Liste des événements
+    </button>
+  </div>  <button class="add-event-button" (click)="openAddEventModal()">
+    Ajouter un événement
   </button>
 </div>
 
 
 <div class="view-container">
   <ng-container *ngIf="isCalendarView; else listView">
-    <p>Calendrier</p>
-    <app-event-calendar [events]="events" ></app-event-calendar>
+    <app-event-calendar [events]="events" (eventClick)="onCalendarEventClick($event)"></app-event-calendar>
   </ng-container>
 
   <ng-template #listView>
@@ -40,3 +43,10 @@
   (comment)="onAddComment(selectedEvent,$event)"
   (close)="closeModal()">
 </app-event-description>
+
+<!-- Modal for Add Event -->
+<app-add-evenement
+  *ngIf="showAddEventModal"
+  (close)="closeAddEventModal()"
+  (eventCreated)="onEventCreated($event)">
+</app-add-evenement>

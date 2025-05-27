@@ -10,15 +10,14 @@ import {catchError, Observable, tap, throwError} from 'rxjs';
   providedIn: 'root'
 })
 export class AdminEvenementService {
-  private readonly apiUrl = `${API_URL}/events`;
+  private readonly apiUrl = `${API_URL}/evenements`;
   constructor(
     private http: HttpClient,
     private router: Router
   ) {}
 
-
   addEvenement(evenement: Evenement): Observable<any> {
-    return this.http.post(`${this.apiUrl}`, evenement).pipe(
+    return this.http.post(`${this.apiUrl}/add`, evenement).pipe(
       tap((response) => {
         console.log('Added event:', response);
       }),
