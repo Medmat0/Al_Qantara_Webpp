@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { Evenement } from '../../../../member/models/evenement';
-import { DatePipe } from '@angular/common';
+import { DatePipe, CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-event-item',
-  imports: [DatePipe],
+  imports: [DatePipe, CommonModule],
   templateUrl: './event-item.component.html',
   standalone: true,
   styleUrl: './event-item.component.scss',

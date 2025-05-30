@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserService, UserData } from '../../../../member/services/user.service';
+import { AuthService } from '../../../../member/services/auth.service';
 
 @Component({
   selector: 'app-users',
@@ -21,25 +22,53 @@ export class UsersComponent implements OnInit {
   modalAction: (() => void) | null = null;
   selectedUser: UserData | null = null;
 
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
-    this.loadUsers();
+    // Vérifier d'abord le statut d'authentification
+    this.authService.checkAuthStatus().subscribe({
+      next: (response) => {
+        console.log('Auth status response:', response);
+        if (response.authenticated) {
+          this.loadUsers();
+        } else {
+          console.error('Not authenticated or not admin');
+        }
+      },
+      error: (error) => {
+        console.error('Auth check error:', error);
+      }
+    });
   }
 
   loadUsers() {
-    this.userService.getUsers().subscribe(users => {
-      this.users = users;
-      this.filteredUsers = users;
+    this.userService.getUsers().subscribe({
+      next: (users) => {
+        console.log('Users response:', users);
+        this.users = users;
+        this.filterUsers();
+      },
+      error: (error) => {
+        console.error('Error loading users:', error);
+        this.users = [];
+        this.filteredUsers = [];
+      }
     });
   }
 
   filterUsers() {
+    if (!this.searchTerm?.trim()) {
+      this.filteredUsers = [...this.users];
+      return;
+    }
     const term = this.searchTerm.toLowerCase();
     this.filteredUsers = this.users.filter(user => 
-      user.nom.toLowerCase().includes(term) ||
-      user.prenom.toLowerCase().includes(term) ||
-      user.email.toLowerCase().includes(term)
+      user?.nom?.toLowerCase().includes(term) ||
+      user?.prenom?.toLowerCase().includes(term) ||
+      user?.email?.toLowerCase().includes(term)
     );
   }
 
@@ -108,8 +137,10 @@ export class UsersComponent implements OnInit {
   }
 
   toggleUserStatus(id: string) {
-    this.userService.toggleUserStatus(id).subscribe(() => {
-      this.loadUsers();
-    });
+    if (this.selectedUser) {
+      this.userService.toggleUserStatus(id, this.selectedUser.statut).subscribe(() => {
+        this.loadUsers();
+      });
+    }
   }
 }

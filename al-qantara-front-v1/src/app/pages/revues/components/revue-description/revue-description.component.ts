@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RevueService } from '../../../../member/services/revue.service';
 import { Revue } from "../../../../member/models/revue";
 
@@ -14,11 +14,10 @@ export class RevueDescriptionComponent implements OnInit {
   revueService = inject(RevueService);
   revue = new Revue(0, '', '', '', '', '', '', 0, 0, 0);
 
-
-
-
-
-  constructor(private route: ActivatedRoute) {}
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((paramMap) => {
@@ -27,8 +26,6 @@ export class RevueDescriptionComponent implements OnInit {
         this.fetchRevueDetails(this.revue.id);
       }
     });
-
-
   }
 
   private fetchRevueDetails(id: number): void {
@@ -64,32 +61,24 @@ export class RevueDescriptionComponent implements OnInit {
       this.revueService.addDownloadToRevue(this.revue.id).subscribe({
         next: (response) => {
           console.log('Download count updated successfully:', response);
-
-          // Proceed with file download after successful response
-          this.downloadRevueFile();
+          this.navigateToPdfViewer();
         },
         error: (error) => {
           console.error('Error updating download count:', error);
+          this.navigateToPdfViewer();
         }
       });
     } else {
       console.log('On admin page, skipping request.');
-      this.downloadRevueFile();
+      this.navigateToPdfViewer();
     }
   }
 
-  private downloadRevueFile(): void {
-    const allowedDomains = ['res.cloudinary.com'];
-    if (this.revue.fichier) {
-      const fileUrl = new URL(this.revue.fichier);
-      if (allowedDomains.some(domain => fileUrl.hostname === domain)) {
-        window.location.href = this.revue.fichier;
-      } else {
-        console.error('Invalid file URL');
-      }
-    } else {
-      console.error('File URL is not available');
-    }
+  private navigateToPdfViewer(): void {
+    console.log('Navigating to PDF viewer with URL:', this.revue.fichier);
+    this.router.navigate(['/revues/pdf-viewer'], {
+      queryParams: { url: this.revue.fichier }
+    });
   }
 
   getPreviewUrl(pdfUrl: string): string {

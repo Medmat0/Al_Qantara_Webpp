@@ -1,6 +1,9 @@
 <div class="main-container">
   <div class="left-container">
     <div class="form-container">
+      <div *ngIf="errorMessage" class="form-error login-error">
+        {{ errorMessage }}
+      </div>
       
       <h3>Connexion</h3>
 
@@ -31,9 +34,6 @@
 
         <button type="submit" [disabled]="loginForm.invalid">Connexion</button>
       </form>
-      <div *ngIf="errorMessage" class="form-error">
-        {{ errorMessage }}
-      </div>
       <p>Mot de passe oublié ? <a routerLink="/auth/reset-password" class="page-link">Réinitialisez&nbsp;le&nbsp;ici</a></p>
       <p>Pas encore de compte ? <a routerLink="/auth/register" class="page-link">Inscription&nbsp;ici</a></p>
     </div>

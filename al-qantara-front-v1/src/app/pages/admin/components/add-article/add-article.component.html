@@ -1,0 +1,36 @@
+<div class="add-article-container">
+  <h2>Ajouter un Article</h2>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="title">Titre de l'article</label>
+      <input 
+        type="text" 
+        id="title"
+        formControlName="title"
+        placeholder="Entrez le titre de l'article"
+      >
+    </div>
+
+    <div class="form-group">
+      <label>Contenu</label>
+      <div class="editor">
+        <ngx-editor-menu [editor]="editor" [toolbar]="toolbar">
+        </ngx-editor-menu>
+        <ngx-editor
+          [editor]="editor"
+          formControlName="content"
+          [placeholder]="'Écrivez votre article ici...'"
+        >
+        </ngx-editor>
+      </div>
+    </div>
+
+    <button 
+      type="submit" 
+      class="submit-btn"
+      [disabled]="!form.valid"
+    >
+      Publier l'article
+    </button>
+  </form>
+</div>

@@ -1,5 +1,5 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {NgIf} from '@angular/common';
+import {NgIf, CommonModule} from '@angular/common';
 import {EventCalendarComponent} from '../event-calendar/event-calendar.component';
 import {EventListingComponent} from '../event-listing/event-listing.component';
 import {EventModalComponent} from '../event-modal/event-modal.component';
@@ -10,24 +10,23 @@ import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-event-home',
+  standalone: true,
   imports: [
     NgIf,
+    CommonModule,
     EventCalendarComponent,
     EventListingComponent,
     EventModalComponent
   ],
   templateUrl: './event-home.component.html',
-  standalone: true,
   styleUrl: './event-home.component.scss'
 })
-export class EventHomeComponent implements OnInit {
-  isCalendarView = false;
+export class EventHomeComponent implements OnInit {  isCalendarView = false;
   evenementService= inject(EvenementService);
 
   events:Evenement[]= [];
 
   authService = inject(AuthService);
-
 
   showModal = false;
   selectedEvent: any = null;
@@ -99,9 +98,6 @@ export class EventHomeComponent implements OnInit {
   }
 
 
-
-  //Code pour le getByID -------------------------------------------------------------
-
   checkAuthentication(): boolean {
     if (!this.isAuthenticated) {
       confirm('Vous devez être connecté pour interagir avec cet événement');
@@ -110,7 +106,6 @@ export class EventHomeComponent implements OnInit {
     }
     return true;
   }
-
   closeModal() {
     this.showModal = false;
     this.selectedEvent = null;
@@ -286,5 +281,10 @@ export class EventHomeComponent implements OnInit {
       }
     });
   }
-
+  onCalendarEventClick(event: Evenement) {
+    this.selectedEvent = event;
+    this.showModal = true;
+    this.unsubscribeConfirmed = false;
+    this.onEvenementClick(event);
+  }
 }

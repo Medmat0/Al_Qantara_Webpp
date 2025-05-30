@@ -1,6 +1,9 @@
 <div class="main-container">
   <div class="left-container">
     <div class="form-container">
+      <div *ngIf="errorMessage" class="form-error register-error">
+        {{ errorMessage }}
+      </div>
       
       <h3>Création de votre compte</h3>
       <h5>Remplissez le formulaire pour créer votre compte</h5>
@@ -69,9 +72,6 @@
         </div>
         <button type="submit" [disabled]="registerForm.invalid">Inscription</button>
       </form>
-      <div *ngIf="errorMessage" class="form-error">
-        {{ errorMessage }}
-      </div>
       <p>Déjà un compte ? <a routerLink="/auth/login" class="reset-link">Connectez-vous ici</a></p>
     </div>
   </div>

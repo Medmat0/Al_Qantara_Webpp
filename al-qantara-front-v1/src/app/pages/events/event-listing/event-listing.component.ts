@@ -1,4 +1,5 @@
 import {Component, inject, Input} from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 import { EventItemComponent } from './event-item/event-item.component';
 import {NgForOf, NgIf} from '@angular/common';
@@ -7,31 +8,41 @@ import {EvenementService} from '../../../member/services/evenement.service';
 import { Router } from '@angular/router';
 import {Evenement, LikeEvenement} from '../../../member/models/evenement';
 import {AuthService} from '../../../member/services/auth.service';
+
 @Component({
   selector: 'app-event-listing',
   imports: [
     EventItemComponent,
     NgForOf,
     EventModalComponent,
-    NgIf
+    NgIf,
+    FormsModule
+
   ],
   templateUrl: './event-listing.component.html',
   standalone: true,
   styleUrl: './event-listing.component.scss'
 })
 export class EventListingComponent {
-
   @Input() events: Evenement[] = [];
 
   evenementService = inject(EvenementService);
   authService = inject(AuthService);
   router = inject(Router);
 
+  // Search and filter properties
+  searchTerm: string = '';
+  selectedFilter: string = 'none';
 
+  // Pagination properties
+  currentPage: number = 1;
+  itemsPerPage: number = 6;
+
+  // Modal properties
   showModal = false;
   selectedEvent: any = null;
 
-  // propriétés pour la gestion visuelle de la modale
+  // Modal state properties
   loading = false;
   error = '';
   hasLikedEvenement = false;
@@ -273,22 +284,56 @@ export class EventListingComponent {
 
 
 
-  // Pagination-----------------
-  currentPage: number = 1;
-  itemsPerPage: number = 6;
-
   get filteredEvenements() {
+    let filtered = this.events;
+    
+    //search filter
+    if (this.searchTerm.trim()) {
+      const searchLower = this.searchTerm.toLowerCase();
+      filtered = filtered.filter(event => 
+        event.titre.toLowerCase().includes(searchLower) ||
+        event.description.toLowerCase().includes(searchLower) ||
+        event.lieu.toLowerCase().includes(searchLower)
+      );
+    }
+
+    //sorting filter
+    switch (this.selectedFilter) {
+      case 'most-recent':
+        filtered = [...filtered].sort((a, b) => 
+          new Date(b.dateDebut).getTime() - new Date(a.dateDebut).getTime()
+        );
+        break;
+      case 'most-old':
+        filtered = [...filtered].sort((a, b) => 
+          new Date(a.dateDebut).getTime() - new Date(b.dateDebut).getTime()
+        );
+        break;
+      case 'most-popular':
+        filtered = [...filtered].sort((a, b) => 
+          (b.likes?.length || 0) - (a.likes?.length || 0)
+        );
+        break;
+    }
+
+    // Apply pagination
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    return this.events.slice(startIndex, startIndex + this.itemsPerPage);
+    return filtered.slice(startIndex, startIndex + this.itemsPerPage);
   }
 
   get totalPages() {
-    return Math.ceil(this.events.length / this.itemsPerPage);
+    const filteredCount = this.events.length;
+    return Math.ceil(filteredCount / this.itemsPerPage);
   }
 
   changePage(page: number): void {
     if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
     }
+  }
+
+  onFilterChange(filter: string): void {
+    this.selectedFilter = filter;
+    this.currentPage = 1;
   }
 }
