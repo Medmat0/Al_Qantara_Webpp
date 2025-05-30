@@ -20,7 +20,12 @@
           {{event.comments?.length}}</span>
       </div>
       <div class="event-seats">
-        {{ event.placesRestantes }}/{{event.placesTotal}} places restantes
+        <ng-container *ngIf="event.placesTotal; else unlimitedPlaces">
+          {{ event.placesRestantes }}/{{event.placesTotal}} places restantes
+        </ng-container>
+        <ng-template #unlimitedPlaces>
+          Places illimitées
+        </ng-template>
       </div>
     </div>
   </div>

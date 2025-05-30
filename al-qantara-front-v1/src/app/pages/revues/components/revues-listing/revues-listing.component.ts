@@ -1,20 +1,23 @@
 import { Component, inject } from '@angular/core';
 import { RevueService } from '../../../../member/services/revue.service';
-import { Router, RouterLink } from '@angular/router';
-import { NgForOf } from '@angular/common';
+import { Router } from '@angular/router';
+import { NgForOf, NgIf, CommonModule } from '@angular/common';
 import { RevueItemComponent } from './components/revue-item/revue-item.component';
 import { FormsModule } from '@angular/forms';
+import { adminRevueService } from '../../../../admin/services/admin-revue.service';
 
 @Component({
   selector: 'app-revues-listing',
-  imports: [RouterLink, NgForOf, RevueItemComponent, FormsModule],
+  imports: [NgForOf, NgIf, CommonModule, RevueItemComponent, FormsModule],
   templateUrl: './revues-listing.component.html',
   standalone: true,
   styleUrls: ['./revues-listing.component.scss']
 })
 export class RevuesListingComponent {
   revueService = inject(RevueService);
+  adminRevueService = inject(adminRevueService);
   router = inject(Router);
+  isAdminRoute = false;
 
   revues: any[] = [];
   searchTerm: string = '';
@@ -26,14 +29,21 @@ export class RevuesListingComponent {
   // Filter properties
   selectedFilter: string = 'none';
 
+  // Modal properties
+  showModal: boolean = false;
+  modalTitle: string = '';
+  modalMessage: string = '';
+  revueToDelete: number | null = null;
+
   ngOnInit() {
+    // Check if we're on an admin route
+    this.isAdminRoute = window.location.pathname.startsWith('/admin');
+    
     this.revueService.getAllRevues().subscribe({
       next: (response) => {
-        //creation d'un tableau de revues
         this.revues = response;
         console.log('Revues fetched and formatted successfully:', this.revues);
-
-        },
+      },
       error: (error) => {
         console.error('Error fetching revues:', error);
       }
@@ -66,14 +76,13 @@ export class RevuesListingComponent {
       filtered = filtered.sort((a, b) => {
         return b.nombreTelechargements - a.nombreTelechargements; // Descending order
       });
-
     }
 
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     return filtered.slice(startIndex, startIndex + this.itemsPerPage);
   }
 
-// Helper method to convert month name to month number
+  // Helper method to convert month name to month number
   getMonthNumber(mois: string): number {
     const moisOrder = [
       'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
@@ -115,5 +124,36 @@ export class RevuesListingComponent {
         }
       });
     }
+  }
+
+  onDeleteRevue(revueId: number, event: Event): void {
+    // Prevent the click event from propagating to the container
+    event.stopPropagation();
+    this.revueToDelete = revueId;
+    this.modalTitle = 'Confirmation de suppression';
+    this.modalMessage = 'Êtes-vous sûr de vouloir supprimer cette revue ?';
+    this.showModal = true;
+  }
+
+  confirmModal(): void {
+    if (this.revueToDelete) {
+      this.adminRevueService.deleteRevueById(this.revueToDelete).subscribe({
+        next: () => {
+          this.revues = this.revues.filter(revue => revue.id !== this.revueToDelete);
+          console.log('Revue deleted successfully.');
+          this.closeModal();
+        },
+        error: (error) => {
+          console.error('Error deleting revue:', error);
+          alert('Une erreur est survenue lors de la suppression de la revue.');
+          this.closeModal();
+        }
+      });
+    }
+  }
+
+  closeModal(): void {
+    this.showModal = false;
+    this.revueToDelete = null;
   }
 }

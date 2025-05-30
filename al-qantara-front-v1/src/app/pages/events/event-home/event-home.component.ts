@@ -3,7 +3,6 @@ import {NgIf, CommonModule} from '@angular/common';
 import {EventCalendarComponent} from '../event-calendar/event-calendar.component';
 import {EventListingComponent} from '../event-listing/event-listing.component';
 import {EventDescriptionComponent} from '../event-description/event-description.component';
-import {AddEvenementComponent} from '../add-evenement/add-evenement.component';
 import {Evenement, LikeEvenement} from '../../../member/models/evenement';
 import {EvenementService} from '../../../member/services/evenement.service';
 import {AuthService} from '../../../member/services/auth.service';
@@ -17,14 +16,12 @@ import {ActivatedRoute, Router} from '@angular/router';
     CommonModule,
     EventCalendarComponent,
     EventListingComponent,
-    EventDescriptionComponent,
-    AddEvenementComponent
+    EventDescriptionComponent
   ],
   templateUrl: './event-home.component.html',
   styleUrl: './event-home.component.scss'
 })
-export class EventHomeComponent implements OnInit {
-  isCalendarView = false;
+export class EventHomeComponent implements OnInit {  isCalendarView = false;
   evenementService= inject(EvenementService);
 
   events:Evenement[]= [];
@@ -32,7 +29,6 @@ export class EventHomeComponent implements OnInit {
   authService = inject(AuthService);
 
   showModal = false;
-  showAddEventModal = false;
   selectedEvent: any = null;
   selectedEventId: number | null = null;
 
@@ -101,14 +97,6 @@ export class EventHomeComponent implements OnInit {
     this.isCalendarView = view;
   }
 
-  openAddEventModal() {
-    if (!this.checkAuthentication()) return;
-    this.showAddEventModal = true;
-  }
-
-  closeAddEventModal() {
-    this.showAddEventModal = false;
-  }
 
   checkAuthentication(): boolean {
     if (!this.isAuthenticated) {
@@ -293,16 +281,10 @@ export class EventHomeComponent implements OnInit {
       }
     });
   }
-
   onCalendarEventClick(event: Evenement) {
     this.selectedEvent = event;
     this.showModal = true;
     this.unsubscribeConfirmed = false;
     this.onEvenementClick(event);
-  }
-
-  onEventCreated(event: Evenement) {
-    this.events = [...this.events, event];
-    this.closeAddEventModal();
   }
 }

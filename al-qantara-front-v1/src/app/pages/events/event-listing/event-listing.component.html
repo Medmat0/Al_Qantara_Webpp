@@ -1,4 +1,22 @@
-<h2>Evénements à venir</h2>
+<div class="filters-bar">
+  <div class="search-bar">
+    <input
+      type="text"
+      placeholder="Rechercher un événement..."
+      [(ngModel)]="searchTerm"
+    />
+  </div>
+  <div class="filters">
+    <label for="filter">Trier par :</label>
+    <select id="filter" [(ngModel)]="selectedFilter" (change)="onFilterChange(selectedFilter)">
+      <option value="none">Aucun</option>
+      <option value="most-recent">Plus récents</option>
+      <option value="most-old">Plus anciens</option>
+      <option value="most-popular">Plus populaires</option>
+    </select>
+  </div>
+</div>
+
 <div class="event-listing">
   <div
     class="event-item-container"

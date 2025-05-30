@@ -1,6 +1,5 @@
 <div class="revues-main-container">
   <div class="filters-bar">
-
     <div class="search-bar">
       <input
         type="text"
@@ -20,13 +19,18 @@
       </select>
     </div>
   </div>
-  <div class="revue-listing">
-    <div
-      class="revue-item-container"
-      *ngFor="let revue of filteredRevues"
-      (click)="onRevueClick(revue)"
-    >
-      <app-revue-item [revue]="revue"></app-revue-item>
+  <div class="revue-listing">    <div class="revue-item-container" *ngFor="let revue of filteredRevues">
+      <div class="revue-item-wrapper" (click)="onRevueClick(revue)">
+        <app-revue-item [revue]="revue"></app-revue-item>
+        <button
+          *ngIf="isAdminRoute"
+          class="delete-btn"
+          (click)="onDeleteRevue(revue.id, $event)"
+          aria-label="Delete Revue"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="20px" width="20px"><title>delete-outline</title><path d="M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M8,9H16V19H8V9M15.5,4L14.5,3H9.5L8.5,4H5V6H19V4H15.5Z" /></svg>
+        </button>
+      </div>
     </div>
   </div>
   <div class="pagination">
@@ -43,5 +47,16 @@
     >
       Next
     </button>
+  </div>
+</div>
+
+<div class="modal" *ngIf="showModal">
+  <div class="modal-content">
+    <h3>{{modalTitle}}</h3>
+    <p>{{modalMessage}}</p>
+    <div class="modal-actions">
+      <button (click)="confirmModal()" class="confirm-btn">Confirmer</button>
+      <button (click)="closeModal()" class="cancel-btn">Annuler</button>
+    </div>
   </div>
 </div>

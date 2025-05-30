@@ -1,5 +1,4 @@
-<div class="view-toggle-container">
-  <div class="button-group">
+<div class="view-toggle-container">  <div class="button-group">
     <button
       [class.active]="isCalendarView"
       (click)="toggleView(true)">
@@ -10,9 +9,7 @@
       (click)="toggleView(false)">
       Liste des événements
     </button>
-  </div>  <button class="add-event-button" (click)="openAddEventModal()">
-    Ajouter un événement
-  </button>
+  </div>
 </div>
 
 
@@ -40,13 +37,5 @@
   [error]="error"
   (unsubscribe)="onUnsubscribeEvenement(selectedEvent)"
   [unsubscribeConfirmed]="unsubscribeConfirmed"
-  (comment)="onAddComment(selectedEvent,$event)"
-  (close)="closeModal()">
+  (comment)="onAddComment(selectedEvent,$event)"  (close)="closeModal()">
 </app-event-description>
-
-<!-- Modal for Add Event -->
-<app-add-evenement
-  *ngIf="showAddEventModal"
-  (close)="closeAddEventModal()"
-  (eventCreated)="onEventCreated($event)">
-</app-add-evenement>
