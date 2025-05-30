@@ -1,15 +1,26 @@
-.event-description-container {
+.modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  padding: 2rem;
+}
+
+.modal-content {
   font-family: 'Segoe UI', sans-serif;
   background: #fff;
   border-radius: 12px;
   padding: 2rem;
   width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
   max-width: 640px;
-  margin: 2rem auto;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
   position: relative;
-  display: block;
-  overflow-y: visible;
 }
 
 .close-btn {
@@ -23,17 +34,20 @@
   cursor: pointer;
   color: #666;
 }
+
 .media-content {
   width: 100%;
   border-radius: 8px;
   margin-top: 1rem;
   object-fit: cover;
 }
+
 iframe {
   border-radius: 8px;
   margin-top: 0.5rem;
   border: none;
 }
+
 .confirmed-box {
   background-color: #e6ffed;
   border-left: 4px solid #34d399;
@@ -42,21 +56,25 @@ iframe {
   text-align: center;
   border-radius: 8px;
 }
+
 .qr-code {
   display: block;
   margin: 1rem auto;
   max-width: 160px;
 }
+
 .confirmation-message {
   font-size: 0.85rem;
   color: #059669;
   margin-top: 0.5rem;
 }
+
 .actions {
   display: flex;
   gap: 1rem;
   margin: 1rem 0;
 }
+
 .actions button {
   border: none;
   background: #f3f4f6;
@@ -65,9 +83,11 @@ iframe {
   cursor: pointer;
   font-size: 0.875rem;
 }
+
 .actions button:hover {
   background: #e5e7eb;
 }
+
 .comment {
   background: #f9fafb;
   border-radius: 6px;
@@ -78,15 +98,18 @@ iframe {
   max-width: 100%;
   box-sizing: border-box;
 }
+
 .comment .font-semibold {
   font-weight: 600;
   margin-bottom: 0.25rem;
 }
+
 .comment .text-xs {
   font-size: 0.75rem;
   color: #9ca3af;
   margin-top: 0.25rem;
 }
+
 textarea.form-control {
   width: 100%;
   padding: 0.5rem;
@@ -94,6 +117,7 @@ textarea.form-control {
   border: 1px solid #d1d5db;
   resize: vertical;
 }
+
 .btn-cancel,
 .btn-send {
   padding: 0.5rem 1rem;
@@ -102,17 +126,21 @@ textarea.form-control {
   border: none;
   cursor: pointer;
 }
+
 .btn-cancel {
   background: #e5e7eb;
 }
+
 .btn-send {
   background: #3b82f6;
   color: white;
 }
+
 .btn-send:disabled {
   background: #93c5fd;
   cursor: not-allowed;
 }
+
 .like-container {
   display: inline-block;
   background: #f3f4f6;
@@ -133,6 +161,7 @@ textarea.form-control {
 .btn-comment{
   color: #3b82f6;
 }
+
 .btn-share {
   color: #861eff;
 }
@@ -144,8 +173,9 @@ textarea.form-control {
   border-radius: 6px;
   cursor: pointer;
 }
+
 .btn-participate {
-  color: #3b82f6;
+  color: #3b82f6; /* même couleur que .btn-comment */
   background: #f3f4f6;
   border: none;
   border-radius: 6px;
@@ -157,8 +187,9 @@ textarea.form-control {
 .btn-participate:hover {
   background: #e5e7eb;
 }
+
 .btn-unsubscribe {
-  color: #ef4444;
+  color: #ef4444; /* même couleur que .btn-close */
   background: #f3f4f6;
   border: none;
   border-radius: 6px;
@@ -166,9 +197,11 @@ textarea.form-control {
   font-size: 0.875rem;
   cursor: pointer;
 }
+
 .btn-unsubscribe:hover {
   background: #e5e7eb;
 }
+
 .confirmed-green-box{
   background-color: #e6ffed;
   border-left: 4px solid #34d399;
@@ -177,6 +210,7 @@ textarea.form-control {
   text-align: center;
   border-radius: 8px;
 }
+
 .unsubscribe-confirmed-red-box{
   background-color: #ffe6e6;
   border-left: 4px solid #ef4444;
