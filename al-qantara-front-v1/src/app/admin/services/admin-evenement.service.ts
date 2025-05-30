@@ -17,7 +17,7 @@ export class AdminEvenementService {
   ) {}
 
   addEvenement(evenement: Evenement): Observable<any> {
-    return this.http.post(`${this.apiUrl}/add`, evenement).pipe(
+    return this.http.post(`${this.apiUrl}/add`, evenement, { withCredentials: true }).pipe(
       tap((response) => {
         console.log('Added event:', response);
       }),
@@ -29,7 +29,7 @@ export class AdminEvenementService {
   }
 
   updateEvenement(id: number, evenement: Evenement): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}`, evenement).pipe(
+    return this.http.put(`${this.apiUrl}/${id}`, evenement, { withCredentials: true }).pipe(
       tap((response) => {
         console.log('Updated event:', response);
       }),
@@ -41,13 +41,13 @@ export class AdminEvenementService {
   }
 
   deleteEvenement(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`).pipe(
+    return this.http.delete(`${this.apiUrl}/${id}`, { withCredentials: true }).pipe(
       tap((response) => {
         console.log('Deleted event:', response);
       }),
       catchError((error) => {
         console.error('Error deleting event:', error);
-        return throwError(() => new Error('Error deleting event'));
+        return throwError(() => error);
       })
     );
   }
