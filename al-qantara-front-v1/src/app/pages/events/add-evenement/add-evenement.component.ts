@@ -13,7 +13,6 @@ import { Subject, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
   imports: [CommonModule, FormsModule]
 })
 export class AddEvenementComponent {
-  @Output() close = new EventEmitter<void>();
   @Output() eventCreated = new EventEmitter<any>();
 
   protected addressService = inject(AddressService);
@@ -62,6 +61,7 @@ export class AddEvenementComponent {
       this.showSuggestions = suggestions.length > 0;
     });
   }
+
   onAddressSearch(value: string): void {
     this.addressSearchInput = value;
     this.searchSubject.next(value);
@@ -100,12 +100,13 @@ export class AddEvenementComponent {
 
   removeVideo(): void {
     this.selectedVideo = null;
-  }  async onSubmit(form: NgForm) {
+  }
+
+  async onSubmit(form: NgForm) {
     Object.keys(this.formErrors).forEach(key => {
       this.formErrors[key as keyof typeof this.formErrors] = false;
     });
 
-   
     let hasError = false;
     const requiredFields = ['titre', 'description', 'dateDebut', 'dateFin', 'type'];
     requiredFields.forEach(field => {
@@ -115,7 +116,6 @@ export class AddEvenementComponent {
       }
     });
 
-   
     if (!this.event.numero && !this.event.rue && !this.event.codePostal && !this.event.ville) {
       this.formErrors.adresse = true;
       hasError = true;
@@ -153,14 +153,14 @@ export class AddEvenementComponent {
           this.selectedImages,
           this.selectedVideo || undefined
         );
-        
         console.log('Événement créé avec succès:', response);
         if (response.evenement) {
           console.log('URLs des images uploadées:', response.evenement.images);
           console.log('URL de la vidéo uploadée:', response.evenement.video);
           this.eventCreated.emit(response.evenement);
+          // Réinitialiser le formulaire
+          this.resetForm(form);
         }
-        this.close.emit();
       } catch (error) {
         console.error('Erreur lors de la création de l\'événement:', error);
         this.errorMessage = 'Une erreur est survenue lors de la création de l\'événement. Veuillez réessayer.';
@@ -170,7 +170,25 @@ export class AddEvenementComponent {
     }
   }
 
-  closeModal() {
-    this.close.emit();
+  private resetForm(form: NgForm): void {
+    form.resetForm();
+    this.event = {
+      titre: '',
+      description: '',
+      dateDebut: '',
+      dateFin: '',
+      numero: '',
+      rue: '',
+      codePostal: '',
+      ville: '',
+      type: '',
+      placesTotal: null,
+      images: [],
+      video: null
+    };
+    this.selectedImages = [];
+    this.selectedVideo = null;
+    this.addressSearchInput = '';
+    this.showSuggestions = false;
   }
 }
