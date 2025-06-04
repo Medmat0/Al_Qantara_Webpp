@@ -51,4 +51,19 @@ export class AdminEvenementService {
       })
     );
   }
+
+  checkQRCodeParticipation(evenementId: number, userId:number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/${evenementId}/qr-participation/${userId}`, {withCredentials: true}).pipe(
+      tap((response) => {
+        console.log('Checked QR code participation:', response);
+      }),
+      catchError((error) => {
+        console.error('Error checking QR code participation:', error);
+        return throwError(() => new Error('Error checking QR code participation'));
+      })
+    );
+
+  }
+
+
 }

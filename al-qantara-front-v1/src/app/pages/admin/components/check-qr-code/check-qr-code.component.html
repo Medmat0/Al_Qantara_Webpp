@@ -1,0 +1,17 @@
+<div *ngIf="loading">Vérification en cours...</div>
+
+<div *ngIf="!loading && error" class="error-message" style="color: #e53935; display: flex; align-items: center; gap: 0.5rem;">
+  <span style="font-size:2rem;">&#10060;</span>
+  <span>{{ error }}</span>
+</div>
+
+<div *ngIf="!loading && participation">
+  <h2>Participation trouvée</h2>
+  <div>
+    <strong>Utilisateur :</strong> {{ participation.utilisateur.nom }} {{ participation.utilisateur.prenom }}<br>
+    <strong>Email :</strong> {{ participation.utilisateur.email }}<br>
+    <strong>Événement :</strong> {{ participation.evenement.titre }}<br>
+    <strong>Date :</strong> {{ participation.evenement.dateDebut | date:'short' }}<br>
+    <strong>Lieu :</strong> {{ participation.evenement.lieu }}
+  </div>
+</div>
