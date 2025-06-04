@@ -1,4 +1,3 @@
-// src/app/shared/components/nav-bar/nav-bar.component.ts
 import { Component } from '@angular/core';
 import {Router, RouterLink} from '@angular/router';
 import { NgIf } from '@angular/common';
