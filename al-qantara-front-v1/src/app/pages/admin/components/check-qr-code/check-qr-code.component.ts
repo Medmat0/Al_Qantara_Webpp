@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AdminEvenementService } from '../../../../admin/services/admin-evenement.service';
 import { CommonModule } from '@angular/common';
+import {DomSanitizer} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-check-qr-code',
@@ -12,12 +13,13 @@ import { CommonModule } from '@angular/common';
 })
 export class CheckQrCodeComponent implements OnInit {
   loading = true;
-  error: string | null = null;
+  errorMessage: string | null = null;
   participation: any = null;
-
+  safeMapUrl: any = null;
   constructor(
     private route: ActivatedRoute,
-    private adminEvenementService: AdminEvenementService
+    private adminEvenementService: AdminEvenementService,
+    private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit(): void {
@@ -25,7 +27,7 @@ export class CheckQrCodeComponent implements OnInit {
     const utilisateurId = Number(this.route.snapshot.paramMap.get('utilisateurId'));
 
     if (!eventId || !utilisateurId) {
-      this.error = "Paramètres manquants dans l'URL.";
+      this.errorMessage = "Paramètres manquants dans l'URL.";
       this.loading = false;
       return;
     }
@@ -33,14 +35,24 @@ export class CheckQrCodeComponent implements OnInit {
     this.adminEvenementService.checkQRCodeParticipation(eventId, utilisateurId).subscribe({
       next: (res) => {
         this.participation = res.participation;
+        // Génère l’URL de la carte si latitude/longitude présents
+        const evt = this.participation?.evenement;
+        if (evt?.latitude && evt?.longitude) {
+          this.safeMapUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+            'https://www.openstreetmap.org/export/embed.html?bbox=' +
+            (evt.longitude - 0.01) + ',' +
+            (evt.latitude - 0.01) + ',' +
+            (evt.longitude + 0.01) + ',' +
+            (evt.latitude + 0.01) +
+            '&layer=mapnik&marker=' + evt.latitude + ',' + evt.longitude
+          );
+        } else {
+          this.safeMapUrl = null;
+        }
         this.loading = false;
       },
       error: (err) => {
-        if (err?.error?.message) {
-          this.error = err.error.message;
-        } else {
-          this.error = "Erreur inconnue lors de la vérification.";
-        }
+        this.errorMessage = this.adminEvenementService.errorMessage || 'Une erreur est survenue lors de la vérification du QR code.';
         this.loading = false;
       }
     });

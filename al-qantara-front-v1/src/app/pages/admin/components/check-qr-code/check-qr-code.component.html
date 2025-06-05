@@ -1,17 +1,30 @@
-<div *ngIf="loading">Vérification en cours...</div>
+<div class="qr-code-content">
+  <div *ngIf="loading">Vérification en cours...</div>
 
-<div *ngIf="!loading && error" class="error-message" style="color: #e53935; display: flex; align-items: center; gap: 0.5rem;">
-  <span style="font-size:2rem;">&#10060;</span>
-  <span>{{ error }}</span>
-</div>
+  <div *ngIf="!loading && errorMessage" class="error-message" style="color: #e53935; display: flex; align-items: center; gap: 0.5rem;">
+    <span style="font-size:2rem;">&#10060;</span>
+    <span>{{ errorMessage }}</span>
+  </div>
 
-<div *ngIf="!loading && participation">
-  <h2>Participation trouvée</h2>
-  <div>
-    <strong>Utilisateur :</strong> {{ participation.utilisateur.nom }} {{ participation.utilisateur.prenom }}<br>
-    <strong>Email :</strong> {{ participation.utilisateur.email }}<br>
-    <strong>Événement :</strong> {{ participation.evenement.titre }}<br>
-    <strong>Date :</strong> {{ participation.evenement.dateDebut | date:'short' }}<br>
-    <strong>Lieu :</strong> {{ participation.evenement.lieu }}
+  <div *ngIf="!loading && participation">
+    <h2 style="display: flex; align-items: center; gap: 0.5rem;">
+      Participation trouvée !
+      <span style="color: #43a047; font-size: 2rem; margin-left: 0.5rem;">&#10004;</span>
+    </h2>
+    <div>
+      <strong>Utilisateur :</strong> {{ participation.utilisateur.nom }} {{ participation.utilisateur.prenom }}<br>
+      <strong>Email :</strong> {{ participation.utilisateur.email }}<br>
+      <strong>Événement :</strong> {{ participation.evenement.titre }}<br>
+      <strong>Date :</strong> {{ participation.evenement.dateDebut | date:'short' }}<br>
+      <div *ngIf="safeMapUrl" style="width:100%;margin-top:1rem;">
+        <iframe
+          width="100%"
+          height="200"
+          [src]="safeMapUrl"
+          style="border-radius:8px;margin-top:0.5rem;"
+        ></iframe>
+      </div>
+      <strong>Lieu :</strong> {{ participation.evenement.lieu }}
+    </div>
   </div>
 </div>

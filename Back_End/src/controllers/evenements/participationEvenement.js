@@ -66,7 +66,13 @@ const checkQRCodeParticipation = async (req, res) => {
       },
       include: {
         evenement: {
-          select: { titre: true, dateDebut: true, lieu: true }
+          select: {
+            titre: true,
+            dateDebut: true,
+            lieu: true,
+            latitude: true,
+            longitude: true
+          }
         },
         utilisateur: {
           select: { nom: true, prenom: true, email: true }
