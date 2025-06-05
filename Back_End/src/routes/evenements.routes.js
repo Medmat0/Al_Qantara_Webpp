@@ -15,8 +15,9 @@ const router = express.Router();
 
 // Routes publiques
 router.get("/", getEvenements);
-router.get("/:id", getEvenementById);
 router.get("/cloudinary-signature", getCloudinarySignature);
+router.get("/:id", getEvenementById);
+
 
 // Routes protégées (nécessitent une authentification)
 router.use(authMiddleware);
