@@ -38,6 +38,65 @@ const checkParticipation = async (req, res) => {
 };
 
 /**
+ * @desc    Vérifier la participation d'un utilisateur à un événement via QR code
+ * @method  GET
+ * @route   /evenements/:id/participation/:id
+ */
+
+const checkQRCodeParticipation = async (req, res) => {
+  try {
+    const evenementId = parseInt(req.params.evenementId);
+    const utilisateurId = parseInt(req.params.utilisateurId);
+
+    // Vérifier si l'événement existe
+    const evenement = await prisma.evenement.findUnique({
+      where: { id: evenementId }
+    });
+    if (!evenement) {
+      return res.status(404).json({ message: "Événement non trouvé." });
+    }
+
+    // Vérifier la participation de l'utilisateur
+    const participation = await prisma.participationEvenement.findUnique({
+      where: {
+        evenementId_utilisateurId: {
+          evenementId,
+          utilisateurId
+        }
+      },
+      include: {
+        evenement: {
+          select: {
+            titre: true,
+            dateDebut: true,
+            lieu: true,
+            latitude: true,
+            longitude: true
+          }
+        },
+        utilisateur: {
+          select: { nom: true, prenom: true, email: true }
+        }
+      }
+    });
+
+    if (!participation) {
+      return res.status(404).json({ message: "Participation non trouvée pour cet utilisateur à cet événement." });
+    }
+
+    res.status(200).json({ participation });
+  } catch (error) {
+    console.error("Erreur lors de la vérification de la participation par QR code:", error);
+    res.status(500).json({
+      message: "Erreur lors de la vérification de la participation par QR code.",
+      error: error.message
+    });
+  }
+};
+
+
+
+/**
  * @desc    Participer à un événement
  * @method  POST
  * @route   /evenements/:id/participer
@@ -84,15 +143,12 @@ const participerEvenement = async (req, res) => {
       return res.status(400).json({ message: "Vous participez déjà à cet événement." });
     }
 
-    // Générer le QR code avec des données minimales
-    const qrCodeData = JSON.stringify({
-      e: parseInt(id),
-      u: utilisateurId,
-      t: new Date().getTime()
-    });
+    // Générer l’URL à encoder dans le QR code
+    const baseUrl = process.env.FRONTURL || "http://localhost:4200";
+    const qrCodeUrl = `${baseUrl}/admin/events/${id}/qr-participation/${utilisateurId}?t=${Date.now()}`;
 
-    // Générer le QR code en base64
-    const qrCodeBase64 = await QRCode.toDataURL(qrCodeData, {
+    // Générer le QR code à partir de l’URL
+    const qrCodeBase64 = await QRCode.toDataURL(qrCodeUrl, {
       errorCorrectionLevel: 'L',
       margin: 1,
       width: 200
@@ -104,15 +160,15 @@ const participerEvenement = async (req, res) => {
     // Uploader le QR code sur Cloudinary
     const uploadResponse = await new Promise((resolve, reject) => {
       cloudinary.uploader.upload_stream(
-        {
-          folder: "qrcodes",
-          public_id: `participation_${id}_${utilisateurId}_${uuidv4()}`,
-          resource_type: "image"
-        },
-        (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
-        }
+          {
+            folder: "qrcodes",
+            public_id: `participation_${id}_${utilisateurId}_${uuidv4()}`,
+            resource_type: "image"
+          },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
       ).end(qrCodeBuffer);
     });
 
@@ -187,4 +243,4 @@ const participerEvenement = async (req, res) => {
   }
 };
 
-export { participerEvenement, checkParticipation }; 
+export { participerEvenement, checkParticipation, checkQRCodeParticipation };

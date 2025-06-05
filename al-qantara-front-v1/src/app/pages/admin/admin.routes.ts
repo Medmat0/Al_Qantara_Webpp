@@ -17,6 +17,7 @@ export default [
       { path: 'articles/add', loadComponent: () => import('./components/add-article/add-article.component').then(m => m.AddArticleComponent) },
       { path: 'events', loadComponent: () => import('./components/evenements/evenements.component').then(m => m.EvenementsComponent) },
       { path: 'events/add-evenement', loadComponent: () => import('../events/add-evenement/add-evenement.component').then(m => m.AddEvenementComponent) },
+      { path: 'events/:id/qr-participation/:utilisateurId', loadComponent: () => import('./components/check-qr-code/check-qr-code.component').then(m => m.CheckQrCodeComponent)},
       { path: 'recruitments/add', loadComponent: () => import('./components/add-recruitment/add-recruitment.component').then(m => m.AddRecruitmentComponent) },
       { path: '', redirectTo: 'users', pathMatch: 'full' }
     ]

@@ -11,6 +11,7 @@ import {catchError, Observable, tap, throwError} from 'rxjs';
 })
 export class AdminEvenementService {
   private readonly apiUrl = `${API_URL}/evenements`;
+  errorMessage= '';
   constructor(
     private http: HttpClient,
     private router: Router
@@ -46,9 +47,26 @@ export class AdminEvenementService {
         console.log('Deleted event:', response);
       }),
       catchError((error) => {
+        this.errorMessage = error.error.message || 'An error occurred while deleting the event.';
         console.error('Error deleting event:', error);
         return throwError(() => error);
       })
     );
   }
+
+  checkQRCodeParticipation(evenementId: number, userId:number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/${evenementId}/qr-participation/${userId}`, {withCredentials: true}).pipe(
+      tap((response) => {
+        console.log('Checked QR code participation:', response);
+      }),
+      catchError((error) => {
+        this.errorMessage = error.error.message || 'An error occurred while checking QR code participation.';
+        console.error('Error checking QR code participation:', error);
+        return throwError(() => new Error('Error checking QR code participation'));
+      })
+    );
+
+  }
+
+
 }

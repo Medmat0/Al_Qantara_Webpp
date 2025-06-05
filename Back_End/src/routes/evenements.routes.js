@@ -7,7 +7,7 @@ import { toggleLikeEvenement } from "../controllers/evenements/likeEvenement.js"
 import { addCommentEvenement, deleteCommentEvenement } from "../controllers/evenements/commentEvenement.js";
 import { rateEvenement, getEvenementRatings } from "../controllers/evenements/rateEvenement.js";
 import { shareEvenement } from "../controllers/evenements/shareEvenement.js";
-import { participerEvenement, checkParticipation } from "../controllers/evenements/participationEvenement.js";
+import { participerEvenement, checkParticipation , checkQRCodeParticipation} from "../controllers/evenements/participationEvenement.js";
 import { desinscriptionEvenement } from "../controllers/evenements/desinscriptionEvenement.js";
 import { deleteEvenement } from "../controllers/evenements/deleteEvenement.js";
 
@@ -45,5 +45,5 @@ router.use(isAdmin);
 router.post("/add", addEvenement);
 router.delete("/:id", deleteEvenement);
 router.get("/:id/ratings", getEvenementRatings);
-
+router.get("/:evenementId/qr-participation/:utilisateurId", checkQRCodeParticipation);
 export default router; 
