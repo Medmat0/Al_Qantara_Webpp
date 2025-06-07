@@ -8,6 +8,7 @@ import evenementsRoutes from './src/routes/evenements.routes.js';
 import cookieParser from "cookie-parser";
 import path from "path";
 import { fileURLToPath } from "url";
+import offresRoutes from './src/routes/offres.routes.js';
 
 import bodyParser from "body-parser";
 import helmet from "helmet";
@@ -58,6 +59,7 @@ app.use("/auth", authRoutes);
 app.use("/revues", revuesRoutes);
 app.use("/admin",adminRoutes);
 app.use("/evenements", evenementsRoutes);
+app.use("/offres", offresRoutes);
 app.use("/user", userRoutes);
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);

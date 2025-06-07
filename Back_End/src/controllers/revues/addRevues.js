@@ -1,8 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-import cloudinary from "../../config/cloudinary.js";
-
-
-const prisma = new PrismaClient();
+import { addRevueService } from "../../services/revues/revue.service.js";
 
 /**
  * @desc    Ajouter une revue (Admin uniquement)
@@ -11,58 +7,11 @@ const prisma = new PrismaClient();
  */
 const addRevue = async (req, res) => {
   try {
-    const { titre, description, mois, annee } = req.body;
-    console.log("titre:", titre);
-    console.log("description ,",description)
-    console.log("mois:", mois);
-    console.log("annee:", annee);
-    console.log("Req.file:", req.file);
-
-   // stocker la description 
-
-    const existingRevue = await prisma.revue.findFirst({ where: { titre } });
-    if (existingRevue) {
-      return res.status(400).json({ message: "Une revue avec ce titre existe déjà." });
-    } 
-
-    if (!req.file) {
-      return res.status(400).json({ message: "Veuillez ajouter un fichier PDF." });
-    }
-
-
-
-    console.log(req.file.path);
-    const uploadResult = await cloudinary.uploader.upload(req.file.path, {
-      resource_type: "auto",
-      folder: "revues",
-      format: "pdf",
-      access_mode: "public"  
-
-    });
-    // Ensure the upload was successful
-    if (!uploadResult || !uploadResult.secure_url) {
-      return res.status(500).json({ message: "Erreur lors du téléchargement du fichier." });
-    }
-
-    const datePublication = new Date().toISOString();
-
-
-    const nouvelleRevue = await prisma.revue.create({
-      data: {
-        titre,
-        description,
-        mois,
-        annee: annee.toString(),
-        fichier: uploadResult.secure_url, 
-        datePublication : datePublication,
-        createdBy: req.user.id,
-      },
-    });
-
-    res.status(201).json({ message: "Revue ajoutée avec succès.", revue: nouvelleRevue });
+    const revue = await addRevueService(req.body, req.file, req.user.id);
+    res.status(201).json({ message: "Revue ajoutée avec succès.", revue });
   } catch (error) {
-    res.status(500).json({ message: "Erreur lors de l'ajout.", error: error.message });
+    res.status(500).json({ message: error.message || "Erreur lors de l'ajout.", error: error.message });
   }
 };
 
-export {addRevue}
+export { addRevue };
