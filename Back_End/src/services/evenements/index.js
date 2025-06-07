@@ -9,4 +9,5 @@ export { toggleLikeEvenementService } from "./likeEvenement.service.js";
 export { checkParticipationService, participerEvenementService } from "./participationEvenement.service.js";
 export { rateEvenementService, getEvenementRatingsService } from "./rateEvenement.service.js";
 export { shareEvenementService } from "./shareEvenement.service.js";
-export { deleteEvenementService } from "./deleteEvenement.service.js"; 
+export { deleteEvenementService } from "./deleteEvenement.service.js";
+export { checkQRCodeParticipationService } from "./checkQRCodeParticipation.service.js"; 
