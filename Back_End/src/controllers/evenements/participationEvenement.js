@@ -1,11 +1,4 @@
-import { PrismaClient } from "@prisma/client";
 import { checkParticipationService, participerEvenementService, checkQRCodeParticipationService } from "../../services/evenements/index.js";
-import QRCode from 'qrcode';
-import { sendEmailToUser } from "../../utils/email.config.js";
-import cloudinary from "../../config/cloudinary.js";
-import { v4 as uuidv4 } from 'uuid';
-
-const prisma = new PrismaClient();
 
 /**
  * @desc    Vérifier la participation d'un utilisateur à un événement
