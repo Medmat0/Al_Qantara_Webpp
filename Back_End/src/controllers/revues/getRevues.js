@@ -1,6 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { getRevuesService } from "../../services/revues/revue.service.js";
 
 /**
  * @desc    Obtenir toutes les revues (accessible à tous)
@@ -8,28 +6,12 @@ const prisma = new PrismaClient();
  * @route   /revues
  */
 const getRevues = async (req, res) => {
-
   try {
-    const revues = await prisma.revue.findMany({
-      select: {
-        titre : true,
-        nombreVues : true,
-        nombreTelechargements : true,
-        description : true,
-        mois : true ,
-        annee: true,
-        id: true,
-        fichier: true, 
-        datePublication : true,
-        createdBy: true,
-      },
-      orderBy: { datePublication: "desc" },
-    });
-
+    const revues = await getRevuesService();
     res.status(200).json(revues);
   } catch (error) {
-    res.status(500).json({ message: "Erreur lors de la récupération des revues.", error: error.message });
+    res.status(500).json({ message: error.message || "Erreur lors de la récupération des revues.", error: error.message });
   }
 };
 
-export  {getRevues};
+export { getRevues };

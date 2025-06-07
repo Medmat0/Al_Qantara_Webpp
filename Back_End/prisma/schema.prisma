@@ -13,6 +13,7 @@ model Utilisateur {
   prenom                  String       @db.VarChar(100)
   email                   String       @unique @db.VarChar(255)
   motDePasse              String       @db.VarChar(255)
+  photoProfil             String?      @db.VarChar(255)
   role                    Role
   dateInscription         DateTime
   statut                  Statut
@@ -30,6 +31,7 @@ model Utilisateur {
   ratings                 RatingEvenement[]
   partages                PartageEvenement[]
   participations          ParticipationEvenement[]
+  offre                   Offre[]
 }
 
 enum Role {
@@ -100,6 +102,8 @@ model Contact {
   message   String
   dateEnvoi DateTime
 }
+
+// relier article -> revue
 
 model Revue {
   id              Int          @id @default(autoincrement())
@@ -205,4 +209,27 @@ enum StatutParticipation {
   EN_ATTENTE
   CONFIRME
   ANNULE
+}
+
+enum ContractType {
+  CDI
+  CDD
+  BENEVOLAT
+  FREELANCE
+  STAGE
+  INTERIM
+  APPRENTISSAGE
+}
+
+model Offre {
+  id              Int       @id @default(autoincrement())
+  titre           String    @db.VarChar(255)
+  description     String    @db.Text
+  tags            String[]  @db.VarChar(100)
+  lieuDeTravail   String    @db.VarChar(255)
+  typeDeContrat   ContractType
+  dateDebut       DateTime
+  datePublication DateTime  @default(now())
+  createdBy       Int
+  createur        Utilisateur @relation(fields: [createdBy], references: [id])
 }

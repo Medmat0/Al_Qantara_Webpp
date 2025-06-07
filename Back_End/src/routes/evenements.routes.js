@@ -14,13 +14,13 @@ import { deleteEvenement } from "../controllers/evenements/deleteEvenement.js";
 const router = express.Router();
 
 // Routes publiques
-router.get("/", getEvenements);
 router.get("/cloudinary-signature", getCloudinarySignature);
+router.get("/", getEvenements);
+
 router.get("/:id", getEvenementById);
 
-
 // Routes protégées (nécessitent une authentification)
-router.use(authMiddleware);
+//router.use(authMiddleware);
 
 // Routes pour les likes
 router.post("/:id/like", toggleLikeEvenement);
