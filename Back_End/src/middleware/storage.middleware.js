@@ -16,4 +16,12 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 }, // Limite de 5MB
 });
 
-export  {upload , storage};
+const memoryStorage = multer.memoryStorage();
+
+const uploadInMemory = multer({
+  storage: memoryStorage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // Limite de 5MB
+});
+
+
+export  {upload , storage, uploadInMemory};
