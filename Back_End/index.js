@@ -5,6 +5,7 @@ import adminRoutes from './src/routes/admin.routes.js'
 import userRoutes from './src/routes/user.routes.js';
 import cors from "cors";
 import evenementsRoutes from './src/routes/evenements.routes.js';
+import articleRoutes from './src/routes/article.routes.js';
 import cookieParser from "cookie-parser";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -59,6 +60,7 @@ app.use("/auth", authRoutes);
 app.use("/revues", revuesRoutes);
 app.use("/admin",adminRoutes);
 app.use("/evenements", evenementsRoutes);
+app.use("/articles", articleRoutes);
 app.use("/offres", offresRoutes);
 app.use("/user", userRoutes);
 app.listen(PORT, () => {

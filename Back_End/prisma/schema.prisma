@@ -32,6 +32,7 @@ model Utilisateur {
   partages                PartageEvenement[]
   participations          ParticipationEvenement[]
   offre                   Offre[]
+  paiements               PaiementEvenement[]
 }
 
 enum Role {
@@ -67,6 +68,10 @@ model Evenement {
   ratings     RatingEvenement[]
   partages    PartageEvenement[]
   participations ParticipationEvenement[]
+  isPayant    Boolean   @default(false)
+  prix        Float?
+  helloAssoId String?   @db.VarChar(255)
+  paiements   PaiementEvenement[]
 }
 
 enum TypeEvenement {
@@ -117,24 +122,22 @@ model Revue {
   nombreTelechargements Int   @default(0)
   createdBy       Int
   createur        Utilisateur @relation(fields: [createdBy], references: [id])
+  articles        Article[]
 }
 
 model Article {
   id             Int          @id @default(autoincrement())
   titre          String       @db.VarChar(255)
-  contenu        String
+  contenu        String       @db.Text
   auteur         String       @db.VarChar(100)
   dateSoumission DateTime
-  statut         StatutArticle
   createdBy      Int
-  createur       Utilisateur @relation(fields: [createdBy], references: [id])
+  createur       Utilisateur  @relation(fields: [createdBy], references: [id])
+  revueId        Int
+  revue          Revue        @relation(fields: [revueId], references: [id])
 }
 
-enum StatutArticle {
-  EN_ATTENTE
-  APPROUVE
-  REJETE
-}
+
 
 model AccesEvenement {
   id           Int        @id @default(autoincrement())
@@ -232,4 +235,25 @@ model Offre {
   datePublication DateTime  @default(now())
   createdBy       Int
   createur        Utilisateur @relation(fields: [createdBy], references: [id])
+}
+
+model PaiementEvenement {
+  id            Int       @id @default(autoincrement())
+  evenementId   Int
+  utilisateurId Int
+  montant       Float
+  statut        StatutPaiement
+  datePaiement  DateTime  @default(now())
+  reference     String    @db.VarChar(255)
+  evenement     Evenement @relation(fields: [evenementId], references: [id])
+  utilisateur   Utilisateur @relation(fields: [utilisateurId], references: [id])
+
+  @@unique([evenementId, utilisateurId])
+}
+
+enum StatutPaiement {
+  EN_ATTENTE
+  VALIDE
+  ANNULE
+  REMBOURSE
 }

@@ -10,6 +10,7 @@ import { shareEvenement } from "../controllers/evenements/shareEvenement.js";
 import { participerEvenement, checkParticipation , checkQRCodeParticipation} from "../controllers/evenements/participationEvenement.js";
 import { desinscriptionEvenement } from "../controllers/evenements/desinscriptionEvenement.js";
 import { deleteEvenement } from "../controllers/evenements/deleteEvenement.js";
+import { handleHelloAssoWebhook } from "../controllers/evenements/helloAssoWebhook.js";
 
 const router = express.Router();
 
@@ -46,4 +47,8 @@ router.post("/add", addEvenement);
 router.delete("/:id", deleteEvenement);
 router.get("/:id/ratings", getEvenementRatings);
 router.get("/:evenementId/qr-participation/:utilisateurId", checkQRCodeParticipation);
+
+// Route pour le webhook HelloAsso
+//router.post('/webhook/helloasso', handleHelloAssoWebhook);
+
 export default router; 
