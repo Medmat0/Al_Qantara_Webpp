@@ -1,0 +1,28 @@
+<div>
+  <div class="offre-container">
+    {{offre.titre}}
+    <div class = "offre-details">
+        <p>Date de publication: {{offre.datePublication}}</p>
+        <p>Date de commencement: {{offre.dateDebut}}</p>
+        <p>Localisation: {{offre.lieuDeTravail}}</p>
+        <p>Type de contrat: {{offre.typeDeContrat}}</p>
+        <p>Rémunération: {{offre.salaire}}</p>
+    </div>
+    <div class="tags-container">
+      <span class="tag" *ngFor="let tag of offre.tags">{{tag}}</span>
+    </div>
+    <div class="offre-description">
+      {{offre.description}}
+    </div>
+  </div>
+  <div class="apply-button-container">
+
+
+  </div>
+</div>
+
+<div class="apply-form-container">
+  <app-candidature-form>
+  </app-candidature-form>
+
+</div>
