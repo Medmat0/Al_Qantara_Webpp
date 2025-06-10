@@ -8,7 +8,8 @@ import { deleteArticleService } from "../../services/article/articleService.js";
 const deleteArticle = async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user.id; // Assurez-vous que l'authentification est configurée
+    //const userId = req.user.id; 
+    const userId = 1;
 
     const article = await deleteArticleService(Number(id), userId);
 

@@ -8,7 +8,9 @@ import { createArticleService } from "../../services/article/articleService.js";
 const createArticle = async (req, res) => {
   try {
     const { titre, contenu, auteur, revueId } = req.body;
-    const createdBy = req.user.id;
+    
+    //const createdBy = req.user.id;
+    const createdBy = 1;
 
     if (!createdBy) {
       return res.status(401).json({

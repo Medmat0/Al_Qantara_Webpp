@@ -9,7 +9,8 @@ const updateArticle = async (req, res) => {
   try {
     const { id } = req.params;
     const { titre, contenu, auteur, statut } = req.body;
-    const userId = req.user.id;
+    //const userId = req.user.id;
+    const userId = 1;
 
     const article = await updateArticleService(Number(id), {
       titre,

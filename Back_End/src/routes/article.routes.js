@@ -17,8 +17,8 @@ router.get("/:id", getArticleById);
 router.get("/revue/:revueId", getArticlesByRevue);
 
 // Routes protégées
-router.post("/", authMiddleware, isAdmin, createArticle);
-router.put("/:id", authMiddleware, isAdmin, updateArticle);
-router.delete("/:id", authMiddleware, isAdmin, deleteArticle);
+router.post("/", createArticle);
+router.put("/:id", updateArticle);
+router.delete("/:id", deleteArticle);
 
 export default router; 
