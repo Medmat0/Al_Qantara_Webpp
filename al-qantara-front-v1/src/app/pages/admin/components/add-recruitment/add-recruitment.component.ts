@@ -2,6 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Editor, NgxEditorModule, Toolbar } from 'ngx-editor';
+import { RecruitmentService } from '../../services/recruitment.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-recruitment',
@@ -19,11 +21,16 @@ export class AddRecruitmentComponent implements OnInit, OnDestroy {
   toolbar: Toolbar = [
     ['bold', 'italic', 'underline'],
     ['ordered_list', 'bullet_list'],
+    [{ heading: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] }],
     ['link'],
     ['align_left', 'align_center', 'align_right'],
   ];
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private recruitmentService: RecruitmentService,
+    private router: Router
+  ) {
     this.editor = new Editor();
     this.form = this.fb.group({
       title: ['', Validators.required],
@@ -56,11 +63,26 @@ export class AddRecruitmentComponent implements OnInit, OnDestroy {
   onSubmit(): void {
     if (this.form.valid && this.tags.length > 0) {
       const formData = {
-        ...this.form.value,
+        titre: this.form.value.title,
+        description: this.form.value.description,
+        lieuDeTravail: this.form.value.location,
+        typeDeContrat: this.form.value.contractType,
+        dateDebut: this.form.value.startDate ? new Date(this.form.value.startDate).toISOString() : null,
         tags: this.tags
       };
-      console.log('Données du formulaire:', formData);
-      // TODO: Implémentation de l'appel API pour sauvegarder le recrutement
+
+      console.log('Données envoyées:', formData);
+
+      this.recruitmentService.createOffer(formData).subscribe({
+        next: (response) => {
+          console.log('Offre créée avec succès:', response);
+          // Ici il faut mettre la page de redirection après la création de la page recrutement
+          this.router.navigate(['/admin']);
+        },
+        error: (error) => {
+          console.error('Erreur lors de la création de l\'offre:', error);
+        }
+      });
     }
   }
 }
