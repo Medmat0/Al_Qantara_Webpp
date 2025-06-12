@@ -1,0 +1,116 @@
+.offre-container {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 2rem;
+  padding: 2rem;
+  font-family: Arial, sans-serif;
+}
+
+.offre-header h1 {
+  font-size: 2rem;
+  margin: 0;
+}
+
+.offre-info {
+  display: flex;
+  align-items: center;
+  color: #555;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.dot {
+  font-weight: bold;
+}
+
+.offre-resume {
+  margin: 1rem 0;
+}
+
+.offre-resume h2 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tag {
+  background-color: #eee;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.salaire {
+  margin-top: 0.5rem;
+  font-weight: bold;
+  color: #3a3a3a;
+}
+
+.offre-description {
+  margin-top: 2rem;
+}
+
+.offre-description h2 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.offre-description p {
+  line-height: 1.5;
+}
+
+.offre-card {
+  background: #f9f9f9;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.offre-card h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.offre-card .offre-entreprise {
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.offre-lieu-type {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #777;
+}
+
+.btn-postuler {
+  background-color: #3a0706;
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 20px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background-color 0.3s;
+}
+
+.btn-postuler:hover {
+  background-color: #550b0a;
+}
+
+.offre-date {
+  font-size: 0.75rem;
+  color: #999;
+  margin-top: auto;
+}

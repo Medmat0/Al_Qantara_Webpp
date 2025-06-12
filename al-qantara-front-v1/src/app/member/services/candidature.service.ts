@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { API_URL } from "../../utils/config";
+import { API_URL, CV_WEB_SERVICE_URL } from "../../utils/config";
 import { Observable, catchError, tap } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 
@@ -9,6 +9,7 @@ import { HttpClient } from "@angular/common/http";
 
 export class CandidatureService {
   private readonly apiUrl = `${API_URL}/offres`;
+  private readonly cvWebServiceUrl = `${CV_WEB_SERVICE_URL}`;
   
   constructor(
     private http: HttpClient
@@ -51,6 +52,26 @@ export class CandidatureService {
         console.error('Erreur lors de la suppression de la candidature', error);
         return new Observable((observer) => {
           observer.error(new Error('Candidature deletion failed'));
+        });
+      })
+    );
+  }
+
+  getJsonFromCVWebService(candidatureFile: File): Observable<any> {
+    const url = `${this.cvWebServiceUrl}/cv_parse`;
+    const formData = new FormData();
+    formData.append('candidatureFile', candidatureFile);
+
+    return this.http.post(url, formData, {
+      withCredentials: true
+    }).pipe(
+      tap((response: any) => {
+        console.log('Données récupérées avec succès:', response);
+      }),
+      catchError((error) => {
+        console.error('Erreur lors de la récupération des données', error);
+        return new Observable((observer) => {
+          observer.error(new Error('Data retrieval failed'));
         });
       })
     );
