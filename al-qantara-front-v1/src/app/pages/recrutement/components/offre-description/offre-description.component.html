@@ -1,0 +1,48 @@
+<div class="offre-container" *ngIf="offre">
+  <!-- Header : Titre + Entreprise + Lieu + Type de contrat -->
+  <div class="offre-header">
+    <h1>{{ offre.titre }}</h1>
+    <div class="offre-info">
+      <span class="dot">•</span>
+      <span>{{ offre.lieuDeTravail }}</span>
+      <span class="dot">•</span>
+      <span>{{ offre.typeDeContrat }}</span>
+      <span class="dot">•</span>
+      <span> Date de début: {{ offre.dateDebut | date:'dd/MM/yyyy' }}</span>
+    </div>
+  </div>
+
+  <!-- Tags de l'offre -->
+  <div class="offre-tags">
+    <h2>Tags de l'offre</h2>
+    <div class="tags">
+      <span class="tag" *ngFor="let tag of offre.tags">{{ tag }}</span>
+    </div>
+  </div>
+
+  <!-- Description de l'offre -->
+  <div class="offre-description">
+    <h2>Les missions du poste</h2>
+    <p>{{ offre.description }}</p>
+  </div>
+
+  <!-- Carte latérale : Rappel et bouton -->
+  <div class="offre-card">
+    <h3>{{ offre.titre }}</h3>
+    <div class="offre-lieu-type">
+      <span>{{ offre.lieuDeTravail }}</span>
+      <span class="dot">•</span>
+      <span>{{ offre.typeDeContrat }}</span>
+    </div>
+    <button class="btn-postuler">Postuler</button>
+    <p class="offre-date">
+      Publiée le {{ offre.datePublication | date:'dd/MM/yyyy' }}
+    </p>
+  </div>
+</div>
+<div>
+  <app-candidature-form
+    [offre]="offre"
+  >
+  </app-candidature-form>
+</div>

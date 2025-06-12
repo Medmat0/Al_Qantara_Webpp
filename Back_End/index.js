@@ -1,9 +1,9 @@
 import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import authRoutes from "./src/routes/auth.routes.js";  
+import authRoutes from "./src/routes/auth.routes.js";
 import revuesRoutes from './src/routes/revues.routes.js';
-import adminRoutes from './src/routes/admin.routes.js'
+import adminRoutes from './src/routes/admin.routes.js';
 import userRoutes from './src/routes/user.routes.js';
 import cors from "cors";
 import evenementsRoutes from './src/routes/evenements.routes.js';
@@ -102,9 +102,8 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use("/auth", authRoutes);
 app.use("/revues", revuesRoutes);
-app.use("/admin",adminRoutes);
+app.use("/admin", adminRoutes);
 app.use("/evenements", evenementsRoutes);
-app.use("/articles", articleRoutes);
 app.use("/offres", offresRoutes);
 app.use("/user", userRoutes);
 app.use("/messages", messagerieRoutes);

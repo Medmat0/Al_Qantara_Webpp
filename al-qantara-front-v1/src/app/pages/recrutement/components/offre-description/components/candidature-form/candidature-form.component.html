@@ -1,0 +1,57 @@
+<form [formGroup]="candidatureForm" (ngSubmit)="onSubmit()">
+    <!-- Section: Charger votre CV -->
+    <div class="cv-upload-container">
+        <label for="cv">Charger votre CV :</label>
+        <input type="file" id="cv" name="cv" accept=".pdf" (change)="onFileSelected($event)" />
+        <button type="button" (click)="autoFillForm()" [disabled]="!selectedCVFile || loadingCV" class="autofill-btn">Auto-remplir depuis le CV</button>
+        <div class="circular-loader" *ngIf="loadingCV">
+            <div class="spinner"></div>
+        </div>
+    </div>
+
+    <div class="exp-comp-container">
+        <!-- Expériences -->
+        <div formArrayName="experiences">
+            <label>Expériences professionnelles :</label>
+            <div *ngFor="let expCtrl of experiences.controls; let i = index">
+            <input
+                type="text"
+                [placeholder]="'Expérience ' + (i + 1)"
+                [formControlName]="i"
+                [class.is-invalid]="expCtrl.invalid && (expCtrl.touched || expCtrl.dirty)"
+            />
+            <button type="button" (click)="removeExperience(i)" *ngIf="experiences.length > 1">Supprimer</button>
+            </div>
+            <button type="button" (click)="addExperience()">Ajouter une expérience</button>
+            <div *ngIf="experiences.invalid && (experiences.touched || experiences.dirty)" class="error">
+            Au moins une expérience est requise.
+            </div>
+        </div>
+
+        <!-- Compétences -->
+        <div formArrayName="competences">
+            <label>Compétences :</label>
+            <div *ngFor="let compCtrl of competences.controls; let i = index">
+            <input
+                type="text"
+                [placeholder]="'Compétence ' + (i + 1)"
+                [formControlName]="i"
+                [class.is-invalid]="compCtrl.invalid && (compCtrl.touched || compCtrl.dirty)"
+            />
+            <button type="button" (click)="removeCompetence(i)" *ngIf="competences.length > 1">Supprimer</button>
+            </div>
+            <button type="button" (click)="addCompetence()">Ajouter une compétence</button>
+            <div *ngIf="competences.invalid && (competences.touched || competences.dirty)" class="error">
+            Au moins une compétence est requise.
+            </div>
+        </div>
+        </div>
+
+    <!-- Section: Lettre de motivation -->
+    <div>
+        <label for="motivation">Lettre de motivation :</label>
+        <textarea id="motivation" formControlName="motivation" rows="6"></textarea>
+    </div>
+
+    <button type="submit" [disabled]="candidatureForm.invalid">Envoyer la candidature</button>
+</form>

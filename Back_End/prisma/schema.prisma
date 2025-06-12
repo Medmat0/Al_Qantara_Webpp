@@ -4,37 +4,38 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      =  env("DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
 
 model Utilisateur {
-  id                      Int          @id @default(autoincrement())
-  nom                     String       @db.VarChar(100)
-  prenom                  String       @db.VarChar(100)
-  email                   String       @unique @db.VarChar(255)
-  motDePasse              String       @db.VarChar(255)
-  photoProfil             String?      @db.VarChar(255)
-  role                    Role
-  dateInscription         DateTime
-  statut                  Statut
-  emailVerificationToken  String?      @db.VarChar(255) 
-  emailVerified           Boolean      @default(false)    
-  passwordResetToken      String?      @db.VarChar(255)  
-  passwordResetTokenExpire String?    
-  evenements              Evenement[]
-  revues                  Revue[]
-  articles                Article[]
-  adhesion                Adhesion?
-  accesEvenements         AccesEvenement[]
-  likes                   LikeEvenement[]
-  commentaires            CommentaireEvenement[]
-  ratings                 RatingEvenement[]
-  partages                PartageEvenement[]
-  participations          ParticipationEvenement[]
-  offre                   Offre[]
-  paiements               PaiementEvenement[]
-  messagesEnvoyes         Message[] @relation("MessagesEnvoyes")
-  messagesRecus           Message[] @relation("MessagesRecus")
+  id                       Int                      @id @default(autoincrement())
+  nom                      String                   @db.VarChar(100)
+  prenom                   String                   @db.VarChar(100)
+  email                    String                   @unique @db.VarChar(255)
+  motDePasse               String                   @db.VarChar(255)
+  photoProfil              String?                  @db.VarChar(255)
+  role                     Role
+  dateInscription          DateTime
+  statut                   Statut
+  emailVerificationToken   String?                  @db.VarChar(255)
+  emailVerified            Boolean                  @default(false)
+  passwordResetToken       String?                  @db.VarChar(255)
+  passwordResetTokenExpire String?
+  evenements               Evenement[]
+  revues                   Revue[]
+  articles                 Article[]
+  adhesion                 Adhesion?
+  accesEvenements          AccesEvenement[]
+  likes                    LikeEvenement[]
+  commentaires             CommentaireEvenement[]
+  ratings                  RatingEvenement[]
+  partages                 PartageEvenement[]
+  participations           ParticipationEvenement[]
+  offre                    Offre[]
+  candidatures             Candidature[]
+  paiements                PaiementEvenement[]
+  messagesEnvoyes          Message[]                @relation("MessagesEnvoyes")
+  messagesRecus            Message[]                @relation("MessagesRecus")
 }
 
 enum Role {
@@ -49,32 +50,32 @@ enum Statut {
 }
 
 model Evenement {
-  id          Int       @id @default(autoincrement())
-  titre       String    @db.VarChar(255)
-  description String
-  dateDebut   DateTime
-  dateFin     DateTime
-  lieu        String    @db.VarChar(255)
-  type        TypeEvenement
-  createdBy   Int
-  createur    Utilisateur @relation(fields: [createdBy], references: [id])
-  acces       AccesEvenement[]
-  images      String[]  @db.VarChar(255)
-  video       String?   @db.VarChar(255)
-  latitude    Float?
-  longitude   Float?
-  placesTotal Int?
+  id              Int                      @id @default(autoincrement())
+  titre           String                   @db.VarChar(255)
+  description     String
+  dateDebut       DateTime
+  dateFin         DateTime
+  lieu            String                   @db.VarChar(255)
+  type            TypeEvenement
+  createdBy       Int
+  createur        Utilisateur              @relation(fields: [createdBy], references: [id])
+  acces           AccesEvenement[]
+  images          String[]                 @db.VarChar(255)
+  video           String?                  @db.VarChar(255)
+  latitude        Float?
+  longitude       Float?
+  placesTotal     Int?
   placesRestantes Int?
-  likes       LikeEvenement[]
-  comments    CommentaireEvenement[]
-  ratings     RatingEvenement[]
-  partages    PartageEvenement[]
-  participations ParticipationEvenement[]
-  isPayant    Boolean   @default(false)
-  prix        Float?
-  helloAssoId String?   @db.VarChar(255)
-  paiements   PaiementEvenement[]
-  messages    Message[]
+  likes           LikeEvenement[]
+  comments        CommentaireEvenement[]
+  ratings         RatingEvenement[]
+  partages        PartageEvenement[]
+  participations  ParticipationEvenement[]
+  isPayant        Boolean                  @default(false)
+  prix            Float?
+  helloAssoId     String?                  @db.VarChar(255)
+  paiements       PaiementEvenement[]
+  messages        Message[]
 }
 
 enum TypeEvenement {
@@ -83,17 +84,17 @@ enum TypeEvenement {
 }
 
 model Newsletter {
-  id              Int    @id @default(autoincrement())
-  email           String @unique @db.VarChar(255)
+  id              Int      @id @default(autoincrement())
+  email           String   @unique @db.VarChar(255)
   dateInscription DateTime
 }
 
 model Adhesion {
-  id          Int      @id @default(autoincrement())
-  utilisateur Utilisateur @relation(fields: [utilisateurId], references: [id])
-  utilisateurId Int   @unique
-  dateDemande DateTime
-  statut      StatutAdhesion
+  id            Int            @id @default(autoincrement())
+  utilisateur   Utilisateur    @relation(fields: [utilisateurId], references: [id])
+  utilisateurId Int            @unique
+  dateDemande   DateTime
+  statut        StatutAdhesion
 }
 
 enum StatutAdhesion {
@@ -103,10 +104,10 @@ enum StatutAdhesion {
 }
 
 model Contact {
-  id        Int    @id @default(autoincrement())
-  nom       String @db.VarChar(100)
-  email     String @db.VarChar(255)
-  sujet     String @db.VarChar(255)
+  id        Int      @id @default(autoincrement())
+  nom       String   @db.VarChar(100)
+  email     String   @db.VarChar(255)
+  sujet     String   @db.VarChar(255)
   message   String
   dateEnvoi DateTime
 }
@@ -114,30 +115,30 @@ model Contact {
 // relier article -> revue
 
 model Revue {
-  id              Int          @id @default(autoincrement())
-  titre           String       @db.VarChar(255)
-  description     String?      @db.Text            
-  mois            String?                            
-  annee           String?         
-  fichier         String       @db.VarChar(255)
-  datePublication DateTime
-  nombreVues         Int      @default(0)
-  nombreTelechargements Int   @default(0)
-  createdBy       Int
-  createur        Utilisateur @relation(fields: [createdBy], references: [id])
-  articles        Article[]
+  id                    Int         @id @default(autoincrement())
+  titre                 String      @db.VarChar(255)
+  description           String?     @db.Text
+  mois                  String?
+  annee                 String?
+  fichier               String      @db.VarChar(255)
+  datePublication       DateTime
+  nombreVues            Int         @default(0)
+  nombreTelechargements Int         @default(0)
+  createdBy             Int
+  createur              Utilisateur @relation(fields: [createdBy], references: [id])
+  articles              Article[]
 }
 
 model Article {
-  id             Int          @id @default(autoincrement())
-  titre          String       @db.VarChar(255)
-  contenu        String       @db.Text
-  auteur         String       @db.VarChar(100)
+  id             Int                @id @default(autoincrement())
+  titre          String             @db.VarChar(255)
+  contenu        String             @db.Text
+  auteur         String             @db.VarChar(100)
   dateSoumission DateTime
   createdBy      Int
-  createur       Utilisateur  @relation(fields: [createdBy], references: [id])
+  createur       Utilisateur        @relation(fields: [createdBy], references: [id])
   revueId        Int
-  revue          Revue        @relation(fields: [revueId], references: [id])
+  revue          Revue              @relation(fields: [revueId], references: [id])
   categories     CategorieArticle[]
 }
 
@@ -149,70 +150,70 @@ model CategorieArticle {
 }
 
 model AccesEvenement {
-  id           Int        @id @default(autoincrement())
-  evenementId  Int
+  id            Int         @id @default(autoincrement())
+  evenementId   Int
   utilisateurId Int
-  evenement    Evenement  @relation(fields: [evenementId], references: [id])
-  utilisateur  Utilisateur @relation(fields: [utilisateurId], references: [id])
+  evenement     Evenement   @relation(fields: [evenementId], references: [id])
+  utilisateur   Utilisateur @relation(fields: [utilisateurId], references: [id])
 }
 
 model LikeEvenement {
-  id          Int       @id @default(autoincrement())
-  evenementId Int
+  id            Int         @id @default(autoincrement())
+  evenementId   Int
   utilisateurId Int
-  dateLike    DateTime  @default(now())
-  evenement   Evenement @relation(fields: [evenementId], references: [id])
-  utilisateur Utilisateur @relation(fields: [utilisateurId], references: [id])
+  dateLike      DateTime    @default(now())
+  evenement     Evenement   @relation(fields: [evenementId], references: [id])
+  utilisateur   Utilisateur @relation(fields: [utilisateurId], references: [id])
 
   @@unique([evenementId, utilisateurId])
 }
 
 model CommentaireEvenement {
-  id          Int       @id @default(autoincrement())
-  evenementId Int
-  utilisateurId Int
-  contenu     String
-  dateCommentaire DateTime @default(now())
-  evenement   Evenement @relation(fields: [evenementId], references: [id])
-  utilisateur Utilisateur @relation(fields: [utilisateurId], references: [id])
+  id              Int         @id @default(autoincrement())
+  evenementId     Int
+  utilisateurId   Int
+  contenu         String
+  dateCommentaire DateTime    @default(now())
+  evenement       Evenement   @relation(fields: [evenementId], references: [id])
+  utilisateur     Utilisateur @relation(fields: [utilisateurId], references: [id])
 }
 
 model RatingEvenement {
-  id          Int       @id @default(autoincrement())
-  evenementId Int
-  utilisateurId Int
+  id               Int         @id @default(autoincrement())
+  evenementId      Int
+  utilisateurId    Int
   noteOrganisateur Int
-  noteLieu    Int
-  noteAmbiance Int
-  noteEvenement Int
-  commentaire String?
-  dateRating  DateTime  @default(now())
-  evenement   Evenement @relation(fields: [evenementId], references: [id])
-  utilisateur Utilisateur @relation(fields: [utilisateurId], references: [id])
+  noteLieu         Int
+  noteAmbiance     Int
+  noteEvenement    Int
+  commentaire      String?
+  dateRating       DateTime    @default(now())
+  evenement        Evenement   @relation(fields: [evenementId], references: [id])
+  utilisateur      Utilisateur @relation(fields: [utilisateurId], references: [id])
 
   @@unique([evenementId, utilisateurId])
 }
 
 model PartageEvenement {
-  id          Int       @id @default(autoincrement())
-  evenementId Int
-  utilisateurId Int
+  id                Int         @id @default(autoincrement())
+  evenementId       Int
+  utilisateurId     Int
   emailDestinataire String
-  message     String?
-  datePartage DateTime  @default(now())
-  evenement   Evenement @relation(fields: [evenementId], references: [id])
-  utilisateur Utilisateur @relation(fields: [utilisateurId], references: [id])
+  message           String?
+  datePartage       DateTime    @default(now())
+  evenement         Evenement   @relation(fields: [evenementId], references: [id])
+  utilisateur       Utilisateur @relation(fields: [utilisateurId], references: [id])
 }
 
 model ParticipationEvenement {
-  id          Int       @id @default(autoincrement())
-  evenementId Int
-  utilisateurId Int
-  statut      StatutParticipation @default(EN_ATTENTE)
-  qrCode      String?   @db.Text
-  dateParticipation DateTime @default(now())
-  evenement   Evenement @relation(fields: [evenementId], references: [id])
-  utilisateur Utilisateur @relation(fields: [utilisateurId], references: [id])
+  id                Int                 @id @default(autoincrement())
+  evenementId       Int
+  utilisateurId     Int
+  statut            StatutParticipation @default(EN_ATTENTE)
+  qrCode            String?             @db.Text
+  dateParticipation DateTime            @default(now())
+  evenement         Evenement           @relation(fields: [evenementId], references: [id])
+  utilisateur       Utilisateur         @relation(fields: [utilisateurId], references: [id])
 
   @@unique([evenementId, utilisateurId])
 }
@@ -234,16 +235,40 @@ enum ContractType {
 }
 
 model Offre {
-  id              Int       @id @default(autoincrement())
-  titre           String    @db.VarChar(255)
-  description     String    @db.Text
-  tags            String[]  @db.VarChar(100)
-  lieuDeTravail   String    @db.VarChar(255)
+  id              Int          @id @default(autoincrement())
+  titre           String       @db.VarChar(255)
+  description     String       @db.Text
+  tags            String[]     @db.VarChar(100)
+  lieuDeTravail   String       @db.VarChar(255)
   typeDeContrat   ContractType
   dateDebut       DateTime
-  datePublication DateTime  @default(now())
+  datePublication DateTime     @default(now())
   createdBy       Int
-  createur        Utilisateur @relation(fields: [createdBy], references: [id])
+  createur        Utilisateur   @relation(fields: [createdBy], references: [id])
+  candidatures    Candidature[]
+}
+
+model Candidature {
+  id               Int               @id @default(autoincrement())
+  offreId          Int
+  utilisateurId    Int
+  dateCandidature  DateTime          @default(now())
+  statut           StatutCandidature @default(EN_ATTENTE)
+  lettreMotivation String?           @db.Text
+  cv               String?           @db.VarChar(255)
+  skills           String[]          @db.VarChar(100)
+  experiences      String[]          @db.VarChar(500)
+  score            Int               @default(0)
+  offre            Offre             @relation(fields: [offreId], references: [id])
+  utilisateur      Utilisateur       @relation(fields: [utilisateurId], references: [id])
+
+  @@unique([offreId, utilisateurId])
+}
+
+enum StatutCandidature {
+  EN_ATTENTE
+  ACCEPTEE
+  REJETEE
 }
 
 model PaiementEvenement {
