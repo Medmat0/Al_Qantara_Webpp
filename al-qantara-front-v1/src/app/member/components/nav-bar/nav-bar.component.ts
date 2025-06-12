@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import {Router, RouterLink} from '@angular/router';
 import { NgIf } from '@angular/common';
 import { NavbarService } from '../../services/navbar.service';
@@ -16,6 +16,7 @@ export class NavBarComponent {
   showButtons: boolean = true;
   isAuthenticated: boolean = false;
   username: string | null = null;
+  isUserMenuOpen: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -43,6 +44,20 @@ export class NavBarComponent {
     });
   }
 
+  toggleUserMenu(): void {
+    this.isUserMenuOpen = !this.isUserMenuOpen;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClick(event: Event): void {
+    const userMenu = document.querySelector('.user-menu');
+    const target = event.target as HTMLElement;
+
+    if (userMenu && !userMenu.contains(target)) {
+      this.isUserMenuOpen = false;
+    }
+  }
+
   logout() {
     this.authService.logout().subscribe({
       next: () => {
@@ -52,5 +67,10 @@ export class NavBarComponent {
         console.error('Error during logout:', err);
       }
     });
+  }
+
+  navigateToProfile(): void {
+    this.isUserMenuOpen = false;  // Ferme le menu
+    this.router.navigate(['/profile']);
   }
 }

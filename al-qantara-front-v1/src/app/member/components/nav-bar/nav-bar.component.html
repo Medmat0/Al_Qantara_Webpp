@@ -21,13 +21,18 @@
         <button *ngIf="showButtons && !isAuthenticated" class="register" routerLink="/auth/register">S'inscrire</button>
         <button *ngIf="showButtons && !isAuthenticated" class="login" routerLink="/auth/login">Se Connecter</button>
       </div>
-      <div class="logout-container">
-        <h3 *ngIf="isAuthenticated" class="userName">Bonjour&nbsp;{{username }}</h3>
-        <button *ngIf="showButtons && isAuthenticated" class="logout" (click)="logout()">
-          <svg>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.58L17 17L22 12M4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z" /></svg>
+      <div class="user-menu" *ngIf="isAuthenticated">
+        <button class="user-button" (click)="toggleUserMenu()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M12 4C14.21 4 16 5.79 16 8S14.21 12 12 12 8 10.21 8 8 9.79 4 12 4M12 14C16.42 14 20 15.79 20 18V20H4V18C4 15.79 7.58 14 12 14Z" />
           </svg>
         </button>
+        <div class="user-dropdown" *ngIf="isUserMenuOpen">
+          <ul>
+            <li><a (click)="navigateToProfile()">Mon profil</a></li>
+            <li><a class="logout-link" (click)="logout()">Déconnexion</a></li>
+          </ul>
+        </div>
       </div>
     </div>
   </nav>
