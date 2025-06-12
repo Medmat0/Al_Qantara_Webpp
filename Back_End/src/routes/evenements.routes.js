@@ -21,7 +21,7 @@ router.get("/", getEvenements);
 router.get("/:id", getEvenementById);
 
 // Routes protégées (nécessitent une authentification)
-//router.use(authMiddleware);
+router.use(authMiddleware);
 
 // Routes pour les likes
 router.post("/:id/like", toggleLikeEvenement);

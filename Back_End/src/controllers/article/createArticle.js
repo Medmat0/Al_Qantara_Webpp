@@ -7,7 +7,7 @@ import { createArticleService } from "../../services/article/articleService.js";
  */
 const createArticle = async (req, res) => {
   try {
-    const { titre, contenu, auteur, revueId } = req.body;
+    const { titre, contenu, auteur, revueId, categories } = req.body;
     
     //const createdBy = req.user.id;
     const createdBy = 1;
@@ -23,7 +23,8 @@ const createArticle = async (req, res) => {
       contenu,
       auteur,
       revueId,
-      createdBy
+      createdBy,
+      categories // Tableau d'IDs des catégories
     });
 
     res.status(201).json({

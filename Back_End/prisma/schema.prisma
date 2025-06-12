@@ -33,6 +33,8 @@ model Utilisateur {
   participations          ParticipationEvenement[]
   offre                   Offre[]
   paiements               PaiementEvenement[]
+  messagesEnvoyes         Message[] @relation("MessagesEnvoyes")
+  messagesRecus           Message[] @relation("MessagesRecus")
 }
 
 enum Role {
@@ -72,6 +74,7 @@ model Evenement {
   prix        Float?
   helloAssoId String?   @db.VarChar(255)
   paiements   PaiementEvenement[]
+  messages    Message[]
 }
 
 enum TypeEvenement {
@@ -135,9 +138,15 @@ model Article {
   createur       Utilisateur  @relation(fields: [createdBy], references: [id])
   revueId        Int
   revue          Revue        @relation(fields: [revueId], references: [id])
+  categories     CategorieArticle[]
 }
 
-
+model CategorieArticle {
+  id          Int       @id @default(autoincrement())
+  nom         String    @db.VarChar(100)
+  description String?   @db.Text
+  articles    Article[]
+}
 
 model AccesEvenement {
   id           Int        @id @default(autoincrement())
@@ -256,4 +265,41 @@ enum StatutPaiement {
   VALIDE
   ANNULE
   REMBOURSE
+}
+
+model Message {
+  id          Int       @id @default(autoincrement())
+  contenu     String    @db.Text
+  type        TypeMessage
+  dateEnvoi   DateTime  @default(now())
+  dateExpiration DateTime
+  estLu       Boolean   @default(false)
+  expediteur  Utilisateur @relation("MessagesEnvoyes", fields: [expediteurId], references: [id])
+  expediteurId Int
+  destinataire Utilisateur @relation("MessagesRecus", fields: [destinataireId], references: [id])
+  destinataireId Int
+  evenement   Evenement? @relation(fields: [evenementId], references: [id])
+  evenementId Int?
+  piecesJointes PieceJointe[]
+}
+
+model PieceJointe {
+  id          Int       @id @default(autoincrement())
+  type        TypePieceJointe
+  url         String    @db.VarChar(255)
+  message     Message   @relation(fields: [messageId], references: [id])
+  messageId   Int
+}
+
+enum TypeMessage {
+  TEXTE
+  EMOJI
+  GIF
+  EVENEMENT
+}
+
+enum TypePieceJointe {
+  IMAGE
+  GIF
+  FICHIER
 }

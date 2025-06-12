@@ -1,4 +1,6 @@
 import express from "express";
+import { createServer } from "http";
+import { Server } from "socket.io";
 import authRoutes from "./src/routes/auth.routes.js";  
 import revuesRoutes from './src/routes/revues.routes.js';
 import adminRoutes from './src/routes/admin.routes.js'
@@ -10,11 +12,53 @@ import cookieParser from "cookie-parser";
 import path from "path";
 import { fileURLToPath } from "url";
 import offresRoutes from './src/routes/offres.routes.js';
+import messagerieRoutes from './src/routes/messagerie.routes.js';
 
 import bodyParser from "body-parser";
 import helmet from "helmet";
+
 const PORT = process.env.PORT || 3000;
 const app = express();
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: process.env.FRONT_URL || "http://localhost:5173",
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+});
+
+// Stockage des connexions utilisateurs
+const userSockets = new Map();
+
+// Gestion des connexions Socket.IO
+io.on('connection', (socket) => {
+  console.log('Un utilisateur s\'est connecté');
+
+  // Authentification de l'utilisateur
+  socket.on('authenticate', (userId) => {
+    userSockets.set(userId, socket.id);
+    console.log(`Utilisateur ${userId} authentifié`);
+  });
+
+  // Déconnexion
+  socket.on('disconnect', () => {
+    for (const [userId, socketId] of userSockets.entries()) {
+      if (socketId === socket.id) {
+        userSockets.delete(userId);
+        console.log(`Utilisateur ${userId} déconnecté`);
+        break;
+      }
+    }
+  });
+});
+
+// Middleware pour rendre io accessible dans les routes
+app.use((req, res, next) => {
+  req.io = io;
+  req.userSockets = userSockets;
+  next();
+});
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -63,6 +107,9 @@ app.use("/evenements", evenementsRoutes);
 app.use("/articles", articleRoutes);
 app.use("/offres", offresRoutes);
 app.use("/user", userRoutes);
-app.listen(PORT, () => {
+app.use("/messages", messagerieRoutes);
+
+// Démarrer le serveur avec Socket.IO
+httpServer.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
