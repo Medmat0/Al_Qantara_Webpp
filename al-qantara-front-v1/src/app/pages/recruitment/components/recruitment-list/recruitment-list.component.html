@@ -1,3 +1,32 @@
+<div class="recruitment-list-container">
+  <div class="filters-section">
+    <div class="search-bar">
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearchChange()"
+        placeholder="Rechercher les offres d'emploi..."
+      >
+    </div>
+  </div>
 
+  <div class="offers-list">
+    <div class="offer-card" *ngFor="let offer of filteredOffers">
+      <div class="offer-content">
+        <h3>{{ offer.titre }}</h3>
+        <div class="offer-details">
+          <p><strong>Type de contrat:</strong> {{ offer.typeDeContrat }}</p>
+          <p><strong>Lieu:</strong> {{ offer.lieuDeTravail }}</p>
+          <p><strong>Date de début:</strong> {{ offer.dateDebut | date:'dd/MM/yyyy' }}</p>
+        </div>
+        <button class="view-button" (click)="viewOffer(offer.id)">
+          Afficher l'offre
+        </button>
+      </div>
+    </div>
+  </div>
 
-
+  <div class="no-results" *ngIf="filteredOffers.length === 0">
+    Aucune offre ne correspond à vos critères de recherche.
+  </div>
+</div>

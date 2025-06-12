@@ -18,6 +18,7 @@ export default [
       { path: 'events', loadComponent: () => import('./components/evenements/evenements.component').then(m => m.EvenementsComponent) },
       { path: 'events/add-evenement', loadComponent: () => import('../events/add-evenement/add-evenement.component').then(m => m.AddEvenementComponent) },
       { path: 'events/:id/qr-participation/:utilisateurId', loadComponent: () => import('./components/check-qr-code/check-qr-code.component').then(m => m.CheckQrCodeComponent)},
+      { path: 'recruitments', loadComponent: () => import('./components/manage-recruitment/manage-recruitment.component').then(m => m.ManageRecruitmentComponent) },
       { path: 'recruitments/add', loadComponent: () => import('./components/add-recruitment/add-recruitment.component').then(m => m.AddRecruitmentComponent) },
       { path: '', redirectTo: 'users', pathMatch: 'full' }
     ]

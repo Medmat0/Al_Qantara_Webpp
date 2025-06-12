@@ -11,4 +11,4 @@ router.post("/add", isAdmin, addOffre);
 router.put("/:id", authMiddleware, isAdmin, editOffre);
 router.delete("/:id", authMiddleware, isAdmin, deleteOffre);
 
-export default router; 
+export default router;
