@@ -1,8 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import cloudinary from "../../config/cloudinary.js";
-import {getOffreById} from "./getOffreById.js";
-import pdf from "pdf-parse";
-import tesseract from "tesseract.js";
+
 const prisma = new PrismaClient();
 
 /**
@@ -59,6 +57,7 @@ const addCandidature = async (req, res) => {
         );
         /*
 
+
         const uploadResult = await cloudinary.uploader.upload(cv,{
             resource_type:"auto",
             folder:"candidature",
@@ -73,9 +72,11 @@ const addCandidature = async (req, res) => {
         const newCandidature = await prisma.candidature.create({
             data: {
                 offreId: parseInt(id),
-                utilisateurId: req.user.id, // Assurez-vous que l'ID utilisateur est disponible dans req.user
-                lettreMotivation,
-                cv: uploadResult.secure_url, // Stockez le chemin du CV si le champ existe dans le modèle
+                utilisateurId: req.user.id,
+                lettreMotivation: motivation,
+                cv: uploadResult.secure_url,
+                skills: skills ? JSON.parse(skills) : [],
+                experiences: experiences ? JSON.parse(experiences) : [],
                 score: candidatureScore,
             },
             include: {
@@ -85,12 +86,18 @@ const addCandidature = async (req, res) => {
         });
 
 
-
-         */
-
-
+        const candidatureWithoutPrivateInfo = { ...newCandidature };
+        delete candidatureWithoutPrivateInfo.cv;
+        delete candidatureWithoutPrivateInfo.score;
         return res.status(200).json({
             message: "Candidature envoyée avec succès.",
+            candidature: candidatureWithoutPrivateInfo
+        });
+
+         */
+        return res.status(200).json({
+            message: "Candidature envoyée avec succès.",
+            offreRef,
             score: candidatureScore
         });
 
