@@ -17,16 +17,19 @@ export class CandidatureService {
   
   
   
-  addCandidature(offreId: number, cvText:string, lettreMotivation:string): Observable<any> {
+  addCandidature(offreId: number, candidatCV: File, formText: string, lettreMotivation: string): Observable<any> {
     const url = `${this.apiUrl}/${offreId}/apply`;
-    const body = {cvText, lettreMotivation};
-    return this.http.post(url,body, {
-      withCredentials: true //envoi des credentials et reception cookies
-    }).pipe(tap((response: any) => {
-        if (response) {
+    const formData = new FormData();
+    formData.append('candidatCV', candidatCV);
+    formData.append('formText', formText);
+    formData.append('lettreMotivation', lettreMotivation);
 
-          console.log('Candidature ajouté avec succès:', response);
-         
+    return this.http.post(url, formData, {
+      withCredentials: true
+    }).pipe(
+      tap((response: any) => {
+        if (response) {
+          console.log('Candidature ajoutée avec succès:', response);
         }
       }),
       catchError((error) => {
@@ -35,7 +38,6 @@ export class CandidatureService {
           observer.error(new Error('Candidature failed'));
         });
       })
-     
     );
   }
   

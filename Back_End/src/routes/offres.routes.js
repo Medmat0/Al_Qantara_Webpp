@@ -11,5 +11,5 @@ router.get("/", getOffres);
 router.get("/:id", getOffreById);
 router.put("/:id", authMiddleware, isAdmin, editOffre);
 router.delete("/:id", authMiddleware, isAdmin, deleteOffre);
-router.post("/:id/apply",authMiddleware,uploadInMemory.single("cv"),addCandidature);
+router.post("/:id/apply",authMiddleware,uploadInMemory.single("candidatCV"),addCandidature);
 export default router; 

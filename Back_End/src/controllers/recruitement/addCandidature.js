@@ -12,9 +12,9 @@ const prisma = new PrismaClient();
  */
 
 const addCandidature = async (req, res) => {
-    const {id}  = req.params; // ID de l'offre
-    const cv  = req.file;
-    const lettremotivation = req.body; // Détails de la candidature
+    const { id } = req.params; // ID de l'offre
+    const cv = req.file;
+    const { formText, lettreMotivation } = req.body; // Champs du formulaire
 
     if (!cv) {
         return res.status(400).json({ message: "Veuillez ajouter un CV." });
@@ -23,14 +23,14 @@ const addCandidature = async (req, res) => {
     try {
         // Vérifier si l'offre existe
         const offre = await prisma.offre.findUnique({
-        where: { id: parseInt(id) },
+            where: { id: parseInt(id) },
         });
 
         if (!offre) {
-        return res.status(404).json({ message: "Offre non trouvée." });
+            return res.status(404).json({ message: "Offre non trouvée." });
         }
-        const cvBuffer = cv.buffer; // Récupérer le buffer du CV
-        const candidatCvText = await parseCVToText(cvBuffer);
+
+        const completeCandidatureText = formText + '\n\n' + lettreMotivation;
         const offreRef = await prisma.offre.findUnique({
             where: { id: parseInt(id) },
             select: {
@@ -44,56 +44,46 @@ const addCandidature = async (req, res) => {
                 datePublication: true
             }
         });
+
         const candidatureForScoring = {
             offreRef,
-            candidatCvText
-        }
-        const candidatureScore = await getCandidatureScore(candidatureForScoring);
+            completeCandidatureText
+        };
+        const candidatureScore = await getCandidatureScore(candidatureForScoring.offreRef, candidatureForScoring.completeCandidatureText);
+
+        /*
+
+        const newCandidature = await prisma.candidature.create({
+            data: {
+                offreId: parseInt(id),
+                utilisateurId: req.user.id, // Assurez-vous que l'ID utilisateur est disponible dans req.user
+                lettreMotivation,
+                cv: cv.path, // Stockez le chemin du CV si le champ existe dans le modèle
+                score: candidatureScore,
+            },
+            include: {
+                offre: true,
+                utilisateur: true,
+            }
+        });
+
+         */
+
 
         return res.status(200).json({
             message: "Candidature analysée avec succès.",
             score: candidatureScore,
-        });
-        /*
-
-        const uploadResult = await cloudinary.uploader.upload(cv,{
-            resource_type:"auto",
-            folder: "candidatures/cv",
-            format: "pdf",
-            access_mode: "private",
-            }
-
-        )
-
-        if (!uploadResult || !uploadResult.secure_url) {
-            throw new Error("Erreur lors du téléchargement du CV.");
-        }
-
-        // Créer la candidature
-        const candidature = await prisma.candidature.create({
-        data: {
-            cv,
-            lettreMotivation,
-            offreId: parseInt(id),
-            userId: req.user.id, // Utilisateur authentifié
-        },
+            formText,
+            lettreMotivation
         });
 
-        res.status(201).json({
-        message: "Candidature ajoutée avec succès.",
-        candidature,
-        });
-
-         */
     } catch (error) {
         console.error("Erreur lors de l'ajout de la candidature:", error);
         res.status(500).json({
-        message: "Erreur lors de l'ajout de la candidature.",
-        error: error.message,
+            message: "Erreur lors de l'ajout de la candidature.",
+            error: error.message,
         });
     }
-
-
 }
 
 const parseCVToText = async (cvBuffer) => {
@@ -113,8 +103,8 @@ const parseCVToText = async (cvBuffer) => {
     return data.text;
 }
 
-const getCandidatureScore = async ({ offreRef, candidatCvText }) => {
-    const response = await fetch('http://127.0.0.1:8000/cv_score', {
+const getCandidatureScore = async (offreRef, candidatCvText) => {
+    const response = await fetch(process.env.WEB_SERVICE_URL+"/cv_score", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -124,7 +114,7 @@ const getCandidatureScore = async ({ offreRef, candidatCvText }) => {
                 offreEmploiId: offreRef.id,
                 ...offreRef
             },
-            candidatCV: candidatCvText
+            candidatureText: candidatCvText
         })
     });
     const responseBody = await response.text();

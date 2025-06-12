@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
 import { FormBuilder, FormGroup, FormArray, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../../../../member/services/auth.service';
@@ -17,6 +17,7 @@ export class CandidatureFormComponent {
   fb: FormBuilder = inject(FormBuilder);
   authService = inject(AuthService);
   candidatureService = inject(CandidatureService);
+  @Input() offre: any;
 
   isAuthenticated = false;
   loadingCV = false;
@@ -85,11 +86,33 @@ export class CandidatureFormComponent {
       alert('Veuillez charger un fichier CV avant d’envoyer votre candidature.');
       return;
     }
-    if (this.checkAuthentication()){
+    if (this.checkAuthentication()) {
       const candidature = this.candidatureForm.value;
-      console.log('Candidature envoyée:', candidature);
-      // TODO: envoyer la candidature avec le fichier si besoin
-    } else {
+      const experiencesStr = 'Experiences: ' + '\n' + candidature.experiences.join(', ');
+      const competencesStr = 'Competences: ' + '\n' + candidature.competences.join(', ');
+      const formText = `${experiencesStr}\n${competencesStr}`;
+      const motivation = candidature.motivation;
+
+      this.candidatureService.addCandidature(
+        this.offre.id,
+        this.selectedCVFile,
+        formText,
+        motivation
+      ).subscribe({
+        next: (response) => {
+          console.log('Candidature ajoutée avec succès:', response);
+          alert('Votre candidature a été envoyée avec succès.');
+          this.candidatureForm.reset();
+          this.experiences.clear();
+          this.competences.clear();
+          this.selectedCVFile = null;
+        },
+        error: (error) => {
+          alert('Une erreur est survenue lors de l’envoi de votre candidature. Veuillez réessayer plus tard.');
+        }
+      });
+
+      } else {
       return;
     }
   }
@@ -106,29 +129,32 @@ export class CandidatureFormComponent {
     this.loadingCV = true;
     this.candidatureService.getJsonFromCVWebService(file).subscribe({
       next: (json: any) => {
-        // Auto-fill experiences
+        // Auto-fill experiences (add only new ones, remplace le premier champ vide si présent)
         if (json.Experiences && Array.isArray(json.Experiences)) {
-          this.experiences.clear();
+          let existingExperiences = this.experiences.controls.map(ctrl => ctrl.value);
+          // Si le premier champ est vide et aucune autre expérience, on le remplace
+          if (this.experiences.length === 1 && !existingExperiences[0]) {
+            this.experiences.removeAt(0);
+          }
           json.Experiences.forEach((exp: any) => {
-            // You can customize the string format as needed
             const expString = `${exp.company ? exp.company + ' - ' : ''}${exp.position ? exp.position + ' - ' : ''}${exp.description || ''}`;
-            this.experiences.push(this.fb.control(expString, Validators.required));
+            if (!this.experiences.controls.some(ctrl => ctrl.value === expString)) {
+              this.experiences.push(this.fb.control(expString, Validators.required));
+            }
           });
-          if (this.experiences.length === 0) {
-            this.experiences.push(this.fb.control('', Validators.required));
-          }
         }
-        // Auto-fill competences (skills)
+        // Auto-fill competences (add only new ones, remplace le premier champ vide si présent)
         if (json.Skills && Array.isArray(json.Skills)) {
-          this.competences.clear();
-          json.Skills.forEach((skill: string) => {
-            this.competences.push(this.fb.control(skill, Validators.required));
-          });
-          if (this.competences.length === 0) {
-            this.competences.push(this.fb.control('', Validators.required));
+          let existingSkills = this.competences.controls.map(ctrl => ctrl.value);
+          if (this.competences.length === 1 && !existingSkills[0]) {
+            this.competences.removeAt(0);
           }
+          json.Skills.forEach((skill: string) => {
+            if (!this.competences.controls.some(ctrl => ctrl.value === skill)) {
+              this.competences.push(this.fb.control(skill, Validators.required));
+            }
+          });
         }
-        // Optionally, you can also autofill motivation or other fields if present in JSON
         this.loadingCV = false;
       },
       error: () => {
