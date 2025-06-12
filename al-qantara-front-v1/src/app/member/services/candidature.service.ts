@@ -17,11 +17,12 @@ export class CandidatureService {
   
   
   
-  addCandidature(offreId: number, candidatCV: File, formText: string, lettreMotivation: string): Observable<any> {
+  addCandidature(offreId: number, candidatCV: File, experiences:string[], skills:string[], lettreMotivation: string): Observable<any> {
     const url = `${this.apiUrl}/${offreId}/apply`;
     const formData = new FormData();
     formData.append('candidatCV', candidatCV);
-    formData.append('formText', formText);
+    formData.append('experiences', JSON.stringify(experiences));
+    formData.append('skills', JSON.stringify(skills));
     formData.append('lettreMotivation', lettreMotivation);
 
     return this.http.post(url, formData, {

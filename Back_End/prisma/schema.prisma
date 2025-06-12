@@ -244,6 +244,8 @@ model Candidature {
   statut           StatutCandidature @default(EN_ATTENTE)
   lettreMotivation String?           @db.Text
   cv               String?           @db.VarChar(255)
+  skills           String[]          @db.VarChar(100)
+  experiences      String[]          @db.VarChar(500)
   score            Int               @default(0)
   offre            Offre             @relation(fields: [offreId], references: [id])
   utilisateur      Utilisateur       @relation(fields: [utilisateurId], references: [id])

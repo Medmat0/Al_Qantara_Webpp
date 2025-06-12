@@ -88,16 +88,13 @@ export class CandidatureFormComponent {
     }
     if (this.checkAuthentication()) {
       const candidature = this.candidatureForm.value;
-      const experiencesStr = 'Experiences: ' + '\n' + candidature.experiences.join('\n');
-      const competencesStr = 'Competences: ' + '\n' + candidature.competences.join('\n');
-      const formText = `${experiencesStr}\n\n${competencesStr}`;
-      const motivation = candidature.motivation;
 
       this.candidatureService.addCandidature(
         this.offre.id,
         this.selectedCVFile,
-        formText,
-        motivation
+        candidature.experiences,
+        candidature.competences,
+        candidature.motivation
       ).subscribe({
         next: (response) => {
           console.log('Candidature ajoutée avec succès:', response);

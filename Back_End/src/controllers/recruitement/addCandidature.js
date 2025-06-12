@@ -14,7 +14,8 @@ const prisma = new PrismaClient();
 const addCandidature = async (req, res) => {
     const { id } = req.params; // ID de l'offre
     const cv = req.file;
-    const { formText, lettreMotivation } = req.body; // Champs du formulaire
+    const { experiences,skills, motivation } = req.body; // Champs du formulaire
+
 
     if (!cv) {
         return res.status(400).json({ message: "Veuillez ajouter un CV." });
@@ -30,8 +31,6 @@ const addCandidature = async (req, res) => {
             return res.status(404).json({ message: "Offre non trouvée." });
         }
 
-        const completeCandidatureText = formText + '\n\n' +'Motivation: \n'+ lettreMotivation;
-        console.log("Texte de la candidature complet:\n", completeCandidatureText);
         const offreRef = await prisma.offre.findUnique({
             where: { id: parseInt(id) },
             select: {
@@ -48,9 +47,16 @@ const addCandidature = async (req, res) => {
 
         const candidatureForScoring = {
             offreRef,
-            completeCandidatureText
+            experiences,
+            skills,
+            motivation
         };
-        const candidatureScore = await getCandidatureScore(candidatureForScoring.offreRef, candidatureForScoring.completeCandidatureText);
+        const candidatureScore = await getCandidatureScore(
+            candidatureForScoring.offreRef,
+            candidatureForScoring.experiences,
+            candidatureForScoring.skills,
+            candidatureForScoring.motivation
+        );
         /*
 
         const uploadResult = await cloudinary.uploader.upload(cv,{
@@ -97,7 +103,7 @@ const addCandidature = async (req, res) => {
     }
 }
 
-const getCandidatureScore = async (offreRef, candidatCvText) => {
+const getCandidatureScore = async (offreRef, experiences,skills,motivation) => {
     const response = await fetch(process.env.WEB_SERVICE_URL+"/cv_score", {
         method: 'POST',
         headers: {
@@ -108,7 +114,9 @@ const getCandidatureScore = async (offreRef, candidatCvText) => {
                 offreEmploiId: offreRef.id,
                 ...offreRef
             },
-            candidatureText: candidatCvText
+            experiences: experiences ? JSON.parse(experiences) : [],
+            skills: skills ? JSON.parse(skills) : [],
+            motivation: motivation ? JSON.parse(motivation) : ""
         })
     });
     const responseBody = await response.text();
