@@ -2,7 +2,7 @@ import multer from "multer";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import cloudinary from "../config/cloudinary.js";
 
-const storage = new CloudinaryStorage({
+const revueStorage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: "revues", // Dossier sur Cloudinary
@@ -11,17 +11,23 @@ const storage = new CloudinaryStorage({
   },
 });
 
-const upload = multer({
-  storage: storage,
+const uploadRevue = multer({
+  storage: revueStorage,
   limits: { fileSize: 5 * 1024 * 1024 }, // Limite de 5MB
 });
 
-const memoryStorage = multer.memoryStorage();
+const candidatureStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "candidatures", // Dossier sur Cloudinary
+    format: async () => "pdf" // Force PDF
+  },
+});
 
-const uploadInMemory = multer({
-  storage: memoryStorage,
+const uploadCandidature = multer({
+  storage: candidatureStorage,
   limits: { fileSize: 5 * 1024 * 1024 }, // Limite de 5MB
 });
 
 
-export  {upload , storage, uploadInMemory};
+export  {uploadRevue , revueStorage,candidatureStorage, uploadCandidature};

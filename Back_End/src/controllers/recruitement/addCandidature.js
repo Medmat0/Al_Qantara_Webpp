@@ -11,11 +11,11 @@ const prisma = new PrismaClient();
 
 const addCandidature = async (req, res) => {
     const { id } = req.params; // ID de l'offre
-    const cv = req.file;
+    const candidatCV = req.file;
     const { experiences,skills, motivation } = req.body; // Champs du formulaire
 
 
-    if (!cv) {
+    if (!candidatCV) {
         return res.status(400).json({ message: "Veuillez ajouter un CV." });
     }
 
@@ -55,14 +55,14 @@ const addCandidature = async (req, res) => {
             candidatureForScoring.skills,
             candidatureForScoring.motivation
         );
-        /*
 
 
-        const uploadResult = await cloudinary.uploader.upload(cv,{
+
+        const uploadResult = await cloudinary.uploader.upload(candidatCV.path,{
             resource_type:"auto",
-            folder:"candidature",
+            folder:"candidatures",
             format:"pdf",
-            access_mode:"private"
+            access_mode:"authenticated"
         });
 
         if (!uploadResult || !uploadResult.secure_url) {
@@ -92,13 +92,6 @@ const addCandidature = async (req, res) => {
         return res.status(200).json({
             message: "Candidature envoyée avec succès.",
             candidature: candidatureWithoutPrivateInfo
-        });
-
-         */
-        return res.status(200).json({
-            message: "Candidature envoyée avec succès.",
-            offreRef,
-            score: candidatureScore
         });
 
     } catch (error) {
