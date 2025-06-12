@@ -22,7 +22,7 @@ const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: process.env.FRONT_URL || "http://localhost:5173",
+    origin: process.env.FRONT_URL || "http://localhost:4200",
     methods: ["GET", "POST"],
     credentials: true
   }
@@ -92,7 +92,7 @@ app.use(cors({
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
-app.use(bodyParser.json()); 
+//app.use(bodyParser.json()); ----------------- a decommenter si on utilise bodyParser-----
 app.use(express.json());
 
 app.use(express.urlencoded({ extended: true })); // Pour form-data et x-www-form-urlencoded

@@ -8,8 +8,7 @@ import { toggleLikeEvenementService } from "../../services/evenements/index.js";
 const toggleLikeEvenement = async (req, res) => {
   try {
     const { id } = req.params;
-    // const utilisateurId = req.user.id; // Use req.user.id in a real app
-    const utilisateurId = 5; // For test
+    const utilisateurId = req.user.id; // Use req.user.id in a real app
 
     const result = await toggleLikeEvenementService(id, utilisateurId);
     res.status(200).json(result);
