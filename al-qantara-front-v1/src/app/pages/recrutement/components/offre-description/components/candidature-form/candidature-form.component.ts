@@ -88,9 +88,9 @@ export class CandidatureFormComponent {
     }
     if (this.checkAuthentication()) {
       const candidature = this.candidatureForm.value;
-      const experiencesStr = 'Experiences: ' + '\n' + candidature.experiences.join(', ');
-      const competencesStr = 'Competences: ' + '\n' + candidature.competences.join(', ');
-      const formText = `${experiencesStr}\n${competencesStr}`;
+      const experiencesStr = 'Experiences: ' + '\n' + candidature.experiences.join('\n');
+      const competencesStr = 'Competences: ' + '\n' + candidature.competences.join('\n');
+      const formText = `${experiencesStr}\n\n${competencesStr}`;
       const motivation = candidature.motivation;
 
       this.candidatureService.addCandidature(
@@ -119,20 +119,25 @@ export class CandidatureFormComponent {
 
   selectedCVFile: File | null = null;
 
-  autoFillForm(event: Event) {
+  onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) {
+      this.selectedCVFile = null;
       return;
     }
-    const file = input.files[0];
-    this.selectedCVFile = file;
+    this.selectedCVFile = input.files[0];
+  }
+
+  autoFillForm() {
+    if (!this.selectedCVFile) {
+      return;
+    }
     this.loadingCV = true;
-    this.candidatureService.getJsonFromCVWebService(file).subscribe({
+    this.candidatureService.getJsonFromCVWebService(this.selectedCVFile).subscribe({
       next: (json: any) => {
         // Auto-fill experiences (add only new ones, remplace le premier champ vide si présent)
         if (json.Experiences && Array.isArray(json.Experiences)) {
           let existingExperiences = this.experiences.controls.map(ctrl => ctrl.value);
-          // Si le premier champ est vide et aucune autre expérience, on le remplace
           if (this.experiences.length === 1 && !existingExperiences[0]) {
             this.experiences.removeAt(0);
           }

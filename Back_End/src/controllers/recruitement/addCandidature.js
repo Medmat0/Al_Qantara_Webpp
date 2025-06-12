@@ -30,7 +30,8 @@ const addCandidature = async (req, res) => {
             return res.status(404).json({ message: "Offre non trouvée." });
         }
 
-        const completeCandidatureText = formText + '\n\n' + lettreMotivation;
+        const completeCandidatureText = formText + '\n\n' +'Motivation: \n'+ lettreMotivation;
+        console.log("Texte de la candidature complet:\n", completeCandidatureText);
         const offreRef = await prisma.offre.findUnique({
             where: { id: parseInt(id) },
             select: {
@@ -50,15 +51,25 @@ const addCandidature = async (req, res) => {
             completeCandidatureText
         };
         const candidatureScore = await getCandidatureScore(candidatureForScoring.offreRef, candidatureForScoring.completeCandidatureText);
-
         /*
+
+        const uploadResult = await cloudinary.uploader.upload(cv,{
+            resource_type:"auto",
+            folder:"candidature",
+            format:"pdf",
+            access_mode:"private"
+        });
+
+        if (!uploadResult || !uploadResult.secure_url) {
+            throw new Error("Erreur lors du téléchargement du fichier.");
+        }
 
         const newCandidature = await prisma.candidature.create({
             data: {
                 offreId: parseInt(id),
                 utilisateurId: req.user.id, // Assurez-vous que l'ID utilisateur est disponible dans req.user
                 lettreMotivation,
-                cv: cv.path, // Stockez le chemin du CV si le champ existe dans le modèle
+                cv: uploadResult.secure_url, // Stockez le chemin du CV si le champ existe dans le modèle
                 score: candidatureScore,
             },
             include: {
@@ -67,14 +78,14 @@ const addCandidature = async (req, res) => {
             }
         });
 
+
+
          */
 
 
         return res.status(200).json({
-            message: "Candidature analysée avec succès.",
-            score: candidatureScore,
-            formText,
-            lettreMotivation
+            message: "Candidature envoyée avec succès.",
+            score: candidatureScore
         });
 
     } catch (error) {
@@ -84,23 +95,6 @@ const addCandidature = async (req, res) => {
             error: error.message,
         });
     }
-}
-
-const parseCVToText = async (cvBuffer) => {
-    const data = await pdf(cvBuffer);
-    if (data.text.length < 20) {
-        // Si le PDF est trop court, essayer avec Tesseract.js pour détecter le texte dans l'image
-        const { data: { text } } = await tesseract.recognize(
-            cvBuffer,
-            'fra',
-            {
-                logger: info => console.log(info)
-            }
-        );
-        data.text = text;
-
-    }
-    return data.text;
 }
 
 const getCandidatureScore = async (offreRef, candidatCvText) => {
