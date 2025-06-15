@@ -102,6 +102,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use("/auth", authRoutes);
 app.use("/revues", revuesRoutes);
+app.use("/articles", articleRoutes);
 app.use("/admin", adminRoutes);
 app.use("/evenements", evenementsRoutes);
 app.use("/offres", offresRoutes);
