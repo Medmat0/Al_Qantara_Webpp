@@ -16,7 +16,7 @@ label {
 }
 
 input[type="text"] {
-  width: 100%;
+  width: 96%;
   padding: 0.75rem;
   font-size: 1rem;
   border: 1px solid #ddd;
@@ -28,6 +28,32 @@ input[type="text"] {
     border-color: #9e2e2c;
     box-shadow: 0 0 0 2px rgba(158, 46, 44, 0.1);
   }
+}
+
+select, select.form-control {
+
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  background: #fff;
+  color: #333;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  &:focus {
+    outline: none;
+    border-color: #9e2e2c;
+    box-shadow: 0 0 0 2px rgba(158, 46, 44, 0.1);
+  }
+}
+
+option {
+  font-size: 1rem;
+  color: #333;
 }
 
 .editor {
@@ -60,7 +86,7 @@ input[type="text"] {
     background: white;
     border-radius: 4px;
     cursor: pointer;
-    
+
     &:hover {
       background: #e9ecef;
     }
