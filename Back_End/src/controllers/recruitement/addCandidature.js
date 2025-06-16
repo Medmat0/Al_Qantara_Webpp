@@ -67,6 +67,7 @@ const addCandidature = async (req, res) => {
             candidatureForScoring.skills,
             candidatureForScoring.motivation
         );
+        console.log("Candidature Score:", candidatureScore);
 
 
 
@@ -87,8 +88,8 @@ const addCandidature = async (req, res) => {
                 utilisateurId: req.user.id,
                 lettreMotivation: motivation,
                 cv: uploadResult.secure_url,
-                skills: skills ? JSON.parse(skills) : [],
-                experiences: experiences ? JSON.parse(experiences) : [],
+                skills: Array.isArray(skills) ? skills : skills ? JSON.parse(skills) : [],
+                experiences: Array.isArray(experiences) ? experiences : experiences ? JSON.parse(experiences) : [],
                 score: candidatureScore,
             },
             include: {
@@ -136,7 +137,8 @@ const getCandidatureScore = async (offreRef, experiences,skills,motivation) => {
         throw new Error(`Erreur lors de la récupération du score: ${response.status} - ${responseBody}`);
     }
     const { score } = JSON.parse(responseBody);
-    return score;
+    console.log("Score de la candidature:", score);
+    return Number(score);
 }
 
 

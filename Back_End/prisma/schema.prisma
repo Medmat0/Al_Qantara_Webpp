@@ -91,7 +91,7 @@ model Newsletter {
 
 model Adhesion {
   id            Int            @id @default(autoincrement())
-  utilisateur   Utilisateur    @relation(fields: [utilisateurId], references: [id])
+  utilisateur   Utilisateur    @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
   utilisateurId Int            @unique
   dateDemande   DateTime
   statut        StatutAdhesion
@@ -138,7 +138,7 @@ model Article {
   createdBy      Int
   createur       Utilisateur        @relation(fields: [createdBy], references: [id])
   revueId        Int
-  revue          Revue              @relation(fields: [revueId], references: [id])
+  revue          Revue              @relation(fields: [revueId], references: [id], onDelete: Cascade)
   categories     CategorieArticle[]
 }
 
@@ -153,8 +153,8 @@ model AccesEvenement {
   id            Int         @id @default(autoincrement())
   evenementId   Int
   utilisateurId Int
-  evenement     Evenement   @relation(fields: [evenementId], references: [id])
-  utilisateur   Utilisateur @relation(fields: [utilisateurId], references: [id])
+  evenement     Evenement   @relation(fields: [evenementId], references: [id], onDelete: Cascade)
+  utilisateur   Utilisateur @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
 }
 
 model LikeEvenement {
@@ -162,8 +162,8 @@ model LikeEvenement {
   evenementId   Int
   utilisateurId Int
   dateLike      DateTime    @default(now())
-  evenement     Evenement   @relation(fields: [evenementId], references: [id])
-  utilisateur   Utilisateur @relation(fields: [utilisateurId], references: [id])
+  evenement     Evenement   @relation(fields: [evenementId], references: [id], onDelete: Cascade)
+  utilisateur   Utilisateur @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
 
   @@unique([evenementId, utilisateurId])
 }
@@ -174,8 +174,8 @@ model CommentaireEvenement {
   utilisateurId   Int
   contenu         String
   dateCommentaire DateTime    @default(now())
-  evenement       Evenement   @relation(fields: [evenementId], references: [id])
-  utilisateur     Utilisateur @relation(fields: [utilisateurId], references: [id])
+  evenement       Evenement   @relation(fields: [evenementId], references: [id], onDelete: Cascade)
+  utilisateur     Utilisateur @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
 }
 
 model RatingEvenement {
@@ -188,8 +188,8 @@ model RatingEvenement {
   noteEvenement    Int
   commentaire      String?
   dateRating       DateTime    @default(now())
-  evenement        Evenement   @relation(fields: [evenementId], references: [id])
-  utilisateur      Utilisateur @relation(fields: [utilisateurId], references: [id])
+  evenement        Evenement   @relation(fields: [evenementId], references: [id], onDelete: Cascade)
+  utilisateur      Utilisateur @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
 
   @@unique([evenementId, utilisateurId])
 }
@@ -201,8 +201,8 @@ model PartageEvenement {
   emailDestinataire String
   message           String?
   datePartage       DateTime    @default(now())
-  evenement         Evenement   @relation(fields: [evenementId], references: [id])
-  utilisateur       Utilisateur @relation(fields: [utilisateurId], references: [id])
+  evenement         Evenement   @relation(fields: [evenementId], references: [id], onDelete: Cascade)
+  utilisateur       Utilisateur @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
 }
 
 model ParticipationEvenement {
@@ -212,8 +212,8 @@ model ParticipationEvenement {
   statut            StatutParticipation @default(EN_ATTENTE)
   qrCode            String?             @db.Text
   dateParticipation DateTime            @default(now())
-  evenement         Evenement           @relation(fields: [evenementId], references: [id])
-  utilisateur       Utilisateur         @relation(fields: [utilisateurId], references: [id])
+  evenement         Evenement           @relation(fields: [evenementId], references: [id], onDelete: Cascade)
+  utilisateur       Utilisateur         @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
 
   @@unique([evenementId, utilisateurId])
 }
@@ -235,14 +235,14 @@ enum ContractType {
 }
 
 model Offre {
-  id              Int          @id @default(autoincrement())
-  titre           String       @db.VarChar(255)
-  description     String       @db.Text
-  tags            String[]     @db.VarChar(100)
-  lieuDeTravail   String       @db.VarChar(255)
+  id              Int           @id @default(autoincrement())
+  titre           String        @db.VarChar(255)
+  description     String        @db.Text
+  tags            String[]      @db.VarChar(100)
+  lieuDeTravail   String        @db.VarChar(255)
   typeDeContrat   ContractType
   dateDebut       DateTime
-  datePublication DateTime     @default(now())
+  datePublication DateTime      @default(now())
   createdBy       Int
   createur        Utilisateur   @relation(fields: [createdBy], references: [id])
   candidatures    Candidature[]
@@ -258,9 +258,9 @@ model Candidature {
   cv               String?           @db.VarChar(255)
   skills           String[]          @db.VarChar(100)
   experiences      String[]          @db.VarChar(500)
-  score            Int               @default(0)
-  offre            Offre             @relation(fields: [offreId], references: [id])
-  utilisateur      Utilisateur       @relation(fields: [utilisateurId], references: [id])
+  score            Int?              @default(0)
+  offre            Offre             @relation(fields: [offreId], references: [id], onDelete: Cascade)
+  utilisateur      Utilisateur       @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
 
   @@unique([offreId, utilisateurId])
 }
@@ -272,15 +272,15 @@ enum StatutCandidature {
 }
 
 model PaiementEvenement {
-  id            Int       @id @default(autoincrement())
+  id            Int            @id @default(autoincrement())
   evenementId   Int
   utilisateurId Int
   montant       Float
   statut        StatutPaiement
-  datePaiement  DateTime  @default(now())
-  reference     String    @db.VarChar(255)
-  evenement     Evenement @relation(fields: [evenementId], references: [id])
-  utilisateur   Utilisateur @relation(fields: [utilisateurId], references: [id])
+  datePaiement  DateTime       @default(now())
+  reference     String         @db.VarChar(255)
+  evenement     Evenement      @relation(fields: [evenementId], references: [id], onDelete: Cascade)
+  utilisateur   Utilisateur    @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
 
   @@unique([evenementId, utilisateurId])
 }
@@ -293,27 +293,27 @@ enum StatutPaiement {
 }
 
 model Message {
-  id          Int       @id @default(autoincrement())
-  contenu     String    @db.Text
-  type        TypeMessage
-  dateEnvoi   DateTime  @default(now())
+  id             Int           @id @default(autoincrement())
+  contenu        String        @db.Text
+  type           TypeMessage
+  dateEnvoi      DateTime      @default(now())
   dateExpiration DateTime
-  estLu       Boolean   @default(false)
-  expediteur  Utilisateur @relation("MessagesEnvoyes", fields: [expediteurId], references: [id])
-  expediteurId Int
-  destinataire Utilisateur @relation("MessagesRecus", fields: [destinataireId], references: [id])
+  estLu          Boolean       @default(false)
+  expediteur     Utilisateur   @relation("MessagesEnvoyes", fields: [expediteurId], references: [id], onDelete: Cascade)
+  expediteurId   Int
+  destinataire   Utilisateur   @relation("MessagesRecus", fields: [destinataireId], references: [id], onDelete: Cascade)
   destinataireId Int
-  evenement   Evenement? @relation(fields: [evenementId], references: [id])
-  evenementId Int?
-  piecesJointes PieceJointe[]
+  evenement      Evenement?    @relation(fields: [evenementId], references: [id], onDelete: Cascade)
+  evenementId    Int?
+  piecesJointes  PieceJointe[]
 }
 
 model PieceJointe {
-  id          Int       @id @default(autoincrement())
-  type        TypePieceJointe
-  url         String    @db.VarChar(255)
-  message     Message   @relation(fields: [messageId], references: [id])
-  messageId   Int
+  id        Int             @id @default(autoincrement())
+  type      TypePieceJointe
+  url       String          @db.VarChar(255)
+  message   Message         @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  messageId Int
 }
 
 enum TypeMessage {

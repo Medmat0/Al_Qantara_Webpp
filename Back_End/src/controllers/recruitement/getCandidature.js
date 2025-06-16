@@ -1,3 +1,8 @@
+import cloudinary from "../../config/cloudinary.js";
+import {PrismaClient} from "@prisma/client";
+
+const prisma = new PrismaClient();
+
 const getCandidatureById = async (req, res) => {
     const { candidatureId } = req.params; // ID de la candidature
     const userId = req.user?.id; // Nécessite que authMiddleware ajoute l'ID utilisateur à req.user
@@ -22,6 +27,20 @@ const getCandidatureById = async (req, res) => {
             return res.status(403).json({ message: "Accès refusé." });
         }
 
+        if (candidature.cv) {
+            const fileUrl = candidature.cv; // URL complète du fichier sur Cloudinary
+            const publicId = fileUrl.split("/").pop().split(".")[0];
+            // Génère une URL signée valable 1h (3600s)
+            const signedUrl = cloudinary.utils.private_download_url(
+                publicId, // public_id du fichier (pas l'URL complète)
+                "pdf",          // format
+                { type: "authenticated", expires_at: Math.floor(Date.now() / 1000) + 3600 }
+            );
+            candidature.cvUrl = signedUrl;
+        }
+
+
+        //devrait envoyer la candidature avec l'URL signée
         return res.status(200).json(candidature);
 
     } catch (error) {
@@ -42,6 +61,21 @@ const getAllCandidaturesByUserId = async (req, res) => {
             where: { utilisateurId: userId },
             include: { offre: true }
         });
+        // Vérifier si l'utilisateur est ADMIN ou propriétaire de la candidature
+        const user = await prisma.utilisateur.findUnique({
+            where: { id: userId }
+        });
+
+        if (!user) {
+            return res.status(403).json({ message: "Accès refusé." });
+        }
+        if (user.role !== "ADMIN") {
+            const isOwner = candidatures.some(c => c.utilisateurId === userId);
+            if (!isOwner) {
+                return res.status(403).json({ message: "Accès refusé." });
+            }
+        }
+
 
         if (!candidatures || candidatures.length === 0) {
             return res.status(404).json({ message: "Aucune candidature trouvée pour cet utilisateur." });
@@ -59,12 +93,12 @@ const getAllCandidaturesByUserId = async (req, res) => {
 }
 
 const getAllCandidaturesByOfferId = async (req, res) => {
-    const { offerId } = req.params; // ID de l'offre
+    const { id } = req.params; // ID de l'offre
 
     try {
         // Récupérer toutes les candidatures pour l'offre
         const candidatures = await prisma.candidature.findMany({
-            where: { offreId: parseInt(offerId) },
+            where: { offreId: parseInt(id) },
             include: { utilisateur: true }
         });
 
@@ -82,3 +116,5 @@ const getAllCandidaturesByOfferId = async (req, res) => {
         });
     }
 }
+
+export {getCandidatureById, getAllCandidaturesByUserId, getAllCandidaturesByOfferId};
