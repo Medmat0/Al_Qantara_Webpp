@@ -20,6 +20,7 @@ const addCandidature = async (req, res) => {
     }
 
     try {
+
         // Vérifier si l'offre existe
         const offre = await prisma.offre.findUnique({
             where: { id: parseInt(id) },
@@ -27,6 +28,17 @@ const addCandidature = async (req, res) => {
 
         if (!offre) {
             return res.status(404).json({ message: "Offre non trouvée." });
+        }
+
+        // Vérifier si une candidature existe déjà pour cet utilisateur et cette offre
+        const existingCandidature = await prisma.candidature.findFirst({
+            where: {
+                offreId: parseInt(id),
+                utilisateurId: req.user.id,
+            },
+        });
+        if (existingCandidature) {
+            return res.status(409).json({ message: "Vous avez déjà postulé à cette offre." });
         }
 
         const offreRef = await prisma.offre.findUnique({
@@ -126,4 +138,8 @@ const getCandidatureScore = async (offreRef, experiences,skills,motivation) => {
     const { score } = JSON.parse(responseBody);
     return score;
 }
+
+
+
+
 export{addCandidature};
