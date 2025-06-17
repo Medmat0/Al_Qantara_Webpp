@@ -9,6 +9,7 @@ import {
     getAllCandidaturesByUserId,
     getCandidatureById
 } from "../controllers/recruitement/getCandidature.js";
+import {checkCandidature} from "../controllers/recruitement/checkCandidature.js";
 
 const router = express.Router();
 
@@ -19,6 +20,7 @@ router.get("/:id", getOffreById);
 router.put("/:id", authMiddleware, isAdmin, editOffre);
 router.delete("/:id", authMiddleware, isAdmin, deleteOffre);
 router.post("/:id/apply",authMiddleware,uploadCandidature.single("candidatCV"),addCandidature);
+router.get("/:id/apply/check",authMiddleware,checkCandidature);
 router.get("/:id/apply/getall",authMiddleware,isAdmin,getAllCandidaturesByOfferId);
 router.get("/:id/apply/getall/:userId",authMiddleware,getAllCandidaturesByUserId);
 router.get("/:id/apply/:candidatureId",authMiddleware,getCandidatureById);

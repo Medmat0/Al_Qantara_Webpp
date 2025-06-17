@@ -220,4 +220,27 @@ const getAllCandidaturesByOfferIdService = async (req) => {
     return candidatures;
 };
 
-export {addCandidatureService, deleteCandidatureService, getAllCandidaturesByOfferIdService, getAllCandidaturesByUserIdService, getCandidatureByIdService};
+
+const checkCandidatureService = async (req) => {
+    const { id } = req.params;
+    const userId = req.user?.id;
+    if (!userId) throw new Error("Utilisateur non authentifié.");
+
+    const existingCandidature = await prisma.candidature.findFirst({
+        where: {
+            offreId: parseInt(id),
+            utilisateurId: userId,
+        },
+    });
+
+    return !!existingCandidature;
+};
+
+export {
+    addCandidatureService,
+    deleteCandidatureService,
+    getAllCandidaturesByOfferIdService,
+    getAllCandidaturesByUserIdService,
+    getCandidatureByIdService,
+    checkCandidatureService
+};
