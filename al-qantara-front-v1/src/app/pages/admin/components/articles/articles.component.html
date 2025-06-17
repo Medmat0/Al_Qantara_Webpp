@@ -1,0 +1,107 @@
+<div class="articles-main-container">
+  <div class="header-bar">
+    <h2>Gestion des Articles</h2>
+  </div>
+
+  <div class="filters-bar">
+    <div class="search-bar">
+      <input
+        type="text"
+        placeholder="Rechercher un article..."
+        [(ngModel)]="searchTerm"
+      />
+    </div>
+    <div class="filters">
+      <label for="filter">Trier par:</label>
+      <select id="filter" [(ngModel)]="selectedFilter" (change)="onFilterChange(selectedFilter)">
+        <option value="none">Aucun filtre</option>
+        <option value="most-recent">Plus récents d'abord</option>
+        <option value="most-old">Plus anciens d'abord</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Loading state -->
+  <div *ngIf="loading" class="loading-message">
+    Chargement des articles...
+  </div>
+
+  <!-- Error state -->
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+    <button (click)="loadArticles()" class="retry-btn">Réessayer</button>
+  </div>
+
+  <!-- Articles list -->
+  <div class="article-list" *ngIf="!loading && !error">
+    <div *ngIf="paginatedArticles.length === 0" class="no-articles-message">
+      Aucun article trouvé.
+    </div>
+
+    <div class="article-item-container" *ngFor="let article of paginatedArticles">
+      <div class="article-item">
+        <div class="article-header">
+          <h3>{{ article.titre }}</h3>
+          <div class="article-meta">
+            <span class="article-author">Par: {{ article.auteur }}</span>
+            <span class="article-date">{{ article.datePublication | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="article-actions top-right">
+            <button class="edit-btn" (click)="editArticle(article)" aria-label="Modifier l'article">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="18px" width="18px">
+                <title>edit</title>
+                <path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
+              </svg>
+            </button>
+            <button
+              class="delete-btn"
+              (click)="onDeleteArticle(article)"
+              [class.deleting]="deletingArticleId === article.id"
+              [disabled]="deletingArticleId === article.id"
+              aria-label="Supprimer l'article"
+            >
+              <svg *ngIf="deletingArticleId !== article.id" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="18px" width="18px">
+                <title>delete</title>
+                <path d="M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M8,9H16V19H8V9M15.5,4L14.5,3H9.5L8.5,4H5V6H19V4H15.5Z" />
+              </svg>
+              <span *ngIf="deletingArticleId === article.id" class="loader"></span>
+            </button>
+          </div>
+        </div>
+        <div class="article-content" [innerHTML]="(article.contenu | slice:0:150) + '...'"></div>
+        <div class="article-categories">
+          <span *ngFor="let category of article.categories" class="category-tag">
+            {{ category.nom }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination" *ngIf="totalPages > 1">
+    <button
+      *ngFor="let page of [].constructor(totalPages); let i = index"
+      [class.active]="currentPage === i + 1"
+      (click)="changePage(i + 1)"
+    >
+      {{ i + 1 }}
+    </button>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div class="modal" *ngIf="showModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>{{ modalTitle }}</h3>
+      </div>
+      <div class="modal-body">
+        <p>{{ modalMessage }}</p>
+      </div>
+      <div class="modal-footer">
+        <button class="cancel-btn" (click)="closeModal()">Annuler</button>
+        <button class="confirm-btn" (click)="confirmModal()">Confirmer</button>
+      </div>
+    </div>
+  </div>
+</div>
