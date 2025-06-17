@@ -1,4 +1,8 @@
-<form [formGroup]="candidatureForm" (ngSubmit)="onSubmit()">
+<div *ngIf="hasAlreadyApplied; else showForm" style="font-size:2rem; color:#b71c1c; text-align:center; font-weight:bold; margin:2rem 0; font-family: Arial, sans-serif;">
+  Vous avez déjà candidaté à cette offre !
+</div>
+<ng-template #showForm>
+  <form [formGroup]="candidatureForm" (ngSubmit)="onSubmit()">
     <!-- Section: Charger votre CV -->
     <div class="cv-upload-container">
         <label for="cv">Charger votre CV :</label>
@@ -54,4 +58,5 @@
     </div>
 
     <button type="submit" [disabled]="candidatureForm.invalid">Envoyer la candidature</button>
-</form>
+  </form>
+</ng-template>
