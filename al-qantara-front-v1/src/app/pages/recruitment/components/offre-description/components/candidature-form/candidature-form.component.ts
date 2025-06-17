@@ -1,4 +1,4 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
 import { FormBuilder, FormGroup, FormArray, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../../../../member/services/auth.service';
@@ -12,7 +12,7 @@ import { CandidatureService } from '../../../../../../member/services/candidatur
   styleUrl: './candidature-form.component.scss',
   standalone: true
 })
-export class CandidatureFormComponent {
+export class CandidatureFormComponent implements OnInit, OnChanges {
   
   fb: FormBuilder = inject(FormBuilder);
   authService = inject(AuthService);
@@ -21,11 +21,36 @@ export class CandidatureFormComponent {
 
   isAuthenticated = false;
   loadingCV = false;
+  hasAlreadyApplied = false;
 
-  constructor(private route: ActivatedRoute, private router: Router) {
+  constructor(private router: Router) {
     this.authService.authStatus$.subscribe((status) => {
       this.isAuthenticated = status;
     });
+  }
+
+  ngOnInit() {
+    this.checkIfAlreadyApplied();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['offre'] && this.offre && this.offre.id) {
+      this.checkIfAlreadyApplied();
+    }
+  }
+
+  checkIfAlreadyApplied() {
+    if (this.offre && this.offre.id) {
+      this.candidatureService.checkCandidature(this.offre.id).subscribe({
+        next: (response) => {
+          this.hasAlreadyApplied = !!(response && response.hasApplied);
+          console.log('Candidature vérifiée avec succès:', response);
+        },
+        error: (error) => {
+          console.error('Erreur lors de la vérification de la candidature:', error);
+        }
+      });
+    }
   }
 
   checkAuthentication(): boolean {
@@ -103,6 +128,7 @@ export class CandidatureFormComponent {
           this.experiences.clear();
           this.competences.clear();
           this.selectedCVFile = null;
+          this.hasAlreadyApplied = true; // Affiche le message après envoi
         },
         error: (error) => {
           alert('Une erreur est survenue lors de l’envoi de votre candidature. Veuillez réessayer plus tard.');

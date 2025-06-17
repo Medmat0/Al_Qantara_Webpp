@@ -42,6 +42,24 @@ export class CandidatureService {
     );
   }
   
+  checkCandidature(offreId: number): Observable<any> {
+    const url = `${this.apiUrl}/${offreId}/apply/check`;
+    return this.http.get(url, {
+      withCredentials: true //envoi des credentials et reception cookies
+    }).pipe(
+      tap((response: any) => {
+        console.log('Candidature vérifiée avec succès:', response);
+      }),
+      catchError((error) => {
+        console.error('Erreur lors de la vérification de la candidature', error);
+        return new Observable((observer) => {
+          observer.error(new Error('Candidature check failed'));
+        });
+      })
+    );
+  }
+
+
   deleteCandidature(offreId: number): Observable<any> {
     const url = `${this.apiUrl}/${offreId}/apply`;
     return this.http.delete(url, {
