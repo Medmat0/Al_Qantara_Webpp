@@ -10,6 +10,8 @@ import {
     getCandidatureById
 } from "../controllers/recruitement/getCandidature.js";
 import {checkCandidature} from "../controllers/recruitement/checkCandidature.js";
+import {acceptCandidature} from "../controllers/recruitement/acceptCandidature.js";
+import {refuseCandidature} from "../controllers/recruitement/refuseCandidature.js";
 
 const router = express.Router();
 
@@ -21,7 +23,15 @@ router.put("/:id", authMiddleware, isAdmin, editOffre);
 router.delete("/:id", authMiddleware, isAdmin, deleteOffre);
 router.post("/:id/apply",authMiddleware,uploadCandidature.single("candidatCV"),addCandidature);
 router.get("/:id/apply/check",authMiddleware,checkCandidature);
+
+//sends a Zoom meeting link to the candidate
+router.post("/:id/accept/:candidatureId", authMiddleware, isAdmin, acceptCandidature);
+//sends a refusal mail to the candidate
+router.post("/:id/refuse/:candidatureId", authMiddleware, isAdmin, refuseCandidature);
+
+//only admin can get all candidatures by offer id
 router.get("/:id/apply/getall",authMiddleware,isAdmin,getAllCandidaturesByOfferId);
+//author of the candidature and admin
 router.get("/:id/apply/getall/:userId",authMiddleware,getAllCandidaturesByUserId);
 router.get("/:id/apply/:candidatureId",authMiddleware,getCandidatureById);
 router.delete("/:id/apply/delete/:candidatureId",authMiddleware,deleteCandidature);
