@@ -11,6 +11,7 @@ import {
 } from "../controllers/recruitement/getCandidature.js";
 import {checkCandidature} from "../controllers/recruitement/checkCandidature.js";
 import {acceptCandidature} from "../controllers/recruitement/acceptCandidature.js";
+import {refuseCandidature} from "../controllers/recruitement/refuseCandidature.js";
 
 const router = express.Router();
 
@@ -25,6 +26,8 @@ router.get("/:id/apply/check",authMiddleware,checkCandidature);
 
 //sends a Zoom meeting link to the candidate
 router.post("/:id/accept/:candidatureId", authMiddleware, isAdmin, acceptCandidature);
+//sends a refusal mail to the candidate
+router.post("/:id/refuse/:candidatureId", authMiddleware, isAdmin, refuseCandidature);
 
 //only admin can get all candidatures by offer id
 router.get("/:id/apply/getall",authMiddleware,isAdmin,getAllCandidaturesByOfferId);

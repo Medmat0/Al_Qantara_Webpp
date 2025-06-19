@@ -256,6 +256,11 @@ const acceptCandidatureService = async (req) => {
     const candidatureId = req.params.candidatureId;
     const userId = req.user?.id;
 
+    const { dateEntretien } = req.body;
+    const startTime = new Date(dateEntretien);
+    const endTime = new Date(startTime.getTime() + 40 * 60 * 1000);
+
+
     const candidature = await prisma.candidature.findUnique({
         where: { id: parseInt(candidatureId) },
         include: {
@@ -279,23 +284,19 @@ const acceptCandidatureService = async (req) => {
 
     const adminEmail = user.email;
 
-    const startTime = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
-    const endTime = new Date(startTime.getTime() + 30 * 60 * 1000);
+   const zoomMeeting = await createZoomMeeting(candidateEmail, startTime.toISOString());
 
-    const zoomMeeting = await createZoomMeeting(candidateEmail, startTime.toISOString());
-
-    const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=Entretien%20avec%20notre%20équipe&dates=${formatDateForGoogle(startTime)}/${formatDateForGoogle(endTime)}&details=Voici%20le%20lien%20Zoom%20:%20${encodeURIComponent(zoomMeeting.join_url)}&location=${encodeURIComponent(zoomMeeting.join_url)}`;
+    const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=Entretien%20avec%20AlQantara&dates=${formatDateForGoogle(startTime)}/${formatDateForGoogle(endTime)}&details=Voici%20le%20lien%20Zoom%20:%20${encodeURIComponent(zoomMeeting.join_url)}&location=${encodeURIComponent(zoomMeeting.join_url)}`;
 
     await sendEmailToUser({
         to: candidateEmail,
-        subject: `Entretien avec notre équipe`,
+        subject: `Entretien avec AlQantara`,
         html: `
       <h2>Bonjour ${candidateName},</h2>
-      <p>Votre entretien est prévu le <strong>${startTime.toLocaleString('fr-FR')}</strong>.</p>
+      <p>Votre entretien  pour le poste de ${candidature.offre.titre} est prévu le <strong>${startTime.toLocaleString('fr-FR', { timeZone: 'UTC' })}</strong>.</p>
       <p>Voici le lien Zoom pour rejoindre l'appel :<br>
-      <a href="${zoomMeeting.join_url}">${zoomMeeting.join_url}</a></p>
+      <p><a href="${zoomMeeting.join_url}">${zoomMeeting.join_url}</a></p>
       <p><a href="${googleCalendarUrl}" target="_blank">Ajouter à Google Agenda</a></p>
-      <p>Un email Zoom vous a été automatiquement envoyé également.</p>
     `,
     });
 
@@ -306,9 +307,12 @@ const acceptCandidatureService = async (req) => {
       <h2>Réunion planifiée</h2>
       <p>Une réunion Zoom a été planifiée avec le candidat ${candidateName} pour l'offre: ${candidature.offre.titre}.</p>
       <p>Email du candidat : ${candidateEmail}</p>
-      <p>Date : ${startTime.toLocaleString('fr-FR')}</p>
+      <p>Date : ${startTime.toLocaleString('fr-FR', { timeZone: 'UTC' })}</p>
       <p><a href="${googleCalendarUrl}" target="_blank">Ajouter à Google Agenda</a></p>
-      <p>Lien Zoom (admin) : <a href="${zoomMeeting.start_url}">${zoomMeeting.start_url}</a></p>
+      <p>Lien Zoom admin (réservé pour une personne) : </p>
+      <p><a href="${zoomMeeting.start_url}">${zoomMeeting.start_url}</a></p>
+      <p>Lien Zoom à partager (pour d'autres membres d'AlQantara) : </p>
+      <p><a href="${zoomMeeting.join_url}">${zoomMeeting.join_url}</a></p>
     `,
     });
 
@@ -316,6 +320,61 @@ const acceptCandidatureService = async (req) => {
     return {message: "Candidature acceptée et email envoyé au candidat."};
 }
 
+
+const refuseCandidatureService = async (req) => {
+    const candidatureId = req.params.candidatureId;
+
+    const candidature = await prisma.candidature.findUnique({
+        where: { id: parseInt(candidatureId) },
+        include: {
+            utilisateur: true,
+            offre: true,
+        },
+
+    });
+
+    if (!candidature) {
+        throw new Error("Candidature non trouvée.");
+    }
+
+    const refusedUserId = candidature.utilisateurId;
+    const refusedUser = await prisma.utilisateur.findUnique({
+        where: { id: refusedUserId },
+    });
+
+    if (!refusedUser) {
+        throw new Error("Utilisateur non trouvé.");
+    }
+
+    const refusedEmail = refusedUser.email;
+    const refusedName = refusedUser.nom + " " + refusedUser.prenom;
+
+    await sendEmailToUser({
+        to: refusedEmail,
+        subject: `Candidature refusée pour le poste de ${candidature.offre.titre}`,
+        html: `
+            <h2>Bonjour ${refusedName},</h2>
+            <p>Nous vous remercions pour votre candidature au poste de ${candidature.offre.titre}.</p>
+            <p>Après examen, nous avons le regret de vous informer que nous ne pouvons pas retenir votre candidature pour ce poste.</p>
+            <p>Nous vous souhaitons bonne chance dans vos recherches futures.</p>
+            
+            <p>Cordialement,</p>
+            <p>L'équipe AlQantara</p>
+                
+        `,
+    });
+
+    await prisma.candidature.update({
+        where: { id: parseInt(candidatureId) },
+        data: {
+            statut: StatutCandidature.REFUSEE,
+        },
+    });
+
+    return { message: "Candidature refusée et email envoyé au candidat." };
+
+
+}
 
 
 export {
@@ -326,4 +385,5 @@ export {
     getCandidatureByIdService,
     checkCandidatureService,
     acceptCandidatureService,
+    refuseCandidatureService
 };
