@@ -1,5 +1,7 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient , StatutCandidature } from "@prisma/client";
 import cloudinary from "../../config/cloudinary.js";
+import {sendEmailToUser} from "../../utils/email.config.js";
+import {createZoomMeeting} from "../zoom.service.js";
 
 const prisma = new PrismaClient();
 
@@ -236,11 +238,92 @@ const checkCandidatureService = async (req) => {
     return !!existingCandidature;
 };
 
+const formatDateForGoogle = (date) => {
+    const pad = (n) => String(n).padStart(2, '0');
+    return (
+        date.getUTCFullYear().toString() +
+        pad(date.getUTCMonth() + 1) +
+        pad(date.getUTCDate()) +
+        'T' +
+        pad(date.getUTCHours()) +
+        pad(date.getUTCMinutes()) +
+        '00Z'
+    );
+};
+
+
+const acceptCandidatureService = async (req) => {
+    const candidatureId = req.params.candidatureId;
+    const userId = req.user?.id;
+
+    const candidature = await prisma.candidature.findUnique({
+        where: { id: parseInt(candidatureId) },
+        include: {
+            utilisateur: true,
+            offre: true,
+        },
+    });
+
+    const user = await prisma.utilisateur.findUnique({
+        where: { id: userId },
+    });
+
+
+
+    if (!candidature) {
+        throw new Error("Candidature non trouvée.");
+    }
+
+    const candidateEmail = candidature.utilisateur.email;
+    const candidateName = candidature.utilisateur.nom + " " + candidature.utilisateur.prenom;
+
+    const adminEmail = user.email;
+
+    const startTime = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
+    const endTime = new Date(startTime.getTime() + 30 * 60 * 1000);
+
+    const zoomMeeting = await createZoomMeeting(candidateEmail, startTime.toISOString());
+
+    const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=Entretien%20avec%20notre%20équipe&dates=${formatDateForGoogle(startTime)}/${formatDateForGoogle(endTime)}&details=Voici%20le%20lien%20Zoom%20:%20${encodeURIComponent(zoomMeeting.join_url)}&location=${encodeURIComponent(zoomMeeting.join_url)}`;
+
+    await sendEmailToUser({
+        to: candidateEmail,
+        subject: `Entretien avec notre équipe`,
+        html: `
+      <h2>Bonjour ${candidateName},</h2>
+      <p>Votre entretien est prévu le <strong>${startTime.toLocaleString('fr-FR')}</strong>.</p>
+      <p>Voici le lien Zoom pour rejoindre l'appel :<br>
+      <a href="${zoomMeeting.join_url}">${zoomMeeting.join_url}</a></p>
+      <p><a href="${googleCalendarUrl}" target="_blank">Ajouter à Google Agenda</a></p>
+      <p>Un email Zoom vous a été automatiquement envoyé également.</p>
+    `,
+    });
+
+    await sendEmailToUser({
+        to: adminEmail,
+        subject: `Réunion Zoom planifiée avec ${candidateName}`,
+        html: `
+      <h2>Réunion planifiée</h2>
+      <p>Une réunion Zoom a été planifiée avec le candidat ${candidateName} pour l'offre: ${candidature.offre.titre}.</p>
+      <p>Email du candidat : ${candidateEmail}</p>
+      <p>Date : ${startTime.toLocaleString('fr-FR')}</p>
+      <p><a href="${googleCalendarUrl}" target="_blank">Ajouter à Google Agenda</a></p>
+      <p>Lien Zoom (admin) : <a href="${zoomMeeting.start_url}">${zoomMeeting.start_url}</a></p>
+    `,
+    });
+
+
+    return {message: "Candidature acceptée et email envoyé au candidat."};
+}
+
+
+
 export {
     addCandidatureService,
     deleteCandidatureService,
     getAllCandidaturesByOfferIdService,
     getAllCandidaturesByUserIdService,
     getCandidatureByIdService,
-    checkCandidatureService
+    checkCandidatureService,
+    acceptCandidatureService,
 };
