@@ -288,6 +288,7 @@ const acceptCandidatureService = async (req) => {
 
     const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=Entretien%20avec%20AlQantara&dates=${formatDateForGoogle(startTime)}/${formatDateForGoogle(endTime)}&details=Voici%20le%20lien%20Zoom%20:%20${encodeURIComponent(zoomMeeting.join_url)}&location=${encodeURIComponent(zoomMeeting.join_url)}`;
 
+
     await sendEmailToUser({
         to: candidateEmail,
         subject: `Entretien avec AlQantara`,
@@ -314,6 +315,13 @@ const acceptCandidatureService = async (req) => {
       <p>Lien Zoom à partager (pour d'autres membres d'AlQantara) : </p>
       <p><a href="${zoomMeeting.join_url}">${zoomMeeting.join_url}</a></p>
     `,
+    });
+
+    await prisma.candidature.update({
+        where: { id: parseInt(candidatureId) },
+        data: {
+            statut: StatutCandidature.ACCEPTEE,
+        },
     });
 
 
