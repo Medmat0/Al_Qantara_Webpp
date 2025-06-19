@@ -367,7 +367,7 @@ const refuseCandidatureService = async (req) => {
     await prisma.candidature.update({
         where: { id: parseInt(candidatureId) },
         data: {
-            statut: StatutCandidature.REFUSEE,
+            statut: StatutCandidature.REJETEE,
         },
     });
 
