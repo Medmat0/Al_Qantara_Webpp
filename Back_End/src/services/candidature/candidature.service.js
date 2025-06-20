@@ -210,11 +210,11 @@ const getAllCandidaturesByUserIdService = async (req) => {
     const userRequesting = req.user?.id;
 
     const user = await prisma.utilisateur.findUnique({
-        where: { id: userId }
+        where: { id: parseInt(userId) }
     });
 
     const requestingUser = await prisma.utilisateur.findUnique({
-        where: { id: userRequesting }
+        where: { id: parseInt(userRequesting) }
     });
 
     if (!user) {
@@ -223,10 +223,8 @@ const getAllCandidaturesByUserIdService = async (req) => {
         throw err;
     }
 
-
-
     const candidatures = await prisma.candidature.findMany({
-        where: { utilisateurId: userId },
+        where: { utilisateurId: parseInt(userId) },
         include: { offre: true }
     });
 
