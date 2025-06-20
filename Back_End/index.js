@@ -16,6 +16,7 @@ import messagerieRoutes from './src/routes/messagerie.routes.js';
 
 import bodyParser from "body-parser";
 import helmet from "helmet";
+import communityRoutes from "./src/routes/community.routes.js";
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -108,6 +109,7 @@ app.use("/evenements", evenementsRoutes);
 app.use("/offres", offresRoutes);
 app.use("/user", userRoutes);
 app.use("/messages", messagerieRoutes);
+app.use("/communities", communityRoutes);
 
 // Démarrer le serveur avec Socket.IO
 httpServer.listen(PORT, () => {

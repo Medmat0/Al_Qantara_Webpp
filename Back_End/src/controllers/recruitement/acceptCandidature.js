@@ -10,8 +10,7 @@ const acceptCandidature = async (req, res) => {
         console.error("Error accepting candidature:", error);
 
         res.status(status).json({
-            message: error.message,
-            error: error.message
+            message: error.message || " Erreur lors de l'acceptation de la candidature."
         });
     }
 };

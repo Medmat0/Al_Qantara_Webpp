@@ -13,8 +13,7 @@ const getEvenementById = async (req, res) => {
   } catch (error) {
     console.error("Erreur lors de la récupération de l'événement:", error);
     res.status(500).json({
-      message: error.message || "Erreur lors de la récupération de l'événement.",
-      error: error.message
+      message: error.message || "Erreur lors de la récupération de l'événement."
     });
   }
 };

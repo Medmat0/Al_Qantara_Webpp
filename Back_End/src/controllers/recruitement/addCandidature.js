@@ -13,8 +13,7 @@ const addCandidature = async (req, res) => {
         const status = error.status || 500;
         console.error("Error in addCandidature:", error);
         res.status(status).json({
-            message: error.message,
-            error: error.message
+            message: error.message || "Erreur lors de l'ajout de la candidature."
         });
     }
 };

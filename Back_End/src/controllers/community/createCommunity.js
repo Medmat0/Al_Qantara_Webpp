@@ -4,7 +4,7 @@ import {createCommunityService} from "../../services/community/community.service
 const createCommunity = async (req, res) => {
     try {
 
-        const newCommunity = await createCommunityService(req.body);
+        const newCommunity = await createCommunityService(req);
         res.status(201).json({
         message: "Communauté créée avec succès.",
         community: newCommunity
@@ -12,8 +12,7 @@ const createCommunity = async (req, res) => {
     } catch (error) {
         const status = error.status || 500;
         res.status(status).json({
-            message: error.message,
-            error: error.message
+            message: error.message || "Erreur lors de la création de la communauté.",
         });
     }
 }
