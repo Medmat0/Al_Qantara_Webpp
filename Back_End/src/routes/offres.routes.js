@@ -32,7 +32,7 @@ router.post("/:id/refuse/:candidatureId", authMiddleware, isAdmin, refuseCandida
 //only admin can get all candidatures by offer id
 router.get("/:id/apply/getall",authMiddleware,isAdmin,getAllCandidaturesByOfferId);
 //author of the candidature and admin
-router.get("/:id/apply/getall/:userId",authMiddleware,getAllCandidaturesByUserId);
+router.get("/apply/getall/:userId",authMiddleware,getAllCandidaturesByUserId);
 router.get("/:id/apply/:candidatureId",authMiddleware,getCandidatureById);
 router.delete("/:id/apply/delete/:candidatureId",authMiddleware,deleteCandidature);
 

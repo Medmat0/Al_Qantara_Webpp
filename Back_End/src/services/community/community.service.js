@@ -4,7 +4,7 @@ import cloudinary from "../../config/cloudinary.js";
 const prisma = new PrismaClient();
 
 
-const createCommunityService = async(req,res) => {
+const createCommunityService = async(req) => {
 
     const { nom, description, logo } = req.body;
     const userId = req.user.id;

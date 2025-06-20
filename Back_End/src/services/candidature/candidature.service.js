@@ -169,6 +169,7 @@ const deleteCandidatureService = async (req) => {
 
 const getCandidatureByIdService = async (req) => {
     const { candidatureId } = req.params;
+    const offreId = req.params.id;
     const userId = req.user?.id;
 
     const candidature = await prisma.candidature.findUnique({
@@ -183,9 +184,8 @@ const getCandidatureByIdService = async (req) => {
     }
 
     const offre = await prisma.offre.findUnique({
-        where: { id: candidature.offreId }
+        where: { id: parseInt(offreId) },
     });
-
     if (!offre) {
         const err = new Error("Offre non trouvée.");
         err.status = 404;
@@ -206,10 +206,15 @@ const getCandidatureByIdService = async (req) => {
 };
 
 const getAllCandidaturesByUserIdService = async (req) => {
-    const userId = req.user?.id;
+    const userId = req.params.userId;
+    const userRequesting = req.user?.id;
 
     const user = await prisma.utilisateur.findUnique({
         where: { id: userId }
+    });
+
+    const requestingUser = await prisma.utilisateur.findUnique({
+        where: { id: userRequesting }
     });
 
     if (!user) {
@@ -217,6 +222,8 @@ const getAllCandidaturesByUserIdService = async (req) => {
         err.status = 404;
         throw err;
     }
+
+
 
     const candidatures = await prisma.candidature.findMany({
         where: { utilisateurId: userId },
@@ -229,7 +236,7 @@ const getAllCandidaturesByUserIdService = async (req) => {
         throw err;
     }
 
-    if (user.role !== "ADMIN") {
+    if (requestingUser.role !== "ADMIN") {
         const isOwner = candidatures.some(c => c.utilisateurId === userId);
         if (!isOwner) {
             const err = new Error("Accès refusé");
@@ -238,11 +245,23 @@ const getAllCandidaturesByUserIdService = async (req) => {
         }
     }
 
+
+
     return candidatures;
 };
 
 const getAllCandidaturesByOfferIdService = async (req) => {
     const { id } = req.params;
+
+    const offre = await prisma.offre.findUnique({
+        where: { id: parseInt(id) },
+
+    });
+    if (!offre) {
+        const err = new Error("Offre non trouvée.");
+        err.status = 404;
+        throw err;
+    }
 
     const candidatures = await prisma.candidature.findMany({
         where: { offreId: parseInt(id) },
@@ -295,6 +314,7 @@ const formatDateForGoogle = (date) => {
 const acceptCandidatureService = async (req) => {
     const candidatureId = req.params.candidatureId;
     const userId = req.user?.id;
+    const offreId = req.params.id;
 
     const { dateEntretien } = req.body;
     const startTime = new Date(dateEntretien);
@@ -309,11 +329,6 @@ const acceptCandidatureService = async (req) => {
         },
     });
 
-    const user = await prisma.utilisateur.findUnique({
-        where: { id: userId },
-    });
-
-
 
     if (!candidature) {
         const err = new Error("Candidature non trouvée.");
@@ -321,6 +336,20 @@ const acceptCandidatureService = async (req) => {
         throw err;
 
     }
+
+    const offre = await prisma.offre.findUnique({
+        where: { id: parseInt(offreId) },
+    });
+
+    if (!offre) {
+        const err = new Error("Offre non trouvée.");
+        err.status = 404;
+        throw err;
+    }
+
+    const user = await prisma.utilisateur.findUnique({
+        where: { id: userId },
+    });
 
     const candidateEmail = candidature.utilisateur.email;
     const candidateName = candidature.utilisateur.nom + " " + candidature.utilisateur.prenom;
@@ -374,6 +403,7 @@ const acceptCandidatureService = async (req) => {
 
 const refuseCandidatureService = async (req) => {
     const candidatureId = req.params.candidatureId;
+    const offreId = req.params.id;
 
     const candidature = await prisma.candidature.findUnique({
         where: { id: parseInt(candidatureId) },
@@ -389,6 +419,17 @@ const refuseCandidatureService = async (req) => {
         err.status = 404;
         throw err;
     }
+
+    const offre = await prisma.offre.findUnique({
+        where: { id: parseInt(offreId) },
+    });
+
+    if (!offre) {
+        const err = new Error("Offre non trouvée.");
+        err.status = 404;
+        throw err;
+    }
+
 
     const refusedUserId = candidature.utilisateurId;
     const refusedUser = await prisma.utilisateur.findUnique({
