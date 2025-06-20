@@ -37,7 +37,9 @@ const addCandidatureService = async (req) => {
     const { experiences, skills, lettreMotivation } = req.body;
 
     if (!candidatCV) {
-        throw new Error("Veuillez ajouter un CV.");
+        const err = new Error("Veuillez ajouter un CV.");
+        err.status = 400;
+        throw err;
     }
 
     const offre = await prisma.offre.findUnique({
@@ -45,7 +47,9 @@ const addCandidatureService = async (req) => {
     });
 
     if (!offre) {
-        throw new Error("Offre non trouvée.");
+        const err = new Error("Offre non trouvée.");
+        err.status = 404;
+        throw err;
     }
 
     const existingCandidature = await prisma.candidature.findFirst({
@@ -56,7 +60,9 @@ const addCandidatureService = async (req) => {
     });
 
     if (existingCandidature) {
-        throw new Error("Vous avez déjà postulé à cette offre.");
+        const err = new Error("Vous avez déjà postulé à cette offre.");
+        err.status = 409;
+        throw err;
     }
 
     const offreRef = await prisma.offre.findUnique({
@@ -88,7 +94,9 @@ const addCandidatureService = async (req) => {
     });
 
     if (!uploadResult || !uploadResult.secure_url) {
-        throw new Error("Erreur lors du téléchargement du fichier.");
+        const err = new Error("Erreur lors du téléchargement du fichier.");
+        err.status = 500;
+        throw err;
     }
 
     const newCandidature = await prisma.candidature.create({
@@ -127,7 +135,9 @@ const deleteCandidatureService = async (req) => {
     });
 
     if (!candidature) {
-        throw new Error("Candidature non trouvée.");
+        const err = new Error("Candidature non trouvée.");
+        err.status = 404;
+        throw err;
     }
 
     const user = await prisma.utilisateur.findUnique({
@@ -135,7 +145,9 @@ const deleteCandidatureService = async (req) => {
     });
 
     if (!user || (user.role !== "ADMIN" && candidature.utilisateurId !== userId)) {
-        throw new Error("Accès refusé.");
+        const err = new Error("Accès refusé.");
+        err.status = 403;
+        throw err;
     }
 
     const fileUrl = candidature.cv;
@@ -143,7 +155,9 @@ const deleteCandidatureService = async (req) => {
         const publicId = fileUrl.split("/").pop().split(".")[0];
         await cloudinary.uploader.destroy(publicId, { resource_type: "raw" });
     } else {
-        throw new Error("Aucun fichier associé à cette candidature.");
+        const err = new Error("Fichier de candidature non trouvé.");
+        err.status = 404;
+        throw err;
     }
 
     await prisma.candidature.delete({
@@ -163,7 +177,19 @@ const getCandidatureByIdService = async (req) => {
     });
 
     if (!candidature) {
-        throw new Error("Candidature non trouvée.");
+        const err = new Error("Candidature non trouvée.");
+        err.status = 404;
+        throw err;
+    }
+
+    const offre = await prisma.offre.findUnique({
+        where: { id: candidature.offreId }
+    });
+
+    if (!offre) {
+        const err = new Error("Offre non trouvée.");
+        err.status = 404;
+        throw err;
     }
 
     const user = await prisma.utilisateur.findUnique({
@@ -171,7 +197,9 @@ const getCandidatureByIdService = async (req) => {
     });
 
     if (!user || (user.role !== "ADMIN" && candidature.utilisateurId !== userId)) {
-        throw new Error("Accès refusé.");
+        const err = new Error("Accès refusé.");
+        err.status = 403;
+        throw err;
     }
 
     return candidature;
@@ -185,7 +213,9 @@ const getAllCandidaturesByUserIdService = async (req) => {
     });
 
     if (!user) {
-        throw new Error("Accès refusé.");
+        const err = new Error("Utilisateur non trouvée.");
+        err.status = 404;
+        throw err;
     }
 
     const candidatures = await prisma.candidature.findMany({
@@ -194,13 +224,17 @@ const getAllCandidaturesByUserIdService = async (req) => {
     });
 
     if (!candidatures || candidatures.length === 0) {
-        throw new Error("Aucune candidature trouvée pour cet utilisateur.");
+        const err = new Error("Aucune candidature trouvée pour cet utilisateur.");
+        err.status = 404;
+        throw err;
     }
 
     if (user.role !== "ADMIN") {
         const isOwner = candidatures.some(c => c.utilisateurId === userId);
         if (!isOwner) {
-            throw new Error("Accès refusé.");
+            const err = new Error("Accès refusé");
+            err.status = 403;
+            throw err;
         }
     }
 
@@ -216,7 +250,9 @@ const getAllCandidaturesByOfferIdService = async (req) => {
     });
 
     if (!candidatures || candidatures.length === 0) {
-        throw new Error("Aucune candidature trouvée pour cette offre.");
+        const err = new Error("Aucune candidatures trouvées pour cette offre.");
+        err.status = 404;
+        throw err;
     }
 
     return candidatures;
@@ -226,7 +262,11 @@ const getAllCandidaturesByOfferIdService = async (req) => {
 const checkCandidatureService = async (req) => {
     const { id } = req.params;
     const userId = req.user?.id;
-    if (!userId) throw new Error("Utilisateur non authentifié.");
+    if (!userId) {
+        const err = new Error("Utilisateur non authentifié.");
+        err.status = 401;
+        throw err;
+    }
 
     const existingCandidature = await prisma.candidature.findFirst({
         where: {
@@ -276,7 +316,10 @@ const acceptCandidatureService = async (req) => {
 
 
     if (!candidature) {
-        throw new Error("Candidature non trouvée.");
+        const err = new Error("Candidature non trouvée.");
+        err.status = 404;
+        throw err;
+
     }
 
     const candidateEmail = candidature.utilisateur.email;
@@ -342,7 +385,9 @@ const refuseCandidatureService = async (req) => {
     });
 
     if (!candidature) {
-        throw new Error("Candidature non trouvée.");
+        const err = new Error("Candidature non trouvée.");
+        err.status = 404;
+        throw err;
     }
 
     const refusedUserId = candidature.utilisateurId;
@@ -351,7 +396,9 @@ const refuseCandidatureService = async (req) => {
     });
 
     if (!refusedUser) {
-        throw new Error("Utilisateur non trouvé.");
+        const err = new Error("Utilisateur non trouvé.");
+        err.status = 404;
+        throw err;
     }
 
     const refusedEmail = refusedUser.email;

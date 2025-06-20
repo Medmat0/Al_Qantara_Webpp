@@ -36,6 +36,14 @@ model Utilisateur {
   paiements                PaiementEvenement[]
   messagesEnvoyes          Message[]                @relation("MessagesEnvoyes")
   messagesRecus            Message[]                @relation("MessagesRecus")
+  Community                Community[]              @relation("CommunityMembres")
+  communityCreated         Community[]              @relation("CommunitiesCreated")
+
+  CommunityPostLike CommunityPostLike[]
+
+  CommunityPostCommentaire CommunityPostCommentaire[]
+
+  CommunityPost CommunityPost[]
 }
 
 enum Role {
@@ -327,4 +335,50 @@ enum TypePieceJointe {
   IMAGE
   GIF
   FICHIER
+}
+
+model Community {
+  id           Int             @id @default(autoincrement())
+  nom          String          @db.VarChar(100)
+  logo         String?         @db.VarChar(255)
+  description  String?         @db.Text
+  createdBy    Int
+  createur     Utilisateur     @relation("CommunitiesCreated", fields: [createdBy], references: [id])
+  membres      Utilisateur[]   @relation("CommunityMembres")
+  dateCreation DateTime        @default(now())
+  posts        CommunityPost[]
+}
+
+model CommunityPost {
+  id           Int                        @id @default(autoincrement())
+  titre        String                     @db.VarChar(255)
+  contenu      String                     @db.Text
+  auteurId     Int
+  auteur       Utilisateur                @relation(fields: [auteurId], references: [id])
+  communityId  Int
+  community    Community                  @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  dateCreation DateTime                   @default(now())
+  likes        CommunityPostLike[]
+  commentaires CommunityPostCommentaire[]
+}
+
+model CommunityPostCommentaire {
+  id           Int           @id @default(autoincrement())
+  contenu      String        @db.Text
+  auteurId     Int
+  auteur       Utilisateur   @relation(fields: [auteurId], references: [id])
+  postId       Int
+  post         CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  dateCreation DateTime      @default(now())
+}
+
+model CommunityPostLike {
+  id            Int           @id @default(autoincrement())
+  postId        Int
+  utilisateurId Int
+  dateLike      DateTime      @default(now())
+  post          CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  utilisateur   Utilisateur   @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, utilisateurId])
 }

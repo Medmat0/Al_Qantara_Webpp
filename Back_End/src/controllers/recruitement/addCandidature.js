@@ -8,12 +8,13 @@ import {addCandidatureService} from "../../services/candidature/candidature.serv
 const addCandidature = async (req, res) => {
     try {
         const response = await addCandidatureService(req);
-        res.status(200).json(response);
+        res.status(201).json(response);
     } catch (error) {
-        console.error("Erreur lors de l'ajout de la candidature:", error);
-        res.status(500).json({
-            message: "Erreur lors de l'ajout de la candidature.",
-            error: error.message,
+        const status = error.status || 500;
+        console.error("Error in addCandidature:", error);
+        res.status(status).json({
+            message: error.message,
+            error: error.message
         });
     }
 };
