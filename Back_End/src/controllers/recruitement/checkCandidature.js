@@ -9,10 +9,11 @@ const checkCandidature = async (req, res) => {
         const hasApplied = await checkCandidatureService(req);
         res.status(200).json({ hasApplied });
     } catch (error) {
-        console.error("Erreur lors de la vérification de la candidature:", error);
-        res.status(500).json({
-            message: "Erreur lors de la vérification de la candidature.",
-            error: error.message,
+        const status = error.status || 500;
+        console.error("Error checking candidature:", error);
+        res.status(status).json({
+            message: error.message,
+            error: error.message
         });
     }
 };

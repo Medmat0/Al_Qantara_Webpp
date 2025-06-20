@@ -8,10 +8,11 @@ const getCandidatureById = async (req, res) => {
         const candidature = await getCandidatureByIdService(req);
         res.status(200).json(candidature);
     } catch (error) {
-        console.error("Erreur lors de la récupération de la candidature:", error);
-        res.status(500).json({
-            message: "Erreur lors de la récupération de la candidature.",
-            error: error.message,
+        const status = error.status || 500;
+        console.error("Error fetching candidature by ID:", error);
+        res.status(status).json({
+            message: error.message,
+            error: error.message
         });
     }
 };
@@ -21,10 +22,11 @@ const getAllCandidaturesByUserId = async (req, res) => {
         const candidatures = await getAllCandidaturesByUserIdService(req);
         res.status(200).json(candidatures);
     } catch (error) {
-        console.error("Erreur lors de la récupération des candidatures:", error);
-        res.status(500).json({
-            message: "Erreur lors de la récupération des candidatures.",
-            error: error.message,
+        const status = error.status || 500;
+        console.error("Error fetching candidatures by user ID:", error);
+        res.status(status).json({
+            message: error.message,
+            error: error.message
         });
     }
 };
@@ -34,10 +36,11 @@ const getAllCandidaturesByOfferId = async (req, res) => {
         const candidatures = await getAllCandidaturesByOfferIdService(req);
         res.status(200).json(candidatures);
     } catch (error) {
-        console.error("Erreur lors de la récupération des candidatures pour l'offre:", error);
-        res.status(500).json({
-            message: "Erreur lors de la récupération des candidatures pour l'offre.",
-            error: error.message,
+        const status = error.status || 500;
+        console.error("Error fetching candidatures by offer ID:", error);
+        res.status(status).json({
+            message: error.message,
+            error: error.message
         });
     }
 };

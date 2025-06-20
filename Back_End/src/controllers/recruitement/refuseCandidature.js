@@ -6,10 +6,11 @@ const refuseCandidature = async (req, res) => {
         const refusalResponse = await refuseCandidatureService(req);
         res.status(200).json(refusalResponse);
     }catch (error) {
-        console.error("Erreur lors du refus de la candidature:", error);
-        res.status(500).json({
-            message: "Erreur lors du refus de la candidature.",
-            error: error.message,
+        const status = error.status || 500;
+        console.error("Error refusing candidature:", error);
+        res.status(status).json({
+            message: error.message,
+            error: error.message
         });
     }
 }

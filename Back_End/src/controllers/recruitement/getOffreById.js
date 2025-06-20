@@ -20,10 +20,11 @@ const getOffreById = async (req, res) => {
 
     res.status(200).json({ offre });
   } catch (error) {
-    console.error("Erreur lors de la récupération de l'offre par ID:", error);
-    res.status(500).json({
-      message: "Erreur lors de la récupération de l'offre.",
-      error: error.message,
+    const status = error.status || 500;
+    console.error("Error fetching offer by ID:", error);
+    res.status(status).json({
+      message: error.message,
+      error: error.message
     });
   }
 };
