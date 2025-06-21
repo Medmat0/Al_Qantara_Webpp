@@ -356,6 +356,7 @@ model CommunityPost {
   id           Int                        @id @default(autoincrement())
   titre        String                     @db.VarChar(255)
   contenu      String                     @db.Text
+  tags         String[]                   @db.VarChar(100)
   modified     Boolean                    @default(false)
   auteurId     Int
   auteur       Utilisateur                @relation(fields: [auteurId], references: [id])
@@ -369,6 +370,7 @@ model CommunityPost {
 model CommunityPostCommentaire {
   id           Int           @id @default(autoincrement())
   contenu      String        @db.Text
+  modified     Boolean       @default(false)
   auteurId     Int
   auteur       Utilisateur   @relation(fields: [auteurId], references: [id])
   postId       Int
