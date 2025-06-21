@@ -13,7 +13,7 @@ const revueStorage = new CloudinaryStorage({
 
 const uploadRevue = multer({
   storage: revueStorage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // Limite de 5MB
+  limits: { fileSize: 20 * 1024 * 1024 }, // Limite de 20MB
 });
 
 const candidatureStorage = new CloudinaryStorage({
@@ -26,8 +26,22 @@ const candidatureStorage = new CloudinaryStorage({
 
 const uploadCandidature = multer({
   storage: candidatureStorage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // Limite de 5MB
+  limits: { fileSize: 10 * 1024 * 1024 }, // Limite de 10MB
+});
+
+const logoCommunitiesStorage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: "logoCommunities", // Dossier sur Cloudinary
+        format: async () =>"png", // Force PNG
+    },
 });
 
 
-export  {uploadRevue , revueStorage,candidatureStorage, uploadCandidature};
+const uploadlogoCommunities = multer({
+    storage: logoCommunitiesStorage,
+    limits: { fileSize: 10 * 1024 * 1024 }, // Limite de 10MB
+});
+
+
+export  {uploadRevue , revueStorage,candidatureStorage, uploadCandidature, uploadlogoCommunities, logoCommunitiesStorage};
