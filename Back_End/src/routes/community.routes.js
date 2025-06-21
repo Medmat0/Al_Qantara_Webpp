@@ -15,6 +15,15 @@ router.get("/", getCommunities);
 router.patch("/:communityId", authMiddleware, uploadlogoCommunities.single('logo'), modifyCommunity);
 router.delete("/:communityId", authMiddleware, deleteCommunity);
 
+//routes for posts in community
+// router.post("/:communityId/posts", authMiddleware, createPost);
+/*
+router.get("/:communityId/posts", getPosts);
+router.get("/:communityId/posts/:postId", getPostById);
+router.delete("/:communityId/posts/:postId", authMiddleware, deletePost);
+router.patch("/:communityId/posts/:postId", authMiddleware, updatePost);
+ */
+
 
 
 
