@@ -17,6 +17,8 @@ model Utilisateur {
   role                    Role
   dateInscription         DateTime
   statut                  Statut
+  statutEnLigne           StatutEnLigne @default(HORS_LIGNE)
+  derniereActivite        DateTime?    @default(now())
   emailVerificationToken  String?      @db.VarChar(255) 
   emailVerified           Boolean      @default(false)    
   passwordResetToken      String?      @db.VarChar(255)  
@@ -45,6 +47,12 @@ enum Role {
 
 enum Statut {
   ACTIF
+  INACTIF
+}
+
+enum StatutEnLigne {
+  EN_LIGNE
+  HORS_LIGNE
   INACTIF
 }
 
@@ -302,4 +310,13 @@ enum TypePieceJointe {
   IMAGE
   GIF
   FICHIER
+}
+
+model RemboursementDemande {
+  id             Int      @id @default(autoincrement())
+  utilisateurId  Int
+  evenementId    Int
+  status         String   // "en_attente", "accepte", "refuse", "rembourse"
+  dateDemande    DateTime @default(now())
+  raison         String?
 }

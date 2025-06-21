@@ -17,7 +17,7 @@ const envoyerMessageService = async (messageData) => {
       evenementId,
       piecesJointes
     } = messageData;
-
+    console.log("message data", messageData)
     // Vérifier si l'expéditeur et le destinataire existent
     const [expediteur, destinataire] = await Promise.all([
       prisma.utilisateur.findUnique({ where: { id: expediteurId } }),
@@ -274,9 +274,92 @@ const supprimerMessageService = async (messageId, utilisateurId) => {
   }
 };
 
+/**
+ * @desc    Marquer les messages comme lus
+ * @param {number} expediteurId - ID de l'expéditeur
+ * @param {number} destinataireId - ID du destinataire
+ * @returns {Promise<object>} Messages mis à jour
+ */
+const marquerMessagesLusService = async (expediteurId, destinataireId) => {
+  try {
+    // Mettre à jour tous les messages non lus
+    const messagesLus = await prisma.message.updateMany({
+      where: {
+        expediteurId: expediteurId,
+        destinataireId: destinataireId,
+        estLu: false,
+        dateExpiration: {
+          gt: new Date()
+        }
+      },
+      data: {
+        estLu: true
+      }
+    });
+
+    return messagesLus;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * @desc    Récupérer la liste des utilisateurs
+ * @param {number} currentUserId - ID de l'utilisateur connecté
+ * @returns {Promise<Array>} Liste des utilisateurs
+ */
+const getUtilisateursService = async (currentUserId) => {
+  try {
+    // Récupérer tous les utilisateurs sauf l'utilisateur connecté
+    const utilisateurs = await prisma.utilisateur.findMany({
+      where: {
+        id: {
+          not: currentUserId
+        }
+      },
+      select: {
+        id: true,
+        nom: true,
+        prenom: true,
+        photoProfil: true,
+        statutEnLigne: true,
+        derniereActivite: true,
+        _count: {
+          select: {
+            messagesRecus: {
+              where: {
+                expediteurId: currentUserId,
+                estLu: false,
+                dateExpiration: {
+                  gt: new Date()
+                }
+              }
+            }
+          }
+        }
+      }
+    });
+
+    // Formater les données pour inclure le nombre de messages non lus et le statut en ligne
+    return utilisateurs.map(user => ({
+      id: user.id,
+      nom: user.nom,
+      prenom: user.prenom,
+      photoProfil: user.photoProfil,
+      statutEnLigne: user.statutEnLigne,
+      derniereActivite: user.derniereActivite,
+      nonLus: user._count.messagesRecus
+    }));
+  } catch (error) {
+    throw error;
+  }
+};
+
 export {
   envoyerMessageService,
   getConversationService,
   getConversationsService,
-  supprimerMessageService
+  supprimerMessageService,
+  marquerMessagesLusService,
+  getUtilisateursService
 }; 
