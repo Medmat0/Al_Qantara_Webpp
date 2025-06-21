@@ -145,8 +145,8 @@ const deleteCandidatureService = async (req) => {
     });
 
     if (!user || (user.role !== "ADMIN" && candidature.utilisateurId !== userId)) {
-        const err = new Error("Accès refusé.");
-        err.status = 403;
+        const err = new Error("Candidature non trouvée ou accès refusé.");
+        err.status = 404;
         throw err;
     }
 
@@ -197,8 +197,8 @@ const getCandidatureByIdService = async (req) => {
     });
 
     if (!user || (user.role !== "ADMIN" && candidature.utilisateurId !== userId)) {
-        const err = new Error("Accès refusé.");
-        err.status = 403;
+        const err = new Error("Candidature non trouvée ou accès refusé.");
+        err.status = 404;
         throw err;
     }
 
@@ -237,8 +237,8 @@ const getAllCandidaturesByUserIdService = async (req) => {
     if (requestingUser.role !== "ADMIN") {
         const isOwner = candidatures.some(c => c.utilisateurId === userId);
         if (!isOwner) {
-            const err = new Error("Accès refusé");
-            err.status = 403;
+            const err = new Error("Candidature non trouvée ou accès refusé.");
+            err.status = 404;
             throw err;
         }
     }
