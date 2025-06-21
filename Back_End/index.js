@@ -13,6 +13,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import offresRoutes from './src/routes/offres.routes.js';
 import messagerieRoutes from './src/routes/messagerie.routes.js';
+import { setUserOnline, setUserOffline, cleanupInactiveUsers } from './src/services/messagerie/onlineStatusService.js';
 
 import bodyParser from "body-parser";
 import helmet from "helmet";
@@ -37,22 +38,92 @@ io.on('connection', (socket) => {
   console.log('Un utilisateur s\'est connecté');
 
   // Authentification de l'utilisateur
-  socket.on('authenticate', (userId) => {
-    userSockets.set(userId, socket.id);
-    console.log(`Utilisateur ${userId} authentifié`);
+  socket.on('authenticate', async (userId) => {
+    try {
+      userSockets.set(userId, socket.id);
+      
+      // Marquer l'utilisateur comme en ligne
+      const updatedUser = await setUserOnline(userId);
+      
+      // Notifier les autres utilisateurs
+      socket.broadcast.emit('userStatusChanged', {
+        userId: updatedUser.id,
+        status: 'EN_LIGNE',
+        user: {
+          id: updatedUser.id,
+          nom: updatedUser.nom,
+          prenom: updatedUser.prenom
+        }
+      });
+      
+      console.log(`Utilisateur ${userId} authentifié et marqué comme en ligne`);
+    } catch (error) {
+      console.error('Erreur lors de l\'authentification:', error);
+    }
+  });
+
+  // Mise à jour de l'activité utilisateur
+  socket.on('userActivity', async (userId) => {
+    try {
+      // Ici on pourrait mettre à jour la dernière activité
+      // mais pour l'instant on garde juste la connexion active
+      console.log(`Activité utilisateur ${userId} mise à jour`);
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour de l\'activité:', error);
+    }
   });
 
   // Déconnexion
-  socket.on('disconnect', () => {
-    for (const [userId, socketId] of userSockets.entries()) {
-      if (socketId === socket.id) {
-        userSockets.delete(userId);
-        console.log(`Utilisateur ${userId} déconnecté`);
-        break;
+  socket.on('disconnect', async () => {
+    try {
+      let disconnectedUserId = null;
+      
+      // Trouver l'utilisateur déconnecté
+      for (const [userId, socketId] of userSockets.entries()) {
+        if (socketId === socket.id) {
+          disconnectedUserId = userId;
+          userSockets.delete(userId);
+          break;
+        }
       }
+
+      if (disconnectedUserId) {
+        // Marquer l'utilisateur comme hors ligne
+        const updatedUser = await setUserOffline(disconnectedUserId);
+        
+        // Notifier les autres utilisateurs
+        socket.broadcast.emit('userStatusChanged', {
+          userId: updatedUser.id,
+          status: 'HORS_LIGNE',
+          user: {
+            id: updatedUser.id,
+            nom: updatedUser.nom,
+            prenom: updatedUser.prenom
+          }
+        });
+        
+        console.log(`Utilisateur ${disconnectedUserId} déconnecté et marqué comme hors ligne`);
+      }
+    } catch (error) {
+      console.error('Erreur lors de la déconnexion:', error);
     }
   });
 });
+
+// Nettoyage automatique des utilisateurs inactifs toutes les 5 minutes
+setInterval(async () => {
+  try {
+    const cleanedCount = await cleanupInactiveUsers();
+    if (cleanedCount > 0) {
+      console.log(`${cleanedCount} utilisateurs inactifs nettoyés`);
+      
+      // Notifier tous les clients du nettoyage
+      io.emit('inactiveUsersCleaned', { count: cleanedCount });
+    }
+  } catch (error) {
+    console.error('Erreur lors du nettoyage des utilisateurs inactifs:', error);
+  }
+}, 5 * 60 * 1000); // 5 minutes
 
 // Middleware pour rendre io accessible dans les routes
 app.use((req, res, next) => {
@@ -88,7 +159,7 @@ app.use(
 
 app.use(cors({
   // Autorise les requêtes CORS seulement depuis le frontend
-  origin: process.env.FRONT_URL || "http://localhost:5173",
+  origin: ["http://localhost:5173", "https://23a8-2a02-8428-8533-ea01-b80f-a38f-e50b-d6af.ngrok-free.app", process.env.FRONT_URL].filter(Boolean),
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization"],

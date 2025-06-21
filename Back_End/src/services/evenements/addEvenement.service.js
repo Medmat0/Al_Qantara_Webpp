@@ -20,7 +20,9 @@ const addEvenementService = async (eventData, userId) => {
       type,
       placesTotal,
       images,
-      video
+      video,
+      estPayant,
+      price
     } = eventData;
 
     const existingEvenement = await prisma.evenement.findFirst({
@@ -52,7 +54,9 @@ const addEvenementService = async (eventData, userId) => {
         placesRestantes: placesTotal ? parseInt(placesTotal) : null,
         images: images || [],
         video: video || null,
-        createdBy: userId
+        createdBy: userId,
+        isPayant: estPayant || false,
+        prix: estPayant ? parseFloat(price) : null
       }
     });
     return nouvelEvenement;

@@ -9,7 +9,8 @@ const checkParticipation = async (req, res) => {
   try {
     const { id } = req.params;
     const utilisateurId = req.user.id; // Use req.user.id in a real app
-    // const utilisateurId = 1; // For test
+    
+    //const utilisateurId = 1; // For test
 
     const participation = await checkParticipationService(id, utilisateurId);
 
@@ -55,8 +56,8 @@ const participerEvenement = async (req, res) => {
   try {
     const { id } = req.params;
     const utilisateurId = req.user.id; // Use req.user.id in a real app
-    // const utilisateurId = 1; // For test
-
+     //const utilisateurId = 1; // For test
+    console.log("pariticper events")
     const participation = await participerEvenementService(id, utilisateurId);
 
     res.status(201).json({

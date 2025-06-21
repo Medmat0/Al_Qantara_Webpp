@@ -21,6 +21,8 @@ const getEvenementsService = async () => {
         video: true,
         latitude: true,
         longitude: true,
+        isPayant : true,
+        prix : true,
         placesTotal: true,
         placesRestantes: true,
         createur: {

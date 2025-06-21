@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { PrismaClient } from '@prisma/client';
 import querystring from 'querystring';
+import { participerEvenementService } from './participationEvenement.service.js';
 
 const prisma = new PrismaClient();
 
@@ -48,54 +49,6 @@ const getAccessToken = async () => {
 };
 
 /**
- * Crée un événement payant sur HelloAsso
- */
-const createHelloAssoEvent = async (evenement) => {
-  try {
-    const token = await getAccessToken();
-    
-    const eventData = {
-      title: evenement.titre,
-      description: evenement.description,
-      startDate: evenement.dateDebut,
-      endDate: evenement.dateFin,
-      price: Math.round(evenement.prix * 100), // Convertir en centimes
-      maxParticipants: evenement.placesTotal,
-      type: 'EVENT',
-      place: {
-        name: evenement.lieu || "Lieu à définir"
-      }
-    };
-
-    console.log('Données envoyées à HelloAsso:', eventData);
-    console.log('URL de la requête:', `${HELLOASSO_API_URL}/v3/organizations/${HELLOASSO_ORGANIZATION_SLUG}/forms`);
-
-    const response = await axios.post(
-      `${HELLOASSO_API_URL}/v5/organizations/${HELLOASSO_ORGANIZATION_SLUG}/forms`,
-      eventData,
-      {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        }
-      }
-    );
-
-    console.log('Réponse HelloAsso:', response.data);
-    return response.data;
-  } catch (error) {
-    console.error('Erreur détaillée HelloAsso:', {
-      status: error.response?.status,
-      data: error.response?.data,
-      message: error.message,
-      headers: error.response?.headers
-    });
-    throw new Error('Impossible de créer l\'événement sur HelloAsso');
-  }
-};
-
-/**
  * Vérifie le statut d'un paiement HelloAsso
  */
 const checkPaymentStatus = async (paymentId) => {
@@ -121,32 +74,28 @@ const checkPaymentStatus = async (paymentId) => {
  */
 const handlePaymentWebhook = async (paymentData) => {
   try {
+    console.log('Webhook de paiement reçu:', paymentData);
+    
     const { paymentId, status, amount, metadata } = paymentData;
-    const { evenementId, utilisateurId } = metadata;
+    const { evenementId, utilisateurId, type } = metadata;
 
-    // Mettre à jour le statut du paiement dans notre base de données
-    await prisma.paiementEvenement.update({
-      where: {
-        reference: paymentId
-      },
-      data: {
-        statut: status === 'COMPLETED' ? 'VALIDE' : 'ANNULE'
-      }
-    });
+    if (!evenementId || !utilisateurId) {
+      console.error('Métadonnées manquantes:', metadata);
+      throw new Error('Métadonnées de paiement incomplètes');
+    }
 
-    // Si le paiement est validé, mettre à jour la participation
     if (status === 'COMPLETED') {
-      await prisma.participationEvenement.update({
-        where: {
-          evenementId_utilisateurId: {
-            evenementId: parseInt(evenementId),
-            utilisateurId: parseInt(utilisateurId)
-          }
-        },
-        data: {
-          statut: 'CONFIRME'
-        }
-      });
+      console.log('Paiement validé, création de la participation...');
+      
+      try {
+        // Utiliser le service de participation existant
+        const participation = await participerEvenementService(evenementId, utilisateurId);
+        console.log('Participation créée avec succès:', participation);
+        return participation;
+      } catch (error) {
+        console.error('Erreur lors de la création de la participation:', error);
+        throw error;
+      }
     }
 
     return true;
@@ -156,8 +105,36 @@ const handlePaymentWebhook = async (paymentData) => {
   }
 };
 
+/**
+ * Récupère une intention de paiement HelloAsso
+ * @param {string} checkoutIntentId - ID de l'intention de paiement
+ * @returns {Promise<object>} Les détails de l'intention de paiement
+ */
+const getCheckoutIntent = async (checkoutIntentId) => {
+  try {
+    const token = await getAccessToken();
+    const response = await axios.get(
+      `${HELLOASSO_API_URL}/v5/organizations/${HELLOASSO_ORGANIZATION_SLUG}/checkout-intents/${checkoutIntentId}`,
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json'
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Erreur lors de la récupération de l\'intention de paiement:', error);
+    throw new Error('Impossible de récupérer l\'intention de paiement');
+  }
+};
+
+
+
 export {
-  createHelloAssoEvent,
   checkPaymentStatus,
-  handlePaymentWebhook
+  handlePaymentWebhook,
+  getCheckoutIntent,
+  getAccessToken
+  
 }; 

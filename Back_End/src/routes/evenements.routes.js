@@ -1,54 +1,67 @@
 import express from "express";
 import { authMiddleware, isAdmin } from "../middleware/auth.middleware.js";
-import { addEvenement, getCloudinarySignature } from "../controllers/evenements/addEvenement.js";
-import { getEvenements } from "../controllers/evenements/getEvenements.js";
-import { getEvenementById } from "../controllers/evenements/getEvenementById.js";
-import { toggleLikeEvenement } from "../controllers/evenements/likeEvenement.js";
-import { addCommentEvenement, deleteCommentEvenement } from "../controllers/evenements/commentEvenement.js";
-import { rateEvenement, getEvenementRatings } from "../controllers/evenements/rateEvenement.js";
-import { shareEvenement } from "../controllers/evenements/shareEvenement.js";
-import { participerEvenement, checkParticipation , checkQRCodeParticipation} from "../controllers/evenements/participationEvenement.js";
+import {
+  addEvenement,
+  deleteEvenement,
+  getEvenements,
+  getEvenementById,
+  toggleLikeEvenement,
+  addCommentEvenement,
+  deleteCommentEvenement,
+  rateEvenement,
+  getEvenementRatings,
+  shareEvenement,
+  getCloudinarySignature
+} from "../controllers/evenements/evenementController.js";
+import { participerEvenement, checkParticipation, checkQRCodeParticipation } from "../controllers/evenements/participationEvenement.js";
 import { desinscriptionEvenement } from "../controllers/evenements/desinscriptionEvenement.js";
-import { deleteEvenement } from "../controllers/evenements/deleteEvenement.js";
-import { handleHelloAssoWebhook } from "../controllers/evenements/helloAssoWebhook.js";
+import { createCheckout } from "../controllers/evenements/checkoutController.js";
+import { demandeRemboursementController, listRemboursementDemandesController, updateRemboursementDemandeStatusController } from '../controllers/evenements/demandeRemboursementController.js';
 
 const router = express.Router();
 
 // Routes publiques
 router.get("/cloudinary-signature", getCloudinarySignature);
-router.get("/", getEvenements);
 
+// CRUD événements (contrôleur unique)
+router.post("/", authMiddleware,isAdmin, addEvenement);
+router.delete("/:id", authMiddleware, isAdmin, deleteEvenement);
+router.get("/", getEvenements);
 router.get("/:id", getEvenementById);
 
-// Routes protégées (nécessitent une authentification)
-router.use(authMiddleware);
+// Like
+router.post("/:id/like", authMiddleware, toggleLikeEvenement);
 
-// Routes pour les likes
-router.post("/:id/like", toggleLikeEvenement);
+// Commentaires
+router.post("/:id/comment", authMiddleware, addCommentEvenement);
+router.delete("/:id/comment/:commentId", authMiddleware, deleteCommentEvenement);
 
-// Routes pour les commentaires
-router.post("/:id/comment", addCommentEvenement);
-router.delete("/:id/comment/:commentId", deleteCommentEvenement);
+// Notation
+router.post("/:id/rate", authMiddleware, rateEvenement);
+router.get("/:id/ratings", authMiddleware, getEvenementRatings);
 
-// Routes pour les notes
-router.post("/:id/rate", rateEvenement);
+// Partage
+router.post("/:id/share", authMiddleware, shareEvenement);
 
-// Routes pour le partage
-router.post("/:id/share", shareEvenement);
+// Participation
+router.get("/:id/participation", authMiddleware, checkParticipation);
+router.post("/:id/participer", authMiddleware,participerEvenement);
+router.delete("/:id/desinscription", authMiddleware,desinscriptionEvenement);
+router.get("/:evenementId/qr-participation/:utilisateurId",authMiddleware, checkQRCodeParticipation);
 
-// Routes pour la participation
-router.get("/:id/participation", checkParticipation);
-router.post("/:id/participer", participerEvenement);
-router.delete("/:id/desinscription", desinscriptionEvenement);
+// Paiement HelloAsso
+router.post("/checkout",authMiddleware, createCheckout);
+//router.get("/checkout/:checkoutIntentId", getCheckoutDetails);
+//router.get("/checkout-intent/:checkoutIntentId", getCheckoutIntentController);
 
-// Routes admin uniquement
-router.use(isAdmin);
-router.post("/add", addEvenement);
-router.delete("/:id", deleteEvenement);
-router.get("/:id/ratings", getEvenementRatings);
-router.get("/:evenementId/qr-participation/:utilisateurId", checkQRCodeParticipation);
-
-// Route pour le webhook HelloAsso
+// Webhooks
 //router.post('/webhook/helloasso', handleHelloAssoWebhook);
+//router.post('/webhook', handlePaymentWebhookController);
+//router.get('/payment/:paymentId/status', checkPaymentStatusController);
+
+// Remboursement
+router.post('/:id/demande-remboursement',authMiddleware ,demandeRemboursementController);
+router.get('/admin/remboursements',authMiddleware,isAdmin, listRemboursementDemandesController);
+router.patch('/admin/remboursements/:id',authMiddleware,isAdmin, updateRemboursementDemandeStatusController);
 
 export default router; 
