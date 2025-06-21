@@ -14,6 +14,7 @@ import { fileURLToPath } from "url";
 import offresRoutes from './src/routes/offres.routes.js';
 import messagerieRoutes from './src/routes/messagerie.routes.js';
 import { setUserOnline, setUserOffline, cleanupInactiveUsers } from './src/services/messagerie/onlineStatusService.js';
+import newsletterRoutes from './src/routes/newsletter.routes.js';
 
 import bodyParser from "body-parser";
 import helmet from "helmet";
@@ -179,6 +180,7 @@ app.use("/articles", articleRoutes);
 app.use("/offres", offresRoutes);
 app.use("/user", userRoutes);
 app.use("/messages", messagerieRoutes);
+app.use("/newsletter", newsletterRoutes);
 
 // Démarrer le serveur avec Socket.IO
 httpServer.listen(PORT, () => {
