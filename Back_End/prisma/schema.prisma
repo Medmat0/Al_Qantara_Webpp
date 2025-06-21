@@ -104,7 +104,30 @@ enum TypeEvenement {
 model Newsletter {
   id              Int      @id @default(autoincrement())
   email           String   @unique @db.VarChar(255)
-  dateInscription DateTime
+  dateInscription DateTime @default(now())
+  statut          StatutNewsletter @default(ACTIF)
+  tokenDesinscription String? @db.VarChar(255)
+}
+
+enum StatutNewsletter {
+  ACTIF
+  INACTIF
+  DESINSCRIT
+}
+
+model NewsletterEnvoyee {
+  id          Int       @id @default(autoincrement())
+  titre       String    @db.VarChar(255)
+  contenu     String    @db.Text
+  dateEnvoi   DateTime  @default(now())
+  destinataires Int     @default(0)
+  statut      StatutEnvoi @default(EN_COURS)
+}
+
+enum StatutEnvoi {
+  EN_COURS
+  TERMINE
+  ERREUR
 }
 
 model Adhesion {
