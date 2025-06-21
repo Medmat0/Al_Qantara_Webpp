@@ -15,10 +15,7 @@ import {
 } from "../controllers/evenements/evenementController.js";
 import { participerEvenement, checkParticipation, checkQRCodeParticipation } from "../controllers/evenements/participationEvenement.js";
 import { desinscriptionEvenement } from "../controllers/evenements/desinscriptionEvenement.js";
-import { handleHelloAssoWebhook } from "../controllers/evenements/helloAssoWebhook.js";
-import { createCheckout, getCheckoutDetails } from "../controllers/evenements/checkoutController.js";
-import { getCheckoutIntentController } from "../controllers/evenements/checkoutIntent.js";
-import { handlePaymentWebhookController, checkPaymentStatusController } from '../controllers/evenements/paymentController.js';
+import { createCheckout } from "../controllers/evenements/checkoutController.js";
 import { demandeRemboursementController, listRemboursementDemandesController, updateRemboursementDemandeStatusController } from '../controllers/evenements/demandeRemboursementController.js';
 
 const router = express.Router();
