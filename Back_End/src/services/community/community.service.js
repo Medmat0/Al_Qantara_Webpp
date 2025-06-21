@@ -10,8 +10,7 @@ const createCommunityService = async(req) => {
     const logo = req.file;
     const userId = req.user.id;
 
-    console.log("Fichier reçu pour le logo :", logo);
-
+    // Vérification du rôle utilisateur
     const user = await prisma.utilisateur.findUnique({
         where: { id: userId },
         select: { role: true }
@@ -20,6 +19,22 @@ const createCommunityService = async(req) => {
     if (user.role !== "ADMIN" && user.role !== "ADHERENT") {
         const err = new Error("Vous n'avez pas les droits nécessaires pour créer une communauté.");
         err.status = 403;
+        throw err;
+    }
+
+    // Vérification de l'unicité du nom (insensible à la casse)
+    const existingCommunity = await prisma.community.findFirst({
+        where: {
+            nom: {
+                equals: nom,
+                mode: 'insensitive'
+            }
+        }
+    });
+
+    if (existingCommunity) {
+        const err = new Error("Une communauté avec ce nom existe déjà.");
+        err.status = 409;
         throw err;
     }
 
@@ -32,7 +47,6 @@ const createCommunityService = async(req) => {
         });
         imageUrl = uploadResult.secure_url;
     }
-
 
     const newCommunity = await prisma.community.create({
         data: {
@@ -51,6 +65,14 @@ const getCommunityByIdService = async (req) => {
 
     const community = await prisma.community.findUnique({
         where: { id: parseInt(communityId) },
+        select: {
+            id: true,
+            nom: true,
+            logo: true,
+            description: true,
+            createdBy: true,
+            dateCreation: true
+        }
     });
 
     if (!community) {
@@ -72,7 +94,15 @@ const getCommunitiesService = async (req) => {
         prisma.community.findMany({
             skip,
             take: limit,
-            orderBy: { dateCreation: 'desc' }
+            orderBy: { dateCreation: 'desc' },
+            select: {
+                id: true,
+                nom: true,
+                logo: true,
+                description: true,
+                createdBy: true,
+                dateCreation: true
+            }
         })
     ]);
 
@@ -84,6 +114,38 @@ const getCommunitiesService = async (req) => {
         communities
     };
 }
+
+
+const getCommunityByNameService = async (req) => {
+    const { name } = req.query;
+    console.log(name);
+
+    if (!name) {
+        const err = new Error("Le nom de la communauté est requis.");
+        err.status = 400;
+        throw err;
+    }
+
+    const community = await prisma.community.findUnique({
+        where: { nom: name },
+        select: {
+            id: true,
+            nom: true,
+            logo: true,
+            description: true,
+            createdBy: true,
+            dateCreation: true
+        }
+    });
+
+    if (!community) {
+        const err = new Error("Aucune communauté avec ce nom trouvée.");
+        err.status = 404;
+        throw err;
+    }
+
+    return community;
+};
 
 const deleteCommunityService = async (req) => {
     const { communityId } = req.params;
@@ -133,4 +195,62 @@ const deleteCommunityService = async (req) => {
     return { message: "Communauté supprimée avec succès." };
 }
 
-export { createCommunityService, getCommunityByIdService, getCommunitiesService, deleteCommunityService };
+const modifyCommunityService = async (req) => {
+    const { communityId } = req.params;
+    const userId = req.user.id;
+    const { nom, description } = req.body;
+    const logo = req.file;
+
+    const community = await prisma.community.findUnique({
+        where: { id: parseInt(communityId) },
+        include: { moderateurs: { select: { id: true } } }
+    });
+
+    if (!community) {
+        const err = new Error("Communauté non trouvée.");
+        err.status = 404;
+        throw err;
+    }
+
+    // Vérification des droits
+    const user = await prisma.utilisateur.findUnique({
+        where: { id: userId },
+        select: { role: true }
+    });
+    const isAdmin = user.role === "ADMIN";
+    const isModerator = community.moderateurs.some(m => m.id === userId);
+    if (!isAdmin && !isModerator) {
+        const err = new Error("Vous n'avez pas les droits nécessaires pour modifier cette communauté.");
+        err.status = 403;
+        throw err;
+    }
+
+    // Modif des champs rentrées dans la requête
+    const data = {};
+    if (nom !== undefined) data.nom = nom;
+    if (description !== undefined) data.description = description;
+
+    if (logo) {
+        //suppression de l'ancien logo si présent
+        if (community.logo) {
+            const publicId = community.logo.split("/").pop().split(".")[0];
+            await cloudinary.uploader.destroy(publicId, { resource_type: "image" });
+        }
+        // Upload du nouveau logo
+        const uploadResult = await cloudinary.uploader.upload(logo.path, {
+            folder: 'logoCommunities',
+            resource_type: 'image'
+        });
+        data.logo = uploadResult.secure_url;
+    }
+
+    const updatedCommunity = await prisma.community.update({
+        where: { id: parseInt(communityId) },
+        data
+    });
+
+    return updatedCommunity;
+};
+
+
+export { createCommunityService, getCommunityByIdService, getCommunityByNameService ,getCommunitiesService, deleteCommunityService, modifyCommunityService };

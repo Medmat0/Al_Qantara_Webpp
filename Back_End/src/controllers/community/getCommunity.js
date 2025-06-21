@@ -1,4 +1,8 @@
-import {getCommunitiesService, getCommunityByIdService} from "../../services/community/community.service.js";
+import {
+    getCommunitiesService,
+    getCommunityByIdService,
+    getCommunityByNameService
+} from "../../services/community/community.service.js";
 
 
 const getCommunityById = async (req, res) => {
@@ -27,4 +31,18 @@ const getCommunities = async (req, res) => {
     }
 }
 
-export { getCommunityById, getCommunities };
+const getCommunityByName = async (req, res) => {
+
+    try {
+        const community = await getCommunityByNameService(req);
+        return res.status(200).json(community);
+    } catch (error) {
+        const status = error.status || 500;
+        console.error("Error fetching community by name:", error);
+        res.status(status).json({
+            message: error.message || "Erreur lors de la récupération de la communauté."
+        });
+    }
+}
+
+export { getCommunityById, getCommunities, getCommunityByName };

@@ -341,7 +341,7 @@ enum TypePieceJointe {
 
 model Community {
   id           Int             @id @default(autoincrement())
-  nom          String          @db.VarChar(100)
+  nom          String          @unique @db.VarChar(100)
   logo         String?         @db.VarChar(255)
   description  String?         @db.Text
   createdBy    Int
