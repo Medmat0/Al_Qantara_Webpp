@@ -10,7 +10,7 @@ const deleteCommunityPost = async (req, res) => {
     } catch (error) {
         const status = error.status || 500;
         res.status(status).json({
-            message: error.message || "Error creating the post.",
+            message: error.message || "Error lors de la suppression du post.",
         });
     }
 }

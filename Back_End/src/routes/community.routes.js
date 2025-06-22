@@ -6,10 +6,12 @@ import {getCommunities, getCommunityById, getCommunityByName} from "../controlle
 import {deleteCommunity} from "../controllers/community/deleteCommunity.js";
 import {modifyCommunity} from "../controllers/community/modifyCommunity.js";
 import {createCommunityPost} from "../controllers/community/createCommunityPost.js";
-import {isMember} from "../middleware/community.middleware.js";
+import {userCommunityRole, isMember} from "../middleware/community.middleware.js";
 import {joinCommunity} from "../controllers/community/joinCommunity.js";
 import {leaveCommunity} from "../controllers/community/leaveCommunity.js";
 import {deleteCommunityPost} from "../controllers/community/deleteCommunityPost.js";
+import {modifyCommunityPost} from "../controllers/community/modifyCommunityPost.js";
+import {getCommunityPostById, getCommunityPosts} from "../controllers/community/getCommunityPost.js";
 
 const router = express.Router();
 // png file for logo of community---------------
@@ -24,13 +26,10 @@ router.post("/:communityId/join",authMiddleware,joinCommunity);
 router.post("/:communityId/leave", authMiddleware,leaveCommunity);
 //routes for posts in community
 router.post("/:communityId/posts", authMiddleware, isMember, createCommunityPost);
-router.delete("/:communityId/posts/:postId", authMiddleware, deleteCommunityPost);
-/*
-router.get("/:communityId/posts", getPosts);
-router.get("/:communityId/posts/:postId", getPostById);
-
-router.patch("/:communityId/posts/:postId", authMiddleware, updatePost);
- */
+router.delete("/:communityId/posts/:postId", authMiddleware,userCommunityRole, deleteCommunityPost);
+router.patch("/:communityId/posts/:postId", authMiddleware, modifyCommunityPost);
+router.get("/:communityId/posts", getCommunityPosts);
+router.get("/:communityId/posts/:postId", getCommunityPostById);
 
 
 

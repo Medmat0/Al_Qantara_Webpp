@@ -10,7 +10,7 @@ const leaveCommunity = async (req, res) => {
     } catch (error) {
         const status = error.status || 500;
         res.status(status).json({
-            message: error.message || "Erreur lors de la tentative de rejoindre la communauté.",
+            message: error.message || "Erreur lors de la tentative de quitter la communauté.",
         });
     }
 }

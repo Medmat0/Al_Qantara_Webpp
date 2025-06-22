@@ -26,4 +26,34 @@ const isMember = asyncHandler(async (req, res, next) => {
     next();
 });
 
-export { isMember };
+const userCommunityRole = asyncHandler(async (req, res, next) => {
+    const userId = req.user.id;
+    const communityId = parseInt(req.params.communityId);
+
+    // Récupère la communauté avec ses membres et modérateurs
+    const community = await prisma.community.findUnique({
+        where: { id: communityId },
+        include: {
+            membres: { select: { id: true } },
+            moderateurs: { select: { id: true } }
+        }
+    });
+
+    if (!community) {
+        return res.status(404).json({ message: "Communauté non trouvée." });
+    }
+
+    if (req.user.role === "ADMIN") {
+        req.userCommunityRole = "ADMIN";
+    } else if (community.moderateurs.some(m => m.id === userId)) {
+        req.userCommunityRole = "MODERATEUR";
+    } else if (community.membres.some(m => m.id === userId)) {
+        req.userCommunityRole = "MEMBER";
+    } else {
+        req.userCommunityRole = "NONE";
+    }
+
+    next();
+});
+
+export { userCommunityRole, isMember  };
