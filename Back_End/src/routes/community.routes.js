@@ -12,6 +12,7 @@ import {leaveCommunity} from "../controllers/community/leaveCommunity.js";
 import {deleteCommunityPost} from "../controllers/community/deleteCommunityPost.js";
 import {modifyCommunityPost} from "../controllers/community/modifyCommunityPost.js";
 import {getCommunityPostById, getCommunityPosts} from "../controllers/community/getCommunityPost.js";
+import {likeDislikeCommunityPost} from "../controllers/community/likeDislikeCommunityPost.js";
 
 const router = express.Router();
 // png file for logo of community---------------
@@ -28,6 +29,7 @@ router.post("/:communityId/leave", authMiddleware,leaveCommunity);
 router.post("/:communityId/posts", authMiddleware, isMember, createCommunityPost);
 router.delete("/:communityId/posts/:postId", authMiddleware,userCommunityRole, deleteCommunityPost);
 router.patch("/:communityId/posts/:postId", authMiddleware, modifyCommunityPost);
+router.post("/:communityId/posts/:postId/likeDislike", authMiddleware,isMember, likeDislikeCommunityPost);
 router.get("/:communityId/posts", getCommunityPosts);
 router.get("/:communityId/posts/:postId", getCommunityPostById);
 

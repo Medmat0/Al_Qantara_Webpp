@@ -103,6 +103,12 @@ const modifyCommunityPostService = async (req) => {
     const communityId = parseInt(req.params.communityId);
     const userId = req.user.id;
 
+    if (!titre || !contenu || (!tags || tags.length === 0)) {
+        const err = new Error("Le titre et le contenu du post sont requis, au moins un tag doit être fourni.");
+        err.status = 400;
+        throw err;
+    }
+
     // Vérifie que le post existe
     const post = await prisma.communityPost.findFirst({
         where: { id: postId, communityId: communityId },
@@ -165,7 +171,11 @@ const getCommunityPostByIdService = async (req) => {
         include: {
             community: {
                 select: { id: true }
-            }
+            },
+            likes: {
+                select: { id: true, utilisateurId: true }
+            },
+            commentaires: true
         }
     });
 
@@ -215,7 +225,9 @@ const getCommunityPostsService = async (req) => {
         include: {
             auteur: {
                 select: { id: true, nom: true, prenom: true }
-            }
+            },
+            likes: true,
+            commentaires: true
         },
         orderBy: {
             dateCreation: 'desc'
@@ -233,10 +245,65 @@ const getCommunityPostsService = async (req) => {
     };
 }
 
+const likeOrDislikeCommunityPostService = async (req) => {
+    const postId = parseInt(req.params.postId);
+    const communityId = parseInt(req.params.communityId);
+
+    // Vérifie que le post existe
+    const post = await prisma.communityPost.findFirst({
+        where: { id: postId, communityId: communityId },
+        include: {
+            likes: {
+                select: { id: true, utilisateurId: true }
+            }
+        }
+    });
+
+    if (!post) {
+        const err = new Error("Post non trouvé.");
+        err.status = 404;
+        throw err;
+    }
+
+    // Vérifie si l'utilisateur a déjà liké le post
+    const userId = req.user.id;
+    const existingLike = post.likes.find(like => like.utilisateurId === userId);
+
+    if (existingLike) {
+        // Supprime le like
+        await prisma.communityPostLike.delete({
+            where: { id: existingLike.id }
+        });
+    } else {
+        // Ajoute le like
+        await prisma.communityPostLike.create({
+            data: {
+                postId: postId,
+                utilisateurId: userId
+            }
+        });
+    }
+
+    // Retourne le post avec les likes mis à jour
+    const postWithLikes = await prisma.communityPost.findUnique({
+        where: { id: postId },
+        include: {
+            likes: true,
+            auteur: {
+                select: { id: true, nom: true, prenom: true }
+            }
+        }
+    });
+    return postWithLikes;
+}
+
+
+
 export {
     createCommunityPostService,
     deleteCommunityPostService,
     modifyCommunityPostService,
     getCommunityPostByIdService,
-    getCommunityPostsService
+    getCommunityPostsService,
+    likeOrDislikeCommunityPostService
 };

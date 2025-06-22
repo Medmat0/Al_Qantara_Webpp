@@ -6,7 +6,6 @@ const prisma = new PrismaClient();
 const isMember = asyncHandler(async (req, res, next) => {
     const userId = req.user.id;
     const communityId = parseInt(req.params.communityId);
-    console.log("User ID:", userId);
 
     // Vérifie que la communauté existe et que l'utilisateur est membre
     const community = await prisma.community.findUnique({
