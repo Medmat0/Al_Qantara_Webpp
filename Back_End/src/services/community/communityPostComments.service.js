@@ -211,10 +211,85 @@ const likeDislikePostCommentService = async (req) => {
     };
 }
 
+const addCommentToCommentService = async (req) => {
+    const { content } = req.body;
+    const postId = parseInt(req.params.postId);
+    const commentId = parseInt(req.params.commentId);
+    const communityId = parseInt(req.params.communityId);
+    const userId = req.user.id;
+
+    // Vérifie que le post existe
+    const post = await prisma.communityPost.findFirst({
+        where: { id: postId, communityId: communityId },
+    });
+
+    if (!post) {
+        const err = new Error("Post non trouvé.");
+        err.status = 404;
+        throw err;
+    }
+
+    // Vérifie que le commentaire existe
+    const parentComment = await prisma.communityPostCommentaire.findFirst({
+        where: { id: commentId, postId: postId },
+    });
+
+    if (!parentComment) {
+        const err = new Error("Commentaire parent non trouvé.");
+        err.status = 404;
+        throw err;
+    }
+
+    // Ajout du commentaire
+    await prisma.communityPostCommentaire.create({
+        data: {
+            contenu: content,
+            postId: postId,
+            auteurId: userId,
+            parentId: commentId
+        }
+    });
+
+    // Retourne le post avec ses commentaires et likes (sans le rôle de l'utilisateur)
+    const postWithCommentsAndLikes = await prisma.communityPost.findUnique({
+        where: { id: postId },
+        include: {
+            commentaires: {
+                include: {
+                    auteur: {
+                        select: {
+                            id: true,
+                            nom: true,
+                            prenom: true
+                        }
+                    },
+                    likes: true,
+                    replies: {
+                        include: {
+                            auteur: {
+                                select: {
+                                    id: true,
+                                    nom: true,
+                                    prenom: true
+                                }
+                            },
+                            likes: true
+                        }
+                    }
+                }
+            },
+            likes: true
+        }
+    });
+
+    return postWithCommentsAndLikes;
+}
+
 export {
     addPostCommentService,
     deletePostCommentService,
     modifyPostCommentService,
-    likeDislikePostCommentService
+    likeDislikePostCommentService,
+    addCommentToCommentService
 
 };

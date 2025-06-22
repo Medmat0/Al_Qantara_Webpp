@@ -17,6 +17,8 @@ import {addPostComment} from "../controllers/community/addPostComment.js";
 import {deletePostComment} from "../controllers/community/deletePostComment.js";
 import {modifyPostComment} from "../controllers/community/modifyPostComment.js";
 import {likeDislikeCommPostComment} from "../controllers/community/likeDislikeCommPostComment.js";
+import {addCommentToCommentService} from "../services/community/communityPostComments.service.js";
+import {addCommentToComment} from "../controllers/community/addCommentToComment.js";
 
 const router = express.Router();
 // png file for logo of community---------------
@@ -43,5 +45,6 @@ router.post("/:communityId/posts/:postId/comments", authMiddleware, isMember, ad
 router.delete("/:communityId/posts/:postId/comments/:commentId",authMiddleware,userCommunityRole, deletePostComment);
 router.patch("/:communityId/posts/:postId/comments/:commentId",authMiddleware, modifyPostComment);
 router.post("/:communityId/posts/:postId/comments/:commentId/likeDislike", authMiddleware,isMember, likeDislikeCommPostComment);
+router.post("/:communityId/posts/:postId/comments/:commentId", authMiddleware, isMember, addCommentToComment);
 
 export default router;
