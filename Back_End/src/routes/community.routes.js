@@ -13,6 +13,10 @@ import {deleteCommunityPost} from "../controllers/community/deleteCommunityPost.
 import {modifyCommunityPost} from "../controllers/community/modifyCommunityPost.js";
 import {getCommunityPostById, getCommunityPosts} from "../controllers/community/getCommunityPost.js";
 import {likeDislikeCommunityPost} from "../controllers/community/likeDislikeCommunityPost.js";
+import {addPostComment} from "../controllers/community/addPostComment.js";
+import {deletePostComment} from "../controllers/community/deletePostComment.js";
+import {modifyPostComment} from "../controllers/community/modifyPostComment.js";
+import {likeDislikeCommPostComment} from "../controllers/community/likeDislikeCommPostComment.js";
 
 const router = express.Router();
 // png file for logo of community---------------
@@ -34,6 +38,10 @@ router.get("/:communityId/posts", getCommunityPosts);
 router.get("/:communityId/posts/:postId", getCommunityPostById);
 
 
-
+//routes for comments in community posts
+router.post("/:communityId/posts/:postId/comments", authMiddleware, isMember, addPostComment);
+router.delete("/:communityId/posts/:postId/comments/:commentId",authMiddleware,userCommunityRole, deletePostComment);
+router.patch("/:communityId/posts/:postId/comments/:commentId",authMiddleware, modifyPostComment);
+router.post("/:communityId/posts/:postId/comments/:commentId/likeDislike", authMiddleware,isMember, likeDislikeCommPostComment);
 
 export default router;

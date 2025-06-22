@@ -93,8 +93,9 @@ const deleteCommunityPostService = async (req) => {
         where: { id: postId }
     });
 
-    return { message: "Post supprimé avec succès." };
-
+    return { message: "Post supprimé avec succès.",
+        communityPostId: postId
+    };
 }
 
 const modifyCommunityPostService = async (req) => {

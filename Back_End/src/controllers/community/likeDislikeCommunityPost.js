@@ -2,15 +2,16 @@ import {likeOrDislikeCommunityPostService} from "../../services/community/commun
 
 const likeDislikeCommunityPost = async (req, res) => {
     try {
-        const likedPost = await likeOrDislikeCommunityPostService(req);
+        const post  = await likeOrDislikeCommunityPostService(req);
+        console.log("Post after like/dislike action:", post);
         res.status(200).json({
-            message: "Post liked successfully.",
-            post: likedPost
+            message: "Action effectuée avec succès.",
+            post: post
         });
     } catch (error) {
         const status = error.status || 500;
         res.status(status).json({
-            message: error.message || "Error liking the post.",
+            message: error.message || "Erreur lors de l'action like/dislike.",
         });
     }
 }

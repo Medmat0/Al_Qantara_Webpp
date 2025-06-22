@@ -46,6 +46,8 @@ model Utilisateur {
   CommunityPost CommunityPost[]
 
   moderateurCommunity Community[] @relation("CommunityModerateurs")
+
+  CommunityPostCommentaireLike CommunityPostCommentaireLike[]
 }
 
 enum Role {
@@ -368,14 +370,29 @@ model CommunityPost {
 }
 
 model CommunityPostCommentaire {
-  id           Int           @id @default(autoincrement())
-  contenu      String        @db.Text
-  modified     Boolean       @default(false)
+  id           Int                            @id @default(autoincrement())
+  contenu      String                         @db.Text
+  modified     Boolean                        @default(false)
   auteurId     Int
-  auteur       Utilisateur   @relation(fields: [auteurId], references: [id])
+  auteur       Utilisateur                    @relation(fields: [auteurId], references: [id])
   postId       Int
-  post         CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
-  dateCreation DateTime      @default(now())
+  post         CommunityPost                  @relation(fields: [postId], references: [id], onDelete: Cascade)
+  dateCreation DateTime                       @default(now())
+  parentId     Int?
+  parent       CommunityPostCommentaire?      @relation("CommentParent", fields: [parentId], references: [id])
+  replies      CommunityPostCommentaire[]     @relation("CommentParent")
+  likes        CommunityPostCommentaireLike[]
+}
+
+model CommunityPostCommentaireLike {
+  id            Int                      @id @default(autoincrement())
+  commentaireId Int
+  utilisateurId Int
+  dateLike      DateTime                 @default(now())
+  commentaire   CommunityPostCommentaire @relation(fields: [commentaireId], references: [id], onDelete: Cascade)
+  utilisateur   Utilisateur              @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+
+  @@unique([commentaireId, utilisateurId])
 }
 
 model CommunityPostLike {

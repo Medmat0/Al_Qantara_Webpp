@@ -192,7 +192,9 @@ const deleteCommunityService = async (req) => {
         where: { id: parseInt(communityId) }
     });
 
-    return { message: "Communauté supprimée avec succès." };
+    return { message: "Communauté supprimée avec succès.",
+        communityId: communityId
+    };
 }
 
 const modifyCommunityService = async (req) => {
