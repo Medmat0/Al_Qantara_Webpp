@@ -376,10 +376,13 @@ model CommunityPost {
 
 model PollOption {
   id              Int           @id @default(autoincrement())
+  index           Int
   label           String
   communityPost   CommunityPost @relation(fields: [communityPostId], references: [id], onDelete: Cascade)
   communityPostId Int
   votes           PollVote[]
+
+  @@unique([communityPostId, index])
 }
 
 model PollVote {

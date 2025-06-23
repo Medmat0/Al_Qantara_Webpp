@@ -41,7 +41,7 @@ const createCommunityPostService = async (req) => {
                 community: { connect: { id: communityId } },
                 auteur: { connect: { id: userId } },
                 pollOptions: {
-                    create: pollOptions.map(label => ({ label }))
+                    create: pollOptions.map((label, index) => ({ label, index }))
                 }
             },
             include: {
@@ -333,7 +333,7 @@ const addVoteToPollService = async (req) => {
     const postId = parseInt(req.params.postId);
     const communityId = parseInt(req.params.communityId);
     const userId = req.user.id;
-    const { pollOptionId } = req.body;
+    const { pollOptionIndex } = req.body;
 
     // Vérifie que le post existe et est un sondage
     const post = await prisma.communityPost.findFirst({
@@ -343,9 +343,6 @@ const addVoteToPollService = async (req) => {
                 include: {
                     votes: true
                 }
-            },
-            auteur: {
-                select: { id: true, nom: true, prenom: true }
             }
         }
     });
@@ -356,7 +353,7 @@ const addVoteToPollService = async (req) => {
         throw err;
     }
 
-    // Vérifie que l'utilisateur n'a pas déjà voté pour une des options
+    // Vérifie que l'utilisateur n'a pas déjà voté
     const hasVoted = post.pollOptions.some(option =>
         option.votes.some(vote => vote.utilisateurId === userId)
     );
@@ -366,8 +363,8 @@ const addVoteToPollService = async (req) => {
         throw err;
     }
 
-    // Vérifie que l'option existe et appartient bien à ce sondage
-    const option = post.pollOptions.find(opt => opt.id === pollOptionId);
+    // Cherche l'option par son index
+    const option = post.pollOptions.find(opt => opt.index === pollOptionIndex);
     if (!option) {
         const err = new Error("Option de sondage invalide.");
         err.status = 400;
@@ -377,15 +374,13 @@ const addVoteToPollService = async (req) => {
     // Ajoute le vote
     await prisma.pollVote.create({
         data: {
-            pollOptionId: pollOptionId,
+            pollOptionId: option.id,
             utilisateurId: userId
         }
     });
 
     return { message: "Vote enregistré avec succès." };
 }
-
-
 
 export {
     createCommunityPostService,
