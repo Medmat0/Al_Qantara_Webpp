@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 import {DatePipe, NgForOf, NgIf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -34,18 +34,16 @@ export class EventModalComponent implements OnChanges {
   commentText = '';
   showCommentForm = false;
   showComments = false;
+  
   constructor(private sanitizer: DomSanitizer) {
     if (this.event && !Array.isArray(this.event.comments)) {
       this.event.comments = [];
     }
-
   }
-  
 
-
-
-  ngOnChanges() {
-    if (this.event) {
+  ngOnChanges(changes: SimpleChanges) {
+    // Update map URL when event changes
+    if (changes['event'] && this.event) {
       this.safeMapUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
         'https://www.openstreetmap.org/export/embed.html?bbox=' +
         (this.event.longitude - 0.01) + ',' +
@@ -56,10 +54,12 @@ export class EventModalComponent implements OnChanges {
       );
     }
 
-
+    // Handle participation changes
+    if (changes['isParticipating'] && !changes['isParticipating'].currentValue) {
+      // If user is no longer participating, clear participation data
+      this.participation = null;
+    }
   }
-
-
 
   formatDateTime(dateStr: string) {
     return new Date(dateStr).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' });
@@ -72,8 +72,6 @@ export class EventModalComponent implements OnChanges {
       this.showCommentForm = false;
     }
   }
-  
-
 
   handleShare() {
     const subject = `Invitation à l'événement: ${this.event.titre}`;

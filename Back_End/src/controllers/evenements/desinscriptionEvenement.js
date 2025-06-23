@@ -8,8 +8,8 @@ import { desinscriptionEvenementService } from "../../services/evenements/index.
 const desinscriptionEvenement = async (req, res) => {
   try {
     const { id } = req.params;
-    //const utilisateurId = req.user.id; // Use req.user.id in a real app
-     const utilisateurId = 1; // For test
+    const utilisateurId = req.user.id; // Use req.user.id in a real app
+     //const utilisateurId = 1; // For test
 
     const result = await desinscriptionEvenementService(id, utilisateurId);
 

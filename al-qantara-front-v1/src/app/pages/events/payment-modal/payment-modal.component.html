@@ -1,0 +1,14 @@
+<div *ngIf="show" class="payment-modal-backdrop">
+  <div class="payment-modal-content">
+    <button class="close-btn" (click)="close.emit()">×</button>
+    <div class="payment-header">
+      <img src="https://www.helloasso.com/assets/img/logo-helloasso.svg" alt="HelloAsso" class="helloasso-logo" />
+      <h2>Acheter un billet</h2>
+      <div *ngIf="montant !== null" class="payment-amount">Montant : <span>{{ montant | currency:'EUR' }}</span></div>
+    </div>
+    <div class="payment-iframe-container">
+      <iframe *ngIf="url" [src]="url" frameborder="0" allowfullscreen></iframe>
+      <div *ngIf="!url" class="no-url">Lien de paiement non disponible</div>
+    </div>
+  </div>
+</div> 
