@@ -33,7 +33,12 @@ export class EventCalendarComponent implements OnInit {
       minute: '2-digit',
       hour12: false
     },
-    eventClick: this.handleEventClick.bind(this)
+    eventClick: this.handleEventClick.bind(this),
+    eventDidMount: (info) => {
+      if (info.event.extendedProps && info.event.extendedProps['type']) {
+        info.el.setAttribute('data-type', info.event.extendedProps['type']);
+      }
+    }
   };
 
   ngOnInit() {

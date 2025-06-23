@@ -12,4 +12,11 @@ import { DatePipe, CommonModule } from '@angular/common';
 })
 export class EventItemComponent {
   @Input() event!: Evenement;
+
+  get eventImage(): string {
+    if (Array.isArray(this.event.images) && this.event.images.length > 0 && this.event.images[0]) {
+      return this.event.images[0];
+    }
+    return 'assets/main-icon.jpg';
+  }
 }

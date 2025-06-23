@@ -14,8 +14,7 @@
           <video [src]="event.video" controls class="media-content"></video>
         </ng-container>
         <ng-template #imageBlock>
-          <img *ngIf="event.images?.length" [src]="event.images[0]" [alt]="event.titre" class="media-content" />
-          <div *ngIf="!event.images?.length" class="media-placeholder">Aucun média disponible</div>
+          <img *ngIf="!event.video" [src]="eventImage" [alt]="event.titre" class="media-content" />
         </ng-template>
       </div>
 
@@ -39,13 +38,13 @@
         <span><strong>Places disponibles :</strong> {{ event.placesRestantes }}/{{ event.placesTotal }}</span>
       </div>
 
-      <div class="actions mb-2">
-        <div [ngClass]="{'like-container': true, 'liked': hasLikedEvenement}">
-          <button (click)="like.emit()" class="btn-like">❤️ {{ event.likes?.length || 0 }}</button>
-        </div>
-        <button (click)="handleShare()" class="btn-share">📤 Partager</button>
+      <div class="actions">
+        <button class="action-btn" (click)="like.emit()">
+          <span class="icon">❤️</span> {{ event.likes?.length || 0 }}
+        </button>
+        <button class="action-btn" (click)="showComments = !showComments"><span class="icon">💬</span> Commentaires</button>
+        <button class="action-btn" (click)="handleShare()"><span class="icon">🔗</span> Partager</button>
       </div>
-
       <div class="mb-2">
         <button
           *ngIf="!isParticipating && event.placesRestantes > 0"
@@ -63,6 +62,8 @@
         </button>
       </div>
 
+
+
       <div *ngIf="isParticipating && participation" class="mb-2">
         <div class="confirmed-green-box">
           <strong>Votre participation est confirmée !</strong>
@@ -78,15 +79,15 @@
       <div *ngIf="unsubscribeConfirmed" class="unsubscribe-confirmed-red-box">
         <strong>Désinscription confirmée&nbsp;!</strong>
         <div class="text-xs text-red-500 mt-2">
-          Vous avez bien été désinscrit de l’événement.
+          Vous avez bien été désinscrit de l'événement.
         </div>
       </div>
 
-      <div class="mb-2">
+      <div class="mb-2" *ngIf="showComments">
         <strong>Commentaires</strong>
-        <form (ngSubmit)="handleCommentSubmit()" class="mb-2">
-          <textarea [(ngModel)]="commentText" name="comment" rows="2" class="form-control" placeholder="Écrivez votre commentaire..."></textarea>
-          <div class="mt-1">
+        <form (ngSubmit)="handleCommentSubmit()" class="mb-2 comment-form-row">
+          <div class="comment-input-row">
+            <textarea [(ngModel)]="commentText" name="comment" rows="1" class="form-control" placeholder="Écrivez votre commentaire..."></textarea>
             <button type="submit" [disabled]="!commentText.trim()" class="btn-send">Envoyer</button>
           </div>
         </form>

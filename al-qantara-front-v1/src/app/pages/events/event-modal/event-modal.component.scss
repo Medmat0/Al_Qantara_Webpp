@@ -69,53 +69,242 @@ iframe {
   margin-top: 0.5rem;
 }
 
-.actions {
+.comment-section {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: 12px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.comment-form-row {
+  margin-bottom: 1.2rem;
+}
+.comment-input-row {
   display: flex;
-  gap: 1rem;
-  margin: 1rem 0;
+  align-items: flex-end;
+  gap: 0.7rem;
 }
-
-.actions button {
-  border: none;
-  background: #f3f4f6;
-  padding: 0.5rem 0.75rem;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.875rem;
+.comment-input-row textarea.form-control {
+  flex: 1 1 auto;
+  min-height: 38px;
+  font-size: 0.98rem;
+  padding: 0.7rem 1rem;
+  margin-bottom: 0;
 }
-
-.actions button:hover {
-  background: #e5e7eb;
-}
-
-.comment {
-  background: #f9fafb;
-  border-radius: 6px;
-  padding: 0.75rem;
-  margin-top: 0.5rem;
-  word-break: break-word;
-  overflow-wrap: break-word;
-  max-width: 100%;
-  box-sizing: border-box;
-}
-
-.comment .font-semibold {
-  font-weight: 600;
-  margin-bottom: 0.25rem;
-}
-
-.comment .text-xs {
-  font-size: 0.75rem;
-  color: #9ca3af;
-  margin-top: 0.25rem;
+.comment-input-row .btn-send {
+  height: 38px;
+  padding: 0 1.3rem;
+  font-size: 0.98rem;
+  margin-top: 0;
+  float: none;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
 }
 
 textarea.form-control {
   width: 100%;
-  padding: 0.5rem;
-  border-radius: 6px;
-  border: 1px solid #d1d5db;
+  padding: 1.1rem;
+  border-radius: 12px;
+  border: 1.5px solid #e5e7eb;
   resize: vertical;
+  font-size: 1.05rem;
+  background: #fff;
+  margin-top: 1.2rem;
+  margin-bottom: 0.7rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  color: #222;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+textarea.form-control:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px #dbeafe;
+}
+textarea.form-control::placeholder {
+  color: #b0b6c1;
+  font-size: 1.05rem;
+}
+
+.btn-send {
+  background: #2563eb;
+  color: #fff;
+  border-radius: 10px;
+  padding: 0.7rem 2.1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  border: none;
+  float: right;
+  margin-top: 0.5rem;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.10);
+  transition: background 0.18s, box-shadow 0.18s;
+}
+.btn-send:hover, .btn-send:focus {
+  background: #1e40af;
+  box-shadow: 0 4px 16px #2563eb;
+}
+.btn-send:disabled {
+  background: #bcd7fa;
+  color: #fff;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.comment-card {
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  border-radius: 12px;
+  padding: 1.2rem 1.3rem;
+  margin-bottom: 1.2rem;
+  position: relative;
+  max-width: 100%;
+  word-break: break-word;
+  display: block;
+}
+.comment-card .font-semibold {
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 0.12rem;
+  font-size: 1.08rem;
+}
+.comment-card .text-xs {
+  font-size: 0.85rem;
+  color: #9ca3af;
+  margin-bottom: 0.3rem;
+  display: block;
+}
+.comment-card .comment-text {
+  font-size: 1.05rem;
+  color: #222;
+  margin-top: 0.3rem;
+  margin-bottom: 0.2rem;
+}
+.comment-card .close-comment-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  color: #b0b6c1;
+  border-radius: 50%;
+  padding: 0.3rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+  z-index: 2;
+}
+.comment-card .close-comment-btn:hover, .comment-card .close-comment-btn:focus {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+@media (max-width: 600px) {
+  .modal-content {
+    padding: 1rem;
+  }
+  .comment-card {
+    padding: 0.8rem 0.7rem;
+    font-size: 0.98rem;
+  }
+  .btn-send {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.95rem;
+  }
+  textarea.form-control {
+    padding: 0.7rem;
+    font-size: 0.98rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .comment-input-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+  .comment-input-row .btn-send {
+    width: 100%;
+    height: 38px;
+    margin-top: 0.2rem;
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 1.1rem;
+  margin: 1.5rem 0 2rem 0;
+  flex-wrap: wrap;
+}
+
+.actions .action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #fff;
+  border: 1.5px solid #e5e7eb;
+  color: #222;
+  font-weight: 500;
+  font-size: 1.05rem;
+  border-radius: 10px;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  transition: background 0.18s, box-shadow 0.18s, border-color 0.18s, color 0.18s;
+  box-shadow: none;
+  outline: none;
+}
+.actions .action-btn:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px #dbeafe;
+}
+.actions .action-btn:hover {
+  background: #f0f6ff;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.07);
+  color: #2563eb;
+}
+.actions .action-btn .icon {
+  font-size: 1.2em;
+  display: flex;
+  align-items: center;
+}
+
+.actions .btn-participate {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.10);
+  padding: 0.7rem 1.7rem;
+  transition: background 0.18s, box-shadow 0.18s, transform 0.09s;
+}
+.actions .btn-participate:hover, .actions .btn-participate:focus {
+  background: #1e40af;
+  color: #fff;
+  box-shadow: 0 4px 16px #2563eb;
+  transform: translateY(-2px) scale(1.03);
+}
+.actions .btn-participate:disabled {
+  background: #bcd7fa;
+  color: #fff;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn-unsubscribe {
+  background: #ef4444;
+  color: #fff;
+  border-radius: 8px;
+  padding: 0.6rem 1.3rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  box-shadow: 0 1px 4px rgba(239,68,68,0.07);
+  transition: background 0.2s, transform 0.1s;
+}
+.btn-unsubscribe:hover {
+  background: #b91c1c;
+  transform: scale(1.04);
 }
 
 .btn-cancel,
@@ -129,11 +318,6 @@ textarea.form-control {
 
 .btn-cancel {
   background: #e5e7eb;
-}
-
-.btn-send {
-  background: #3b82f6;
-  color: white;
 }
 
 .btn-send:disabled {

@@ -12,8 +12,7 @@
           <video [src]="evenement.video" controls class="media-content"></video>
         </ng-container>
         <ng-template #imageBlock>
-          <img *ngIf="evenement.images?.length" [src]="evenement.images[0]" [alt]="evenement.titre" class="media-content" />
-          <div *ngIf="!evenement.images?.length" class="media-placeholder">Aucun média disponible</div>
+          <img *ngIf="!evenement.video" [src]="eventImage" [alt]="evenement.titre" class="media-content" />
         </ng-template>
       </div>
 
@@ -76,7 +75,7 @@
       <div *ngIf="unsubscribeConfirmed" class="unsubscribe-confirmed-red-box">
         <strong>Désinscription confirmée&nbsp;!</strong>
         <div class="text-xs text-red-500 mt-2">
-          Vous avez bien été désinscrit de l’événement.
+          Vous avez bien été désinscrit de l'événement.
         </div>
       </div>
 

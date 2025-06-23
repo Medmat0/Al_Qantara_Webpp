@@ -86,7 +86,7 @@ export class EventDescriptionComponent {
 
             }
 
-            // Génère l’URL de la carte ici, après avoir reçu l’événement
+            // Génère l'URL de la carte ici, après avoir reçu l'événement
             if (this.evenement.latitude && this.evenement.longitude) {
               this.safeMapUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
                 'https://www.openstreetmap.org/export/embed.html?bbox=' +
@@ -270,6 +270,11 @@ export class EventDescriptionComponent {
     window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   }
 
-
+  get eventImage(): string {
+    if (Array.isArray(this.evenement?.images) && this.evenement.images.length > 0 && this.evenement.images[0]) {
+      return this.evenement.images[0];
+    }
+    return 'assets/main-icon.jpg';
+  }
 
 }

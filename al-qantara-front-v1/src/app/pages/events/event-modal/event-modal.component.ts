@@ -33,13 +33,14 @@ export class EventModalComponent implements OnChanges {
   safeMapUrl: SafeResourceUrl | null = null;
   commentText = '';
   showCommentForm = false;
+  showComments = false;
   constructor(private sanitizer: DomSanitizer) {
     if (this.event && !Array.isArray(this.event.comments)) {
       this.event.comments = [];
     }
 
   }
-
+  
 
 
 
@@ -65,18 +66,25 @@ export class EventModalComponent implements OnChanges {
   }
 
   handleCommentSubmit() {
-    if (this.commentText.trim()) {
+    if (this.commentText.trim()) {  
       this.comment.emit(this.commentText);
       this.commentText = '';
       this.showCommentForm = false;
     }
   }
-
+  
 
 
   handleShare() {
     const subject = `Invitation à l'événement: ${this.event.titre}`;
     const body = `Bonjour,\n\nJe vous invite à l'événement "${this.event.titre}" qui se déroulera le ${this.formatDateTime(this.event.dateDebut)} à ${this.event.lieu}.\n\nPour plus d'informations, visitez notre site web.\n\nCordialement`;
     window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  }
+
+  get eventImage(): string {
+    if (Array.isArray(this.event?.images) && this.event.images.length > 0 && this.event.images[0]) {
+      return this.event.images[0];
+    }
+    return 'assets/main-icon.jpg';
   }
 }

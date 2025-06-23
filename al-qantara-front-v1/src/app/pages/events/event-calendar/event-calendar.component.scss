@@ -1,38 +1,78 @@
 .calendar-container {
-  padding: 20px;
-  height: calc(100vh - 100px);
-  font-family: 'Mulish', sans-serif;
-  
-  ::ng-deep {
-    .fc {
-      height: 100%;
-    }
-    
-    .fc-toolbar-title {
-      font-size: 1.5em;
-      margin: 0;
-    }
+  padding: 32px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  max-width: 1200px;
+  margin: 32px auto;
+  font-family: 'Segoe UI', 'Mulish', sans-serif;
+  min-height: 700px;
+}
 
-    .fc-event {
-      cursor: pointer;
-      
-      &:hover {
-        opacity: 0.9;
-      }
-    }
+::ng-deep .fc {
+  background: #f8f9fa;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  padding: 18px 10px 24px 10px;
+  min-height: 700px;
+}
 
-    .fc-day-today {
-      background-color: rgba(0, 0, 0, 0.02) !important;
-    }
-    
-    .fc-button-primary {
-      background-color: #1a73e8;
-      border-color: #1a73e8;
-      
-      &:hover {
-        background-color: #1557b0;
-        border-color: #1557b0;
-      }
-    }
-  }
+::ng-deep .fc-toolbar {
+  margin-bottom: 18px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+  padding: 12px 18px;
+}
+
+::ng-deep .fc-toolbar-title {
+  font-size: 1.7em;
+  font-weight: 700;
+  color: #222;
+  letter-spacing: 0.5px;
+}
+
+::ng-deep .fc-button-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: #fff;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+::ng-deep .fc-button-primary:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+
+::ng-deep .fc-day-today {
+  background-color: #e3f0ff !important;
+}
+
+::ng-deep .fc-event {
+  border-radius: 8px;
+  font-size: 1em;
+  font-weight: 500;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  border: none;
+  transition: box-shadow 0.2s, opacity 0.2s;
+  opacity: 0.95;
+  cursor: pointer;
+}
+::ng-deep .fc-event:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+  opacity: 1;
+}
+
+/* Custom event colors by type */
+::ng-deep .fc-event {
+  background-color: #3174ad;
+}
+::ng-deep .fc-event[data-type="INTERNE"] {
+  background-color: #28a745 !important;
+  color: #fff !important;
+}
+::ng-deep .fc-event[data-type="EXTERNE"] {
+  background-color: #dc3545 !important;
+  color: #fff !important;
 }

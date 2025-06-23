@@ -32,7 +32,9 @@ export class AddEvenementComponent {
     numero: '',
     rue: '',
     codePostal: '',
-    ville: '',
+    ville: '',  
+    isPaid : null,
+    price : null,        // add payant && add price 
     type: '',
     placesTotal: null as number | null,
     images: [] as string[],
@@ -124,6 +126,12 @@ export class AddEvenementComponent {
     if (hasError) {
       return;
     }
+
+    // Validate price if isPaid is checked
+    if (this.event.isPaid && (!this.event.price || this.event.price <= 0)) {
+      this.errorMessage = "Veuillez entrer un prix valide pour un événement payant.";
+      return;
+    }
     
     if (form.valid && !this.isSubmitting) {
       this.isSubmitting = true;
@@ -145,7 +153,9 @@ export class AddEvenementComponent {
           adresse: `${this.event.numero} ${this.event.rue}, ${this.event.codePostal} ${this.event.ville}`.trim(),
           placesTotal: this.event.placesTotal || undefined,
           images: [] as string[],
-          video: undefined
+          video: undefined,
+          estPayant: this.event.isPaid,
+          price: this.event.isPaid ? this.event.price : null
         };
 
         const response = await this.evenementService.createEvenement(
@@ -182,6 +192,8 @@ export class AddEvenementComponent {
       codePostal: '',
       ville: '',
       type: '',
+      isPaid : null,
+      price : null,
       placesTotal: null,
       images: [],
       video: null

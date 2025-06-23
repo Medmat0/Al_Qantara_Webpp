@@ -49,16 +49,20 @@ h2 {
 }
 
 .event-listing {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 28px;
   justify-content: flex-start;
   max-width: 1200px;
   margin: 0 auto;
+  padding: 24px 0 32px 0;
+  background: #f8f9fa;
+  border-radius: 16px;
 }
 
 .event-item-container {
-  width: calc(33.333% - 20px);
-  margin: 10px;
+  width: 100%;
+  margin: 0;
 }
 
 .pagination {
