@@ -135,7 +135,7 @@ const deleteCandidatureService = async (req) => {
     });
 
     if (!candidature) {
-        const err = new Error("Candidature non trouvée.");
+        const err = new Error("Candidature non trouvée ou accès refusé.");
         err.status = 404;
         throw err;
     }
@@ -145,8 +145,8 @@ const deleteCandidatureService = async (req) => {
     });
 
     if (!user || (user.role !== "ADMIN" && candidature.utilisateurId !== userId)) {
-        const err = new Error("Accès refusé.");
-        err.status = 403;
+        const err = new Error("Candidature non trouvée ou accès refusé.");
+        err.status = 404;
         throw err;
     }
 
@@ -178,7 +178,7 @@ const getCandidatureByIdService = async (req) => {
     });
 
     if (!candidature) {
-        const err = new Error("Candidature non trouvée.");
+        const err = new Error("Candidature non trouvée ou accès refusé.");
         err.status = 404;
         throw err;
     }
@@ -187,7 +187,7 @@ const getCandidatureByIdService = async (req) => {
         where: { id: parseInt(offreId) },
     });
     if (!offre) {
-        const err = new Error("Offre non trouvée.");
+        const err = new Error("Offre non trouvée ou accès refusé.");
         err.status = 404;
         throw err;
     }
@@ -197,8 +197,8 @@ const getCandidatureByIdService = async (req) => {
     });
 
     if (!user || (user.role !== "ADMIN" && candidature.utilisateurId !== userId)) {
-        const err = new Error("Accès refusé.");
-        err.status = 403;
+        const err = new Error("Candidature non trouvée ou accès refusé.");
+        err.status = 404;
         throw err;
     }
 
@@ -218,7 +218,7 @@ const getAllCandidaturesByUserIdService = async (req) => {
     });
 
     if (!user) {
-        const err = new Error("Utilisateur non trouvée.");
+        const err = new Error("Utilisateur non trouvée ou accès refusé.");
         err.status = 404;
         throw err;
     }
@@ -229,7 +229,7 @@ const getAllCandidaturesByUserIdService = async (req) => {
     });
 
     if (!candidatures || candidatures.length === 0) {
-        const err = new Error("Aucune candidature trouvée pour cet utilisateur.");
+        const err = new Error("Aucune candidature trouvée pour cet utilisateur ou accès refusé.");
         err.status = 404;
         throw err;
     }
@@ -237,8 +237,8 @@ const getAllCandidaturesByUserIdService = async (req) => {
     if (requestingUser.role !== "ADMIN") {
         const isOwner = candidatures.some(c => c.utilisateurId === userId);
         if (!isOwner) {
-            const err = new Error("Accès refusé");
-            err.status = 403;
+            const err = new Error("Candidature non trouvée ou accès refusé.");
+            err.status = 404;
             throw err;
         }
     }

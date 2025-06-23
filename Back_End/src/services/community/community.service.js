@@ -192,7 +192,9 @@ const deleteCommunityService = async (req) => {
         where: { id: parseInt(communityId) }
     });
 
-    return { message: "Communauté supprimée avec succès." };
+    return { message: "Communauté supprimée avec succès.",
+        communityId: communityId
+    };
 }
 
 const modifyCommunityService = async (req) => {
@@ -252,5 +254,89 @@ const modifyCommunityService = async (req) => {
     return updatedCommunity;
 };
 
+const joinCommunityService = async (req) => {
+    const { communityId } = req.params;
+    const userId = req.user.id;
 
-export { createCommunityService, getCommunityByIdService, getCommunityByNameService ,getCommunitiesService, deleteCommunityService, modifyCommunityService };
+    // Vérification de l'existence de la communauté
+    const community = await prisma.community.findUnique({
+        where: { id: parseInt(communityId) },
+        include: { membres: { select: { id: true } } }
+    });
+
+    if (!community) {
+        const err = new Error("Communauté non trouvée.");
+        err.status = 404;
+        throw err;
+    }
+    const isMember = community.membres.some(m => m.id === userId);
+    if (isMember) {
+        const err = new Error("Vous êtes déjà membre de cette communauté.");
+        err.status = 409;
+        throw err;
+    }
+
+    // Ajout de l'utilisateur à la communauté
+    await prisma.community.update({
+        where: { id: parseInt(communityId) },
+        data: {
+            membres: {
+                connect: { id: userId }
+            }
+        }
+    });
+
+    return { success: true, message: "Rejoint avec succès", communityId: community.id };
+
+
+}
+
+
+const leaveCommunityService = async (req) => {
+    const { communityId } = req.params;
+    const userId = req.user.id;
+
+    // Vérification de l'existence de la communauté
+    const community = await prisma.community.findUnique({
+        where: { id: parseInt(communityId) },
+        include: { membres: { select: { id: true } } }
+
+    });
+    if (!community) {
+        const err = new Error("Communauté non trouvée.");
+        err.status = 404;
+        throw err;
+    }
+
+    // Vérification que l'utilisateur est membre
+    const isMember = community.membres.some(m => m.id === userId);
+    if (!isMember) {
+        const err = new Error("Vous n'êtes pas membre de cette communauté.");
+        err.status = 403;
+        throw err;
+    }
+
+    // Suppression de l'utilisateur de la communauté
+    await prisma.community.update({
+        where: { id: parseInt(communityId) },
+        data: {
+            membres: {
+                disconnect: { id: userId }
+            }
+        }
+    });
+
+    return { success: true, message: "Vous avez quitté la communauté avec succès", communityId: community.id };
+}
+
+
+export {
+    createCommunityService,
+    getCommunityByIdService,
+    getCommunityByNameService,
+    getCommunitiesService,
+    deleteCommunityService,
+    modifyCommunityService,
+    joinCommunityService,
+    leaveCommunityService
+};
