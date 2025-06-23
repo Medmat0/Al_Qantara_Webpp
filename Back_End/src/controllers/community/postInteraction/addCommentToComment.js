@@ -1,4 +1,4 @@
-import {addCommentToCommentService} from "../../services/community/communityPostComments.service.js";
+import {addCommentToCommentService} from "../../../services/community/communityPostComments.service.js";
 
 
 const addCommentToComment = async (req, res) => {

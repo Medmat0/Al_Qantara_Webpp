@@ -1,4 +1,4 @@
-import {joinCommunityService} from "../../services/community/community.service.js";
+import {joinCommunityService} from "../../../services/community/community.service.js";
 
 
 const joinCommunity = async (req, res) => {

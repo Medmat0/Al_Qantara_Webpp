@@ -50,6 +50,8 @@ model Utilisateur {
   CommunityPostCommentaireLike CommunityPostCommentaireLike[]
 
   PollVote PollVote[]
+
+  membresbannis Community[] @relation("CommunityBannished")
 }
 
 enum Role {
@@ -344,16 +346,17 @@ enum TypePieceJointe {
 }
 
 model Community {
-  id           Int             @id @default(autoincrement())
-  nom          String          @unique @db.VarChar(100)
-  logo         String?         @db.VarChar(255)
-  description  String?         @db.Text
-  createdBy    Int
-  createur     Utilisateur     @relation("CommunitiesCreated", fields: [createdBy], references: [id])
-  moderateurs  Utilisateur[]   @relation("CommunityModerateurs")
-  membres      Utilisateur[]   @relation("CommunityMembres")
-  dateCreation DateTime        @default(now())
-  posts        CommunityPost[]
+  id            Int             @id @default(autoincrement())
+  nom           String          @unique @db.VarChar(100)
+  logo          String?         @db.VarChar(255)
+  description   String?         @db.Text
+  createdBy     Int
+  createur      Utilisateur     @relation("CommunitiesCreated", fields: [createdBy], references: [id])
+  moderateurs   Utilisateur[]   @relation("CommunityModerateurs")
+  membres       Utilisateur[]   @relation("CommunityMembres")
+  membresbannis Utilisateur[]   @relation("CommunityBannished")
+  dateCreation  DateTime        @default(now())
+  posts         CommunityPost[]
 }
 
 model CommunityPost {

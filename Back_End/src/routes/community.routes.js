@@ -1,27 +1,35 @@
 import express from "express";
-import { isAdmin, authMiddleware } from "../middleware/auth.middleware.js";
-import {createCommunity} from "../controllers/community/createCommunity.js";
+import {authMiddleware } from "../middleware/auth.middleware.js";
+import {createCommunity} from "../controllers/community/community/createCommunity.js";
 import {uploadlogoCommunities} from "../middleware/storage.middleware.js";
-import {getCommunities, getCommunityById, getCommunityByName} from "../controllers/community/getCommunity.js";
-import {deleteCommunity} from "../controllers/community/deleteCommunity.js";
-import {modifyCommunity} from "../controllers/community/modifyCommunity.js";
-import {createCommunityPost} from "../controllers/community/createCommunityPost.js";
-import {userCommunityRole, isMember} from "../middleware/community.middleware.js";
-import {joinCommunity} from "../controllers/community/joinCommunity.js";
-import {leaveCommunity} from "../controllers/community/leaveCommunity.js";
-import {deleteCommunityPost} from "../controllers/community/deleteCommunityPost.js";
-import {modifyCommunityPost} from "../controllers/community/modifyCommunityPost.js";
-import {getCommunityPostById, getCommunityPosts} from "../controllers/community/getCommunityPost.js";
-import {likeDislikeCommunityPost} from "../controllers/community/likeDislikeCommunityPost.js";
-import {addPostComment} from "../controllers/community/addPostComment.js";
-import {deletePostComment} from "../controllers/community/deletePostComment.js";
-import {modifyPostComment} from "../controllers/community/modifyPostComment.js";
-import {likeDislikeCommPostComment} from "../controllers/community/likeDislikeCommPostComment.js";
-import {addCommentToCommentService} from "../services/community/communityPostComments.service.js";
-import {addCommentToComment} from "../controllers/community/addCommentToComment.js";
-import {addVoteToPoll} from "../controllers/community/addVoteToPoll.js";
+import {getCommunities, getCommunityById, getCommunityByName} from "../controllers/community/community/getCommunity.js";
+import {deleteCommunity} from "../controllers/community/community/deleteCommunity.js";
+import {modifyCommunity} from "../controllers/community/community/modifyCommunity.js";
+import {createCommunityPost} from "../controllers/community/communityPost/createCommunityPost.js";
+import {userCommunityRole, isMember, isBanished} from "../middleware/community.middleware.js";
+import {joinCommunity} from "../controllers/community/community/joinCommunity.js";
+import {leaveCommunity} from "../controllers/community/community/leaveCommunity.js";
+import {deleteCommunityPost} from "../controllers/community/communityPost/deleteCommunityPost.js";
+import {modifyCommunityPost} from "../controllers/community/communityPost/modifyCommunityPost.js";
+import {getCommunityPostById, getCommunityPosts} from "../controllers/community/communityPost/getCommunityPost.js";
+import {likeDislikeCommunityPost} from "../controllers/community/postInteraction/likeDislikeCommunityPost.js";
+import {addPostComment} from "../controllers/community/postInteraction/addPostComment.js";
+import {deletePostComment} from "../controllers/community/postInteraction/deletePostComment.js";
+import {modifyPostComment} from "../controllers/community/postInteraction/modifyPostComment.js";
+import {likeDislikeCommPostComment} from "../controllers/community/postInteraction/likeDislikeCommPostComment.js";
+import {addCommentToComment} from "../controllers/community/postInteraction/addCommentToComment.js";
+import {addVoteToPoll} from "../controllers/community/postInteraction/addVoteToPoll.js";
+import {getCommunityMembers} from "../controllers/community/userInteraction/getCommunityMembers.js";
+import {promoteMember} from "../controllers/community/userInteraction/promoteMember.js";
 
 const router = express.Router();
+
+//routes for admin and moderator actions
+router.get("/:communityId/members", authMiddleware, userCommunityRole, getCommunityMembers);
+router.post("/:communityId/members/:memberId/promote", authMiddleware,userCommunityRole, promoteMember);
+router.delete("/:communityId/members/:memberId/demote", authMiddleware,userCommunityRole, demoteMember);
+router.post("/:communityId/members/:memberId/ban", authMiddleware,userCommunityRole, banMember);
+router.delete("/:communityId/members/:memberId/unban", authMiddleware,userCommunityRole, unbanMember);
 
 // png file for logo of community---------------
 router.post("/create", authMiddleware, uploadlogoCommunities.single('logo'), createCommunity)
@@ -31,6 +39,7 @@ router.get("/", getCommunities);
 router.patch("/:communityId", authMiddleware, uploadlogoCommunities.single('logo'), modifyCommunity);
 router.delete("/:communityId", authMiddleware, deleteCommunity);
 
+router.use(isBanished);
 // routes for joining and leaving community
 router.post("/:communityId/join",authMiddleware,joinCommunity);
 router.post("/:communityId/leave", authMiddleware,leaveCommunity);
@@ -52,5 +61,7 @@ router.patch("/:communityId/posts/:postId/comments/:commentId",authMiddleware, m
 router.post("/:communityId/posts/:postId/comments/:commentId/likeDislike", authMiddleware,isMember, likeDislikeCommPostComment);
 router.post("/:communityId/posts/:postId/comments/:commentId", authMiddleware, isMember, addCommentToComment);
 router.post("/:communityId/posts/:postId/addVote", authMiddleware, isMember, addVoteToPoll);
+
+
 
 export default router;

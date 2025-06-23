@@ -1,4 +1,4 @@
-import {addVoteToPollService} from "../../services/community/communityPost.service.js";
+import {addVoteToPollService} from "../../../services/community/communityPost.service.js";
 
 
 const addVoteToPoll = async (req, res) => {
