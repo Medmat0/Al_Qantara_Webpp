@@ -41,4 +41,48 @@ const promoteMemberService = async (req) => {
 
 }
 
-export {promoteMemberService};
+const banMemberService = async (req) => {
+    const {communityId, memberId} = req.params;
+    console.log("Bannissement du membre:", memberId, "de la communauté:", communityId);
+
+    // Vérifie si la communauté existe
+    const community = await prisma.community.findUnique({
+        where: {id: parseInt(communityId)},
+        include: {
+            membres: true,
+        },
+    });
+
+    if (!community) {
+        throw {status: 404, message: "Communauté non trouvée."};
+    }
+
+    // Vérifie si le membre est dans la communauté
+    const member = community.membres.find(member => member.id === parseInt(memberId));
+    if (!member) {
+        throw {status: 404, message: "Membre non trouvé dans la communauté."};
+    }
+
+    // Bannissement du membre
+    const updatedCommunity = await prisma.community.update({
+        where: { id: parseInt(communityId) },
+        data: {
+            membres: {
+                disconnect: { id: parseInt(memberId) }
+            },
+            membresbannis: {
+                connect: { id: parseInt(memberId) }
+            }
+        },
+    });
+
+    return {
+        message: `Membre banni de la communauté avec succès.`,
+        memberId: memberId,
+    };
+}
+
+export {
+    promoteMemberService,
+    banMemberService
+};

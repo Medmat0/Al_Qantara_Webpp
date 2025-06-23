@@ -57,20 +57,23 @@ const userCommunityRole = asyncHandler(async (req, res, next) => {
 
 const isBanished = asyncHandler(async (req, res, next) => {
     const userId = req.user.id;
-    const communityId = parseInt(req.params.communityId);
+    const communityId = req.params.communityId
+
 
     // Vérifie si l'utilisateur est banni de la communauté
     const isBanned = await prisma.community.findFirst({
         where: {
-            id: communityId,
+            id: parseInt(communityId),
             membresbannis: {
-                some: { id: userId }
+                some: { id: parseInt(userId) }
             }
         }
     });
 
     if (isBanned) {
-        return res.status(403).json({ message: "Vous êtes banni de cette communauté." });
+        return res.status(403).json({ accepted: false, message: "Vous êtes banni de cette communauté, vous ne pouvez pas continuer" });
+    }else {
+        console.log("Vous n'êtes pas banni de cette communauté, vous pouvez continuer");
     }
 
     next();
