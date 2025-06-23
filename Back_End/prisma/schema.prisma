@@ -48,6 +48,8 @@ model Utilisateur {
   moderateurCommunity Community[] @relation("CommunityModerateurs")
 
   CommunityPostCommentaireLike CommunityPostCommentaireLike[]
+
+  PollVote PollVote[]
 }
 
 enum Role {
@@ -367,6 +369,25 @@ model CommunityPost {
   dateCreation DateTime                   @default(now())
   likes        CommunityPostLike[]
   commentaires CommunityPostCommentaire[]
+  isPoll       Boolean                    @default(false)
+  pollDeadline DateTime?
+  pollOptions  PollOption[]
+}
+
+model PollOption {
+  id              Int           @id @default(autoincrement())
+  label           String
+  communityPost   CommunityPost @relation(fields: [communityPostId], references: [id], onDelete: Cascade)
+  communityPostId Int
+  votes           PollVote[]
+}
+
+model PollVote {
+  id            Int         @id @default(autoincrement())
+  pollOption    PollOption  @relation(fields: [pollOptionId], references: [id], onDelete: Cascade)
+  pollOptionId  Int
+  utilisateur   Utilisateur @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+  utilisateurId Int
 }
 
 model CommunityPostCommentaire {

@@ -19,8 +19,10 @@ import {modifyPostComment} from "../controllers/community/modifyPostComment.js";
 import {likeDislikeCommPostComment} from "../controllers/community/likeDislikeCommPostComment.js";
 import {addCommentToCommentService} from "../services/community/communityPostComments.service.js";
 import {addCommentToComment} from "../controllers/community/addCommentToComment.js";
+import {addVoteToPoll} from "../controllers/community/addVoteToPoll.js";
 
 const router = express.Router();
+
 // png file for logo of community---------------
 router.post("/create", authMiddleware, uploadlogoCommunities.single('logo'), createCommunity)
 router.get("/name", getCommunityByName);
@@ -28,9 +30,11 @@ router.get("/:communityId", getCommunityById);
 router.get("/", getCommunities);
 router.patch("/:communityId", authMiddleware, uploadlogoCommunities.single('logo'), modifyCommunity);
 router.delete("/:communityId", authMiddleware, deleteCommunity);
+
 // routes for joining and leaving community
 router.post("/:communityId/join",authMiddleware,joinCommunity);
 router.post("/:communityId/leave", authMiddleware,leaveCommunity);
+
 //routes for posts in community
 router.post("/:communityId/posts", authMiddleware, isMember, createCommunityPost);
 router.delete("/:communityId/posts/:postId", authMiddleware,userCommunityRole, deleteCommunityPost);
@@ -39,12 +43,14 @@ router.post("/:communityId/posts/:postId/likeDislike", authMiddleware,isMember, 
 router.get("/:communityId/posts", getCommunityPosts);
 router.get("/:communityId/posts/:postId", getCommunityPostById);
 
-
 //routes for comments in community posts
 router.post("/:communityId/posts/:postId/comments", authMiddleware, isMember, addPostComment);
 router.delete("/:communityId/posts/:postId/comments/:commentId",authMiddleware,userCommunityRole, deletePostComment);
 router.patch("/:communityId/posts/:postId/comments/:commentId",authMiddleware, modifyPostComment);
+
+// interaction with the post
 router.post("/:communityId/posts/:postId/comments/:commentId/likeDislike", authMiddleware,isMember, likeDislikeCommPostComment);
 router.post("/:communityId/posts/:postId/comments/:commentId", authMiddleware, isMember, addCommentToComment);
+router.post("/:communityId/posts/:postId/addVote", authMiddleware, isMember, addVoteToPoll);
 
 export default router;
