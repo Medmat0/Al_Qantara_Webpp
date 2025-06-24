@@ -34,7 +34,7 @@ export class EventModalComponent implements OnChanges {
   commentText = '';
   showCommentForm = false;
   showComments = false;
-  
+
   constructor(private sanitizer: DomSanitizer) {
     if (this.event && !Array.isArray(this.event.comments)) {
       this.event.comments = [];
@@ -66,13 +66,15 @@ export class EventModalComponent implements OnChanges {
   }
 
   handleCommentSubmit() {
-    if (this.commentText.trim()) {  
+    if (this.commentText.trim()) {
       this.comment.emit(this.commentText);
       this.commentText = '';
       this.showCommentForm = false;
     }
   }
-
+  onPayWithHelloAsso() {
+    console.log('Paiement HelloAsso déclenché');
+  }
   handleShare() {
     const subject = `Invitation à l'événement: ${this.event.titre}`;
     const body = `Bonjour,\n\nJe vous invite à l'événement "${this.event.titre}" qui se déroulera le ${this.formatDateTime(this.event.dateDebut)} à ${this.event.lieu}.\n\nPour plus d'informations, visitez notre site web.\n\nCordialement`;

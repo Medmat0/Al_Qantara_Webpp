@@ -1,0 +1,105 @@
+<div class="edit-article-modal" *ngIf="showModal">
+  <div class="modal-backdrop" (click)="closeModal()"></div>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Modifier l'article</h2>
+      <button class="close-btn" (click)="closeModal()">&times;</button>
+    </div>
+
+    <div class="loading-indicator" *ngIf="loading">
+      Chargement...
+    </div>
+
+    <!-- Message de succès -->
+    <div class="success-message" *ngIf="successMessage">
+      {{ successMessage }}
+    </div>
+
+    <!-- Message d'erreur -->
+    <div class="error-message" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="!loading">
+      <div class="form-group">
+        <label for="title">Titre de l'article</label>
+        <input
+          type="text"
+          id="title"
+          formControlName="title"
+          placeholder="Entrez le titre de l'article"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="author">Auteur</label>
+        <input
+          type="text"
+          id="author"
+          formControlName="author"
+          placeholder="Entrez le nom de l'auteur"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="revue">Revue</label>
+        <select id="revue" class="form-control" formControlName="revue">
+          <option value="" disabled selected>Choisissez une revue</option>
+          <option *ngFor="let revue of revues" [value]="revue.id">{{ revue.titre }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="categories">Catégories</label>
+        <ng-select
+          [items]="categories"
+          bindLabel="nom"
+          bindValue="nom"
+          [multiple]="true"
+          [searchable]="true"
+          [clearable]="true"
+          placeholder="Choisissez les catégories"
+          formControlName="categorie"
+          [dropdownPosition]="'bottom'"
+          [virtualScroll]="true"
+          class="category-ng-select"
+          [ngClass]="{'ng-invalid': form.get('categorie')?.invalid && form.get('categorie')?.touched}"
+        >
+        </ng-select>
+      </div>
+
+      <div class="form-group">
+        <label>Contenu</label>
+        <div class="editor">
+          <ngx-editor-menu [editor]="editor" [toolbar]="toolbar">
+          </ngx-editor-menu>
+          <ngx-editor
+            [editor]="editor"
+            formControlName="content"
+            [placeholder]="'Écrivez votre article ici...'"
+          >
+          </ngx-editor>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button
+          type="button"
+          class="cancel-btn"
+          (click)="closeModal()"
+        >
+          Annuler
+        </button>
+        <button
+          type="submit"
+          class="submit-btn"
+          [disabled]="!form.valid || loading"
+        >
+          Enregistrer
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+

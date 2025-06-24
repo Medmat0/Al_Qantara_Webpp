@@ -47,20 +47,20 @@
             <span class="article-date">{{ article.datePublication | date:'dd/MM/yyyy' }}</span>
           </div>
           <div class="article-actions top-right">
-            <button class="edit-btn" (click)="editArticle(article)" aria-label="Modifier l'article">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="18px" width="18px">
+            <button class="round-action-btn edit-btn" (click)="onEditArticle(article)" aria-label="Modifier l'article">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <title>edit</title>
                 <path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
               </svg>
             </button>
             <button
-              class="delete-btn"
+              class="round-action-btn delete-btn"
               (click)="onDeleteArticle(article)"
               [class.deleting]="deletingArticleId === article.id"
               [disabled]="deletingArticleId === article.id"
               aria-label="Supprimer l'article"
             >
-              <svg *ngIf="deletingArticleId !== article.id" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="18px" width="18px">
+              <svg *ngIf="deletingArticleId !== article.id" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <title>delete</title>
                 <path d="M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M8,9H16V19H8V9M15.5,4L14.5,3H9.5L8.5,4H5V6H19V4H15.5Z" />
               </svg>
@@ -68,7 +68,7 @@
             </button>
           </div>
         </div>
-        <div class="article-content" [innerHTML]="(article.contenu | slice:0:150) + '...'"></div>
+        <div class="article-content" [innerHTML]="(article.contenu | slice:0:150) "></div>
         <div class="article-categories">
           <span *ngFor="let category of article.categories" class="category-tag">
             {{ category.nom }}
@@ -104,4 +104,18 @@
       </div>
     </div>
   </div>
+
+  <!-- Message de succès de modification -->
+  <div class="success-message" *ngIf="editSuccess">
+    {{ editSuccess }}
+  </div>
+
+  <!-- Composant d'édition d'article (popup) -->
+  <app-edit-article
+    [articleId]="articleToEdit?.id || null"
+    [showModal]="showEditModal"
+    (closeModalEvent)="closeEditModal()"
+    (articleUpdated)="onArticleUpdated()"
+  ></app-edit-article>
 </div>
+

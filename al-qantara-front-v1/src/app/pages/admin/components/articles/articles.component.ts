@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { EditArticleComponent } from '../edit-article/edit-article.component';
 
 interface Article {
   id: number;
@@ -19,7 +20,7 @@ interface Article {
 @Component({
   selector: 'app-articles',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, EditArticleComponent],
   templateUrl: './articles.component.html',
   styleUrl: './articles.component.scss'
 })
@@ -45,6 +46,20 @@ export class ArticlesComponent implements OnInit {
   modalTitle = '';
   modalMessage = '';
   articleToDelete: Article | null = null;
+
+  // --- Edition d'article ---
+  showEditModal = false;
+  editLoading = false;
+  editError = '';
+  editSuccess = '';
+  articleToEdit: Article | null = null;
+  editForm = {
+    titre: '',
+    contenu: '',
+    auteur: '',
+    revueId: '',
+    categories: [] as any[],
+  };
 
   ngOnInit() {
     this.loadArticles();
@@ -153,7 +168,25 @@ export class ArticlesComponent implements OnInit {
     this.currentPage = page;
   }
 
-  editArticle(article: Article): void {
-    this.router.navigate(['/admin/articles/edit', article.id]);
+  // Méthodes pour l'édition d'articles
+  onEditArticle(article: Article): void {
+    this.articleToEdit = article;
+    this.showEditModal = true;
+  }
+
+  closeEditModal(): void {
+    this.showEditModal = false;
+    this.articleToEdit = null;
+  }
+
+  onArticleUpdated(): void {
+    // Recharger les articles après une mise à jour
+    this.loadArticles();
+
+    // Afficher un message de succès temporaire
+    this.editSuccess = 'Article modifié avec succès.';
+    setTimeout(() => {
+      this.editSuccess = '';
+    }, 3000);
   }
 }
