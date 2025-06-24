@@ -1,0 +1,344 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  animation: modal-appear 0.3s ease-out;
+}
+
+@keyframes modal-appear {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #eaeaea;
+
+  h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #333;
+  }
+
+  .sort-button {
+    padding: 6px 12px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+    margin-right: 15px;
+
+    &:hover {
+      background-color: #e6e6e6;
+    }
+  }
+
+  .close-button {
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: #999;
+    transition: color 0.3s;
+
+    &:hover {
+      color: #333;
+    }
+  }
+}
+
+.modal-body {
+  padding: 20px;
+  overflow-y: auto;
+  max-height: calc(90vh - 130px);
+}
+
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+
+  .spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left: 4px solid #3498db;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+  }
+
+  p {
+    margin-top: 15px;
+    color: #666;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 50px 0;
+  color: #666;
+}
+
+.applicants-list {
+  .applicant-card {
+    background-color: #f9f9f9;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    padding: 15px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+
+    .applicant-info {
+      flex: 1;
+      min-width: 250px;
+    }
+
+    .applicant-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+
+      h3 {
+        margin: 0;
+        color: #333;
+        font-size: 1.2rem;
+      }
+
+      .date {
+        font-size: 0.85rem;
+        color: #777;
+      }
+    }
+
+    .email {
+      margin: 5px 0;
+      color: #555;
+      font-size: 0.95rem;
+    }
+
+    .score-container {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+
+      .score-label {
+        margin-right: 8px;
+        font-size: 0.9rem;
+        color: #555;
+        min-width: 45px;
+      }
+
+      .progress-bar {
+        flex: 1;
+        height: 12px;
+        background-color: #eaeaea;
+        border-radius: 6px;
+        overflow: hidden;
+        margin-right: 8px;
+      }
+
+      .progress-fill {
+        height: 100%;
+        transition: width 0.3s ease;
+      }
+
+      .score-value {
+        font-size: 0.9rem;
+        color: #333;
+        min-width: 40px;
+        text-align: right;
+      }
+    }
+
+    .applicant-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+      min-width: 200px;
+      margin-top: 10px;
+    }
+
+    .download-cv {
+      display: inline-block;
+      padding: 6px 12px;
+      background-color: #e7f3ff;
+      color: #0366d6;
+      border-radius: 4px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+
+      i {
+        margin-right: 5px;
+      }
+
+      &:hover {
+        background-color: #cce3fc;
+      }
+    }
+
+    .status-actions {
+      display: flex;
+      gap: 8px;
+
+      .action-button {
+        padding: 6px 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all 0.3s;
+
+        &.accept {
+          background-color: #dff0d8;
+          color: #3c763d;
+
+          &:hover {
+            background-color: #c1e2b3;
+          }
+        }
+
+        &.reject {
+          background-color: #f2dede;
+          color: #a94442;
+
+          &:hover {
+            background-color: #e4b9b9;
+          }
+        }
+
+        &.meeting {
+          background-color: #d9edf7;
+          color: #31708f;
+
+          &:hover {
+            background-color: #bce8f1;
+          }
+        }
+      }
+    }
+
+    .status-display {
+      .status-accepted {
+        color: #3c763d;
+        font-weight: 600;
+      }
+
+      .status-rejected {
+        color: #a94442;
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+.modal-footer {
+  padding: 15px 20px;
+  border-top: 1px solid #eaeaea;
+  display: flex;
+  justify-content: flex-end;
+
+  .close-modal-button {
+    padding: 8px 16px;
+    border: none;
+    background-color: #f0f0f0;
+    color: #333;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:hover {
+      background-color: #e0e0e0;
+    }
+  }
+}
+
+// Classes de couleurs pour les barres de progression
+.score-red {
+  background-color: #e74c3c;
+}
+
+.score-yellow {
+  background-color: #f1c40f;
+}
+
+.score-light-green {
+  background-color: #2ecc71;
+}
+
+.score-dark-green {
+  background-color: #27ae60;
+}
+
+// Styles responsive
+@media (max-width: 600px) {
+  .modal-container {
+    width: 95%;
+  }
+
+  .applicant-card {
+    flex-direction: column;
+
+    .applicant-info,
+    .applicant-actions {
+      width: 100%;
+    }
+
+    .applicant-actions {
+      margin-top: 15px;
+      align-items: flex-start;
+    }
+  }
+
+  .applicant-header {
+    flex-direction: column;
+    align-items: flex-start;
+
+    .date {
+      margin-top: 5px;
+    }
+  }
+}

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RecruitmentService } from '../../services/recruitment.service';
 import { Router } from '@angular/router';
 import { EditRecruitmentComponent } from '../edit-recruitment/edit-recruitment.component';
+import { ApplicantListComponent } from '../applicant-list/applicant-list.component';
 
 interface Offer {
   id: number;
@@ -21,11 +22,15 @@ interface Offer {
   templateUrl: './manage-recruitment.component.html',
   styleUrls: ['./manage-recruitment.component.scss'],
   standalone: true,
-  imports: [CommonModule, EditRecruitmentComponent]
+  imports: [CommonModule, EditRecruitmentComponent, ApplicantListComponent]
 })
 export class ManageRecruitmentComponent implements OnInit {
   offers: Offer[] = [];
   selectedOfferId: number | null = null;
+
+  // Variables pour la modale des candidats
+  applicantsOfferId: number | null = null;
+  showApplicantsModal: boolean = false;
 
   constructor(
     private recruitmentService: RecruitmentService,
@@ -79,7 +84,13 @@ export class ManageRecruitmentComponent implements OnInit {
     }
   }
 
- /* addNewOffer(): void {
-    this.router.navigate(['/admin/recruitments/add']);
-  }*/
+  viewApplicants(id: number): void {
+    this.applicantsOfferId = id;
+    this.showApplicantsModal = true;
+  }
+
+  closeApplicantsModal(): void {
+    this.showApplicantsModal = false;
+    this.applicantsOfferId = null;
+  }
 }

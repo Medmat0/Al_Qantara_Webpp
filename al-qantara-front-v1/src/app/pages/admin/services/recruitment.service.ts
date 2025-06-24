@@ -40,4 +40,23 @@ export class RecruitmentService {
       withCredentials: true
     });
   }
+
+  // Méthodes pour la gestion des candidatures
+  getApplicantsByOfferId(offerId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/${offerId}/apply/getall`, {
+      withCredentials: true
+    });
+  }
+
+  updateApplicantStatus(applicantId: number, status: string): Observable<any> {
+    return this.http.put(`${this.apiUrl}/apply/${applicantId}/status`, { status }, {
+      withCredentials: true
+    });
+  }
+
+  scheduleInterview(applicantId: number, meetingData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/apply/${applicantId}/meeting`, meetingData, {
+      withCredentials: true
+    });
+  }
 }

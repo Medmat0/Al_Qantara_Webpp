@@ -16,9 +16,20 @@
       </div>
       <div class="offer-actions">
         <button
+          class="view-applicants-btn"
+          (click)="viewApplicants(offer.id)"
+          aria-label="Voir les candidats"
+          title="Voir les candidats"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="20px" width="20px">
+            <path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
+          </svg>
+        </button>
+        <button
           class="edit-btn"
           (click)="editOffer(offer.id)"
           aria-label="Modifier l'offre"
+          title="Modifier l'offre"
         >
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="20px" width="20px">
             <path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
@@ -28,9 +39,9 @@
           class="delete-btn"
           (click)="deleteOffer(offer.id)"
           aria-label="Supprimer l'offre"
+          title="Supprimer l'offre"
         >
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="20px" width="20px">
-            <title>delete</title>
             <path d="M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M8,9H16V19H8V9M15.5,4L14.5,3H9.5L8.5,4H5V6H19V4H15.5Z" />
           </svg>
         </button>
@@ -45,4 +56,11 @@
     (closeModal)="closeEditModal()"
     (offerUpdated)="onOfferUpdated()"
   ></app-edit-recruitment>
+
+  <!-- Modal de liste des candidats -->
+  <app-applicant-list
+    [offerId]="applicantsOfferId"
+    [isVisible]="showApplicantsModal"
+    (close)="closeApplicantsModal()"
+  ></app-applicant-list>
 </div>

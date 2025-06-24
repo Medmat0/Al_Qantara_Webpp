@@ -1,0 +1,65 @@
+<div class="modal-overlay" *ngIf="isVisible">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h2>Liste des candidats</h2>
+      <button class="sort-button" (click)="sortByScore()">
+        Trier par score <span>{{ sortByScoreAsc ? '↑' : '↓' }}</span>
+      </button>
+      <button class="close-button" (click)="closeModal()">×</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="loading-spinner" *ngIf="loading">
+        <div class="spinner"></div>
+        <p>Chargement des candidats...</p>
+      </div>
+
+      <div class="empty-state" *ngIf="!loading && applicants.length === 0">
+        <p>Aucun candidat n'a postulé à cette offre.</p>
+      </div>
+
+      <div class="applicants-list" *ngIf="!loading && applicants.length > 0">
+        <div class="applicant-card" *ngFor="let applicant of applicants">
+          <div class="applicant-info">
+            <div class="applicant-header">
+              <h3>{{ applicant.utilisateur.nom }} {{ applicant.utilisateur.prenom }}</h3>
+              <span class="date">Candidature du {{ getFormattedDate(applicant.dateCandidature) }}</span>
+            </div>
+
+            <div class="applicant-details">
+              <p class="email">{{ applicant.utilisateur.email }}</p>
+
+              <div class="score-container">
+                <span class="score-label">Score:</span>
+                <div class="progress-bar">
+                  <div class="progress-fill" [ngClass]="getScoreColorClass(applicant.score)" [style.width.%]="applicant.score"></div>
+                </div>
+                <span class="score-value">{{ applicant.score }}%</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="applicant-actions">
+            <a class="download-cv" (click)="downloadCV(applicant.cv)" title="Télécharger le CV">
+              <i class="fas fa-file-pdf"></i> CV
+            </a>
+
+            <div class="status-actions" *ngIf="applicant.statut === 'EN_ATTENTE'">
+              <button class="action-button accept" (click)="updateStatus(applicant.id, 'CONFIRME')">Accepter</button>
+              <button class="action-button reject" (click)="updateStatus(applicant.id, 'ANNULE')">Refuser</button>
+              <button class="action-button meeting" (click)="scheduleInterview(applicant.id)">Réunion</button>
+            </div>
+
+            <div class="status-display" *ngIf="applicant.statut === 'CONFIRME'">
+              <span class="status-accepted">Accepté</span>
+            </div>
+
+            <div class="status-display" *ngIf="applicant.statut === 'ANNULE'">
+              <span class="status-rejected">Refusé</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

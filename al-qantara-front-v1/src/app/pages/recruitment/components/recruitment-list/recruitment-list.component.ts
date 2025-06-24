@@ -65,7 +65,7 @@ export class RecruitmentListComponent implements OnInit {
   }
 
   viewOffer(offerId: number): void {
-    // TODO: Implémenter la vue détaillée de l'offre
-    console.log('Voir l\'offre:', offerId);
+    // Redirection vers la page de détail de l'offre
+    this.router.navigate(['/recruitment', offerId]);
   }
 }
