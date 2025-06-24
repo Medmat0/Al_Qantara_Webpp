@@ -14,6 +14,7 @@ model Utilisateur {
   email                    String                   @unique @db.VarChar(255)
   motDePasse               String                   @db.VarChar(255)
   photoProfil              String?                  @db.VarChar(255)
+  telephone                String?                  @db.VarChar(20)
   role                     Role
   dateInscription          DateTime
   statut                   Statut
