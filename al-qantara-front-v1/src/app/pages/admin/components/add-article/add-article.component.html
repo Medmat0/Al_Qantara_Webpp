@@ -37,10 +37,62 @@
 
     <div class="form-group">
       <label for="categories">Catégories</label>
-      <select id="categories" class="form-control" style="width:100%;" formControlName="categorie">
-        <option value="" disabled selected>Choisissez une catégorie</option>
-        <option *ngFor="let nom of categoriesNoms" [value]="nom">{{ nom }}</option>
-      </select>
+      <ng-select
+        [items]="categories"
+        bindLabel="nom"
+        bindValue="nom"
+        [searchable]="true"
+        [clearable]="true"
+        placeholder="Choisissez une catégorie"
+        formControlName="categorie"
+        [dropdownPosition]="'bottom'"
+        [virtualScroll]="true"
+        class="category-ng-select"
+        [ngClass]="{'ng-invalid': form.get('categorie')?.invalid && form.get('categorie')?.touched}"
+      >
+        <ng-template ng-option-tmp let-item="item" let-index="index">
+          <span (click)="$event.stopPropagation()">{{ item.nom }}</span>
+          <button type="button" class="delete-category-btn" (click)="openDeleteCategoryModal(item); $event.stopPropagation();" tabindex="-1" title="Supprimer la catégorie">
+            <span class="delete-x">&times;</span>
+          </button>
+        </ng-template>
+      </ng-select>
+      <button type="button" class="add-category-btn" (click)="openCategoryModal()">Ajouter une catégorie</button>
+      <div *ngIf="deleteCategorySuccess" class="success-message">{{ deleteCategorySuccess }}</div>
+      <div *ngIf="deleteCategoryError" class="error">{{ deleteCategoryError }}</div>
+    </div>
+
+    <!-- Modal d'ajout de catégorie -->
+    <div class="modal-backdrop" *ngIf="showCategoryModal">
+      <div class="modal">
+        <h3>Ajouter une catégorie</h3>
+        <form (ngSubmit)="addCategory()" [formGroup]="categoryForm">
+          <input type="text" formControlName="nom" placeholder="Nom de la catégorie" />
+          <div class="error" *ngIf="categoryForm.get('nom')?.invalid && categoryForm.get('nom')?.touched">
+            Le nom doit contenir au moins 2 caractères.
+          </div>
+          <div class="modal-actions">
+            <button type="submit" [disabled]="categoryForm.invalid || loadingCategory">Ajouter</button>
+            <button type="button" (click)="closeCategoryModal()">Annuler</button>
+          </div>
+          <div class="success-message" *ngIf="categorySuccess">{{ categorySuccess }}</div>
+          <div class="error" *ngIf="categoryError">{{ categoryError }}</div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal de confirmation suppression catégorie -->
+    <div class="modal-backdrop" *ngIf="showDeleteCategoryModal">
+      <div class="modal">
+        <h3>Supprimer la catégorie</h3>
+        <p>Êtes-vous sûr de vouloir supprimer la catégorie <b>{{ categoryToDelete?.nom }}</b> ?</p>
+        <div class="modal-actions">
+          <button type="button" (click)="closeDeleteCategoryModal()">Annuler</button>
+          <button type="button" class="danger" (click)="confirmDeleteCategory()" [disabled]="loadingDelete">Confirmer</button>
+        </div>
+        <div class="success-message" *ngIf="deleteCategorySuccess">{{ deleteCategorySuccess }}</div>
+        <div class="error" *ngIf="deleteCategoryError">{{ deleteCategoryError }}</div>
+      </div>
     </div>
 
     <div class="form-group">
@@ -66,3 +118,4 @@
     </button>
   </form>
 </div>
+

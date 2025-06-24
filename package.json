@@ -3,6 +3,7 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/material": "^7.1.0",
+    "@ng-select/ng-select": "^15.1.2",
     "@react-google-maps/api": "^2.20.6",
     "axios": "^1.9.0",
     "cloudinary": "^1.41.3",
