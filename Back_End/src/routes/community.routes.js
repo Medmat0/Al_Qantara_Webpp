@@ -22,6 +22,10 @@ import {addVoteToPoll} from "../controllers/community/postInteraction/addVoteToP
 import {getCommunityMembers} from "../controllers/community/userInteraction/getCommunityMembers.js";
 import {promoteMember} from "../controllers/community/userInteraction/promoteMember.js";
 import {banMember} from "../controllers/community/userInteraction/banMember.js";
+import {demoteModerator} from "../controllers/community/userInteraction/demoteModerator.js";
+import {unBanMember} from "../controllers/community/userInteraction/unBanMember.js";
+import {getCommunityModerators} from "../controllers/community/userInteraction/getCommunityModerators.js";
+import {getCommunityBanished} from "../controllers/community/userInteraction/getCommunityBanished.js";
 
 const router = express.Router();
 
@@ -29,11 +33,10 @@ const router = express.Router();
 router.get("/:communityId/members", authMiddleware, userCommunityRole, getCommunityMembers);
 router.post("/:communityId/members/:memberId/promote", authMiddleware,userCommunityRole, promoteMember);
 router.post("/:communityId/members/:memberId/ban", authMiddleware,userCommunityRole, banMember);
-/*
+router.delete("/:communityId/moderateurs/:moderatorId/demote", authMiddleware,userCommunityRole, demoteModerator);
+router.delete("/:communityId/members/:memberId/unban", authMiddleware,userCommunityRole, unBanMember);
+router.get("/:communityId/members/banished", authMiddleware, userCommunityRole, getCommunityBanished);
 router.get("/:communityId/moderateurs", authMiddleware, userCommunityRole, getCommunityModerators);
-router.delete("/:communityId/moderateurs/:moderateurId/demote", authMiddleware,userCommunityRole, demoteModerator);
-router.delete("/:communityId/members/:memberId/unban", authMiddleware,userCommunityRole, unbanMember);
- */
 
 // png file for logo of community---------------
 router.post("/create", authMiddleware, uploadlogoCommunities.single('logo'), createCommunity)

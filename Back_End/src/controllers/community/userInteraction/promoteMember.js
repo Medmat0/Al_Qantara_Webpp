@@ -1,3 +1,4 @@
+import {promoteMemberService} from "../../../services/community/communityMember.service.js";
 
 const promoteMember = async (req, res) => {
     try {

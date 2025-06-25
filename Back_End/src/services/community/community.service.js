@@ -332,29 +332,6 @@ const leaveCommunityService = async (req) => {
     return { success: true, message: "Vous avez quitté la communauté avec succès", communityId: community.id };
 }
 
-const getCommunityMembersService = async (req) => {
-    const { communityId } = req.params;
-    const userCommunityRole = req.userCommunityRole;
-    if (userCommunityRole !== "ADMIN" && userCommunityRole !== "MODERATEUR") {
-        const err = new Error("Vous n'avez pas les droits nécessaires.");
-        err.status = 403;
-        throw err;
-    }
-
-    // Vérification de l'existence de la communauté
-    const community = await prisma.community.findUnique({
-        where: { id: parseInt(communityId) },
-        include: { membres: true }
-    });
-
-    if (!community) {
-        const err = new Error("Communauté non trouvée.");
-        err.status = 404;
-        throw err;
-    }
-
-    return community.membres;
-}
 
 
 export {
@@ -365,6 +342,5 @@ export {
     deleteCommunityService,
     modifyCommunityService,
     joinCommunityService,
-    leaveCommunityService,
-    getCommunityMembersService
+    leaveCommunityService
 };
