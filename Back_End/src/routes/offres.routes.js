@@ -10,8 +10,9 @@ import {
     getCandidatureById
 } from "../controllers/recruitement/getCandidature.js";
 import {checkCandidature} from "../controllers/recruitement/checkCandidature.js";
-import {acceptCandidature} from "../controllers/recruitement/acceptCandidature.js";
+import {sendZoomReunion} from "../controllers/recruitement/sendZoomReunion.js";
 import {refuseCandidature} from "../controllers/recruitement/refuseCandidature.js";
+import {acceptCandidature} from "../controllers/recruitement/acceptCandidature.js";
 
 const router = express.Router();
 
@@ -25,7 +26,9 @@ router.post("/:id/apply",authMiddleware,uploadCandidature.single("candidatCV"),a
 router.get("/:id/apply/check",authMiddleware,checkCandidature);
 
 //sends a Zoom meeting link to the candidate
-router.post("/:id/accept/:candidatureId", authMiddleware, isAdmin, acceptCandidature);
+router.post("/:id/zoom/:candidatureId", authMiddleware, isAdmin, sendZoomReunion);
+//accepts a candidature
+router.post("/:id/accept/:candidatureId", authMiddleware,isAdmin, acceptCandidature);
 //sends a refusal mail to the candidate
 router.post("/:id/refuse/:candidatureId", authMiddleware, isAdmin, refuseCandidature);
 
