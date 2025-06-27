@@ -1,4 +1,4 @@
-import {modifyPostCommentService} from "../../services/community/communityPostComments.service.js";
+import {modifyPostCommentService} from "../../../services/community/communityPostComments.service.js";
 
 const modifyPostComment = async (req, res) => {
     try {

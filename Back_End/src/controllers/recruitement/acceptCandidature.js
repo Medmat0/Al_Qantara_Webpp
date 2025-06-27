@@ -1,18 +1,16 @@
 import {acceptCandidatureService} from "../../services/candidature/candidature.service.js";
 
-
-const acceptCandidature = async (req, res) => {
+const acceptCandidature = async (req, res) =>{
     try {
-        const acceptanceResponse = await acceptCandidatureService(req);
-        res.status(200).json(acceptanceResponse);
+        const response = await acceptCandidatureService(req);
+        res.status(200).json(response);
     } catch (error) {
         const status = error.status || 500;
-        console.error("Error accepting candidature:", error);
-
+        console.error("Error in acceptCandidature:", error);
         res.status(status).json({
-            message: error.message || " Erreur lors de l'acceptation de la candidature."
+            message: error.message || "Erreur lors de l'acceptation de la candidature."
         });
     }
-};
+}
 
-export { acceptCandidature };
+export {acceptCandidature}

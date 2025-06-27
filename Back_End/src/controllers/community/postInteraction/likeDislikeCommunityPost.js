@@ -1,4 +1,4 @@
-import {likeOrDislikeCommunityPostService} from "../../services/community/communityPost.service.js";
+import {likeOrDislikeCommunityPostService} from "../../../services/community/communityPost.service.js";
 
 const likeDislikeCommunityPost = async (req, res) => {
     try {

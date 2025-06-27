@@ -309,7 +309,7 @@ const formatDateForGoogle = (date) => {
 };
 
 
-const acceptCandidatureService = async (req) => {
+const sendZoomReunionService = async (req) => {
     const candidatureId = req.params.candidatureId;
     const userId = req.user?.id;
     const offreId = req.params.id;
@@ -387,6 +387,67 @@ const acceptCandidatureService = async (req) => {
     `,
     });
 
+
+    return {message: "Email de réunion envoyé au candidat."};
+}
+
+const acceptCandidatureService = async (req) => {
+    const candidatureId = req.params.candidatureId;
+    const offreId = req.params.id;
+
+    const candidature = await prisma.candidature.findUnique({
+        where: { id: parseInt(candidatureId) },
+        include: {
+            utilisateur: true,
+            offre: true,
+        },
+    });
+
+    if (!candidature) {
+        const err = new Error("Candidature non trouvée.");
+        err.status = 404;
+        throw err;
+    }
+
+    const offre = await prisma.offre.findUnique({
+        where: { id: parseInt(offreId) },
+    });
+
+    if (!offre) {
+        const err = new Error("Offre non trouvée.");
+        err.status = 404;
+        throw err;
+    }
+
+    const acceptedUserId = candidature.utilisateurId;
+    const acceptedUser = await prisma.utilisateur.findUnique({
+        where: { id: acceptedUserId },
+    });
+
+    if (!acceptedUser) {
+        const err = new Error("Utilisateur non trouvé.");
+        err.status = 404;
+        throw err;
+    }
+
+    const acceptedEmail = acceptedUser.email;
+    const acceptedName = acceptedUser.nom + " " + acceptedUser.prenom;
+
+    await sendEmailToUser({
+        to: acceptedEmail,
+        subject: `Candidature acceptée pour le poste de ${candidature.offre.titre}`,
+        html: `
+            <h2>Bonjour ${acceptedName},</h2>
+            <p>Nous avons le plaisir de vous informer que votre candidature pour le poste de ${candidature.offre.titre} a été acceptée.</p>
+            <p>Nous vous contacterons prochainement pour les démarches qui vont suivre.</p>
+            
+            <p>Cordialement,</p>
+            <p>L'équipe AlQantara</p>
+                
+        `,
+    });
+
+    // Accepter la candidature sélectionnée
     await prisma.candidature.update({
         where: { id: parseInt(candidatureId) },
         data: {
@@ -394,8 +455,41 @@ const acceptCandidatureService = async (req) => {
         },
     });
 
+    // Refuser et notifier les autres candidats en attente
+    const autresCandidatures = await prisma.candidature.findMany({
+        where: {
+            offreId: parseInt(offreId),
+            id: { not: parseInt(candidatureId) },
+            statut: StatutCandidature.EN_ATTENTE
+        },
+        include: { utilisateur: true }
+    });
 
-    return {message: "Candidature acceptée et email envoyé au candidat."};
+    for (const candidatureRefusee of autresCandidatures) {
+        await prisma.candidature.update({
+            where: { id: candidatureRefusee.id },
+            data: { statut: StatutCandidature.REJETEE }
+        });
+
+        if (candidatureRefusee.utilisateur) {
+            const refusedEmail = candidatureRefusee.utilisateur.email;
+            const refusedName = candidatureRefusee.utilisateur.nom + " " + candidatureRefusee.utilisateur.prenom;
+            await sendEmailToUser({
+                to: refusedEmail,
+                subject: `Candidature refusée pour le poste de ${offre.titre}`,
+                html: `
+                    <h2>Bonjour ${refusedName},</h2>
+                    <p>Nous vous remercions pour votre candidature au poste de ${offre.titre}.</p>
+                    <p>Après examen, nous avons le regret de vous informer que nous ne pouvons pas retenir votre candidature pour ce poste.</p>
+                    <p>Nous vous souhaitons bonne chance dans vos recherches futures.</p>
+                    <p>Cordialement,</p>
+                    <p>L'équipe AlQantara</p>
+                `,
+            });
+        }
+    }
+
+    return { message: "Candidature acceptée et email envoyé au candidat." };
 }
 
 
@@ -478,6 +572,7 @@ export {
     getAllCandidaturesByUserIdService,
     getCandidatureByIdService,
     checkCandidatureService,
+    sendZoomReunionService,
     acceptCandidatureService,
     refuseCandidatureService
 };

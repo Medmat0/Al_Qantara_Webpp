@@ -2,7 +2,7 @@ import {
     getCommunitiesService,
     getCommunityByIdService,
     getCommunityByNameService
-} from "../../services/community/community.service.js";
+} from "../../../services/community/community.service.js";
 
 
 const getCommunityById = async (req, res) => {

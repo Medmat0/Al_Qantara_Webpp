@@ -1,4 +1,4 @@
-import {leaveCommunityService} from "../../services/community/community.service.js";
+import {leaveCommunityService} from "../../../services/community/community.service.js";
 
 
 const leaveCommunity = async (req, res) => {

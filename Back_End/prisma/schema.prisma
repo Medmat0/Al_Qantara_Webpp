@@ -51,6 +51,10 @@ model Utilisateur {
   moderateurCommunity Community[] @relation("CommunityModerateurs")
 
   CommunityPostCommentaireLike CommunityPostCommentaireLike[]
+
+  PollVote PollVote[]
+
+  membresbannis Community[] @relation("CommunityBannished")
 }
 
 enum Role {
@@ -383,16 +387,17 @@ model RemboursementDemande {
 }
 
 model Community {
-  id           Int             @id @default(autoincrement())
-  nom          String          @unique @db.VarChar(100)
-  logo         String?         @db.VarChar(255)
-  description  String?         @db.Text
-  createdBy    Int
-  createur     Utilisateur     @relation("CommunitiesCreated", fields: [createdBy], references: [id])
-  moderateurs  Utilisateur[]   @relation("CommunityModerateurs")
-  membres      Utilisateur[]   @relation("CommunityMembres")
-  dateCreation DateTime        @default(now())
-  posts        CommunityPost[]
+  id            Int             @id @default(autoincrement())
+  nom           String          @unique @db.VarChar(100)
+  logo          String?         @db.VarChar(255)
+  description   String?         @db.Text
+  createdBy     Int
+  createur      Utilisateur     @relation("CommunitiesCreated", fields: [createdBy], references: [id])
+  moderateurs   Utilisateur[]   @relation("CommunityModerateurs")
+  membres       Utilisateur[]   @relation("CommunityMembres")
+  membresbannis Utilisateur[]   @relation("CommunityBannished")
+  dateCreation  DateTime        @default(now())
+  posts         CommunityPost[]
 }
 
 model CommunityPost {
@@ -408,6 +413,28 @@ model CommunityPost {
   dateCreation DateTime                   @default(now())
   likes        CommunityPostLike[]
   commentaires CommunityPostCommentaire[]
+  isPoll       Boolean                    @default(false)
+  pollDeadline DateTime?
+  pollOptions  PollOption[]
+}
+
+model PollOption {
+  id              Int           @id @default(autoincrement())
+  index           Int
+  label           String
+  communityPost   CommunityPost @relation(fields: [communityPostId], references: [id], onDelete: Cascade)
+  communityPostId Int
+  votes           PollVote[]
+
+  @@unique([communityPostId, index])
+}
+
+model PollVote {
+  id            Int         @id @default(autoincrement())
+  pollOption    PollOption  @relation(fields: [pollOptionId], references: [id], onDelete: Cascade)
+  pollOptionId  Int
+  utilisateur   Utilisateur @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+  utilisateurId Int
 }
 
 model CommunityPostCommentaire {
