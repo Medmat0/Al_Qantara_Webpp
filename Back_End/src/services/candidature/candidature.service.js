@@ -409,6 +409,12 @@ const acceptCandidatureService = async (req) => {
         throw err;
     }
 
+    if( candidature.statut === StatutCandidature.ACCEPTEE) {
+        const err = new Error("Cette candidature a déjà été acceptée.");
+        err.status = 400;
+        throw err;
+    }
+
     const offre = await prisma.offre.findUnique({
         where: { id: parseInt(offreId) },
     });
@@ -454,40 +460,6 @@ const acceptCandidatureService = async (req) => {
             statut: StatutCandidature.ACCEPTEE,
         },
     });
-
-    // Refuser et notifier les autres candidats en attente
-    const autresCandidatures = await prisma.candidature.findMany({
-        where: {
-            offreId: parseInt(offreId),
-            id: { not: parseInt(candidatureId) },
-            statut: StatutCandidature.EN_ATTENTE
-        },
-        include: { utilisateur: true }
-    });
-
-    for (const candidatureRefusee of autresCandidatures) {
-        await prisma.candidature.update({
-            where: { id: candidatureRefusee.id },
-            data: { statut: StatutCandidature.REJETEE }
-        });
-
-        if (candidatureRefusee.utilisateur) {
-            const refusedEmail = candidatureRefusee.utilisateur.email;
-            const refusedName = candidatureRefusee.utilisateur.nom + " " + candidatureRefusee.utilisateur.prenom;
-            await sendEmailToUser({
-                to: refusedEmail,
-                subject: `Candidature refusée pour le poste de ${offre.titre}`,
-                html: `
-                    <h2>Bonjour ${refusedName},</h2>
-                    <p>Nous vous remercions pour votre candidature au poste de ${offre.titre}.</p>
-                    <p>Après examen, nous avons le regret de vous informer que nous ne pouvons pas retenir votre candidature pour ce poste.</p>
-                    <p>Nous vous souhaitons bonne chance dans vos recherches futures.</p>
-                    <p>Cordialement,</p>
-                    <p>L'équipe AlQantara</p>
-                `,
-            });
-        }
-    }
 
     return { message: "Candidature acceptée et email envoyé au candidat." };
 }
