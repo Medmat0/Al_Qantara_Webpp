@@ -72,9 +72,7 @@ const getCommunityByIdService = async (req) => {
             id: true,
             nom: true,
             logo: true,
-            description: true,
-            createdBy: true,
-            dateCreation: true
+            description: true
         }
     });
 
@@ -102,9 +100,7 @@ const getCommunitiesService = async (req) => {
                 id: true,
                 nom: true,
                 logo: true,
-                description: true,
-                createdBy: true,
-                dateCreation: true
+                description: true
             }
         })
     ]);
@@ -121,8 +117,6 @@ const getCommunitiesService = async (req) => {
 
 const getCommunityByNameService = async (req) => {
     const { name } = req.query;
-    console.log(name);
-
     if (!name) {
         const err = new Error("Le nom de la communauté est requis.");
         err.status = 400;
@@ -135,9 +129,7 @@ const getCommunityByNameService = async (req) => {
             id: true,
             nom: true,
             logo: true,
-            description: true,
-            createdBy: true,
-            dateCreation: true
+            description: true
         }
     });
 
@@ -149,6 +141,28 @@ const getCommunityByNameService = async (req) => {
 
     return community;
 };
+
+
+const getRandomCommunitiesFromService = async (req) => {
+    const communities = await prisma.$queryRaw`
+        SELECT
+            c.id,
+            c.nom,
+            c.logo,
+            c.description,
+            COUNT(cm."A") AS "nbMembres"
+        FROM "Community" c
+                 LEFT JOIN "_CommunityMembres" cm ON c.id = cm."A"
+        GROUP BY c.id
+        ORDER BY RANDOM()
+            LIMIT 3;
+    `;
+    return communities.map(c => ({
+        ...c,
+        nbMembres: Number(c.nbMembres)
+    }));
+};
+
 
 const deleteCommunityService = async (req) => {
     const { communityId } = req.params;
@@ -332,6 +346,35 @@ const leaveCommunityService = async (req) => {
     return { success: true, message: "Vous avez quitté la communauté avec succès", communityId: community.id };
 }
 
+const getRandomPostsFromCommunitiesService = async (req) => {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const total = await prisma.communityPost.count();
+
+    const posts = await prisma.$queryRaw`
+        SELECT 
+            cp.id, cp.titre, cp.contenu, cp.tags, cp.modified, cp."auteurId", 
+            u.nom as "auteurNom", u.prenom as "auteurPrenom",
+            cp."communityId", c.nom as "communityNom", c.logo as "communityLogo",
+            cp."dateCreation", cp."isPoll", cp."pollDeadline"
+        FROM "CommunityPost" cp
+        JOIN "Utilisateur" u ON cp."auteurId" = u.id
+        JOIN "Community" c ON cp."communityId" = c.id
+        ORDER BY RANDOM()
+        OFFSET ${skip}
+        LIMIT ${limit}
+    `;
+
+    return {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+        posts
+    };
+};
 
 
 export {
@@ -339,8 +382,10 @@ export {
     getCommunityByIdService,
     getCommunityByNameService,
     getCommunitiesService,
+    getRandomCommunitiesFromService,
     deleteCommunityService,
     modifyCommunityService,
     joinCommunityService,
-    leaveCommunityService
+    leaveCommunityService,
+    getRandomPostsFromCommunitiesService
 };

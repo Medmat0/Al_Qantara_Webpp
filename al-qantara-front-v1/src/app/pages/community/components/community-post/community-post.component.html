@@ -1,0 +1,12 @@
+<div class="community-post">
+  <h2>{{ post.titre }}</h2>
+  <div class="meta">
+    <span>Auteur : {{ post.auteurPrenom }} {{ post.auteurNom }}</span> |
+    <span>Communauté : {{ post.communityNom }}</span> |
+    <span>Date : {{ post.dateCreation | date:'dd/MM/yyyy HH:mm' }}</span>
+  </div>
+  <div class="tags">
+    <span *ngFor="let tag of post.tags" class="tag">#{{ tag }}</span>
+  </div>
+  <div class="contenu">{{ post.contenu }}</div>
+</div>

@@ -1,0 +1,21 @@
+
+<div class="community-home-root">
+  <div class="community-home-posts">
+    <button routerLink="/communities/research">Rechercher une communauté</button>
+    <div *ngIf="loading">Chargement des posts...</div>
+    <div *ngIf="error" class="error">{{ error }}</div>
+    <div *ngIf="!loading && !error">
+      <ng-container *ngIf="posts.length > 0; else noPosts">
+        <app-community-post
+          *ngFor="let post of posts"
+          [post]="post"
+          (postEvent)="onPostEvent($event)"
+        ></app-community-post>
+      </ng-container>
+      <ng-template #noPosts>
+        <div>Aucun post à afficher.</div>
+      </ng-template>
+    </div>
+  </div>
+  <app-community-propositions (communitySelected)="onCommunitySelected($event)" class="community-propositions-fixed"></app-community-propositions>
+</div>

@@ -1,0 +1,20 @@
+<div class="community-research-root">
+  <form (ngSubmit)="searchCommunity()" class="community-search-form">
+    <input type="text" [(ngModel)]="searchName" name="searchName" placeholder="Nom de la communauté..." />
+    <button type="submit" [disabled]="loading">
+      <span *ngIf="!loading">Rechercher</span>
+      <span *ngIf="loading" class="circular-loader">
+        <span class="spinner"></span>
+      </span>
+    </button>
+  </form>
+  <div *ngIf="loading && !result" class="circular-loader center-loader">
+    <span class="spinner"></span>
+  </div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+  <div *ngIf="result" class="community-result" (click)="goToCommunityHub(result.id)" style="cursor:pointer">
+    <div class="name">{{ result.nom }}</div>
+    <div *ngIf="result.logo" class="logo"><img [src]="result.logo" alt="logo" /></div>
+    <div class="desc">{{ result.description }}</div>
+  </div>
+</div>

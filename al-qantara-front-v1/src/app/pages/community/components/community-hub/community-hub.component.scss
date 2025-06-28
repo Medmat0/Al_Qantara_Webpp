@@ -1,0 +1,101 @@
+.community-hub-root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background: #e9ecf2;
+  padding-top: 4vh;
+}
+
+.community-info-box {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  padding: 2rem 2.5rem 1.5rem 2.5rem;
+  min-width: 320px;
+  max-width: 420px;
+  margin-bottom: 2.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+.community-info-box .logo img {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #f3f3f3;
+}
+.community-info-box .info {
+  flex: 1;
+}
+.community-info-box .name {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #2c2c2c;
+}
+.community-info-box .desc {
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+.community-info-box .meta {
+  color: #888;
+  font-size: 0.98rem;
+}
+
+.community-posts-scrollable {
+  width: 100%;
+  max-width: 600px;
+  max-height: 60vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+.community-posts-scrollable::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.community-post-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  padding: 1.3rem 1.7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.post-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #222e38;
+}
+.post-meta {
+  color: #888;
+  font-size: 0.97rem;
+}
+.post-tags {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.tag {
+  background: #f6f7f8;
+  color: #6a737c;
+  border-radius: 12px;
+  padding: 0.2rem 0.7rem;
+  font-size: 0.85rem;
+}
+.post-content {
+  color: #333;
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+.no-posts {
+  color: #888;
+  text-align: center;
+  margin-top: 2rem;
+}
