@@ -80,4 +80,16 @@ export class CommunityService {
             })
         );
     }
+
+    getCommunityPostById(communityId: number, postId: number): Observable<any> {
+        return this.http.get<any>(`${this.apiUrl}/${communityId}/posts/${postId}`).pipe(
+            tap((response) => {
+                console.log('Fetched community post by ID:', response);
+            }),
+            catchError((error) => {
+                console.error('Error fetching community post by ID:', error);
+                return throwError(() => error);
+            })
+        );
+    }
 }

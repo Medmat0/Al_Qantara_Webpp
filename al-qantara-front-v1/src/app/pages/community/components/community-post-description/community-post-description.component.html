@@ -1,0 +1,19 @@
+<div class="post-description-root" *ngIf="post">
+  <div class="post-title">{{ post.titre }}</div>
+  <div class="post-meta">
+    Auteur : <span *ngIf="post.auteur">{{ post.auteur.prenom }} {{ post.auteur.nom }}</span> | {{ post.dateCreation | date:'dd/MM/yyyy HH:mm' }}
+  </div>
+  <div class="post-tags">
+    <span *ngFor="let tag of post.tags" class="tag">#{{ tag }}</span>
+  </div>
+  <div class="post-content">{{ post.contenu }}</div>
+  <button class="like-button" (click)="likePost()">Like</button>
+  <div class="comments-section">
+    <div *ngFor="let comment of post.commentaires" class="comment">
+      <div class="comment-author">{{ comment.auteur }}</div>
+      <div class="comment-content">{{ comment.contenu }}</div>
+    </div>
+  </div>
+</div>
+<div *ngIf="loading" class="loading">Chargement...</div>
+<div *ngIf="error" class="error">{{ error }}</div>

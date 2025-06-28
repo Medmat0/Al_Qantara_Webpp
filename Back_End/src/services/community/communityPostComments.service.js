@@ -37,11 +37,23 @@ const addPostCommentService = async (req) => {
         include: {
             commentaires: {
                 include: {
-                    auteur: true,
+                    auteur:  {
+                        select: {
+                            id: true,
+                            nom: true,
+                            prenom: true
+                        }
+                    },
                     likes: true,
                     replies: {
                         include: {
-                            auteur: true,
+                            auteur:  {
+                                select: {
+                                    id: true,
+                                    nom: true,
+                                    prenom: true,
+                                }
+                            },
                             likes: true
                         }
                     }

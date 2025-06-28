@@ -190,6 +190,9 @@ const getCommunityPostByIdService = async (req) => {
             community: {
                 select: { id: true }
             },
+            auteur: {
+                select: { id: true, nom: true, prenom: true }
+            },
             likes: {
                 select: { id: true, utilisateurId: true }
             },
@@ -218,7 +221,6 @@ const getCommunityPostByIdService = async (req) => {
     }
 
     return post;
-
 }
 
 const getCommunityPostsService = async (req) => {
