@@ -92,4 +92,20 @@ export class CommunityService {
             })
         );
     }
+
+    addCommentToPost(communityId: number, postId: number, content: string): Observable<any> {
+        return this.http.post<any>(
+            `${this.apiUrl}/${communityId}/posts/${postId}/comments`,
+            { content },
+            { withCredentials: true }
+        ).pipe(
+            tap((response) => {
+                console.log('Added comment to post:', response);
+            }),
+            catchError((error) => {
+                console.error('Error adding comment to post:', error);
+                return throwError(() => error);
+            })
+        );
+    }
 }

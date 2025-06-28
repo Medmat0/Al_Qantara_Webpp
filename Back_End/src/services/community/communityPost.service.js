@@ -187,21 +187,17 @@ const getCommunityPostByIdService = async (req) => {
     const post = await prisma.communityPost.findFirst({
         where: { id: postId, communityId: communityId },
         include: {
-            community: {
-                select: { id: true }
+            community: { select: { id: true } },
+            auteur: { select: { id: true, nom: true, prenom: true } },
+            likes: { select: { id: true, utilisateurId: true } },
+            commentaires: {
+                include: {
+                    auteur: { select: { id: true, nom: true, prenom: true } }
+                }
             },
-            auteur: {
-                select: { id: true, nom: true, prenom: true }
-            },
-            likes: {
-                select: { id: true, utilisateurId: true }
-            },
-            commentaires: true,
             pollOptions: {
                 include: {
-                    votes: {
-                        select: { id: true, utilisateurId: true }
-                    }
+                    votes: { select: { id: true, utilisateurId: true } }
                 }
             }
         }

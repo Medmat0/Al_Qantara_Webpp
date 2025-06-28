@@ -10,9 +10,20 @@
   <button class="like-button" (click)="likePost()">Like</button>
   <div class="comments-section">
     <div *ngFor="let comment of post.commentaires" class="comment">
-      <div class="comment-author">{{ comment.auteur }}</div>
+      <div class="comment-author">{{ comment.auteur.prenom }} {{comment.auteur.nom}}</div>
       <div class="comment-content">{{ comment.contenu }}</div>
     </div>
+    <form (ngSubmit)="addComment()" #commentForm="ngForm" class="add-comment-form">
+      <textarea
+        name="commentContent"
+        [(ngModel)]="newCommentContent"
+        required
+        placeholder="Ajouter un commentaire..."
+        rows="2"
+        class="comment-input"
+      ></textarea>
+  <button type="submit" [disabled]="commentForm.invalid">Envoyer</button>
+</form>
   </div>
 </div>
 <div *ngIf="loading" class="loading">Chargement...</div>
