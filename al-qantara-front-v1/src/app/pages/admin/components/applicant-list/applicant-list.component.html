@@ -67,3 +67,21 @@
     </div>
   </div>
 </div>
+
+<!-- Popup de planification de réunion -->
+<div class="modal-overlay" *ngIf="showMeetingModal">
+  <div class="modal-container meeting-modal">
+    <div class="modal-header">
+      <h3>Planifier une réunion</h3>
+      <button class="close-button" (click)="closeMeetingModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <label for="meetingDate">Date et heure de la réunion</label>
+      <input type="datetime-local" id="meetingDate" [(ngModel)]="meetingDate" name="meetingDate" required>
+      <div class="error-message" *ngIf="meetingError">{{ meetingError }}</div>
+    </div>
+    <div class="modal-footer">
+      <button class="action-button" (click)="planifierReunion()">Planifier la réunion</button>
+    </div>
+  </div>
+</div>

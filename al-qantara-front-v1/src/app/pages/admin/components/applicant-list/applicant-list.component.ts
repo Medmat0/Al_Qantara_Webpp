@@ -37,6 +37,12 @@ export class ApplicantListComponent implements OnInit, OnChanges {
   loading: boolean = false;
   sortByScoreAsc: boolean = false;
 
+  // Pour la planification de réunion
+  showMeetingModal: boolean = false;
+  meetingDate: string = '';
+  meetingApplicantId: number | null = null;
+  meetingError: string = '';
+
   constructor(
     private recruitmentService: RecruitmentService,
     private datePipe: DatePipe
@@ -93,24 +99,38 @@ export class ApplicantListComponent implements OnInit, OnChanges {
     return 'score-red';
   }
 
-  updateStatus(applicantId: number, status: string): void {
-    this.recruitmentService.updateApplicantStatus(applicantId, status).subscribe({
-      next: () => {
-        // Mettre à jour le statut localement
-        const applicant = this.applicants.find(a => a.id === applicantId);
-        if (applicant) {
-          applicant.statut = status as 'EN_ATTENTE' | 'ACCEPTEE' | 'REJETEE';
-        }
-      },
-      error: (error) => {
-        console.error(`Erreur lors de la mise à jour du statut en "${status}":`, error);
-      }
-    });
-  }
 
   scheduleInterview(applicantId: number): void {
-    // pour planifier un entretien via Zoom ou un autre service
-    alert('Fonctionnalité de planification de réunion à implémenter');
+    this.meetingApplicantId = applicantId;
+    this.meetingDate = '';
+    this.meetingError = '';
+    this.showMeetingModal = true;
+  }
+
+  closeMeetingModal(): void {
+    this.showMeetingModal = false;
+    this.meetingApplicantId = null;
+    this.meetingDate = '';
+    this.meetingError = '';
+  }
+
+  planifierReunion(): void {
+    if (!this.offerId || !this.meetingApplicantId || !this.meetingDate) {
+      this.meetingError = 'Veuillez choisir une date et une heure.';
+      return;
+    }
+    // Formatage ISO sans secondes ni millisecondes, puis ajout .000
+    const dateEntretien = new Date(this.meetingDate).toISOString().slice(0, 19) + '.000';
+    this.recruitmentService.scheduleInterviewZoom(this.offerId, this.meetingApplicantId, dateEntretien).subscribe({
+      next: () => {
+        this.closeMeetingModal();
+        alert('Réunion planifiée avec succès !');
+      },
+      error: (err) => {
+        this.meetingError = 'Erreur lors de la planification de la réunion.';
+        console.error(err);
+      }
+    });
   }
 
   downloadCV(cvUrl: string): void {
