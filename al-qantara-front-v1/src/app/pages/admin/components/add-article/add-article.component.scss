@@ -14,6 +14,69 @@
   font-family: 'Mulish', sans-serif;
   margin: 0 auto;
 }
+/* Conteneur de chaque option dans la liste déroulante */
+.ng-select .ng-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 0.5rem;
+}
+
+/* Le bouton de suppression */
+.delete-category-btn {
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0 0.4rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+
+.delete-category-btn:hover {
+  color: #b91c1c;
+}
+
+/* Icône “×” */
+.delete-x {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+.category-option-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.category-name {
+  flex: 1;
+  padding-right: 1rem;
+}
+
+.delete-category-btn {
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0;
+  margin-left: auto;
+  transition: color 0.2s;
+}
+
+.delete-category-btn:hover {
+  color: #b91c1c;
+}
+
+.delete-x {
+  font-weight: bold;
+  font-size: 1.1rem;
+  line-height: 1;
+}
 
 .form-group {
   margin-bottom: 1.5rem;

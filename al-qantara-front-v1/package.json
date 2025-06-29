@@ -23,8 +23,11 @@
     "@fullcalendar/interaction": "^6.1.17",
     "@fullcalendar/timegrid": "^6.1.17",
     "@ng-select/ng-select": "^14.9.0",
+    "google-libphonenumber": "^3.2.42",
+    "intl-tel-input": "^19.5.7",
     "ngx-editor": "^17.5.4",
     "ngx-extended-pdf-viewer": "^23.2.0",
+    "ngx-intl-tel-input": "^17.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
