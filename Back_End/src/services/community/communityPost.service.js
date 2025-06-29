@@ -3,7 +3,7 @@ import {PrismaClient} from "@prisma/client";
 const prisma = new PrismaClient();
 
 const createCommunityPostService = async (req) => {
-    const { titre, contenu, tags } = req.body;
+    const { titre, contenu, tags, pollOptions, pollDeadline } = req.body;
     const communityId = parseInt(req.params.communityId);
     const userId = req.user.id;
     if (!titre || !contenu || (!tags || tags.length === 0)) {
@@ -24,31 +24,48 @@ const createCommunityPostService = async (req) => {
         throw err;
     }
 
-    // Crée le post
-
-    const newPost = await prisma.communityPost.create({
-        data: {
-            titre,
-            contenu,
-            tags,
-            community: {
-                connect: { id: communityId }
-            },
-            auteur: {
-                connect: { id: userId }
-            }
-        },
-        include: {
-            auteur: {
-                select: { id: true, nom: true, prenom: true }
-            },
+    let newPost;
+    if (pollOptions && Array.isArray(pollOptions) && pollOptions.length > 1) {
+        if (!pollDeadline) {
+            const err = new Error("La date limite du sondage est requise.");
+            err.status = 400;
+            throw err;
         }
-    });
+        newPost = await prisma.communityPost.create({
+            data: {
+                titre,
+                contenu,
+                tags,
+                isPoll: true,
+                pollDeadline: new Date(pollDeadline),
+                community: { connect: { id: communityId } },
+                auteur: { connect: { id: userId } },
+                pollOptions: {
+                    create: pollOptions.map((label, index) => ({ label, index }))
+                }
+            },
+            include: {
+                auteur: { select: { id: true, nom: true, prenom: true } },
+                pollOptions: true
+            }
+        });
+    } else {
+        newPost = await prisma.communityPost.create({
+            data: {
+                titre,
+                contenu,
+                tags,
+                community: { connect: { id: communityId } },
+                auteur: { connect: { id: userId } }
+            },
+            include: {
+                auteur: { select: { id: true, nom: true, prenom: true } }
+            }
+        });
+    }
 
     return newPost;
-
 }
-
 const deleteCommunityPostService = async (req) => {
     const postId = parseInt(req.params.postId);
     const communityId = parseInt(req.params.communityId);
@@ -176,7 +193,14 @@ const getCommunityPostByIdService = async (req) => {
             likes: {
                 select: { id: true, utilisateurId: true }
             },
-            commentaires: true
+            commentaires: true,
+            pollOptions: {
+                include: {
+                    votes: {
+                        select: { id: true, utilisateurId: true }
+                    }
+                }
+            }
         }
     });
 
@@ -228,7 +252,14 @@ const getCommunityPostsService = async (req) => {
                 select: { id: true, nom: true, prenom: true }
             },
             likes: true,
-            commentaires: true
+            commentaires: true,
+            pollOptions: {
+                include: {
+                    votes: {
+                        select: { id: true, utilisateurId: true }
+                    }
+                }
+            }
         },
         orderBy: {
             dateCreation: 'desc'
@@ -298,7 +329,58 @@ const likeOrDislikeCommunityPostService = async (req) => {
     return postWithLikes;
 }
 
+const addVoteToPollService = async (req) => {
+    const postId = parseInt(req.params.postId);
+    const communityId = parseInt(req.params.communityId);
+    const userId = req.user.id;
+    const { pollOptionIndex } = req.body;
 
+    // Vérifie que le post existe et est un sondage
+    const post = await prisma.communityPost.findFirst({
+        where: { id: postId, communityId: communityId, isPoll: true },
+        include: {
+            pollOptions: {
+                include: {
+                    votes: true
+                }
+            }
+        }
+    });
+
+    if (!post) {
+        const err = new Error("Post non trouvé ou ce n'est pas un sondage.");
+        err.status = 404;
+        throw err;
+    }
+
+    // Vérifie que l'utilisateur n'a pas déjà voté
+    const hasVoted = post.pollOptions.some(option =>
+        option.votes.some(vote => vote.utilisateurId === userId)
+    );
+    if (hasVoted) {
+        const err = new Error("Vous avez déjà voté pour ce sondage.");
+        err.status = 400;
+        throw err;
+    }
+
+    // Cherche l'option par son index
+    const option = post.pollOptions.find(opt => opt.index === pollOptionIndex);
+    if (!option) {
+        const err = new Error("Option de sondage invalide.");
+        err.status = 400;
+        throw err;
+    }
+
+    // Ajoute le vote
+    await prisma.pollVote.create({
+        data: {
+            pollOptionId: option.id,
+            utilisateurId: userId
+        }
+    });
+
+    return { message: "Vote enregistré avec succès." };
+}
 
 export {
     createCommunityPostService,
@@ -306,5 +388,6 @@ export {
     modifyCommunityPostService,
     getCommunityPostByIdService,
     getCommunityPostsService,
-    likeOrDislikeCommunityPostService
+    likeOrDislikeCommunityPostService,
+    addVoteToPollService
 };

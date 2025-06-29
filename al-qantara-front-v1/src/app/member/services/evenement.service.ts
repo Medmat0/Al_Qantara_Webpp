@@ -148,7 +148,7 @@ export class EvenementService {  private readonly apiUrl = `${API_URL}/evenement
   }
 
   async createEvenement(
-    evenement: CreateEvenementDto, 
+    evenement: CreateEvenementDto,
     imageFiles: File[],
     videoFile?: File
   ): Promise<any> {
@@ -172,7 +172,7 @@ export class EvenementService {  private readonly apiUrl = `${API_URL}/evenement
       console.log(' upload images Cloudinary...');
       const imageUrls = await this.cloudinaryService.uploadFiles(imageFiles);
       console.log('images uploadées:', imageUrls);
-      
+
       // Upload video if provided
       let videoUrl: string | undefined;
       if (videoFile) {
@@ -189,7 +189,7 @@ export class EvenementService {  private readonly apiUrl = `${API_URL}/evenement
         console.log('Payload :', payload);
 
       return firstValueFrom(
-        this.http.post(`${this.apiUrl}/add`, payload, { withCredentials: true }).pipe(
+        this.http.post(`${this.apiUrl}`, payload, { withCredentials: true }).pipe(
           tap((response) => {
             console.log('Événement créé avec succès:', response);
           }),

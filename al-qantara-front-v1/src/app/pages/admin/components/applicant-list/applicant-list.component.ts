@@ -9,7 +9,7 @@ interface Applicant {
   offreId: number;
   utilisateurId: number;
   dateCandidature: string;
-  statut: 'EN_ATTENTE' | 'CONFIRME' | 'ANNULE';
+  statut: 'EN_ATTENTE' | 'ACCEPTEE' | 'REJETEE';
   cv: string;
   score: number;
   utilisateur: {
@@ -99,7 +99,7 @@ export class ApplicantListComponent implements OnInit, OnChanges {
         // Mettre à jour le statut localement
         const applicant = this.applicants.find(a => a.id === applicantId);
         if (applicant) {
-          applicant.statut = status as 'EN_ATTENTE' | 'CONFIRME' | 'ANNULE';
+          applicant.statut = status as 'EN_ATTENTE' | 'ACCEPTEE' | 'REJETEE';
         }
       },
       error: (error) => {
@@ -109,12 +109,43 @@ export class ApplicantListComponent implements OnInit, OnChanges {
   }
 
   scheduleInterview(applicantId: number): void {
-    // Cette fonction pourrait être développée pour ouvrir une autre modale
     // pour planifier un entretien via Zoom ou un autre service
     alert('Fonctionnalité de planification de réunion à implémenter');
   }
 
   downloadCV(cvUrl: string): void {
     window.open(cvUrl, '_blank');
+  }
+
+  refuseApplicant(applicantId: number): void {
+    if (!this.offerId) return;
+    this.recruitmentService.refuseApplicant(this.offerId, applicantId).subscribe({
+      next: () => {
+        const applicant = this.applicants.find(a => a.id === applicantId);
+        if (applicant) {
+          applicant.statut = 'REJETEE';
+        }
+      },
+      error: (error) => {
+        alert('Erreur lors du refus de la candidature.');
+        console.error('Erreur lors du refus:', error);
+      }
+    });
+  }
+
+  accepteApplicant(applicantId: number): void {
+    if (!this.offerId) return;
+    this.recruitmentService.acceptApplicant(this.offerId, applicantId).subscribe({
+      next: () => {
+        const applicant = this.applicants.find(a => a.id === applicantId);
+        if (applicant) {
+          applicant.statut = 'ACCEPTEE';
+        }
+      },
+      error: (error) => {
+        alert('Erreur lors de l\'acceptation de la candidature.');
+        console.error('Erreur lors de l\'acceptation:', error);
+      }
+    });
   }
 }

@@ -1,4 +1,4 @@
-import {deletePostCommentService} from "../../services/community/communityPostComments.service.js";
+import {deletePostCommentService} from "../../../services/community/communityPostComments.service.js";
 
 const deletePostComment = async (req, res) => {
     try {

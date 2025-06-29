@@ -1,4 +1,7 @@
-import {getCommunityPostByIdService, getCommunityPostsService} from "../../services/community/communityPost.service.js";
+import {
+    getCommunityPostByIdService,
+    getCommunityPostsService
+} from "../../../services/community/communityPost.service.js";
 
 
 const getCommunityPostById = async (req, res) => {

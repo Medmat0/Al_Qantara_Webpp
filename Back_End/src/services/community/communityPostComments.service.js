@@ -58,6 +58,7 @@ const deletePostCommentService = async (req) => {
     const commentId = parseInt(req.params.commentId);
     const postId = parseInt(req.params.postId);
     const communityId = parseInt(req.params.communityId);
+    const userCommunityRole = req.userCommunityRole;
     const userId = req.user.id;
 
     // Vérifie que le commentaire existe et qu'il appartient au bon post et à la bonne communauté
@@ -73,7 +74,7 @@ const deletePostCommentService = async (req) => {
     }
 
     // Vérifie que l'utilisateur est l'auteur du commentaire ou un modérateur
-    if (comment.auteurId !== userId && req.user.role !== "MODERATEUR") {
+    if (comment.auteurId !== userId && userCommunityRole !== "MODERATEUR") {
         const err = new Error("Vous n'êtes pas autorisé à supprimer ce commentaire.");
         err.status = 403;
         throw err;

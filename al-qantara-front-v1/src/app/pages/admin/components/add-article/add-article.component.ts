@@ -146,7 +146,7 @@ export class AddArticleComponent implements OnInit, OnDestroy {
         this.getCategoriesNoms();
         setTimeout(() => {
           this.closeCategoryModal();
-        }, 1200);
+        }, 500);
       },
       error: (err) => {
         this.categoryError = err.error?.message || 'Erreur lors de l\'ajout de la catégorie.';
@@ -186,7 +186,7 @@ export class AddArticleComponent implements OnInit, OnDestroy {
           this.loadingDelete = false;
           setTimeout(() => {
             this.closeDeleteCategoryModal();
-          }, 1200);
+          }, 500);
         },
         error: (err) => {
           this.deleteCategoryError = err.error?.message || 'Erreur lors de la suppression.';

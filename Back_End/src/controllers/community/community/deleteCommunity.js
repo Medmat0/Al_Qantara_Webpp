@@ -1,4 +1,4 @@
-import {deleteCommunityService} from "../../services/community/community.service.js";
+import {deleteCommunityService} from "../../../services/community/community.service.js";
 
 
 const deleteCommunity = async (req, res) => {
