@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommunityService } from '../../../../member/services/community.service';
 import { CommonModule } from '@angular/common';
+import { CommunityPostComponent } from '../community-post/community-post.component';
 
 @Component({
   selector: 'app-community-hub',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, CommunityPostComponent],
   templateUrl: './community-hub.component.html',
   styleUrl: './community-hub.component.scss'
 })
@@ -17,7 +18,7 @@ export class CommunityHubComponent implements OnInit {
   loading = true;
   error: string | null = null;
 
-  constructor(private route: ActivatedRoute, private communityService: CommunityService) {}
+  constructor(private route: ActivatedRoute, private communityService: CommunityService, private router: Router) {}
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
@@ -53,5 +54,16 @@ export class CommunityHubComponent implements OnInit {
         this.error = err.error?.message || 'Erreur lors du chargement des posts.';
       }
     });
+  }
+
+  onPostEvent(event: any) {
+    // Traiter les événements des posts ici (like, commentaire, etc.)
+    console.log('Post event:', event);
+  }
+
+   goToPost(post: any) {
+    // Rediriger vers la page du post
+    this.router.navigate([`/communities/${post.communityId}/posts/${post.id}`]);
+    console.log('Aller au post:', post);
   }
 }

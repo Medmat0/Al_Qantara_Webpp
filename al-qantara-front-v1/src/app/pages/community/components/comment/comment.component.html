@@ -1,0 +1,28 @@
+<div class="comment" [ngClass]="{'reply': comment.parentId}">
+  <div class="comment-author">{{ comment.auteur.prenom }} {{ comment.auteur.nom }}</div>
+  <div class="comment-content">{{ comment.contenu }}</div>
+  <button class="reply-button" (click)="toggleReplyForm(comment.id)">Répondre</button>
+
+  <form *ngIf="replyFormVisible[comment.id]" (ngSubmit)="addReply(comment.id)" #replyForm="ngForm" class="reply-form">
+    <textarea
+      name="replyContent"
+      [(ngModel)]="replyContent[comment.id]"
+      required
+      placeholder="Ajouter une réponse..."
+      rows="2"
+      class="reply-input"
+    ></textarea>
+    <button type="submit" [disabled]="replyForm.invalid">Envoyer</button>
+  </form>
+
+  <div class="replies" *ngIf="comment.replies?.length">
+    <app-comment
+      *ngFor="let reply of comment.replies"
+      [comment]="reply"
+      [replyFormVisible]="replyFormVisible"
+      [replyContent]="replyContent"
+      [toggleReplyForm]="toggleReplyForm"
+      [addReply]="addReply"
+    ></app-comment>
+  </div>
+</div>

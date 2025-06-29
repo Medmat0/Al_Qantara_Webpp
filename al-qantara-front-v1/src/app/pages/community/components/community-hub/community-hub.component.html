@@ -13,16 +13,14 @@
     </div>
   </div>
   <div class="community-posts-scrollable">
-    <div *ngFor="let post of posts" class="community-post-card">
-      <div class="post-title">{{ post.titre }}</div>
-      <div class="post-meta">
-        Auteur : {{ post.auteur.prenom }} {{ post.auteur.nom }} | {{ post.dateCreation | date:'dd/MM/yyyy HH:mm' }}
-      </div>
-      <div class="post-tags">
-        <span *ngFor="let tag of post.tags" class="tag">#{{ tag }}</span>
-      </div>
-      <div class="post-content">{{ post.contenu }}</div>
-    </div>
+    <div *ngFor="let post of posts">
+          <app-community-post
+            [post]="post"
+            (postEvent)="onPostEvent($event)"
+            (click)="goToPost(post)"
+            style="cursor: pointer;"
+          ></app-community-post>
+        </div>
     <div *ngIf="posts.length === 0" class="no-posts">Aucun post dans cette communauté.</div>
   </div>
 </div>

@@ -1,0 +1,55 @@
+.comment {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.comment.reply {
+  margin-left: 2rem;
+  border-left: 3px solid #ccc;
+  padding-left: 1rem;
+  background-color: #f1f1f1;
+}
+
+.comment-author {
+  font-weight: bold;
+  color: #222e38;
+}
+
+.comment-content {
+  color: #333;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.reply-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+.reply-button:hover {
+  background-color: #218838;
+}
+
+.reply-form {
+  margin-top: 1rem;
+}
+
+.reply-input {
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+.reply-form button {
+  margin-top: 0.5rem;
+}
