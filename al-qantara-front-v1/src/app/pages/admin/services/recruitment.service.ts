@@ -59,4 +59,16 @@ export class RecruitmentService {
       withCredentials: true
     });
   }
+
+  refuseApplicant(offerId: number, applicantId: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${offerId}/refuse/${applicantId}`, {}, {
+      withCredentials: true
+    });
+  }
+
+  acceptApplicant(offerId: number, applicantId: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${offerId}/accept/${applicantId}`, {}, {
+      withCredentials: true
+    });
+  }
 }
