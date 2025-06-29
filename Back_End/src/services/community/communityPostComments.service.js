@@ -23,47 +23,37 @@ const addPostCommentService = async (req) => {
     }
 
     // Ajout du commentaire
-    await prisma.communityPostCommentaire.create({
+    const createdComment = await prisma.communityPostCommentaire.create({
         data: {
             contenu: content,
             postId: postId,
             auteurId: userId
-        }
-    });
-
-    // Retourne le post avec ses commentaires et likes
-    const postWithCommentsAndLikes = await prisma.communityPost.findUnique({
-        where: { id: postId },
+        },
         include: {
-            commentaires: {
+            auteur: {
+                select: {
+                    id: true,
+                    nom: true,
+                    prenom: true
+                }
+            },
+            likes: true,
+            replies: {
                 include: {
-                    auteur:  {
+                    auteur: {
                         select: {
                             id: true,
                             nom: true,
                             prenom: true
                         }
                     },
-                    likes: true,
-                    replies: {
-                        include: {
-                            auteur:  {
-                                select: {
-                                    id: true,
-                                    nom: true,
-                                    prenom: true,
-                                }
-                            },
-                            likes: true
-                        }
-                    }
+                    likes: true
                 }
-            },
-            likes: true
+            }
         }
     });
 
-    return postWithCommentsAndLikes;
+    return createdComment;
 }
 
 const deletePostCommentService = async (req) => {
@@ -253,21 +243,24 @@ const addCommentToCommentService = async (req) => {
         throw err;
     }
 
-    // Ajout du commentaire
-    await prisma.communityPostCommentaire.create({
+    // Ajout du commentaire en réponse
+    const createdReply = await prisma.communityPostCommentaire.create({
         data: {
             contenu: content,
             postId: postId,
             auteurId: userId,
             parentId: commentId
-        }
-    });
-
-    // Retourne le post avec ses commentaires et likes (sans le rôle de l'utilisateur)
-    const postWithCommentsAndLikes = await prisma.communityPost.findUnique({
-        where: { id: postId },
+        },
         include: {
-            commentaires: {
+            auteur: {
+                select: {
+                    id: true,
+                    nom: true,
+                    prenom: true
+                }
+            },
+            likes: true,
+            replies: {
                 include: {
                     auteur: {
                         select: {
@@ -276,28 +269,14 @@ const addCommentToCommentService = async (req) => {
                             prenom: true
                         }
                     },
-                    likes: true,
-                    replies: {
-                        include: {
-                            auteur: {
-                                select: {
-                                    id: true,
-                                    nom: true,
-                                    prenom: true
-                                }
-                            },
-                            likes: true
-                        }
-                    }
+                    likes: true
                 }
-            },
-            likes: true
+            }
         }
     });
 
-    return postWithCommentsAndLikes;
+    return createdReply;
 }
-
 export {
     addPostCommentService,
     deletePostCommentService,

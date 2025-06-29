@@ -9,22 +9,26 @@
   <div class="post-content">{{ post.contenu }}</div>
   <button class="like-button" (click)="likePost()">Like</button>
   <div class="comments-section">
-    <div *ngFor="let comment of post.commentaires" class="comment">
-      <div class="comment-author">{{ comment.auteur.prenom }} {{comment.auteur.nom}}</div>
-      <div class="comment-content">{{ comment.contenu }}</div>
-    </div>
-    <form (ngSubmit)="addComment()" #commentForm="ngForm" class="add-comment-form">
-      <textarea
-        name="commentContent"
-        [(ngModel)]="newCommentContent"
-        required
-        placeholder="Ajouter un commentaire..."
-        rows="2"
-        class="comment-input"
-      ></textarea>
-  <button type="submit" [disabled]="commentForm.invalid">Envoyer</button>
-</form>
+    <app-comment
+      *ngFor="let comment of post.commentaires"
+      [comment]="comment"
+      [replyFormVisible]="replyFormVisible"
+      [replyContent]="replyContent"
+      [toggleReplyForm]="toggleReplyForm"
+      [addReply]="addReply"
+    ></app-comment>
   </div>
+  <form (ngSubmit)="addComment()" #commentForm="ngForm" class="add-comment-form">
+    <textarea
+      name="commentContent"
+      [(ngModel)]="newCommentContent"
+      required
+      placeholder="Ajouter un commentaire..."
+      rows="2"
+      class="comment-input"
+    ></textarea>
+    <button type="submit" [disabled]="commentForm.invalid">Envoyer</button>
+  </form>
 </div>
 <div *ngIf="loading" class="loading">Chargement...</div>
 <div *ngIf="error" class="error">{{ error }}</div>

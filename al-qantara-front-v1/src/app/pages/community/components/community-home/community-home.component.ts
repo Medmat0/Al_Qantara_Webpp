@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { CommunityService } from '../../../../member/services/community.service';
 import { CommunityPostComponent } from '../community-post/community-post.component';
 import { CommunityPropositionsComponent } from '../community-propositions/community-propositions.component';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-community-home',
@@ -22,7 +22,7 @@ export class CommunityHomeComponent implements OnInit {
   loading = true;
   error: string | null = null;
 
-  constructor(private communityService: CommunityService) {}
+  constructor(private communityService: CommunityService, private router: Router) {}
 
   ngOnInit() {
     this.communityService.getRandomPosts().subscribe({
@@ -45,5 +45,11 @@ export class CommunityHomeComponent implements OnInit {
   onCommunitySelected(community: any) {
     // Action à faire quand une communauté est sélectionnée
     console.log('Communauté sélectionnée :', community);
+  }
+
+  goToPost(post: any) {
+    // Rediriger vers la page du post
+    this.router.navigate([`/communities/${post.communityId}/posts/${post.id}`]);
+    console.log('Aller au post:', post);
   }
 }

@@ -108,4 +108,21 @@ export class CommunityService {
             })
         );
     }
+
+    addReplyToComment(communityId: number, postId: number, commentId: number, content: string): Observable<any> {
+        return this.http.post<any>(
+            // /:communityId/posts/:postId/comments/:commentId
+            `${this.apiUrl}/${communityId}/posts/${postId}/comments/${commentId}`,
+            { content },
+            { withCredentials: true }
+        ).pipe(
+            tap((response) => {
+                console.log('Reply added successfully:', response);
+            }),
+            catchError((error) => {
+                console.error('Error adding reply:', error);
+                return throwError(() => error);
+            })
+        );
+    }
 }
