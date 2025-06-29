@@ -17,14 +17,45 @@
   </div>
 </div>
 
-<div class="event-listing">
+<h2>Événements en cours</h2>
+<div *ngIf="happeningNowEvenements.length > 0; else noHappening" class="event-listing event-listing-now">
   <div
     class="event-item-container"
-    *ngFor="let event of filteredEvenements"
+    *ngFor="let event of happeningNowEvenements"
+    (click)="openModal(event)">
+    <app-event-item [event]="event"></app-event-item>
+    <div class="event-now-badge">En cours</div>
+  </div>
+</div>
+<ng-template #noHappening>
+  <div class="no-events-message">Aucun événement en cours pour l'instant.</div>
+</ng-template>
+
+<h2>Événements à venir</h2>
+<div *ngIf="upcomingEvenements.length > 0; else noUpcoming" class="event-listing">
+  <div
+    class="event-item-container"
+    *ngFor="let event of upcomingEvenements"
     (click)="openModal(event)">
     <app-event-item [event]="event"></app-event-item>
   </div>
 </div>
+<ng-template #noUpcoming>
+  <div class="no-events-message">Il n'y a pas d'événements à venir pour l'instant.</div>
+</ng-template>
+
+<h2>Événements passés</h2>
+<div *ngIf="pastEvenements.length > 0; else noPast" class="event-listing event-listing-past">
+  <div
+    class="event-item-container"
+    *ngFor="let event of pastEvenements"
+    (click)="openModal(event)">
+    <app-event-item [event]="event"></app-event-item>
+  </div>
+</div>
+<ng-template #noPast>
+  <div class="no-events-message">Il n'y a pas d'événements passés pour l'instant.</div>
+</ng-template>
 
 <div class="pagination">
   <button

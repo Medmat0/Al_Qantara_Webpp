@@ -126,7 +126,7 @@ export class EventListingComponent {
         this.participation = res.participation;
         this.loading = false;
 
-        // Met à jour l’événement dans la liste
+        // Met à jour l'événement dans la liste
         const idx = this.events.findIndex(e => e.id === evenement.id);
         if (idx !== -1) {
           this.events[idx] = {
@@ -134,11 +134,11 @@ export class EventListingComponent {
             placesRestantes: this.events[idx].placesRestantes != null
               ? this.events[idx].placesRestantes - 1
               : 0,
-            // Ajout d’autres propriétés si besoin
+            // Ajout d'autres propriétés si besoin
           };
         }
 
-        // Met à jour l’événement sélectionné dans la modale
+        // Met à jour l'événement sélectionné dans la modale
         if (this.selectedEvent && this.selectedEvent.id === evenement.id) {
           this.selectedEvent = {
             ...this.selectedEvent,
@@ -176,7 +176,7 @@ export class EventListingComponent {
           this.unsubscribeConfirmed = false;
         }, 3000);
 
-        // Met à jour l’événement dans la liste
+        // Met à jour l'événement dans la liste
         const idx = this.events.findIndex(e => e.id === evenement.id);
         if (idx !== -1) {
           this.events[idx] = {
@@ -187,7 +187,7 @@ export class EventListingComponent {
           };
         }
 
-        // Met à jour l’événement sélectionné dans la modale
+        // Met à jour l'événement sélectionné dans la modale
         if (this.selectedEvent && this.selectedEvent.id === evenement.id) {
           this.selectedEvent = {
             ...this.selectedEvent,
@@ -335,5 +335,23 @@ export class EventListingComponent {
   onFilterChange(filter: string): void {
     this.selectedFilter = filter;
     this.currentPage = 1;
+  }
+
+  get now(): Date {
+    return new Date();
+  }
+
+  get upcomingEvenements() {
+    return this.filteredEvenements.filter(event => new Date(event.dateDebut) > this.now);
+  }
+
+  get happeningNowEvenements() {
+    return this.filteredEvenements.filter(event => 
+      new Date(event.dateDebut) <= this.now && new Date(event.dateFin) >= this.now
+    );
+  }
+
+  get pastEvenements() {
+    return this.filteredEvenements.filter(event => new Date(event.dateFin) < this.now);
   }
 }

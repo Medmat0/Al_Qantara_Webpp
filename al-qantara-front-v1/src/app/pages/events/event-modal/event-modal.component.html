@@ -14,8 +14,7 @@
           <video [src]="event.video" controls class="media-content"></video>
         </ng-container>
         <ng-template #imageBlock>
-          <img *ngIf="event.images?.length" [src]="event.images[0]" [alt]="event.titre" class="media-content" />
-          <div *ngIf="!event.images?.length" class="media-placeholder">Aucun média disponible</div>
+          <img [src]="eventImage" [alt]="event.titre" class="media-content event-image" />
         </ng-template>
       </div>
 
