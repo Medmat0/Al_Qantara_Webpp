@@ -3,6 +3,31 @@ import cloudinary from "../../config/cloudinary.js";
 
 const prisma = new PrismaClient();
 
+const checkIfMemberService = async (req) => {
+    const {communityId} = req.params;
+    const userId = req.user.id;
+
+    // Vérifie si la communauté existe
+    const community = await prisma.community.findUnique({
+        where: {id: parseInt(communityId)},
+        include: {
+            membres: true,
+        },
+    });
+
+    if (!community) {
+        throw {status: 404, message: "Communauté non trouvée."};
+    }
+
+    // Vérifie si l'utilisateur est membre de la communauté
+    const isMember = community.membres.some(member => member.id === userId);
+
+    return {
+        isMember,
+        communityName: community.id,
+    };
+}
+
 const promoteMemberService = async (req) => {
     const {communityId, memberId} = req.params;
 
@@ -261,6 +286,7 @@ const getCommunityBanishedService = async (req) => {
  }
 
 export {
+    checkIfMemberService,
     promoteMemberService,
     banMemberService,
     getCommunityMembersService,

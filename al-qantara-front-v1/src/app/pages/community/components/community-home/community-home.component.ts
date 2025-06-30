@@ -38,12 +38,11 @@ export class CommunityHomeComponent implements OnInit {
   }
 
   onPostEvent(event: any) {
-  
+
   }
 
   onCommunitySelected(community: any) {
-    // Action à faire quand une communauté est sélectionnée
-    console.log('Communauté sélectionnée :', community);
+    this.router.navigate([`/communities/${community.id}`]);
   }
 
   goToPost(post: any) {

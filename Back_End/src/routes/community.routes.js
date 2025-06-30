@@ -32,6 +32,7 @@ import { unBanMember } from "../controllers/community/userInteraction/unBanMembe
 import { getCommunityModerators } from "../controllers/community/userInteraction/getCommunityModerators.js";
 import { getCommunityBanished } from "../controllers/community/userInteraction/getCommunityBanished.js";
 import {getRandomCommunities} from "../controllers/community/community/getRandomCommunities.js";
+import {checkIfMember} from "../controllers/community/userInteraction/checkIfMember.js";
 
 const router = express.Router();
 
@@ -46,6 +47,7 @@ router.get("/randomPosts", getRandomPosts);
 // ----------------- Routes communautaires (avec ID dynamique) -----------------
 
 router.get("/:communityId", getCommunityById);
+router.get("/:communityId/isMember",authMiddleware, checkIfMember);
 router.patch("/:communityId", authMiddleware, uploadlogoCommunities.single('logo'), modifyCommunity);
 router.delete("/:communityId", authMiddleware, deleteCommunity);
 

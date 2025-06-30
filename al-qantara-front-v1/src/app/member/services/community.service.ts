@@ -93,6 +93,43 @@ export class CommunityService {
         );
     }
 
+    checkIfUserIsMember(communityId: number): Observable<any> {
+        return this.http.get<any>(`${this.apiUrl}/${communityId}/isMember`, { withCredentials: true }).pipe(
+            map((response) => {
+                console.log('Checked if user is member:', response);
+                return response.response.isMember;
+            }),
+            catchError((error) => {
+                console.error('Error checking if user is member:', error);
+                return throwError(() => error);
+            })
+        );
+    }
+
+    joinCommunity(communityId: number): Observable<any> {
+        return this.http.post<any>(`${this.apiUrl}/${communityId}/join`, {}, { withCredentials: true }).pipe(
+            tap((response) => {
+                console.log('Joined community successfully:', response);
+            }),
+            catchError((error) => {
+                console.error('Error joining community:', error);
+                return throwError(() => error);
+            })
+        );
+    }
+
+    leaveCommunity(communityId: number): Observable<any> {
+        return this.http.post<any>(`${this.apiUrl}/${communityId}/leave`, {}, { withCredentials: true }).pipe(
+            tap((response) => {
+                console.log('Left community successfully:', response);
+            }),
+            catchError((error) => {
+                console.error('Error leaving community:', error);
+                return throwError(() => error);
+            })
+        );
+    }
+
     addCommentToPost(communityId: number, postId: number, content: string): Observable<any> {
         return this.http.post<any>(
             `${this.apiUrl}/${communityId}/posts/${postId}/comments`,

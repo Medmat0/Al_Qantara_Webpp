@@ -39,12 +39,23 @@ export class CommunityPostComponent implements OnInit {
   ngOnInit() {
     this.checkIfOnCommunityPage();
   }
+
+  checkAuthentication(): boolean {
+    if (!this.isAuthenticated) {
+      confirm('Vous devez être connecté pour interagir avec cette communauté.');
+      this.router.navigate(['auth/login']);
+      return false;
+    }
+    return true;
+  }
+
   checkIfOnCommunityPage() {
     this.isOnCommunityPage = this.router.url === `/communities/${this.post?.communityId}`;
   }
 
   likeDislikePost(event: MouseEvent) {
     event.stopPropagation();
+    this.checkAuthentication();
     this.communityService.likeDislikePost(this.post.communityId, this.post.id).subscribe({
       next: (res) => {
         if (!this.post.likes) {
