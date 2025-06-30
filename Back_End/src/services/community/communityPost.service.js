@@ -295,18 +295,18 @@ const likeOrDislikeCommunityPostService = async (req) => {
         throw err;
     }
 
-    // Vérifie si l'utilisateur a déjà liké le post
     const userId = req.user.id;
     const existingLike = post.likes.find(like => like.utilisateurId === userId);
 
+    let like;
     if (existingLike) {
         // Supprime le like
-        await prisma.communityPostLike.delete({
+        like = await prisma.communityPostLike.delete({
             where: { id: existingLike.id }
         });
     } else {
         // Ajoute le like
-        await prisma.communityPostLike.create({
+        like = await prisma.communityPostLike.create({
             data: {
                 postId: postId,
                 utilisateurId: userId
@@ -314,17 +314,7 @@ const likeOrDislikeCommunityPostService = async (req) => {
         });
     }
 
-    // Retourne le post avec les likes mis à jour
-    const postWithLikes = await prisma.communityPost.findUnique({
-        where: { id: postId },
-        include: {
-            likes: true,
-            auteur: {
-                select: { id: true, nom: true, prenom: true }
-            }
-        }
-    });
-    return postWithLikes;
+    return like;
 }
 
 const addVoteToPollService = async (req) => {

@@ -8,5 +8,9 @@
   <div class="tags">
     <span *ngFor="let tag of post.tags" class="tag">#{{ tag }}</span>
   </div>
-  <div class="contenu">{{ post.contenu }}</div>
+  <div class="contenu">
+    <p>{{ post.contenu }}</p>
+    <button (click)="likeDislikePost($event)">Like | {{ post.likes?.length || 0 }}</button>
+
+  </div>
 </div>

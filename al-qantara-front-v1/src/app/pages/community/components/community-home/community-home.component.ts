@@ -38,8 +38,7 @@ export class CommunityHomeComponent implements OnInit {
   }
 
   onPostEvent(event: any) {
-    // Traiter les événements des posts ici (like, commentaire, etc.)
-    console.log('Post event:', event);
+  
   }
 
   onCommunitySelected(community: any) {

@@ -125,4 +125,20 @@ export class CommunityService {
             })
         );
     }
+
+    likeDislikePost(communityId: number, postId: number): Observable<any> {
+        return this.http.post<any>(
+            `${this.apiUrl}/${communityId}/posts/${postId}/likeDislike`,
+            {},
+            { withCredentials: true }
+        ).pipe(
+            tap((response) => {
+                console.log(`Interacted with post successfuly`, response);
+            }),
+            catchError((error) => {
+                console.error(`Error interacting with post:`, error);
+                return throwError(() => error);
+            })
+        );
+    }
 }
