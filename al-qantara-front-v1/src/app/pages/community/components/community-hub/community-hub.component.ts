@@ -100,6 +100,11 @@ export class CommunityHubComponent implements OnInit {
     });
   }
 
+  gotToPostCreation(){
+    console.log("rt")
+    this.router.navigate([`/communities/${this.communityId}/posts/create`]);
+  }
+
   onPostEvent(event: any) {
     // Traiter les événements des posts ici (like, commentaire, etc.)
     console.log('Post event:', event);

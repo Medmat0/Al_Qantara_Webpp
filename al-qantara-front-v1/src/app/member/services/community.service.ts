@@ -130,6 +130,22 @@ export class CommunityService {
         );
     }
 
+  createPost(communityId: number, data: { titre: string; contenu: string; tags: string[] }): Observable<any> {
+    return this.http.post<any>(
+      `${this.apiUrl}/${communityId}/posts`,
+      data,
+      { withCredentials: true }
+    ).pipe(
+      tap((response) => {
+        console.log('Post created successfully:', response);
+      }),
+      catchError((error) => {
+        console.error('Error creating post:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
     addCommentToPost(communityId: number, postId: number, content: string): Observable<any> {
         return this.http.post<any>(
             `${this.apiUrl}/${communityId}/posts/${postId}/comments`,

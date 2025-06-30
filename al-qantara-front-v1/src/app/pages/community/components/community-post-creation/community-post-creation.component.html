@@ -1,0 +1,20 @@
+<form [formGroup]="postForm" (ngSubmit)="onSubmit(communityId)">  <label>Titre:</label>
+  <input formControlName="titre" required>
+  <div *ngIf="postForm.get('titre')?.invalid && postForm.get('titre')?.touched">Titre requis</div>
+
+  <label>Contenu:</label>
+  <textarea formControlName="contenu" required></textarea>
+  <div *ngIf="postForm.get('contenu')?.invalid && postForm.get('contenu')?.touched">Contenu requis</div>
+
+  <label>Tags:</label>
+  <div formArrayName="tags">
+    <div *ngFor="let tag of tags.controls; let i = index">
+      <input [formControlName]="i" required>
+      <button type="button" (click)="removeTag(i)" *ngIf="tags.length > 1">Supprimer</button>
+    </div>
+    <button type="button" (click)="addTag()">Ajouter un tag</button>
+    <div *ngIf="tags.invalid && postForm.get('tags')?.touched">Au moins un tag requis</div>
+  </div>
+
+  <button type="submit" [disabled]="postForm.invalid">Créer le post</button>
+</form>

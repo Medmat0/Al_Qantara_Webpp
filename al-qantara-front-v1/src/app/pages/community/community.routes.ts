@@ -3,12 +3,15 @@ import { CommunityHomeComponent } from './components/community-home/community-ho
 import { CommunityResearchComponent } from './components/community-research/community-research.component';
 import { CommunityHubComponent } from './components/community-hub/community-hub.component';
 import { CommunityPostDescriptionComponent } from './components/community-post-description/community-post-description.component';
+import {CommunityPostCreationComponent} from './components/community-post-creation/community-post-creation.component';
 
 
 export default [
     {path: '', component:CommunityHomeComponent,},
     {path: 'research', component: CommunityResearchComponent,},
     {path: ':communityId', component: CommunityHubComponent},
+    {path: ':communityId/posts/create', component:CommunityPostCreationComponent},
     {path: ':communityId/posts/:postId', component: CommunityPostDescriptionComponent},
-    
-]as Routes; 
+
+
+]as Routes;

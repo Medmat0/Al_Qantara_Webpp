@@ -12,7 +12,7 @@
       </div>
     </div>
     <div class="actions">
-      <button>Créer un post</button>
+      <button (click)="gotToPostCreation()">Créer un post</button>
       <button>Voir les membres</button>
       <button *ngIf="isMember === false" (click)="joinCommunity()">Rejoindre</button>
       <button *ngIf="isMember === true" (click)="leaveCommunity()">Quitter</button>
