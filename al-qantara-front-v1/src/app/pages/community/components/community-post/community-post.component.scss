@@ -27,6 +27,17 @@
   gap: 0.5rem;
 }
 
+.meta img {
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  justify-content: center;
+  align-items: center;
+  vertical-align: middle;
+  border-radius: 50%;
+  margin-right: 0.3rem;
+}
+
 .tags {
   display: flex;
   gap: 0.5rem;

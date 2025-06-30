@@ -1,6 +1,8 @@
 <div class="post-description-root" *ngIf="post">
   <div class="post-title">{{ post.titre }}</div>
   <div class="post-meta">
+    <img *ngIf="post.communityLogo" [src]="post.communityLogo" alt="Logo de la communauté">
+    Communauté: <span *ngIf="post.communityNom">{{ post.communityNom }}</span>
     Auteur : <span *ngIf="post.auteur">{{ post.auteur.prenom }} {{ post.auteur.nom }}</span> | {{ post.dateCreation | date:'dd/MM/yyyy HH:mm' }}
   </div>
   <div class="post-tags">
@@ -8,6 +10,7 @@
   </div>
   <div class="post-content">{{ post.contenu }}</div>
   <button (click)="likeDislikePost($event)">Like | {{ post.likes?.length || 0 }}</button>
+  <button *ngIf="post.auteurId === userId" (click)="deletePost()">Supprimer</button>
   <div class="comments-section">
     <app-comment
       *ngFor="let comment of post.commentaires"

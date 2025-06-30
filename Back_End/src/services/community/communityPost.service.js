@@ -187,7 +187,7 @@ const getCommunityPostByIdService = async (req) => {
     const post = await prisma.communityPost.findFirst({
         where: { id: postId, communityId: communityId },
         include: {
-            community: { select: { id: true } },
+            community: { select: { id: true, nom: true, logo: true } },
             auteur: { select: { id: true, nom: true, prenom: true } },
             likes: { select: { id: true, utilisateurId: true } },
             commentaires: {
@@ -217,7 +217,11 @@ const getCommunityPostByIdService = async (req) => {
         throw err;
     }
 
-    return post;
+    return {
+        ...post,
+        communityNom: post.community.nom,
+        communityLogo: post.community.logo
+    };
 }
 
 const getCommunityPostsService = async (req) => {
@@ -229,7 +233,7 @@ const getCommunityPostsService = async (req) => {
     // Vérifie que la communauté existe
     const community = await prisma.community.findUnique({
         where: { id: communityId },
-        select: { id: true }
+        select: { id: true, nom: true, logo: true }
     });
 
     if (!community) {
@@ -244,7 +248,7 @@ const getCommunityPostsService = async (req) => {
     });
 
     // Récupère les posts de la communauté avec pagination
-    const posts = await prisma.communityPost.findMany({
+    const listOfPosts = await prisma.communityPost.findMany({
         where: { communityId: communityId },
         include: {
             auteur: {
@@ -267,12 +271,19 @@ const getCommunityPostsService = async (req) => {
         take: limit
     });
 
+    const posts = listOfPosts.map(post => ({
+        ...post,
+        communityNom: community.nom,
+        communityLogo: community.logo
+    }));
+
     return {
         posts,
         page,
         limit,
         total,
         totalPages: Math.ceil(total / limit)
+
     };
 }
 

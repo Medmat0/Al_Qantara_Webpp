@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import { CommunityService } from '../../../../member/services/community.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -28,7 +28,8 @@ export class CommunityPostDescriptionComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private communityService: CommunityService,
               private authService: AuthService,
-              private cdr: ChangeDetectorRef
+              private cdr: ChangeDetectorRef,
+              private router: Router
               ) {
     this.authService.authStatus$.subscribe((status) => {
       this.isAuthenticated = status;
@@ -80,118 +81,6 @@ export class CommunityPostDescriptionComponent implements OnInit {
     });
 
     return rootComments;
-  }
-
-  fetchPost() {
-    this.loading = true;
-    this.communityService.getCommunityPostById(this.communityId, this.postId).subscribe({
-      next: (post) => {
-        this.post = post;
-        this.post.commentaires = this.organizeComments(this.post.commentaires);
-        this.loading = false;
-      },
-      error: (err) => {
-        this.error = err.error?.message || 'Erreur lors du chargement du post.';
-        this.loading = false;
-      }
-    });
-  }
-
-  likeDislikePost(event: MouseEvent) {
-    event.stopPropagation();
-    this.communityService.likeDislikePost(this.post.communityId, this.post.id).subscribe({
-      next: (res) => {
-        if (!this.post.likes) {
-          this.post.likes = [];
-        }
-        // Vérifie si l'utilisateur a déjà liké
-        const existingLikeIndex = this.post.likes.findIndex(
-          (like: any) => like.utilisateurId === this.userId
-        );
-
-        if (existingLikeIndex !== -1) {
-          // Supprime le like
-          this.post.likes.splice(existingLikeIndex, 1);
-        } else {
-          // Ajoute le like depuis la réponse de l'API
-          if (res && res.post) {
-            this.post.likes.push(res.post);
-          } else {
-            this.post.likes.push({ utilisateurId: this.userId });
-          }
-        }
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        console.error('Error liking post:', err);
-      }
-    });
-  }
-
-  addComment() {
-    if (this.newCommentContent.trim()) {
-      this.communityService.addCommentToPost(this.communityId, this.postId, this.newCommentContent).subscribe({
-        next: (response) => {
-          const newComment = response.comment || response;
-          const adaptedComment = {
-            id: newComment.id || null,
-            contenu: newComment.contenu || this.newCommentContent,
-            modified: false,
-            auteurId: this.userId,
-            postId: this.postId,
-            dateCreation: newComment.dateCreation || new Date().toISOString(),
-            parentId: null,
-            auteur: {
-              id: this.userId,
-              nom: JSON.parse(localStorage.getItem('utilisateur') || '{}').nom || '',
-              prenom: JSON.parse(localStorage.getItem('utilisateur') || '{}').prenom || ''
-            },
-            replies: []
-          };
-          console.log('Adding comment:', adaptedComment.id);
-          if (!this.post.commentaires) {
-            this.post.commentaires = [];
-          }
-          // Use the id returned by the backend to ensure replies work
-          this.post.commentaires.push(adaptedComment);
-          this.newCommentContent = '';
-        },
-        error: (err) => {
-          console.error('Error adding comment:', err);
-          this.error = 'Erreur lors de l\'ajout du commentaire.';
-        }
-      });
-    }
-  }
-
-  likeDislikeComment(comment: any) {
-    if (!comment.likes) {
-      comment.likes = [];
-    }
-    // Vérifie si l'utilisateur a déjà liké
-    const existingLikeIndex = comment.likes.findIndex(
-      (like: any) => like.utilisateurId === this.userId
-    );
-
-    if (existingLikeIndex !== -1) {
-      // Supprime le like
-      comment.likes.splice(existingLikeIndex, 1);
-    } else {
-      // Ajoute le like depuis la réponse de l'API
-      this.communityService.likeDislikeComment(this.communityId, this.postId, comment.id).subscribe({
-        next: (res) => {
-          if (res && res.comment) {
-            comment.likes.push(res.comment);
-          } else {
-            comment.likes.push({ utilisateurId: this.userId });
-          }
-          this.cdr.detectChanges();
-        },
-        error: (err) => {
-          console.error('Error liking comment:', err);
-        }
-      });
-    }
   }
 
   toggleReplyForm(commentId: number) {
@@ -246,4 +135,156 @@ export class CommunityPostDescriptionComponent implements OnInit {
     }
     return null;
   }
+
+  fetchPost() {
+    this.loading = true;
+    this.communityService.getCommunityPostById(this.communityId, this.postId).subscribe({
+      next: (post) => {
+        this.post = post;
+        this.post.commentaires = this.organizeComments(this.post.commentaires);
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = err.error?.message || 'Erreur lors du chargement du post.';
+        this.loading = false;
+      }
+    });
+  }
+
+  likeDislikePost(event: MouseEvent) {
+    event.stopPropagation();
+    this.communityService.likeDislikePost(this.post.communityId, this.post.id).subscribe({
+      next: (res) => {
+        if (!this.post.likes) {
+          this.post.likes = [];
+        }
+        // Vérifie si l'utilisateur a déjà liké
+        const existingLikeIndex = this.post.likes.findIndex(
+          (like: any) => like.utilisateurId === this.userId
+        );
+
+        if (existingLikeIndex !== -1) {
+          // Supprime le like
+          this.post.likes.splice(existingLikeIndex, 1);
+        } else {
+          // Ajoute le like depuis la réponse de l'API
+          if (res && res.post) {
+            this.post.likes.push(res.post);
+          } else {
+            this.post.likes.push({ utilisateurId: this.userId });
+          }
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error liking post:', err);
+      }
+    });
+  }
+
+
+  deletePost() {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer ce post ? Cette action est irréversible.')) {
+      return;
+    }
+    this.communityService.deletePost(this.communityId, this.postId).subscribe({
+      next: () => {
+        console.log('Post deleted successfully');
+        this.router.navigate(['/communities', this.communityId]); // Rediriger vers la page de la communauté
+        // Rediriger ou mettre à jour l'état de la page après la suppression
+      },
+      error: (err) => {
+        console.error('Error deleting post:', err);
+        this.error = 'Erreur lors de la suppression du post.';
+      }
+    });
+  }
+
+  addComment() {
+    if (this.newCommentContent.trim()) {
+      this.communityService.addCommentToPost(this.communityId, this.postId, this.newCommentContent).subscribe({
+        next: (response) => {
+          const newComment = response.comment || response;
+          const adaptedComment = {
+            id: newComment.id || null,
+            contenu: newComment.contenu || this.newCommentContent,
+            modified: false,
+            auteurId: this.userId,
+            postId: this.postId,
+            dateCreation: newComment.dateCreation || new Date().toISOString(),
+            parentId: null,
+            auteur: {
+              id: this.userId,
+              nom: JSON.parse(localStorage.getItem('utilisateur') || '{}').nom || '',
+              prenom: JSON.parse(localStorage.getItem('utilisateur') || '{}').prenom || ''
+            },
+            replies: []
+          };
+          console.log('Adding comment:', adaptedComment.id);
+          if (!this.post.commentaires) {
+            this.post.commentaires = [];
+          }
+          // Use the id returned by the backend to ensure replies work
+          this.post.commentaires.push(adaptedComment);
+          this.newCommentContent = '';
+        },
+        error: (err) => {
+          console.error('Error adding comment:', err);
+          this.error = 'Erreur lors de l\'ajout du commentaire.';
+        }
+      });
+    }
+  }
+
+  likeDislikeComment(comment: any) {
+    this.communityService.likeDislikeComment(this.communityId, this.postId, comment.id).subscribe({
+      next: (res) => {
+        if (!comment.likes) {
+          comment.likes = [];
+        }
+        // Vérifie si l'utilisateur a déjà liké APRÈS la réponse
+        const existingLikeIndex = comment.likes.findIndex(
+          (like: any) => like.utilisateurId === this.userId
+        );
+
+        if (existingLikeIndex !== -1) {
+          // Supprime le like
+          comment.likes.splice(existingLikeIndex, 1);
+        } else {
+          // Ajoute le like depuis la réponse de l'API
+          if (res && res.comment) {
+            comment.likes.push(res.comment);
+          } else {
+            comment.likes.push({ utilisateurId: this.userId });
+          }
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error liking comment:', err);
+      }
+    });
+  }
+
+  deleteComment(commentId: number) {
+    if (!commentId) {
+      console.error('Invalid comment ID:', commentId);
+      this.error = 'Erreur : ID du commentaire invalide.';
+      return;
+    }
+
+    this.communityService.deleteComment(this.communityId, this.postId, commentId).subscribe({
+      next: () => {
+        // Supprimer le commentaire de la liste
+        this.post.commentaires = this.post.commentaires.filter((c: any) => c.id !== commentId);
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error deleting comment:', err);
+        this.error = 'Erreur lors de la suppression du commentaire.';
+      }
+    });
+  }
+
+
 }

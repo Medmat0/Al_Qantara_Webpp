@@ -1,8 +1,12 @@
 <div class="community-post">
   <h2>{{ post.titre }}</h2>
+  <button *ngIf="!isOnCommunityPage" [routerLink]="['/communities', post.communityId]">
+    Aller à la communauté
+  </button>
   <div class="meta">
-    <span>Auteur : {{ post.auteurPrenom }} {{ post.auteurNom }}</span> |
+    <img *ngIf="post.communityLogo" [src]="post.communityLogo" alt="Logo de la communauté">
     <span>Communauté : {{ post.communityNom }}</span> |
+    <span>Auteur : {{ post.auteurPrenom }} {{ post.auteurNom }}</span> |
     <span>Date : {{ post.dateCreation | date:'dd/MM/yyyy HH:mm' }}</span>
   </div>
   <div class="tags">
@@ -11,6 +15,5 @@
   <div class="contenu">
     <p>{{ post.contenu }}</p>
     <button (click)="likeDislikePost($event)">Like | {{ post.likes?.length || 0 }}</button>
-
   </div>
 </div>

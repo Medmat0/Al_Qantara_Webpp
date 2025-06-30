@@ -5,12 +5,12 @@
     <div *ngIf="!loading && !error">
       <ng-container *ngIf="posts.length > 0; else noPosts">
         <div *ngFor="let post of posts">
-          <app-community-post
-            [post]="post"
-            (postEvent)="onPostEvent($event)"
-            (click)="goToPost(post)"
-            style="cursor: pointer;"
-          ></app-community-post>
+          <div (click)="goToPost(post)" style="cursor: pointer;">
+            <app-community-post
+              [post]="post"
+              (postEvent)="onPostEvent($event)">
+            </app-community-post>
+          </div>
         </div>
       </ng-container>
       <ng-template #noPosts>

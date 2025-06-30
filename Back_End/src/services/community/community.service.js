@@ -72,7 +72,8 @@ const getCommunityByIdService = async (req) => {
             id: true,
             nom: true,
             logo: true,
-            description: true
+            description: true,
+            dateCreation: true,
         }
     });
 

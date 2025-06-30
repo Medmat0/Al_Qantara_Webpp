@@ -2,10 +2,12 @@ import {Component, Input, Output, EventEmitter, inject, ChangeDetectorRef, OnIni
 import { CommonModule } from '@angular/common';
 import { CommunityService } from '../../../../member/services/community.service';
 import {AuthService} from '../../../../member/services/auth.service';
+import {Router, RouterModule} from '@angular/router';
+
 @Component({
   selector: 'app-community-post',
   standalone: true,
-  imports: [ CommonModule ],
+  imports: [ CommonModule, RouterModule ],
   templateUrl: './community-post.component.html',
   styleUrl: './community-post.component.scss'
 })
@@ -13,12 +15,12 @@ export class CommunityPostComponent implements OnInit {
   @Input() post: any;
   @Output() postEvent = new EventEmitter<any>();
   communityService = inject(CommunityService);
-
+  isOnCommunityPage = false;
   authService = inject(AuthService);
   isAuthenticated = false;
   userId: number | null = null;
 
-  constructor(private cdr: ChangeDetectorRef) {
+  constructor(private cdr: ChangeDetectorRef, private router: Router) {
     this.authService.authStatus$.subscribe((status) => {
       this.isAuthenticated = status;
       if (status) {
@@ -28,10 +30,17 @@ export class CommunityPostComponent implements OnInit {
         }
       }
     });
+
+    this.router.events.subscribe(() => {
+      this.checkIfOnCommunityPage();
+    });
   }
 
   ngOnInit() {
-    console.log('Post reçu :', this.post);
+    this.checkIfOnCommunityPage();
+  }
+  checkIfOnCommunityPage() {
+    this.isOnCommunityPage = this.router.url === `/communities/${this.post?.communityId}`;
   }
 
   likeDislikePost(event: MouseEvent) {

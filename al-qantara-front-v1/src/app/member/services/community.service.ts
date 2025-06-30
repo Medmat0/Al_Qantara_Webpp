@@ -157,4 +157,34 @@ export class CommunityService {
             })
         );
     }
+
+    deletePost(communityId: number, postId: number): Observable<any> {
+        return this.http.delete<any>(
+            `${this.apiUrl}/${communityId}/posts/${postId}`,
+            { withCredentials: true }
+        ).pipe(
+            tap((response) => {
+                console.log(`Post deleted successfully`, response);
+            }),
+            catchError((error) => {
+                console.error(`Error deleting post:`, error);
+                return throwError(() => error);
+            })
+        );
+    }
+
+    deleteComment(communityId: number, postId: number, commentId: number): Observable<any> {
+        return this.http.delete<any>(
+            `${this.apiUrl}/${communityId}/posts/${postId}/comments/${commentId}`,
+            { withCredentials: true }
+        ).pipe(
+            tap((response) => {
+                console.log(`Comment deleted successfully`, response);
+            }),
+            catchError((error) => {
+                console.error(`Error deleting comment:`, error);
+                return throwError(() => error);
+            })
+        );
+    }
 }
