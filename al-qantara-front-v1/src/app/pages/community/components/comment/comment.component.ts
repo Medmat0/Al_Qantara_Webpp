@@ -15,4 +15,13 @@ export class CommentComponent {
   @Input() replyContent!: { [key: number]: string };
   @Input() toggleReplyForm!: (id: number) => void;
   @Input() addReply!: (id: number) => void;
+  @Input() likeDislikeComment!: (comment: any) => void;
+
+
+
+
+
+
 }
+
+

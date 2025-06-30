@@ -7,7 +7,7 @@
     <span *ngFor="let tag of post.tags" class="tag">#{{ tag }}</span>
   </div>
   <div class="post-content">{{ post.contenu }}</div>
-  <button class="like-button" (click)="likePost()">Like</button>
+  <button (click)="likeDislikePost($event)">Like | {{ post.likes?.length || 0 }}</button>
   <div class="comments-section">
     <app-comment
       *ngFor="let comment of post.commentaires"
@@ -16,6 +16,7 @@
       [replyContent]="replyContent"
       [toggleReplyForm]="toggleReplyForm"
       [addReply]="addReply"
+      [likeDislikeComment]="likeDislikeComment"
     ></app-comment>
   </div>
   <form (ngSubmit)="addComment()" #commentForm="ngForm" class="add-comment-form">

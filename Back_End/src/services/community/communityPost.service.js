@@ -192,7 +192,8 @@ const getCommunityPostByIdService = async (req) => {
             likes: { select: { id: true, utilisateurId: true } },
             commentaires: {
                 include: {
-                    auteur: { select: { id: true, nom: true, prenom: true } }
+                    auteur: { select: { id: true, nom: true, prenom: true } },
+                    likes: { select: { id: true, commentaireId: true, utilisateurId: true, dateLike: true } }
                 }
             },
             pollOptions: {

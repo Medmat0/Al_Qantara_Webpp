@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommunityService } from '../../../../member/services/community.service';
 import { CommonModule } from '@angular/common';
@@ -25,7 +25,11 @@ export class CommunityPostDescriptionComponent implements OnInit {
   replyFormVisible: { [key: number]: boolean } = {};
   replyContent: { [key: number]: string } = {};
 
-  constructor(private route: ActivatedRoute, private communityService: CommunityService, private authService: AuthService) {
+  constructor(private route: ActivatedRoute,
+              private communityService: CommunityService,
+              private authService: AuthService,
+              private cdr: ChangeDetectorRef
+              ) {
     this.authService.authStatus$.subscribe((status) => {
       this.isAuthenticated = status;
       if (status) {
@@ -37,6 +41,8 @@ export class CommunityPostDescriptionComponent implements OnInit {
     });
     this.addReply = this.addReply.bind(this);
     this.toggleReplyForm = this.toggleReplyForm.bind(this);
+    this.likeDislikeComment = this.likeDislikeComment.bind(this);
+
   }
 
   ngOnInit() {
@@ -91,10 +97,35 @@ export class CommunityPostDescriptionComponent implements OnInit {
     });
   }
 
-  likePost() {
-    if (this.post) {
-      this.post.likes.push('currentUser');
-    }
+  likeDislikePost(event: MouseEvent) {
+    event.stopPropagation();
+    this.communityService.likeDislikePost(this.post.communityId, this.post.id).subscribe({
+      next: (res) => {
+        if (!this.post.likes) {
+          this.post.likes = [];
+        }
+        // Vérifie si l'utilisateur a déjà liké
+        const existingLikeIndex = this.post.likes.findIndex(
+          (like: any) => like.utilisateurId === this.userId
+        );
+
+        if (existingLikeIndex !== -1) {
+          // Supprime le like
+          this.post.likes.splice(existingLikeIndex, 1);
+        } else {
+          // Ajoute le like depuis la réponse de l'API
+          if (res && res.post) {
+            this.post.likes.push(res.post);
+          } else {
+            this.post.likes.push({ utilisateurId: this.userId });
+          }
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error liking post:', err);
+      }
+    });
   }
 
   addComment() {
@@ -128,6 +159,36 @@ export class CommunityPostDescriptionComponent implements OnInit {
         error: (err) => {
           console.error('Error adding comment:', err);
           this.error = 'Erreur lors de l\'ajout du commentaire.';
+        }
+      });
+    }
+  }
+
+  likeDislikeComment(comment: any) {
+    if (!comment.likes) {
+      comment.likes = [];
+    }
+    // Vérifie si l'utilisateur a déjà liké
+    const existingLikeIndex = comment.likes.findIndex(
+      (like: any) => like.utilisateurId === this.userId
+    );
+
+    if (existingLikeIndex !== -1) {
+      // Supprime le like
+      comment.likes.splice(existingLikeIndex, 1);
+    } else {
+      // Ajoute le like depuis la réponse de l'API
+      this.communityService.likeDislikeComment(this.communityId, this.postId, comment.id).subscribe({
+        next: (res) => {
+          if (res && res.comment) {
+            comment.likes.push(res.comment);
+          } else {
+            comment.likes.push({ utilisateurId: this.userId });
+          }
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.error('Error liking comment:', err);
         }
       });
     }

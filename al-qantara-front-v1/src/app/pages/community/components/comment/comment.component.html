@@ -2,6 +2,7 @@
   <div class="comment-author">{{ comment.auteur.prenom }} {{ comment.auteur.nom }}</div>
   <div class="comment-content">{{ comment.contenu }}</div>
   <button class="reply-button" (click)="toggleReplyForm(comment.id)">Répondre</button>
+  <button (click)="likeDislikeComment(comment)">Like | {{ comment.likes?.length || 0 }}</button>
 
   <form *ngIf="replyFormVisible[comment.id]" (ngSubmit)="addReply(comment.id)" #replyForm="ngForm" class="reply-form">
     <textarea
@@ -23,6 +24,7 @@
       [replyContent]="replyContent"
       [toggleReplyForm]="toggleReplyForm"
       [addReply]="addReply"
+      [likeDislikeComment]="likeDislikeComment"
     ></app-comment>
   </div>
 </div>
