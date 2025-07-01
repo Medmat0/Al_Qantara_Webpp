@@ -33,6 +33,7 @@ export class CommunityHubComponent implements OnInit {
 
     this.authService.authStatus$.subscribe((status) => {
       this.isAuthenticated = status;
+      console.log('Authentication status:', this.isAuthenticated);
       if (status) {
         const user = localStorage.getItem('utilisateur');
         if (user) {
@@ -49,15 +50,23 @@ export class CommunityHubComponent implements OnInit {
         this.communityId = +id;
         this.fetchCommunity();
         this.fetchPosts();
+        if (this.isAuthenticated) {
+          this.checkMembership();
+        } else {
+          this.isMember = false;
+        }
       }
     });
   }
 
   checkAuthentication(): boolean {
     if (!this.isAuthenticated) {
-      confirm('Vous devez être connecté pour interagir avec cette communauté.');
-      this.router.navigate(['auth/login']);
+
+      if(confirm('Vous devez être connecté pour interagir avec cette communauté.')){
+        this.router.navigate(['auth/login']);
+      }
       return false;
+
     }
     return true;
   }
@@ -68,7 +77,6 @@ export class CommunityHubComponent implements OnInit {
       next: (community) => {
         this.community = community;
         this.loading = false;
-        this.checkMembership();
       },
       error: (err) => {
         this.error = err.error?.message || 'Erreur lors du chargement de la communauté.';
@@ -101,8 +109,9 @@ export class CommunityHubComponent implements OnInit {
   }
 
   gotToPostCreation(){
-    console.log("rt")
-    this.router.navigate([`/communities/${this.communityId}/posts/create`]);
+    if (this.checkAuthentication()) {
+      this.router.navigate([`/communities/${this.communityId}/posts/create`]);
+    }
   }
 
   onPostEvent(event: any) {
@@ -117,7 +126,6 @@ export class CommunityHubComponent implements OnInit {
   }
 
   joinCommunity() {
-    this.checkAuthentication();
     this.communityService.joinCommunity(this.communityId).subscribe({
       next: () => {
         this.isMember = true;
@@ -130,7 +138,6 @@ export class CommunityHubComponent implements OnInit {
   }
 
   leaveCommunity() {
-    this.checkAuthentication();
     this.communityService.leaveCommunity(this.communityId).subscribe({
       next: () => {
         this.isMember = false;

@@ -38,35 +38,36 @@ export class CommunityPostCreationComponent implements OnInit{
   }
   ngOnInit() {
 
-    this.authService.authStatus$.subscribe((status) => {
-      this.isAuthenticated = status;
-      if (status) {
-        const user = localStorage.getItem('utilisateur');
-        if (user) {
-          this.userId = JSON.parse(user).id;
-        }
-      } else {
-        this.userId = null;
-      }
-      this.checkAuthentication();
-    });
-
     this.route.paramMap.subscribe(params => {
       const id = params.get('communityId');
       if (id) {
         this.communityId = +id;
-        this.checkMembership();
+        this.authService.authStatus$.subscribe((status) => {
+          this.isAuthenticated = status;
+          if (status) {
+            const user = localStorage.getItem('utilisateur');
+            if (user) {
+              this.userId = JSON.parse(user).id;
+            }
+          } else {
+            this.userId = null;
+          }
+          this.checkAuthentication();
+        });
       }
     });
   }
 
   checkAuthentication(): boolean {
     if (!this.isAuthenticated) {
-      confirm('Vous devez être connecté avant de pouvoir interagir avec cette communauté.');
-      console.log('User is not authenticated');
-      this.router.navigate(['auth/login']);
+
+      if(confirm('Vous devez être connecté pour interagir avec cette communauté.')){
+        this.router.navigate(['auth/login']);
+      }
       return false;
+
     }
+    this.checkMembership();
     return true;
   }
 
@@ -75,8 +76,9 @@ export class CommunityPostCreationComponent implements OnInit{
       next: (isMember) => {
         this.isMember = isMember;
         if (!isMember) {
-          confirm('Vous devez être membre pour créer un post dans cette communauté.');
-          this.router.navigate(['communities', this.communityId]);
+          confirm('Vous devez être membre pour interagir avec cette communauté.');
+          this.router.navigate(['/communities', this.communityId]);
+
         }
       },
       error: () => {
