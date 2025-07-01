@@ -224,6 +224,78 @@ const getCommunityPostByIdService = async (req) => {
     };
 }
 
+const getCommunityPostByNameService = async (req) => {
+    const postName = req.query.postName;
+    const communityId = parseInt(req.params.communityId);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    if (!postName || typeof postName !== 'string' || postName.trim() === '') {
+        const err = new Error("Un mot ou une phrase de recherche est requis dans la query.");
+        err.status = 400;
+        throw err;
+    }
+
+    const total = await prisma.communityPost.count({
+        where: {
+            titre: {
+                contains: postName,
+                mode: 'insensitive'
+            },
+            communityId: communityId
+        }
+    });
+
+    const posts = await prisma.communityPost.findMany({
+        where: {
+            titre: {
+                contains: postName,
+                mode: 'insensitive'
+            },
+            communityId: communityId
+        },
+        include: {
+            community: { select: { id: true, nom: true, logo: true } },
+        },
+        orderBy: {
+            dateCreation: 'desc'
+        },
+        skip,
+        take: limit
+    });
+
+    if (!posts || posts.length === 0) {
+        const err = new Error("Aucun post trouvé.");
+        err.status = 404;
+        throw err;
+    }
+
+    for (const post of posts) {
+        if (post.community.id !== communityId) {
+            const err = new Error("Un ou plusieurs posts n'appartiennent pas à cette communauté.");
+            err.status = 403;
+            throw err;
+        }
+    }
+
+    const result = posts.map(post => ({
+        ...post,
+        communityNom: post.community.nom,
+        communityLogo: post.community.logo
+    }));
+
+    return {
+        posts: result,
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit)
+    };
+}
+
+
+
 const getCommunityPostsService = async (req) => {
     const communityId = parseInt(req.params.communityId);
     const page = parseInt(req.query.page) || 1;
@@ -387,6 +459,7 @@ export {
     deleteCommunityPostService,
     modifyCommunityPostService,
     getCommunityPostByIdService,
+    getCommunityPostByNameService,
     getCommunityPostsService,
     likeOrDislikeCommunityPostService,
     addVoteToPollService

@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
 })
 export class CommunityResearchComponent implements OnDestroy {
   searchName = '';
-  result: any = null;
+  result: any[] = [];
   error: string | null = null;
   loading = false;
   private intervalId: any;
@@ -41,24 +41,24 @@ export class CommunityResearchComponent implements OnDestroy {
   searchCommunity(silent = false) {
     if (!this.searchName.trim()) {
       if (!silent) this.error = 'Veuillez entrer un nom de communauté.';
-      this.result = null;
+      this.result = [];
       return;
     }
     if (!silent) {
       this.error = null;
-      this.result = null;
+      this.result = [];
       this.loading = true;
     }
     this.lastSearched = this.searchName.trim();
     this.communityService.getCommunityByName(this.searchName.trim()).subscribe({
-      next: (community) => {
-        this.result = community;
+      next: (response) => {
+        this.result = response.communities || [];
         this.loading = false;
-        this.error = null;
+        this.error = this.result.length === 0 ? 'Aucune communauté trouvée.' : null;
       },
       error: (err) => {
-        this.error = err.error?.message || 'Aucune communauté trouvée.';
-        this.result = null;
+        this.error = err.error?.message || 'Erreur lors de la recherche.';
+        this.result = [];
         this.loading = false;
       }
     });

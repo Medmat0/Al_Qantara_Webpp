@@ -74,6 +74,7 @@ const getCommunityByIdService = async (req) => {
             logo: true,
             description: true,
             dateCreation: true,
+            membres: { select: { id: true } }
         }
     });
 
@@ -83,7 +84,14 @@ const getCommunityByIdService = async (req) => {
         throw err;
     }
 
-    return community;
+    return {
+        id: community.id,
+        nom: community.nom,
+        logo: community.logo,
+        description: community.description,
+        dateCreation: community.dateCreation,
+        nbrMembre: community.membres.length
+    };
 }
 
 const getCommunitiesService = async (req) => {
@@ -117,30 +125,70 @@ const getCommunitiesService = async (req) => {
 
 
 const getCommunityByNameService = async (req) => {
-    const { name } = req.query;
-    if (!name) {
-        const err = new Error("Le nom de la communauté est requis.");
+    const name = req.query.name;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    if (!name || typeof name !== 'string' || name.trim() === '') {
+        const err = new Error("Un mot ou une phrase de recherche est requis dans la query.");
         err.status = 400;
         throw err;
     }
 
-    const community = await prisma.community.findUnique({
-        where: { nom: name },
+    const total = await prisma.community.count({
+        where: {
+            nom: {
+                contains: name,
+                mode: 'insensitive'
+            }
+        }
+    });
+
+    const communities = await prisma.community.findMany({
+        where: {
+            nom: {
+                contains: name,
+                mode: 'insensitive'
+            }
+        },
         select: {
             id: true,
             nom: true,
             logo: true,
-            description: true
-        }
+            description: true,
+            dateCreation: true,
+            membres: { select: { id: true } }
+        },
+        orderBy: {
+            dateCreation: 'desc'
+        },
+        skip,
+        take: limit
     });
 
-    if (!community) {
-        const err = new Error("Aucune communauté avec ce nom trouvée.");
+    if (!communities || communities.length === 0) {
+        const err = new Error("Aucune communauté trouvée.");
         err.status = 404;
         throw err;
     }
 
-    return community;
+    const result = communities.map(community => ({
+        id: community.id,
+        nom: community.nom,
+        logo: community.logo,
+        description: community.description,
+        dateCreation: community.dateCreation,
+        nbrMembre: community.membres.length
+    }));
+
+    return {
+        communities: result,
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit)
+    };
 };
 
 

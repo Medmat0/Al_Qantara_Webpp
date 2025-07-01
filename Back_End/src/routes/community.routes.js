@@ -14,7 +14,11 @@ import { getRandomPosts } from "../controllers/community/community/getRandomPost
 import { createCommunityPost } from "../controllers/community/communityPost/createCommunityPost.js";
 import { deleteCommunityPost } from "../controllers/community/communityPost/deleteCommunityPost.js";
 import { modifyCommunityPost } from "../controllers/community/communityPost/modifyCommunityPost.js";
-import { getCommunityPostById, getCommunityPosts } from "../controllers/community/communityPost/getCommunityPost.js";
+import {
+    getCommunityPostById,
+    getCommunityPostByName,
+    getCommunityPosts
+} from "../controllers/community/communityPost/getCommunityPost.js";
 import { likeDislikeCommunityPost } from "../controllers/community/postInteraction/likeDislikeCommunityPost.js";
 
 import { addPostComment } from "../controllers/community/postInteraction/addPostComment.js";
@@ -47,6 +51,7 @@ router.get("/randomPosts", getRandomPosts);
 // ----------------- Routes communautaires (avec ID dynamique) -----------------
 
 router.get("/:communityId", getCommunityById);
+router.get("/:communityId/posts/name", getCommunityPostByName);
 router.get("/:communityId/isMember",authMiddleware, checkIfMember);
 router.patch("/:communityId", authMiddleware, uploadlogoCommunities.single('logo'), modifyCommunity);
 router.delete("/:communityId", authMiddleware, deleteCommunity);
