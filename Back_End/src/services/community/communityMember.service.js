@@ -28,6 +28,31 @@ const checkIfMemberService = async (req) => {
     };
 }
 
+const checkIfModeratorService = async (req) => {
+    const {communityId} = req.params;
+    const userCommunityRole = req.userCommunityRole;
+
+    // Vérifie si la communauté existe
+    const community = await prisma.community.findUnique({
+        where: {id: parseInt(communityId)},
+        include: {
+            moderateurs: true,
+        },
+    });
+
+    if (!community) {
+        throw {status: 404, message: "Communauté non trouvée."};
+    }
+
+    if (userCommunityRole === "ADMIN" || userCommunityRole === "MODERATEUR") {
+        return true;
+    }else {
+        return false;
+    }
+
+
+}
+
 const promoteMemberService = async (req) => {
     const {communityId, memberId} = req.params;
 
@@ -287,6 +312,7 @@ const getCommunityBanishedService = async (req) => {
 
 export {
     checkIfMemberService,
+    checkIfModeratorService,
     promoteMemberService,
     banMemberService,
     getCommunityMembersService,

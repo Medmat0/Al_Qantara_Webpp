@@ -14,6 +14,7 @@ import {Router, RouterModule} from '@angular/router';
 export class CommunityPostComponent implements OnInit {
   @Input() post: any;
   @Output() postEvent = new EventEmitter<any>();
+  @Input() isModerator: boolean = false;
   communityService = inject(CommunityService);
   isOnCommunityPage = false;
   authService = inject(AuthService);
@@ -73,6 +74,20 @@ export class CommunityPostComponent implements OnInit {
         console.error('Error liking post:', err);
       }
     });
+  }
+
+  deletePost(event: MouseEvent) {
+    event.stopPropagation();
+    if (confirm('Voulez-vous vraiment supprimer ce post ?')) {
+      this.communityService.deletePost(this.post.communityId, this.post.id).subscribe({
+        next: () => {
+          this.postEvent.emit({ type: 'deleted', postId: this.post.id });
+        },
+        error: (err) => {
+          console.error('Erreur lors de la suppression du post:', err);
+        }
+      });
+    }
   }
 
 

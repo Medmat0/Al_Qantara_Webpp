@@ -15,5 +15,6 @@
   <div class="contenu">
     <p>{{ post.contenu }}</p>
     <button (click)="likeDislikePost($event)">Like | {{ post.likes?.length || 0 }}</button>
+    <button *ngIf="isModerator || userId === post.auteurId" (click)="deletePost($event)">Supprimer</button>
   </div>
 </div>

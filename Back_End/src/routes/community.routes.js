@@ -37,6 +37,7 @@ import { getCommunityModerators } from "../controllers/community/userInteraction
 import { getCommunityBanished } from "../controllers/community/userInteraction/getCommunityBanished.js";
 import {getRandomCommunities} from "../controllers/community/community/getRandomCommunities.js";
 import {checkIfMember} from "../controllers/community/userInteraction/checkIfMember.js";
+import {checkIfModerator} from "../controllers/community/userInteraction/checkIfModerator.js";
 
 const router = express.Router();
 
@@ -53,6 +54,7 @@ router.get("/randomPosts", getRandomPosts);
 router.get("/:communityId", getCommunityById);
 router.get("/:communityId/posts/name", getCommunityPostByName);
 router.get("/:communityId/isMember",authMiddleware, checkIfMember);
+router.get("/:communityId/isModerator", authMiddleware,userCommunityRole, checkIfModerator);
 router.patch("/:communityId", authMiddleware, uploadlogoCommunities.single('logo'), modifyCommunity);
 router.delete("/:communityId", authMiddleware, deleteCommunity);
 

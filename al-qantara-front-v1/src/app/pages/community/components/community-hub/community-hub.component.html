@@ -23,7 +23,9 @@
     <div *ngFor="let post of posts">
       <div (click)="goToPost(post)" style="cursor: pointer;">
         <app-community-post
+          *ngFor="let post of posts"
           [post]="post"
+          [isModerator]="isModerator"
           (postEvent)="onPostEvent($event)">
         </app-community-post>
       </div>

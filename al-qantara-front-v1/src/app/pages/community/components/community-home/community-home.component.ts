@@ -21,6 +21,8 @@ export class CommunityHomeComponent implements OnInit {
   posts: any[] = [];
   loading = true;
   error: string | null = null;
+  isModerator: boolean = false;
+
 
   constructor(private communityService: CommunityService, private router: Router) {}
 
@@ -38,7 +40,9 @@ export class CommunityHomeComponent implements OnInit {
   }
 
   onPostEvent(event: any) {
-
+    if (event?.type === 'deleted') {
+      this.posts = this.posts.filter(post => post.id !== event.postId);
+    }
   }
 
   onCommunitySelected(community: any) {

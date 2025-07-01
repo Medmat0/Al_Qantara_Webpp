@@ -21,6 +21,7 @@ export class CommunityHubComponent implements OnInit {
   isMember: boolean | null = false;
   userId: number | null = null;
   isAuthenticated: boolean = false;
+  isModerator: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -52,6 +53,10 @@ export class CommunityHubComponent implements OnInit {
         this.fetchPosts();
         if (this.isAuthenticated) {
           this.checkMembership();
+          this.communityService.isModerator(this.communityId).subscribe({
+            next: (isMod) => this.isModerator = isMod,
+            error: () => this.isModerator = false
+          });
         } else {
           this.isMember = false;
         }
@@ -115,8 +120,9 @@ export class CommunityHubComponent implements OnInit {
   }
 
   onPostEvent(event: any) {
-    // Traiter les événements des posts ici (like, commentaire, etc.)
-    console.log('Post event:', event);
+    if (event?.type === 'deleted') {
+      this.posts = this.posts.filter(post => post.id !== event.postId);
+    }
   }
 
    goToPost(post: any) {

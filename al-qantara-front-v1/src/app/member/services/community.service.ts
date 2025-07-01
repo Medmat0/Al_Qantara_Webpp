@@ -93,6 +93,19 @@ export class CommunityService {
         );
     }
 
+    isModerator(communityId: number): Observable<boolean> {
+        return this.http.get<any>(`${this.apiUrl}/${communityId}/isModerator`, { withCredentials: true }).pipe(
+            map((response) => {
+                console.log('Checked if user is moderator:', response);
+                return response.isModerator;
+            }),
+            catchError((error) => {
+                console.error('Error checking if user is moderator:', error);
+                return throwError(() => error);
+            })
+        );
+    }
+
     checkIfUserIsMember(communityId: number): Observable<any> {
         return this.http.get<any>(`${this.apiUrl}/${communityId}/isMember`, { withCredentials: true }).pipe(
             map((response) => {
