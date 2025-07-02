@@ -47,14 +47,16 @@ export class OffreDescriptionComponent implements OnInit {
   fetchOffreDetails(id: number) {
     this.offreService.getOffreById(id).subscribe({
       next: (response: any) => {
-        console.log('Offre fetched successfully:', response);
-
+        if (!response || !response.offre) {
+          this.router.navigate(['/not-found']);
+          return;
+        }
         this.offre = response.offre;
-
         console.log('Mapped Offre:', this.offre);
       },
       error: (error: any) => {
         console.error('Error fetching offre:', error);
+        this.router.navigate(['/not-found']);
       }
     });
   }
