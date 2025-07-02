@@ -22,6 +22,7 @@ const router = express.Router();
 router.get("/", getAllArticles);
 router.get("/:id", getArticleById);
 router.get("/revue/:revueId", getArticlesByRevue);
+router.get("/categories/all", getAllCategories);
 
 // Routes protégées
 router.use(authMiddleware);
@@ -31,10 +32,9 @@ router.put("/:id", updateArticle);
 router.delete("/:id", deleteArticle);
 
 // Routes pour les catégories
-router.get("/categories/all", getAllCategories);
 router.post("/categories", createCategorie);
 router.get("/categories/:id", getCategorieById);
 router.put("/categories/:id", updateCategorie);
 router.delete("/categories/:id", deleteCategorie);
 
-export default router; 
+export default router;

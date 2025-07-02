@@ -1,12 +1,11 @@
 import {Component, Input, OnInit } from '@angular/core';
-import {AsyncPipe, NgIf} from '@angular/common';
+import {NgIf} from '@angular/common';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-revue-item',
   imports: [
-    NgIf,
-    AsyncPipe
+    NgIf
   ],
   templateUrl: './revue-item.component.html',
   standalone: true,
