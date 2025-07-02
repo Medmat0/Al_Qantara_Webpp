@@ -57,6 +57,10 @@ const createCommunityService = async(req) => {
             moderateurs: {
                 connect: { id: userId }
             }
+            ,
+            membres: {
+                connect: { id: userId }
+            }
         }
     });
 

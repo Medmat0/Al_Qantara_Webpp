@@ -55,21 +55,25 @@ const checkIfModeratorService = async (req) => {
 
 const promoteMemberService = async (req) => {
     const {communityId, memberId} = req.params;
+    const userCommunityRole = req.userCommunityRole;
 
     // Vérifie si la communauté existe
     const community = await prisma.community.findUnique({
         where: {id: parseInt(communityId)},
         include: {
-            members: true,
+            membres: true,
         },
     });
 
     if (!community) {
         throw {status: 404, message: "Communauté non trouvée."};
     }
+    if( userCommunityRole !== "ADMIN" && userCommunityRole !== "MODERATEUR") {
+        throw {status: 403, message: "Vous n'avez pas les droits nécessaires pour promouvoir un membre."};
+    }
 
     // Check if the user is a member of the community
-    const member = community.membres.find(member => member.id === memberId);
+    const member = community.membres.find(member => member.id === parseInt(memberId));
     if (!member) {
         throw {status: 404, message: "Membre non trouvé dans la communauté."};
     }
@@ -93,6 +97,7 @@ const promoteMemberService = async (req) => {
 
 const banMemberService = async (req) => {
     const {communityId, memberId} = req.params;
+    const userCommunityRole = req.userCommunityRole;
     console.log("Bannissement du membre:", memberId, "de la communauté:", communityId);
 
     // Vérifie si la communauté existe
@@ -100,11 +105,16 @@ const banMemberService = async (req) => {
         where: {id: parseInt(communityId)},
         include: {
             membres: true,
+            membresbannis: true,
         },
     });
 
     if (!community) {
         throw {status: 404, message: "Communauté non trouvée."};
+    }
+
+    if (userCommunityRole !== "ADMIN" && userCommunityRole !== "MODERATEUR") {
+        throw {status: 403, message: "Vous n'avez pas les droits nécessaires pour bannir un membre."};
     }
 
     const member = community.membres.find(member => member.id === parseInt(memberId));
@@ -130,6 +140,10 @@ const banMemberService = async (req) => {
             },
             membresbannis: {
                 connect: { id: parseInt(memberId) }
+            },
+            // le membre est supprimé des modérateurs s'il est modérateur
+            moderateurs: {
+                disconnect: { id: parseInt(memberId) }
             }
         },
     });
@@ -183,6 +197,26 @@ const getCommunityMembersService = async (req) => {
                     photoProfil: true,
                     role: true,
                 }
+            },
+            moderateurs: {
+                select: {
+                    id: true,
+                    nom: true,
+                    prenom: true,
+                    email: true,
+                    photoProfil: true,
+                    role: true,
+                }
+            },
+            membresbannis: {
+                select: {
+                    id: true,
+                    nom: true,
+                    prenom: true,
+                    email: true,
+                    photoProfil: true,
+                    role: true,
+                }
             }
         }
     });
@@ -193,7 +227,11 @@ const getCommunityMembersService = async (req) => {
         throw err;
     }
 
-    return community.membres;
+    return {
+        membres: community.membres,
+        moderateurs: community.moderateurs,
+        membresbannis: community.membresbannis
+    };
 }
 
 const demoteModeratorService = async (req) => {

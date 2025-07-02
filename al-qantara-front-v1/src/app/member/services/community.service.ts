@@ -253,4 +253,79 @@ export class CommunityService {
             })
         );
     }
+
+    getCommunityMembers(communityId: number): Observable<any> {
+        return this.http.get<any>(`${this.apiUrl}/${communityId}/members`, { withCredentials: true }).pipe(
+            tap((response) => {
+                console.log('Fetched community members:', response);
+            }),
+            catchError((error) => {
+                console.error('Error fetching community members:', error);
+                return throwError(() => error);
+            })
+        );
+    }
+
+    promoteMember(communityId: number, memberId: number): Observable<any> {
+        return this.http.post<any>(
+            `${this.apiUrl}/${communityId}/members/${memberId}/promote`,
+            {},
+            { withCredentials: true }
+        ).pipe(
+            tap((response) => {
+                console.log('Member promoted successfully:', response);
+            }),
+            catchError((error) => {
+                console.error('Error promoting member:', error);
+                return throwError(() => error);
+            })
+        );
+    }
+
+    demoteMember(communityId: number, moderatorId: number): Observable<any> {
+      return this.http.delete<any>(
+        `${this.apiUrl}/${communityId}/members/${moderatorId}/demote`,
+        { withCredentials: true }
+      ).pipe(
+            tap((response) => {
+                console.log('Member demoted successfully:', response);
+            }),
+            catchError((error) => {
+                console.error('Error demoting member:', error);
+                return throwError(() => error);
+            })
+        );
+    }
+
+    banMember(communityId: number, memberId: number): Observable<any> {
+        return this.http.post<any>(
+            `${this.apiUrl}/${communityId}/members/${memberId}/ban`,
+            {},
+            { withCredentials: true }
+        ).pipe(
+            tap((response) => {
+                console.log('Member banned successfully:', response);
+            }),
+            catchError((error) => {
+                console.error('Error banning member:', error);
+                return throwError(() => error);
+            })
+        );
+    }
+
+    unbanMember(communityId: number, memberId: number): Observable<any> {
+        return this.http.post<any>(
+            `${this.apiUrl}/${communityId}/members/${memberId}/unban`,
+            {},
+            { withCredentials: true }
+        ).pipe(
+            tap((response) => {
+                console.log('Member unbanned successfully:', response);
+            }),
+            catchError((error) => {
+                console.error('Error unbanning member:', error);
+                return throwError(() => error);
+            })
+        );
+    }
 }
