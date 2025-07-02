@@ -5,40 +5,24 @@
 
     <div class="profile-group">
       <label>Prénom</label>
-      <p>Omar</p>
+      <p>{{ user?.prenom }}</p>
     </div>
 
     <div class="profile-group">
       <label>Nom</label>
-      <p>EL BARAKA</p>
+      <p>{{ user?.nom }}</p>
     </div>
 
     <div class="profile-group">
-      <label>Adresse</label>
-      <p>123 bak mcha l sbata</p>
+      <label>Email</label>
+      <p>{{ user?.email }}</p>
     </div>
 
     <div class="profile-group">
       <label>Téléphone</label>
-      <p>+21261234567</p>
+      <p>{{ user?.telephone }}</p>
     </div>
 
-    <div class="profile-group">
-      <label>Ville</label>
-      <p>Fès</p>
-    </div>
-    <div class="profile-group">
-      <label>Role</label>
-      <p>MEMBRE</p>
-    </div>
-    <div class="profile-group">
-      <label>Poste</label>
-      <p>Chargé de communication</p>
-    </div>
-    <div class="profile-group">
-      <label>Pole</label>
-      <p>Evènementiel</p>
-    </div>
     <button routerLink="/profile/edit">Modifier mon profil</button>
   </div>
 </div>
