@@ -10,5 +10,6 @@ export const routes: Routes = [
   {path: 'contacts', loadChildren: () => import('./pages/contacts/contacts.routes').then(m => m.default)},
   {path: 'events', loadChildren: () => import('./pages/events/events.routes').then(m => m.default)},
   {path: 'recruitment', loadChildren: () => import('./pages/recruitment/recruitment.routes').then(m => m.default)},
+  {path: 'adhesion', loadChildren: () => import('./pages/adhesion/adhesion.routes').then(m => m.default)},
   {path: '**', redirectTo: '', pathMatch: 'full'},
 ];
