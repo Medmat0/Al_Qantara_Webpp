@@ -392,6 +392,9 @@ const leaveCommunityService = async (req) => {
         data: {
             membres: {
                 disconnect: { id: userId }
+            },
+            moderateurs: {
+                disconnect: { id: userId }
             }
         }
     });

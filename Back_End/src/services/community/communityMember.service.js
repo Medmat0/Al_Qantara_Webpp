@@ -106,6 +106,7 @@ const banMemberService = async (req) => {
         include: {
             membres: true,
             membresbannis: true,
+            moderateurs: true,
         },
     });
 
@@ -122,8 +123,8 @@ const banMemberService = async (req) => {
         throw {status: 404, message: "Membre non trouvé dans la communauté."};
     }
 
-    if (member.id === req.userId) {
-        throw {status: 403, message: "Vous ne pouvez pas vous bannir vous-même."};
+    if (member.id === req.userId || community.moderateurs.some(mod => mod.id === parseInt(memberId))) {
+        throw {status: 403, message: "Vous ne pouvez pas vous bannir vous-même ou bannir un modérateur."};
     }
 
     const isBanned = community.membresbannis.some(bannedMember => bannedMember.id === parseInt(memberId));
