@@ -42,6 +42,8 @@ export class EventDescriptionComponent {
   isParticipating = false;
   participation: any = null;
   unsubscribeConfirmed: boolean = false;
+  errorPaymentMessage = '';
+  showPaymentModal = false;
 
   constructor(private route: ActivatedRoute, private router: Router, private sanitizer: DomSanitizer, private cdr: ChangeDetectorRef) {
     this.authService.authStatus$.subscribe((status) => {
@@ -275,6 +277,20 @@ export class EventDescriptionComponent {
       return this.evenement.images[0];
     }
     return 'assets/main-icon.jpg';
+  }
+
+  onPayWithHelloAsso() {
+    this.errorPaymentMessage = '';
+    const utilisateur = JSON.parse(localStorage.getItem('utilisateur') || '{}');
+    if (
+      utilisateur &&
+      (utilisateur.id === this.evenement?.createur?.id ||
+        utilisateur.email === this.evenement?.createur?.email)
+    ) {
+      this.errorPaymentMessage = "Le créateur de l'événement ne peut pas acheter de billet pour son propre événement.";
+      return;
+    }
+    this.showPaymentModal = true;
   }
 
 }

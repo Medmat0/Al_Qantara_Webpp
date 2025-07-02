@@ -298,6 +298,17 @@ textarea.form-control::placeholder {
   color: #6b7280;
 }
 
+.error {
+  color: #ffffff;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  margin-top: 12px;
+  text-align: center;
+  background-color: #fd6363;
+  padding: 10px;
+  border-radius: 4px;
+}
+
 @media (max-width: 600px) {
   .modal-content {
     padding: 1rem;

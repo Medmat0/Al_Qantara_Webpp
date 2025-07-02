@@ -44,13 +44,16 @@
       </div>
 
       <div class="mb-2">
-        <button
-          *ngIf="!isParticipating && evenement.placesRestantes > 0"
-          (click)="onParticipateToEvenement(evenement)"
-          [disabled]="loading"
-          class="btn-participate">
-          {{ loading ? 'Participation en cours...' : '🎫 Participer à l\'événement' }}
-        </button>
+        <!-- Affichage conditionnel des boutons selon event payant et créateur -->
+        <ng-container *ngIf="!isParticipating && evenement.placesRestantes > 0">
+          <button
+            *ngIf="evenement.isPayant"
+            (click)="onPayWithHelloAsso()"
+            [disabled]="loading"
+            class="btn-pay">
+            {{ loading ? 'Paiement en cours...' : '💳 Acheter un billet' }}
+          </button>
+        </ng-container>
         <button
           *ngIf="isParticipating"
           (click)="onUnsubscribeEvenement(evenement)"
@@ -58,6 +61,7 @@
           class="btn-unsubscribe">
           {{ loading ? 'Désinscription en cours...' : '❌ Se désinscrire' }}
         </button>
+        <div *ngIf="errorPaymentMessage" class="error">{{ errorPaymentMessage }}</div>
       </div>
 
       <div *ngIf="isParticipating && participation" class="mb-2">

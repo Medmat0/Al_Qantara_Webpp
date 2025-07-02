@@ -205,3 +205,39 @@ textarea.form-control {
   text-align: center;
   border-radius: 8px;
 }
+.error {
+  color: #ffffff;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  margin-top: 12px;
+  text-align: center;
+  background-color: #fd6363;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.btn-pay {
+  background: #f3f4f6;
+  color: #3b82f6;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+
+  cursor: pointer;
+  font-weight: 600;
+  margin-right: 0.5rem;
+  transition: background 0.18s, color 0.18s;
+  box-shadow: none;
+  text-transform: none;
+}
+.btn-pay:hover, .btn-pay:focus {
+  background: #e5e7eb;
+  color: #2563eb;
+}
+.btn-pay:disabled {
+  background: #bcd7fa;
+  color: #fff;
+  cursor: not-allowed;
+  box-shadow: none;
+}

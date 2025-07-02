@@ -26,6 +26,9 @@ const createCheckoutIntent = async (paymentData) => {
     const backUrl = `${baseUrl}/payment/cancel?evenementId=${evenementId}&utilisateurId=${utilisateurId}`;
     const errorUrl = `${baseUrl}/payment/error?evenementId=${evenementId}&utilisateurId=${utilisateurId}`;
     const returnUrl = `${baseUrl}/payment/success?evenementId=${evenementId}&utilisateurId=${utilisateurId}`;
+/*    const backUrl = `https://www.youtube.com/`;
+    const errorUrl = `https://angularscript.com/`;
+    const returnUrl = `https://www.dreamjob.ma/guides/calendrier-jours-feries-maroc/`;*/
 
     console.log('URLs de redirection:', { 
       returnUrl: returnUrl.toString(),
