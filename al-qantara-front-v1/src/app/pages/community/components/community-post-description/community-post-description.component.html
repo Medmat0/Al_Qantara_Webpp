@@ -20,6 +20,9 @@
       [toggleReplyForm]="toggleReplyForm"
       [addReply]="addReply"
       [likeDislikeComment]="likeDislikeComment"
+      [deleteComment]="deleteComment"
+      [isModerator]="isModerator"
+      [userId]="userId"
     ></app-comment>
   </div>
   <form (ngSubmit)="addComment()" #commentForm="ngForm" class="add-comment-form">

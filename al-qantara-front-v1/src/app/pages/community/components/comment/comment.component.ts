@@ -16,11 +16,9 @@ export class CommentComponent {
   @Input() toggleReplyForm!: (id: number) => void;
   @Input() addReply!: (id: number) => void;
   @Input() likeDislikeComment!: (comment: any) => void;
-
-
-
-
-
+  @Input() deleteComment!: (comment: any) => void;
+  @Input() isModerator: boolean = false;
+  @Input() userId: number | null = null;
 
 }
 

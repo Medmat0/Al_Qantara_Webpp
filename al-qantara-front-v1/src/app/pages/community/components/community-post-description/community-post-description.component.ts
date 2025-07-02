@@ -24,6 +24,8 @@ export class CommunityPostDescriptionComponent implements OnInit {
   newCommentContent: string = '';
   replyFormVisible: { [key: number]: boolean } = {};
   replyContent: { [key: number]: string } = {};
+  isModerator: boolean = false;
+  isMember: boolean | null = false;
 
   constructor(private route: ActivatedRoute,
               private communityService: CommunityService,
@@ -43,6 +45,7 @@ export class CommunityPostDescriptionComponent implements OnInit {
     this.addReply = this.addReply.bind(this);
     this.toggleReplyForm = this.toggleReplyForm.bind(this);
     this.likeDislikeComment = this.likeDislikeComment.bind(this);
+    this.deleteComment = this.deleteComment.bind(this);
 
   }
 
@@ -54,6 +57,24 @@ export class CommunityPostDescriptionComponent implements OnInit {
         this.communityId = +communityId;
         this.postId = +postId;
         this.fetchPost();
+        if( this.isAuthenticated) {
+          this.checkMembership();
+          this.communityService.isModerator(this.communityId).subscribe({
+            next: (isMod) => this.isModerator = isMod,
+            error: () => this.isModerator = false
+          });
+        }
+      }
+    });
+  }
+
+  checkMembership() {
+    this.communityService.checkIfUserIsMember(this.communityId).subscribe({
+      next: (isMember) => {
+        this.isMember = isMember;
+      },
+      error: () => {
+        this.isMember = false;
       }
     });
   }
@@ -266,17 +287,16 @@ export class CommunityPostDescriptionComponent implements OnInit {
     });
   }
 
-  deleteComment(commentId: number) {
-    if (!commentId) {
-      console.error('Invalid comment ID:', commentId);
-      this.error = 'Erreur : ID du commentaire invalide.';
+  deleteComment(comment: any) {
+    if (!comment) {
+      console.error('Invalid comment:', comment);
+      this.error = 'Erreur : commentaire invalide.';
       return;
     }
 
-    this.communityService.deleteComment(this.communityId, this.postId, commentId).subscribe({
+    this.communityService.deleteComment(this.communityId, this.postId, comment.id).subscribe({
       next: () => {
-        // Supprimer le commentaire de la liste
-        this.post.commentaires = this.post.commentaires.filter((c: any) => c.id !== commentId);
+        this.removeCommentRecursive(this.post.commentaires, comment.id);
         this.cdr.detectChanges();
       },
       error: (err) => {
@@ -284,6 +304,19 @@ export class CommunityPostDescriptionComponent implements OnInit {
         this.error = 'Erreur lors de la suppression du commentaire.';
       }
     });
+  }
+
+  private removeCommentRecursive(comments: any[], commentId: number): boolean {
+    for (let i = 0; i < comments.length; i++) {
+      if (comments[i].id === commentId) {
+        comments.splice(i, 1);
+        return true;
+      }
+      if (comments[i].replies && this.removeCommentRecursive(comments[i].replies, commentId)) {
+        return true;
+      }
+    }
+    return false;
   }
 
 

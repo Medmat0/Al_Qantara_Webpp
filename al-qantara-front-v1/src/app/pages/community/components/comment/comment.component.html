@@ -3,6 +3,11 @@
   <div class="comment-content">{{ comment.contenu }}</div>
   <button class="reply-button" (click)="toggleReplyForm(comment.id)">Répondre</button>
   <button (click)="likeDislikeComment(comment)">Like | {{ comment.likes?.length || 0 }}</button>
+  <button
+    *ngIf="isModerator || userId === comment.auteurId"
+    (click)="deleteComment(comment)">
+    Supprimer
+  </button>
 
   <form *ngIf="replyFormVisible[comment.id]" (ngSubmit)="addReply(comment.id)" #replyForm="ngForm" class="reply-form">
     <textarea
@@ -25,6 +30,9 @@
       [toggleReplyForm]="toggleReplyForm"
       [addReply]="addReply"
       [likeDislikeComment]="likeDislikeComment"
+      [deleteComment]="deleteComment"
+      [isModerator]="isModerator"
+      [userId]="userId"
     ></app-comment>
   </div>
 </div>
