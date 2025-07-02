@@ -1,41 +1,51 @@
 <header>
   <nav>
     <div class="logo">
-
-        <svg>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="fill: white;"><path d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z" /></svg>
+      <svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="fill: white;">
+          <path d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z" />
         </svg>
-
+      </svg>
       <h2>Al&nbsp;Qantara</h2>
     </div>
-    <ul>
-      <li><a routerLink="/">Accueil</a></li>
-      <li><a routerLink="/revues">Revues</a></li>
-      <li><a routerLink="/articles">Articles</a></li>
-      <li><a routerLink="/contacts">Nous&nbsp;Contacter</a></li>
-      <li><a routerLink="/events">Événements</a></li>
-      <li><a routerLink="/recruitment">Nous rejoindre</a></li>
-    </ul>
 
-    <div class="ConnectingOptions">
-      <div class="login-register">
-        <button *ngIf="showButtons && !isAuthenticated" class="register" routerLink="/auth/register">S'inscrire</button>
-        <button *ngIf="showButtons && !isAuthenticated" class="login" routerLink="/auth/login">Se Connecter</button>
-      </div>
-      <div class="user-menu" *ngIf="isAuthenticated">
-        <button class="user-button" (click)="toggleUserMenu()">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path d="M12 4C14.21 4 16 5.79 16 8S14.21 12 12 12 8 10.21 8 8 9.79 4 12 4M12 14C16.42 14 20 15.79 20 18V20H4V18C4 15.79 7.58 14 12 14Z" />
-          </svg>
-        </button>
-        <div class="user-dropdown" *ngIf="isUserMenuOpen">
-          <ul>
-            <li><a (click)="navigateToProfile()">Mon profil</a></li>
-            <li><a class="logout-link" (click)="logout()">Déconnexion</a></li>
-          </ul>
+    <!-- Bouton hamburger pour mobile -->
+    <button class="hamburger" (click)="toggleMenu()" [class.active]="isMenuOpen">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z" />
+      </svg>
+    </button>
+
+    <!-- Conteneur principal du menu -->
+    <div class="nav-container" [class.active]="isMenuOpen">
+      <ul class="nav-links">
+        <li><a (click)="navigateTo('/')">Accueil</a></li>
+        <li><a (click)="navigateTo('/revues')">Revues</a></li>
+        <li><a (click)="navigateTo('/articles')">Articles</a></li>
+        <li><a (click)="navigateTo('/contacts')">Nous&nbsp;Contacter</a></li>
+        <li><a (click)="navigateTo('/events')">Événements</a></li>
+        <li><a (click)="navigateTo('/recruitment')">Nous rejoindre</a></li>
+      </ul>
+
+      <div class="ConnectingOptions">
+        <div class="login-register">
+          <button *ngIf="showButtons && !isAuthenticated" class="register" (click)="navigateTo('/auth/register')">S'inscrire</button>
+          <button *ngIf="showButtons && !isAuthenticated" class="login" (click)="navigateTo('/auth/login')">Se Connecter</button>
+        </div>
+        <div class="user-menu" *ngIf="isAuthenticated">
+          <button class="user-button" (click)="toggleUserMenu()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M12 4C14.21 4 16 5.79 16 8S14.21 12 12 12 8 10.21 8 8 9.79 4 12 4M12 14C16.42 14 20 15.79 20 18V20H4V18C4 15.79 7.58 14 12 14Z" />
+            </svg>
+          </button>
+          <div class="user-dropdown" *ngIf="isUserMenuOpen">
+            <ul>
+              <li><a (click)="navigateToProfile()">Mon profil</a></li>
+              <li><a class="logout-link" (click)="logout()">Déconnexion</a></li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
   </nav>
 </header>
-

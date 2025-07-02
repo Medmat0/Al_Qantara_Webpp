@@ -1,13 +1,13 @@
 import { Component, HostListener } from '@angular/core';
 import {Router, RouterLink} from '@angular/router';
-import { NgIf } from '@angular/common';
+import { NgIf, NgClass } from '@angular/common';
 import { NavbarService } from '../../services/navbar.service';
 import { AuthService } from '../../services/auth.service';
 import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-nav-bar',
-  imports: [RouterLink, NgIf],
+  imports: [RouterLink, NgIf, NgClass],
   templateUrl: './nav-bar.component.html',
   standalone: true,
   styleUrl: './nav-bar.component.scss'
@@ -17,6 +17,7 @@ export class NavBarComponent {
   isAuthenticated: boolean = false;
   username: string | null = null;
   isUserMenuOpen: boolean = false;
+  isMenuOpen = false;
 
   constructor(
     private authService: AuthService,
@@ -48,6 +49,10 @@ export class NavBarComponent {
     this.isUserMenuOpen = !this.isUserMenuOpen;
   }
 
+  toggleMenu(): void {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
   @HostListener('document:click', ['$event'])
   onClick(event: Event): void {
     const userMenu = document.querySelector('.user-menu');
@@ -72,5 +77,9 @@ export class NavBarComponent {
   navigateToProfile(): void {
     this.isUserMenuOpen = false;  // Ferme le menu
     this.router.navigate(['/profile']);
+  }
+
+  navigateTo(path: string): void {
+    this.router.navigate([path]);
   }
 }
