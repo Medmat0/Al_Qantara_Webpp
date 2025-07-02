@@ -71,4 +71,13 @@ export class RecruitmentService {
       withCredentials: true
     });
   }
+
+  // Planifier une réunion Zoom pour une candidature
+  scheduleInterviewZoom(offerId: number, applicantId: number, dateEntretien: string): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/${offerId}/zoom/${applicantId}`,
+      { dateEntretien },
+      { withCredentials: true }
+    );
+  }
 }
