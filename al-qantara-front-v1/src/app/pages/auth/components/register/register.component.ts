@@ -48,6 +48,10 @@ export class RegisterComponent {
     confirmPassword: ['', {
       validators: [Validators.required, Validators.minLength(8),this.authService.passwordMatchValidator('password', 'confirmPassword')],
       updateOn: 'change'
+    }],
+    telephone: ['', {
+      validators: [Validators.required, Validators.pattern(/^\+?[0-9]{7,15}$/)],
+      updateOn: 'change'
     }]
   });
 
@@ -58,9 +62,9 @@ export class RegisterComponent {
       return;
     }
 
-    const { nom, prenom, email, password } = this.registerForm.value;
+    const { nom, prenom, email, password, telephone } = this.registerForm.value;
 
-    this.authService.register(nom, prenom, email, password).subscribe({
+    this.authService.register(nom, prenom, email, password, telephone).subscribe({
       next: (response) => {
         // Handle successful registration
         console.log('Registration successful', response);
