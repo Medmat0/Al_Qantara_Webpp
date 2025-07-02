@@ -3,31 +3,36 @@
     <h2>Modifier votre profil</h2>
     <p class="description">Mettez à jour vos informations personnelles</p>
 
-    <form>
+    <form (ngSubmit)="onSubmit()">
       <div class="form-group">
         <label for="prenom">Prénom</label>
-        <input id="prenom" type="text" placeholder="Votre prénom" />
+        <input id="prenom" type="text" placeholder="Votre prénom" [(ngModel)]="prenom" name="prenom" />
       </div>
 
       <div class="form-group">
         <label for="nom">Nom</label>
-        <input id="nom" type="text" placeholder="Votre nom" />
-      </div>
-
-      <div class="form-group">
-        <label for="adresse">Adresse</label>
-        <input id="adresse" type="text" placeholder="Votre adresse" />
+        <input id="nom" type="text" placeholder="Votre nom" [(ngModel)]="nom" name="nom" />
       </div>
 
       <div class="form-group">
         <label for="telephone">Téléphone</label>
-        <input id="telephone" type="text" placeholder="+212..." />
+        <input id="telephone" type="text" placeholder="+33..." [(ngModel)]="telephone" name="telephone" />
       </div>
 
       <div class="form-group">
-        <label for="city">Ville</label>
-        <input id="city" type="text" placeholder="Votre ville" />
+        <label for="currentPassword">Mot de passe actuel</label>
+        <input id="currentPassword" type="password" placeholder="Mot de passe actuel" [(ngModel)]="currentPassword" name="currentPassword" />
       </div>
+      <div class="form-group">
+        <label for="newPassword">Nouveau mot de passe</label>
+        <input id="newPassword" type="password" placeholder="Nouveau mot de passe" [(ngModel)]="newPassword" name="newPassword" />
+      </div>
+      <div class="form-group">
+        <label for="confirmPassword">Confirmer le nouveau mot de passe</label>
+        <input id="confirmPassword" type="password" placeholder="Confirmer le nouveau mot de passe" [(ngModel)]="confirmPassword" name="confirmPassword" />
+      </div>
+      <div *ngIf="errorMessage" class="form-error">{{ errorMessage }}</div>
+      <div *ngIf="successMessage" class="form-success">{{ successMessage }}</div>
 
       <button type="submit">Enregistrer</button>
     </form>

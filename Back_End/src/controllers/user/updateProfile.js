@@ -10,7 +10,7 @@ const prisma = new PrismaClient();
  * @access  Private
  */
 const updateProfile = asyncHandler(async (req, res) => {
-  const { nom, prenom } = req.body;
+  const { nom, prenom, telephone  } = req.body;
   const userId = req.user.id; // L'ID de l'utilisateur connecté
 
   // Vérifier si l'utilisateur existe
@@ -27,13 +27,16 @@ const updateProfile = asyncHandler(async (req, res) => {
     where: { id: userId },
     data: {
       nom: nom || user.nom,
-      prenom: prenom || user.prenom
+      prenom: prenom || user.prenom,
+      telephone: telephone || user.telephone
+
     },
     select: {
       id: true,
       nom: true,
       prenom: true,
       email: true,
+      telephone: true,
       role: true,
       dateInscription: true,
       statut: true
