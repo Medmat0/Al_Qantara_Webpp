@@ -284,7 +284,7 @@ export class CommunityService {
 
     demoteMember(communityId: number, moderatorId: number): Observable<any> {
       return this.http.delete<any>(
-        `${this.apiUrl}/${communityId}/members/${moderatorId}/demote`,
+        `${this.apiUrl}/${communityId}/moderateurs/${moderatorId}/demote`,
         { withCredentials: true }
       ).pipe(
             tap((response) => {
@@ -314,9 +314,9 @@ export class CommunityService {
     }
 
     unbanMember(communityId: number, memberId: number): Observable<any> {
-        return this.http.post<any>(
+        return this.http.delete<any>(
             `${this.apiUrl}/${communityId}/members/${memberId}/unban`,
-            {},
+
             { withCredentials: true }
         ).pipe(
             tap((response) => {

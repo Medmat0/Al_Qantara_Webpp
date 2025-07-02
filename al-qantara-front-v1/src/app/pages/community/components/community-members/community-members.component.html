@@ -16,6 +16,7 @@
         <div class="email">{{ member.email }}</div>
         <div class="role" [ngClass]="member.role.toLowerCase()">{{ member.role }}</div>
       </div>
+      <button (click)="demoteMember(member)" class="ban-btn">Rétrograder</button>
       <button (click)="banMember(member)" class="ban-btn">Bannir</button>
     </li>
     <li *ngIf="moderateurs.length === 0">Aucun modérateur</li>
@@ -37,6 +38,13 @@
         <div class="email">{{ member.email }}</div>
         <div class="role" [ngClass]="member.role.toLowerCase()">{{ member.role }}</div>
       </div>
+      <button
+        *ngIf="isNotModerator(member)"
+        (click)="promoteMember(member)"
+        class="ban-btn"
+      >
+        Promouvoir
+      </button>
       <button (click)="banMember(member)" class="ban-btn">Bannir</button>
     </li>
     <li *ngIf="membres.length === 0">Aucun membre</li>

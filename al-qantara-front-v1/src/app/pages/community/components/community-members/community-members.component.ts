@@ -75,16 +75,66 @@ export class CommunityMembersComponent implements OnInit {
   }
 
   banMember(member: any) {
-    if (!confirm(`Bannir ${member.prenom} ${member.nom} ?`)) return;
+    if (!confirm('Bannir ' + member.prenom + ' ' + member.nom + ' ?')) return;
     this.communityService.banMember(this.communityId, member.id).subscribe({
-      next: () => this.loadMembers()
+      next: () => {
+        this.membres = this.membres.filter(m => m.id !== member.id);
+        this.moderateurs = this.moderateurs.filter(m => m.id !== member.id);
+        if (!this.membresbannis.some(m => m.id === member.id)) {
+          this.membresbannis = [...this.membresbannis, { ...member }];
+        }
+      },
+      error: (err) => {
+        console.error('Erreur lors du bannissement:', err);
+      }
     });
   }
 
   unbanMember(member: any) {
-    if (!confirm(`Débannir ${member.prenom} ${member.nom} ?`)) return;
+    if (!confirm('Débannir ' + member.prenom + ' ' + member.nom + ' ?')) return;
     this.communityService.unbanMember(this.communityId, member.id).subscribe({
-      next: () => this.loadMembers()
+      next: () => {
+        this.membresbannis = this.membresbannis.filter(m => m.id !== member.id);
+        if (!this.membres.some(m => m.id === member.id)) {
+          this.membres = [...this.membres, { ...member }];
+        }
+      },
+      error: (err) => {
+        console.error('Erreur lors du débannissement:', err);
+      }
+    });
+  }
+
+  promoteMember(member: any) {
+    if (!confirm('Promouvoir ' + member.prenom + ' ' + member.nom + ' en modérateur ?')) return;
+    this.communityService.promoteMember(this.communityId, member.id).subscribe({
+      next: () => {
+        if (!this.moderateurs.some(m => m.id === member.id)) {
+          this.moderateurs = [...this.moderateurs, { ...member }];
+        }
+      },
+      error: (err) => {
+        console.error('Erreur lors de la promotion:', err);
+      }
+    });
+  }
+
+  isNotModerator(member: any): boolean {
+    return !this.moderateurs.some(mod => mod.id === member.id);
+  }
+
+  demoteMember(moderator: any) {
+    if (!confirm('Rétrograder ' + moderator.prenom + ' ' + moderator.nom + ' ?')) return;
+    this.communityService.demoteMember(this.communityId, moderator.id).subscribe({
+      next: () => {
+        this.moderateurs = this.moderateurs.filter(m => m.id !== moderator.id);
+        if (!this.membres.some(m => m.id === moderator.id)) {
+          this.membres = [...this.membres, { ...moderator }];
+        }
+      },
+      error: (err) => {
+        console.error('Erreur lors de la rétrogradation:', err);
+      }
     });
   }
 
