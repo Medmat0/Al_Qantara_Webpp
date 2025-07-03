@@ -24,6 +24,7 @@ interface Article {
   templateUrl: './articles.component.html',
   styleUrl: './articles.component.scss'
 })
+
 export class ArticlesComponent implements OnInit {
   http = inject(HttpClient);
   router = inject(Router);
@@ -40,6 +41,8 @@ export class ArticlesComponent implements OnInit {
 
   // Filter
   selectedFilter = 'none';
+  selectedCategory: string = '';
+  categoriesList: string[] = [];
 
   // Modal properties
   showModal = false;
@@ -71,8 +74,10 @@ export class ArticlesComponent implements OnInit {
 
     this.http.get<any>('http://localhost:3000/articles', { withCredentials: true }).subscribe({
       next: (response) => {
-        // Correction : extraire les articles depuis response.articles
         this.articles = response.articles || [];
+        // Extraire la liste unique des catégories
+        const allCategories = this.articles.flatMap(a => a.categories?.map((c: any) => c.nom) || []);
+        this.categoriesList = Array.from(new Set(allCategories));
         this.loading = false;
       },
       error: (error) => {
@@ -107,7 +112,7 @@ export class ArticlesComponent implements OnInit {
         },
         error: (error) => {
           console.error('Erreur lors de la suppression:', error);
-          alert('Une erreur est survenue lors de la suppression de l\'article.');
+          this.error = 'Une erreur est survenue lors de la suppression de l\'article.';
           this.deletingArticleId = null;
           this.closeModal();
         }
@@ -126,18 +131,26 @@ export class ArticlesComponent implements OnInit {
   }
 
   get filteredArticles(): Article[] {
-    // First apply search filter
     let filtered: Article[] = Array.isArray(this.articles) ? this.articles : [];
 
+    // Filtre par recherche
     if (this.searchTerm) {
       const term = this.searchTerm.toLowerCase();
       filtered = filtered.filter(article =>
         article.titre.toLowerCase().includes(term) ||
-        article.auteur.toLowerCase().includes(term
-      ));
+        article.auteur.toLowerCase().includes(term) ||
+        article.contenu.toLowerCase().includes(term)
+      );
     }
 
-    // Then apply sorting
+    // Filtre par catégorie
+    if (this.selectedCategory) {
+      filtered = filtered.filter(article =>
+        Array.isArray(article.categories) && article.categories.some((cat: any) => cat.nom === this.selectedCategory)
+      );
+    }
+
+    // Tri
     switch (this.selectedFilter) {
       case 'most-recent':
         filtered = [...filtered].sort((a, b) =>
@@ -165,7 +178,49 @@ export class ArticlesComponent implements OnInit {
   }
 
   changePage(page: number): void {
-    this.currentPage = page;
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+    }
+  }
+
+  // Méthode pour générer les numéros de page avec ellipses
+  getPageNumbers(): (number | string)[] {
+    const pages: (number | string)[] = [];
+    const totalPages = this.totalPages;
+    const currentPage = this.currentPage;
+    
+    if (totalPages <= 7) {
+      // Si moins de 7 pages, montrer toutes les pages
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      // Toujours montrer la première page
+      pages.push(1);
+      
+      if (currentPage > 3) {
+        pages.push('...');
+      }
+      
+      // Montrer les pages autour de la page courante
+      const startPage = Math.max(2, currentPage - 1);
+      const endPage = Math.min(totalPages - 1, currentPage + 1);
+      
+      for (let i = startPage; i <= endPage; i++) {
+        pages.push(i);
+      }
+      
+      if (currentPage < totalPages - 2) {
+        pages.push('...');
+      }
+      
+      // Toujours montrer la dernière page
+      if (totalPages > 1) {
+        pages.push(totalPages);
+      }
+    }
+    
+    return pages;
   }
 
   // Méthodes pour l'édition d'articles
@@ -184,9 +239,36 @@ export class ArticlesComponent implements OnInit {
     this.loadArticles();
 
     // Afficher un message de succès temporaire
-    this.editSuccess = 'Article modifié avec succès.';
+    this.editSuccess = 'Article modifié avec succès !';
     setTimeout(() => {
       this.editSuccess = '';
-    }, 3000);
+    }, 4000);
+  }
+
+  // Méthodes utilitaires
+  truncateText(text: string, maxLength: number): string {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
+  }
+
+  getArticleExcerpt(content: string): string {
+    // Nettoyer le HTML et extraire le texte
+    const cleanContent = content.replace(/<[^>]*>/g, '');
+    return this.truncateText(cleanContent, 200);
+  }
+
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('fr-FR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  }
+
+  // Méthode pour fermer les messages toast
+  closeToast(): void {
+    this.editSuccess = '';
+    this.error = '';
   }
 }

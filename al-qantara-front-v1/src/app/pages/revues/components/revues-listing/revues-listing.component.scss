@@ -6,7 +6,7 @@ $secondary-hover: #bfa6a6;
 $accent-color: #06b6d4;
 $danger-color: #dc2626;
 $danger-hover: #b91c1c;
-$background-light: #f8fafc;
+$background-light: #ffffff;
 $background-card: #ffffff;
 $text-primary: #1f2937;
 $text-secondary: #6b7280;
@@ -18,7 +18,7 @@ $shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 $shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 $shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 $gradient-primary: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
-$gradient-background: linear-gradient(135deg, #3b1010 0%, #dfcbcb 100%);
+$gradient-background: #fff;
 
 // Mixins
 @mixin flex-center {
@@ -68,7 +68,7 @@ $gradient-background: linear-gradient(135deg, #3b1010 0%, #dfcbcb 100%);
 // Main container
 .revues-main-container {
   min-height: 100vh;
-  background: $gradient-background;
+  background: $background-light;
   padding: 2rem 1rem;
   padding-top: 80px; // Pour éviter que le contenu passe sous le header admin
   
@@ -86,12 +86,12 @@ $gradient-background: linear-gradient(135deg, #3b1010 0%, #dfcbcb 100%);
   .page-title {
     font-size: 3rem;
     font-weight: 700;
-    color: #cbd5e1;
+    color: $primary-color;
     margin-bottom: 0.5rem;
-    background: #cbd5e1;
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    background: none;
+    background-clip: unset;
+    -webkit-background-clip: unset;
+    -webkit-text-fill-color: unset;
     
     @media (max-width: 768px) {
       font-size: 2.5rem;
@@ -104,7 +104,7 @@ $gradient-background: linear-gradient(135deg, #3b1010 0%, #dfcbcb 100%);
   
   .page-subtitle {
     font-size: 1.25rem;
-    color: #cbd5e1;
+    color: $text-secondary;
     margin: 0;
     
     @media (max-width: 768px) {
@@ -182,7 +182,7 @@ $gradient-background: linear-gradient(135deg, #3b1010 0%, #dfcbcb 100%);
   .search-btn {
     @include button-base;
     background: $gradient-primary;
-    color: white;
+    color: #fff;
     
     &:hover {
       transform: translateY(-1px);
@@ -285,7 +285,7 @@ $gradient-background: linear-gradient(135deg, #3b1010 0%, #dfcbcb 100%);
     width: 2.5rem;
     height: 2.5rem;
     background: $danger-color;
-    color: white;
+    color: #fff;
     border: none;
     border-radius: 0.5rem;
     @include flex-center;
@@ -445,25 +445,25 @@ $gradient-background: linear-gradient(135deg, #3b1010 0%, #dfcbcb 100%);
       .btn {
         @include button-base;
         
-        &.btn-secondary {
-          background: $background-light;
-          color: $text-secondary;
-          border: 1px solid $border-color;
-          
-          &:hover {
-            background: $secondary-color;
-            color: white;
-          }
-        }
-        
-        &.btn-danger {
-          background: $danger-color;
-          color: white;
-          
-          &:hover {
-            background: $danger-hover;
-          }
-        }
+    &.btn-secondary {
+      background: $background-light;
+      color: $text-secondary;
+      border: 1px solid $border-color;
+      
+      &:hover {
+        background: $secondary-color;
+        color: #fff;
+      }
+    }
+    
+    &.btn-danger {
+      background: $danger-color;
+      color: #fff;
+      
+      &:hover {
+        background: $danger-hover;
+      }
+    }
       }
     }
   }
