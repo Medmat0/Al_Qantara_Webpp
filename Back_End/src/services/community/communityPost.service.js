@@ -225,36 +225,36 @@ const getCommunityPostByIdService = async (req) => {
 }
 
 const getCommunityPostByNameService = async (req) => {
-    const postName = req.query.postName;
-    const communityId = parseInt(req.params.communityId);
+    const postName = req.query.name;
+    let tags = req.query.tags;
+
+    if (typeof tags === 'string') {
+        tags = tags.split(',').map(t => t.trim()).filter(t => t.length > 0);
+    }
+    if (!Array.isArray(tags)) tags = [];
+
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    if (!postName || typeof postName !== 'string' || postName.trim() === '') {
-        const err = new Error("Un mot ou une phrase de recherche est requis dans la query.");
+    if ((typeof postName !== 'string' || postName.trim() === '') && tags.length === 0) {
+        const err = new Error("Un mot/phrase de recherche ou au moins un tag est requis dans la query.");
         err.status = 400;
         throw err;
     }
 
-    const total = await prisma.communityPost.count({
-        where: {
-            titre: {
-                contains: postName,
-                mode: 'insensitive'
-            },
-            communityId: communityId
-        }
-    });
+    const where = {};
+    if (postName && postName.trim() !== '') {
+        where.titre = { contains: postName, mode: 'insensitive' };
+    }
+    if (tags.length > 0) {
+        where.tags = { hasSome: tags };
+    }
+
+    const total = await prisma.communityPost.count({ where });
 
     const posts = await prisma.communityPost.findMany({
-        where: {
-            titre: {
-                contains: postName,
-                mode: 'insensitive'
-            },
-            communityId: communityId
-        },
+        where,
         include: {
             community: { select: { id: true, nom: true, logo: true } },
         },
@@ -266,16 +266,12 @@ const getCommunityPostByNameService = async (req) => {
     });
 
     if (!posts || posts.length === 0) {
-        const err = new Error("Aucun post trouvé.");
-        err.status = 404;
-        throw err;
-    }
-
-    for (const post of posts) {
-        if (post.community.id !== communityId) {
-            const err = new Error("Un ou plusieurs posts n'appartiennent pas à cette communauté.");
-            err.status = 403;
-            throw err;
+        return {
+            posts: [],
+            page,
+            limit,
+            total,
+            totalPages: 0
         }
     }
 

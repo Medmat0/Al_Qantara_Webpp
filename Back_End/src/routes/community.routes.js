@@ -44,6 +44,7 @@ const router = express.Router();
 
 
 router.get("/name", getCommunityByName);
+router.get("/posts/name", getCommunityPostByName);
 router.get("/", getCommunities);
 router.post("/create", authMiddleware, uploadlogoCommunities.single('logo'), createCommunity);
 router.get("/randomCommunities", getRandomCommunities);
@@ -52,7 +53,6 @@ router.get("/randomPosts", getRandomPosts);
 // ----------------- Routes communautaires (avec ID dynamique) -----------------
 
 router.get("/:communityId", getCommunityById);
-router.get("/:communityId/posts/name", getCommunityPostByName);
 router.get("/:communityId/isMember",authMiddleware, checkIfMember);
 router.get("/:communityId/isModerator", authMiddleware,userCommunityRole, checkIfModerator);
 router.patch("/:communityId", authMiddleware, uploadlogoCommunities.single('logo'), modifyCommunity);

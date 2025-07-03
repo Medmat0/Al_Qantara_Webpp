@@ -53,6 +53,27 @@ export class CommunityService {
         );
     }
 
+  getCommunityPostsByName(name?: string, tags?: string[], page: number = 1, limit: number = 10): Observable<any> {
+    const params: any = {};
+    if (name) params.name = name;
+    if (tags && tags.length > 0) params.tags = tags.join(',');
+    params.page = page;
+    params.limit = limit;
+
+    return this.http.get<any>(`${this.apiUrl}/posts/name`, { params }).pipe(
+      tap((response) => {
+        console.log('Fetched community posts by name/tags:', response);
+      }),
+      // Ne pas faire de map ici, retourne l'objet brut
+      catchError((error) => {
+        console.error('Error fetching community posts by name/tags:', error);
+        return throwError(() => new Error('Erreur lors de la récupération des posts'));
+      })
+    );
+  }
+
+
+
     getCommunityById(communityId: number): Observable<any> {
         return this.http.get<any>(`${this.apiUrl}/${communityId}`).pipe(
             tap((response) => {

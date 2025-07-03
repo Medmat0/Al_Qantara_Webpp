@@ -172,9 +172,13 @@ const getCommunityByNameService = async (req) => {
     });
 
     if (!communities || communities.length === 0) {
-        const err = new Error("Aucune communauté trouvée.");
-        err.status = 404;
-        throw err;
+        return {
+            communities: [],
+            page,
+            limit,
+            total: 0,
+            totalPages: 0
+        };
     }
 
     const result = communities.map(community => ({
