@@ -2,6 +2,7 @@ import axios from 'axios';
 import { PrismaClient } from '@prisma/client';
 import querystring from 'querystring';
 import { participerEvenementService } from './participationEvenement.service.js';
+import { processAdhesionPayment, processDonationPayment } from '../adhesion/adhesion.service.js';
 
 const prisma = new PrismaClient();
 
@@ -137,4 +138,4 @@ export {
   getCheckoutIntent,
   getAccessToken
   
-}; 
+};

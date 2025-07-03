@@ -55,6 +55,8 @@ model Utilisateur {
   PollVote PollVote[]
 
   membresbannis Community[] @relation("CommunityBannished")
+
+  dons Don[]
 }
 
 enum Role {
@@ -472,4 +474,16 @@ model CommunityPostLike {
   utilisateur   Utilisateur   @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
 
   @@unique([postId, utilisateurId])
+}
+
+model Don {
+  id            Int            @id @default(autoincrement())
+  utilisateurId Int
+  montant       Float
+  dateDon       DateTime       @default(now())
+  statut        StatutPaiement @default(EN_ATTENTE)
+  reference     String?        @db.VarChar(255)
+  helloAssoId   String?        @db.VarChar(255)
+  message       String?        @db.Text
+  utilisateur   Utilisateur    @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
 }
