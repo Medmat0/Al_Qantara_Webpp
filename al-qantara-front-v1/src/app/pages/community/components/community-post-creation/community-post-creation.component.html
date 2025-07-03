@@ -1,4 +1,5 @@
-<form [formGroup]="postForm" (ngSubmit)="onSubmit(communityId)">  <label>Titre:</label>
+<form [formGroup]="postForm" (ngSubmit)="onSubmit(communityId)">
+  <label>Titre:</label>
   <input formControlName="titre" required>
   <div *ngIf="postForm.get('titre')?.invalid && postForm.get('titre')?.touched">Titre requis</div>
 
@@ -15,6 +16,21 @@
     <button type="button" (click)="addTag()">Ajouter un tag</button>
     <div *ngIf="tags.invalid && postForm.get('tags')?.touched">Au moins un tag requis</div>
   </div>
+
+  <label>Image:</label>
+  <input type="file" (change)="onFileSelected($event)">
+
+  <label>Sondage:</label>
+  <div formArrayName="pollOptions">
+    <div *ngFor="let option of pollOptions.controls; let i = index">
+      <input [formControlName]="i" placeholder="Option de sondage">
+      <button type="button" (click)="removePollOption(i)" *ngIf="pollOptions.length > 1">Supprimer</button>
+    </div>
+    <button type="button" (click)="addPollOption()">Ajouter une option</button>
+  </div>
+
+  <label>Date limite du sondage:</label>
+  <input type="date" formControlName="pollDeadline">
 
   <button type="submit" [disabled]="postForm.invalid">Créer le post</button>
 </form>

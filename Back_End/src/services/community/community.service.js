@@ -414,38 +414,35 @@ const getRandomPostsFromCommunitiesService = async (req) => {
 
     const total = await prisma.communityPost.count();
 
-    const posts = await prisma.$queryRaw`
-        SELECT
-            cp.id, cp.titre, cp.contenu, cp.tags, cp.modified, cp."auteurId",
-            u.nom as "auteurNom", u.prenom as "auteurPrenom",
-            cp."communityId", c.nom as "communityNom", c.logo as "communityLogo",
-            cp."dateCreation", cp."isPoll", cp."pollDeadline"
-        FROM "CommunityPost" cp
-                 JOIN "Utilisateur" u ON cp."auteurId" = u.id
-                 JOIN "Community" c ON cp."communityId" = c.id
-        ORDER BY RANDOM()
-        OFFSET ${skip}
-            LIMIT ${limit}
-    `;
-
-    // Pour chaque post, récupérer la liste des likes
-    const postsWithLikes = await Promise.all(posts.map(async (post) => {
-        const likes = await prisma.communityPostLike.findMany({
-            where: { postId: post.id },
-            select: {
-                id: true,
-                utilisateurId: true,
-                dateLike: true,
-                utilisateur: {
-                    select: {
-                        id: true,
-                        nom: true,
-                        prenom: true
+    // Récupère les posts avec auteur, likes, commentaires, pollOptions et infos communauté
+    const posts = await prisma.communityPost.findMany({
+        skip,
+        take: limit,
+        orderBy: { dateCreation: 'desc' },
+        include: {
+            auteur: {
+                select: { id: true, nom: true, prenom: true }
+            },
+            likes: {
+                select: {
+                    id: true,
+                    utilisateurId: true,
+                    dateLike: true,
+                    utilisateur: {
+                        select: { id: true, nom: true, prenom: true }
                     }
                 }
+            },
+            commentaires: true,
+            pollOptions: true,
+            community: {
+                select: { nom: true, logo: true }
             }
-        });
+        }
+    });
 
+    // Conversion des bigints éventuels et formatage
+    const postsWithDetails = posts.map(post => {
         const safePost = {};
         for (const key in post) {
             if (typeof post[key] === 'bigint') {
@@ -456,16 +453,21 @@ const getRandomPostsFromCommunitiesService = async (req) => {
         }
         return {
             ...safePost,
-            likes
+            auteur: post.auteur,
+            likes: post.likes,
+            commentaires: post.commentaires,
+            pollOptions: post.pollOptions,
+            communityNom: post.community.nom,
+            communityLogo: post.community.logo
         };
-    }));
+    });
 
     return {
         total,
         page,
         limit,
         totalPages: Math.ceil(total / limit),
-        posts: postsWithLikes
+        posts: postsWithDetails
     };
 };
 

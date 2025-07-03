@@ -1,20 +1,41 @@
 <div class="community-post">
-  <h2>{{ post.titre }}</h2>
-  <button *ngIf="!isOnCommunityPage" [routerLink]="['/communities', post.communityId]">
-    Aller à la communauté
-  </button>
+  <div class="post-header">
+    <h2>{{ post.titre }}</h2>
+    <button *ngIf="!isOnCommunityPage" [routerLink]="['/communities', post.communityId]">
+      Aller à la communauté
+    </button>
+  </div>
   <div class="meta">
-    <img *ngIf="post.communityLogo" [src]="post.communityLogo" alt="Logo de la communauté">
+    <img *ngIf="post.communityLogo" [src]="post.communityLogo" alt="Logo de la communauté" />
     <span>Communauté : {{ post.communityNom }}</span> |
     <span>Auteur : {{ post.auteurPrenom }} {{ post.auteurNom }}</span> |
     <span>Date : {{ post.dateCreation | date:'dd/MM/yyyy HH:mm' }}</span>
   </div>
+
   <div class="tags">
     <span *ngFor="let tag of post.tags" class="tag">#{{ tag }}</span>
   </div>
+
   <div class="contenu">
     <p>{{ post.contenu }}</p>
-    <button (click)="likeDislikePost($event)">Like | {{ post.likes?.length || 0 }}</button>
-    <button *ngIf="isModerator || userId === post.auteurId" (click)="deletePost($event)">Supprimer</button>
+
+    <div class="image-container" *ngIf="post.image">
+      <img [src]="post.image" alt="Image du post" />
+    </div>
+
+    <div *ngIf="post.isPoll" class="poll-banner">
+      <span>🗳️ Un sondage est disponible sur ce post !</span>
+      <ul class="poll-options">
+        <li *ngFor="let option of post.pollOptions">
+          {{ option.label }}
+        </li>
+      </ul>
+      <span class="poll-deadline">Date limite : {{ post.pollDeadline | date:'dd/MM/yyyy' }}</span>
+    </div>
+
+    <div class="actions">
+      <button (click)="likeDislikePost($event)">Like | {{ post.likes?.length || 0 }}</button>
+      <button *ngIf="isModerator || userId === post.auteurId" (click)="deletePost($event)">Supprimer</button>
+    </div>
   </div>
 </div>

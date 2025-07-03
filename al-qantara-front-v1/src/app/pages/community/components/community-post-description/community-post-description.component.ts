@@ -21,6 +21,12 @@ export class CommunityPostDescriptionComponent implements OnInit {
   error: string | null = null;
   isAuthenticated = false;
   userId: number | null = null;
+  hasVoted = false;
+  selectedOption: number | null = null;
+  voteError: string | null = null;
+  voteSuccess = false;
+
+
   newCommentContent: string = '';
   replyFormVisible: { [key: number]: boolean } = {};
   replyContent: { [key: number]: string } = {};
@@ -66,6 +72,7 @@ export class CommunityPostDescriptionComponent implements OnInit {
         }
       }
     });
+
   }
 
   checkMembership() {
@@ -164,10 +171,48 @@ export class CommunityPostDescriptionComponent implements OnInit {
         this.post = post;
         this.post.commentaires = this.organizeComments(this.post.commentaires);
         this.loading = false;
+
+        if(this.isAuthenticated) {
+          this.checkIfUserHasVoted();
+        }
       },
       error: (err) => {
         this.error = err.error?.message || 'Erreur lors du chargement du post.';
         this.loading = false;
+      }
+    });
+  }
+
+  checkIfUserHasVoted() {
+    if (!this.post || !this.userId) return;
+    for (let i = 0; i < this.post.pollOptions.length; i++) {
+      if (this.post.pollOptions[i].votes?.some((v: { utilisateurId: number | null; }) => v.utilisateurId === this.userId)) {
+        this.hasVoted = true;
+        this.selectedOption = i;
+        break;
+      }
+    }
+  }
+
+  votePollOption(index: number) {
+    if (this.hasVoted) return;
+    this.communityService.addVoteToPost(this.communityId, this.postId, index).subscribe({
+      next: () => {
+        this.hasVoted = true;
+        this.selectedOption = index;
+        this.voteSuccess = true;
+        this.voteError = null;
+
+        if (!this.post.pollOptions[index].votes) {
+          this.post.pollOptions[index].votes = [];
+        }
+        this.post.pollOptions[index].votes.push({ utilisateurId: this.userId });
+
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.voteError = err.error?.message || "Erreur lors de l'envoi du vote.";
+        this.voteSuccess = false;
       }
     });
   }

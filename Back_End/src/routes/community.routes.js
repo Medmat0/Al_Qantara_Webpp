@@ -1,6 +1,6 @@
 import express from "express";
 import { authMiddleware } from "../middleware/auth.middleware.js";
-import { uploadlogoCommunities } from "../middleware/storage.middleware.js";
+import {uploadlogoCommunities, uploadPostImage} from "../middleware/storage.middleware.js";
 import { userCommunityRole, isMember, isBanished } from "../middleware/community.middleware.js";
 
 import { createCommunity } from "../controllers/community/community/createCommunity.js";
@@ -75,7 +75,7 @@ router.post("/:communityId/leave", authMiddleware, isBanished, leaveCommunity);
 
 // ----------------- Posts -----------------
 
-router.post("/:communityId/posts", authMiddleware, isBanished, isMember, createCommunityPost);
+router.post("/:communityId/posts", authMiddleware, isBanished, isMember, uploadPostImage.single('img'), createCommunityPost);
 router.delete("/:communityId/posts/:postId", authMiddleware, isBanished, userCommunityRole, deleteCommunityPost);
 router.patch("/:communityId/posts/:postId", authMiddleware, isBanished, modifyCommunityPost);
 router.get("/:communityId/posts", getCommunityPosts);

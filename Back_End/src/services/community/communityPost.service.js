@@ -6,10 +6,17 @@ const createCommunityPostService = async (req) => {
     const { titre, contenu, tags, pollOptions, pollDeadline } = req.body;
     const communityId = parseInt(req.params.communityId);
     const userId = req.user.id;
+
     if (!titre || !contenu || (!tags || tags.length === 0)) {
         const err = new Error("Le titre et le contenu du post sont requis, au moins un tag doit être fourni.");
         err.status = 400;
         throw err;
+    }
+
+    // Récupère l'URL de l'image si uploadée
+    let imageUrl = null;
+    if (req.file && req.file.path) {
+        imageUrl = req.file.path;
     }
 
     // Vérifie que la communauté existe
@@ -38,6 +45,7 @@ const createCommunityPostService = async (req) => {
                 tags,
                 isPoll: true,
                 pollDeadline: new Date(pollDeadline),
+                image: imageUrl,
                 community: { connect: { id: communityId } },
                 auteur: { connect: { id: userId } },
                 pollOptions: {
@@ -55,6 +63,7 @@ const createCommunityPostService = async (req) => {
                 titre,
                 contenu,
                 tags,
+                image: imageUrl,
                 community: { connect: { id: communityId } },
                 auteur: { connect: { id: userId } }
             },
@@ -66,6 +75,7 @@ const createCommunityPostService = async (req) => {
 
     return newPost;
 }
+
 const deleteCommunityPostService = async (req) => {
     const postId = parseInt(req.params.postId);
     const communityId = parseInt(req.params.communityId);

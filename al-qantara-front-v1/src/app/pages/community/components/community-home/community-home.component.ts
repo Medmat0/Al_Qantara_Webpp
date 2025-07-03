@@ -87,9 +87,11 @@ export class CommunityHomeComponent implements OnInit {
     console.log('Aller au post:', post);
   }
 
+
   goToCreationForm() {
-    this.checkAuthentication();
-    // Rediriger vers le formulaire de création de post
-    this.router.navigate(['/communities/create']);
+    if (this.checkAuthentication()) {
+      this.router.navigate(['/communities/create']);
+    }
   }
+
 }

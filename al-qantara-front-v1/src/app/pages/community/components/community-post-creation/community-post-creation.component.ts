@@ -22,6 +22,7 @@ export class CommunityPostCreationComponent implements OnInit{
   isMember: boolean | null = false;
   userId: number | null = null;
   isAuthenticated: boolean = false;
+  selectedFile: File | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -33,7 +34,9 @@ export class CommunityPostCreationComponent implements OnInit{
     this.postForm = this.fb.group({
       titre: ['', Validators.required],
       contenu: ['', Validators.required],
-      tags: this.fb.array([this.fb.control('', Validators.required)], Validators.required)
+      tags: this.fb.array([this.fb.control('', Validators.required)], Validators.required),
+      pollOptions: this.fb.array([]),
+      pollDeadline: ['']
     });
   }
   ngOnInit() {
@@ -93,6 +96,10 @@ export class CommunityPostCreationComponent implements OnInit{
     return this.postForm.get('tags') as FormArray;
   }
 
+  get pollOptions() {
+    return this.postForm.get('pollOptions') as FormArray;
+  }
+
   addTag() {
     this.tags.push(this.fb.control('', Validators.required));
   }
@@ -103,22 +110,44 @@ export class CommunityPostCreationComponent implements OnInit{
     }
   }
 
-  onSubmit(communityId: number) {
-    if (this.postForm.valid) {
-      this.communityService.createPost(
-        communityId,
-        this.postForm.value
-      ).subscribe({
-        next: (res: any) => {
-          console.log('Post created successfully:', res);
-          this.router.navigate([`/communities/${communityId}`]);
-        },
-        error: (err: any) => {
-          console.error('Error creating post:', err);
-          alert('An error occurred while creating the post. Please try again.');
+  addPollOption() {
+    this.pollOptions.push(this.fb.control(''));
+  }
 
-        }
-      });
+  removePollOption(index: number) {
+    this.pollOptions.removeAt(index);
+  }
+
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedFile = input.files[0];
     }
+  }
+
+  onSubmit(communityId: number) {
+    const tags = this.tags.controls.map(control => control.value).filter((tag: string) => tag && tag.trim() !== '');
+    const pollOptions = this.pollOptions.controls.map(control => control.value).filter((opt: string) => opt && opt.trim() !== '');
+
+    const data = {
+      titre: this.postForm.get('titre')?.value,
+      contenu: this.postForm.get('contenu')?.value,
+      tags: tags,
+      pollOptions: pollOptions,
+      pollDeadline: this.postForm.get('pollDeadline')?.value,
+      img: this.selectedFile
+    };
+    console.log('Form Data:', data);
+
+    this.communityService.createPost(communityId, data).subscribe({
+      next: (res: any) => {
+        console.log('Post created successfully:', res);
+        this.router.navigate([`/communities/${communityId}`]);
+      },
+      error: (err: any) => {
+        console.error('Error creating post:', err);
+        alert('Une erreur est survenue lors de la création du post. Veuillez réessayer.');
+      }
+    });
   }
 }

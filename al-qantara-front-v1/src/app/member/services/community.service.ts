@@ -217,21 +217,61 @@ export class CommunityService {
         );
     }
 
-  createPost(communityId: number, data: { titre: string; contenu: string; tags: string[] }): Observable<any> {
-    return this.http.post<any>(
-      `${this.apiUrl}/${communityId}/posts`,
-      data,
-      { withCredentials: true }
-    ).pipe(
-      tap((response) => {
-        console.log('Post created successfully:', response);
-      }),
-      catchError((error) => {
-        console.error('Error creating post:', error);
-        return throwError(() => error);
-      })
-    );
-  }
+    createPost(communityId: number, data: {
+      img: File | null;
+      titre: any;
+      pollOptions: any;
+      pollDeadline: any;
+      contenu: any;
+      tags: any
+    }): Observable<any> {
+      const formData = new FormData();
+      formData.append('titre', data.titre);
+      formData.append('contenu', data.contenu);
+      if (Array.isArray(data.tags)) {
+        data.tags.forEach(tag => formData.append('tags[]', tag));
+      }
+      if (Array.isArray(data.pollOptions) && data.pollOptions.length > 0) {
+        data.pollOptions.forEach(option => formData.append('pollOptions', option));
+      }
+      if (data.pollDeadline) {
+        formData.append('pollDeadline', data.pollDeadline);
+      }
+      if (data.img) {
+        formData.append('img', data.img);
+      }
+
+      return this.http.post<any>(
+        `${this.apiUrl}/${communityId}/posts`,
+        formData,
+        { withCredentials: true }
+      ).pipe(
+        tap((response) => {
+          console.log('Post created successfully:', response);
+        }),
+        catchError((error) => {
+          console.error('Error creating post:', error);
+          return throwError(() => error);
+        })
+      );
+    }
+
+    addVoteToPost(communityId: number, postId: number, pollOptionIndex: number): Observable<any> {
+      return this.http.post<any>(
+        `${this.apiUrl}/${communityId}/posts/${postId}/addVote`,
+        { pollOptionIndex },
+        { withCredentials: true }
+      ).pipe(
+        tap((response) => {
+          console.log('Vote ajouté au post :', response);
+        }),
+        catchError((error) => {
+          console.error('Erreur lors de l\'ajout du vote au post :', error);
+          return throwError(() => error);
+        })
+      );
+    }
+
 
     addCommentToPost(communityId: number, postId: number, content: string): Observable<any> {
         return this.http.post<any>(
