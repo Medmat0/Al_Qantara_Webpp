@@ -20,7 +20,7 @@
   </div>
   <div>
     <button routerLink="/communities/research">Rechercher une communauté</button>
-    <button routerLink="/communities/create"></button>
+    <button (click)="goToCreationForm()">Créer une communauté</button>
     <app-community-propositions
       (communitySelected)="onCommunitySelected($event)"
       class="community-propositions-fixed"

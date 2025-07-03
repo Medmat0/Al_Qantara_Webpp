@@ -8,11 +8,13 @@ import {CommunityMembersComponent} from './components/community-members/communit
 import {ModeratorGuard} from '../../member/guards/moderator.guard';
 import {CommunityPostResearchComponent} from './components/community-post-research/community-post-research.component';
 import {CommunityHubSettingsComponent} from './components/community-hub-settings/community-hub-settings.component';
+import {CommunityCreationComponent} from './components/community-creation/community-creation.component';
 
 
 export default [
     {path: '', component:CommunityHomeComponent,},
     {path: 'research', component: CommunityResearchComponent},
+    {path: 'create', component: CommunityCreationComponent},
     {path: 'posts/research', component: CommunityPostResearchComponent},
     {path: ':communityId/settings', component: CommunityHubSettingsComponent, canActivate:[ModeratorGuard]},
     {path: ':communityId', component: CommunityHubComponent},

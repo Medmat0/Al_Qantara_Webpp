@@ -47,7 +47,7 @@ export class CommunityService {
         formData.append('nom', nom);
         formData.append('description', description);
 
-        return this.http.post<any>(`${this.apiUrl}`, formData, { withCredentials: true }).pipe(
+        return this.http.post<any>(`${this.apiUrl}/create`, formData, { withCredentials: true }).pipe(
             tap((response) => {
                 console.log('Community created successfully:', response);
             }),

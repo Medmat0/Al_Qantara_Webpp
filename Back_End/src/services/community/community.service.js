@@ -6,21 +6,11 @@ const prisma = new PrismaClient();
 
 const createCommunityService = async(req) => {
 
+    console.log("createCommunityService called");
+
     const { nom, description } = req.body;
     const logo = req.file;
     const userId = req.user.id;
-
-    // Vérification du rôle utilisateur
-    const user = await prisma.utilisateur.findUnique({
-        where: { id: userId },
-        select: { role: true }
-    });
-
-    if (user.role !== "ADMIN" && user.role !== "ADHERENT") {
-        const err = new Error("Vous n'avez pas les droits nécessaires pour créer une communauté.");
-        err.status = 403;
-        throw err;
-    }
 
     // Vérification si une communauté avec le même nom existe déjà
     const existingCommunity = await prisma.community.findFirst({
@@ -41,11 +31,7 @@ const createCommunityService = async(req) => {
     // Upload image to Cloudinary
     let imageUrl = null;
     if (logo) {
-        const uploadResult = await cloudinary.uploader.upload(logo.path, {
-            folder: 'logoCommunities',
-            resource_type: 'image'
-        });
-        imageUrl = uploadResult.secure_url;
+        imageUrl = logo.path;
     }
     // Création de la communauté + ajout du créateur en tant que modérateur d'office
     const newCommunity = await prisma.community.create({
@@ -262,7 +248,6 @@ const deleteCommunityService = async (req) => {
                 resource_type: "image",
                 invalidate: true
             })
-            .then(result => console.log("Logo supprimé de Cloudinary :", result));
     } else {
         const err = new Error("Logo non trouvé");
         err.status = 404;
@@ -316,15 +301,24 @@ const modifyCommunityService = async (req) => {
     if (logo) {
         //suppression de l'ancien logo si présent
         if (community.logo) {
-            const publicId = community.logo.split("/").pop().split(".")[0];
-            await cloudinary.uploader.destroy(publicId, { resource_type: "image" });
+            const logoUrl = community.logo;
+            if (logoUrl) {
+                const parts = logoUrl.split("/upload/")[1].split("/");
+                if (parts[0].startsWith("v")) parts.shift();
+                const publicId = parts.join("/").split(".")[0];
+                await cloudinary.uploader
+                    .destroy(publicId, {
+                        resource_type: "image",
+                        invalidate: true
+                    })
+            } else {
+                const err = new Error("Logo non trouvé");
+                err.status = 404;
+                throw err;
+            }
         }
-        // Upload du nouveau logo
-        const uploadResult = await cloudinary.uploader.upload(logo.path, {
-            folder: 'logoCommunities',
-            resource_type: 'image'
-        });
-        data.logo = uploadResult.secure_url;
+
+        data.logo = logo.path;
     }
 
     const updatedCommunity = await prisma.community.update({

@@ -1,0 +1,33 @@
+<div class="community-settings-container">
+  <div class="community-card">
+    <div class="community-image">
+      <img *ngIf="logoFile" [src]="logoPreview" alt="Logo sélectionné" />
+      <span *ngIf="!logoFile">Aucun logo sélectionné</span>
+    </div>
+
+    <div class="community-form">
+      <h2>Créer une communauté</h2>
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <div class="form-group">
+          <label for="nom">Nom</label>
+          <input id="nom" formControlName="nom" type="text" required placeholder="Nom de la communauté" />
+          <div *ngIf="form.get('nom')?.invalid && form.get('nom')?.touched">Nom requis</div>
+        </div>
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea id="description" formControlName="description" required placeholder="Description de la communauté"></textarea>
+          <div *ngIf="form.get('description')?.invalid && form.get('description')?.touched">Description requise</div>
+        </div>
+        <div class="form-group">
+          <label for="logo">Logo (fichier)</label>
+          <input id="logo" type="file" (change)="onLogoSelected($event)" required />
+          <div *ngIf="form.get('logo')?.invalid && form.get('logo')?.touched">Logo requis</div>
+        </div>
+        <div class="actions">
+          <button type="submit" class="btn update" [disabled]="loading">Créer la communauté</button>
+        </div>
+        <div *ngIf="error" class="error-message">{{ error }}</div>
+      </form>
+    </div>
+  </div>
+</div>

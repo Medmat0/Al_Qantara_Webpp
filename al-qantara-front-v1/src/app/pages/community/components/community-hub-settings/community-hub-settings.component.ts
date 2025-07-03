@@ -110,6 +110,12 @@ export class CommunityHubSettingsComponent implements OnInit {
     const input = $event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
+      if (file.type !== 'image/png') {
+        this.error = 'Seuls les fichiers PNG sont acceptés.';
+        this.community.logoFile = null;
+        return;
+      }
+
       if (file.size > 20 * 1024 * 1024) {
         this.error = 'Le fichier est trop volumineux. La taille maximale est de 20 Mo.';
         return;
