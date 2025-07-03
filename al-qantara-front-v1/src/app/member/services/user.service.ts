@@ -42,14 +42,8 @@ export class UserService {
           console.error('UserService - Invalid response format:', response);
           return [];
         }
-        return response.users.map(user => ({
-          ...user,
-          dateInscription: new Date(user.dateInscription).toLocaleDateString('fr-FR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: '2-digit'
-          })
-        }));
+        // On laisse la date ISO telle quelle
+        return response.users;
       })
     );
   }

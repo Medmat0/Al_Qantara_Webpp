@@ -143,4 +143,83 @@ export class UsersComponent implements OnInit {
       });
     }
   }
+
+  // Méthodes à ajouter à votre classe UsersComponent
+
+  /**
+   * Génère les initiales à partir du prénom et nom
+   */
+  getInitials(prenom: string, nom: string): string {
+    const prenomInitial = prenom ? prenom.charAt(0).toUpperCase() : '';
+    const nomInitial = nom ? nom.charAt(0).toUpperCase() : '';
+    return prenomInitial + nomInitial;
+  }
+
+  /**
+   * Compte le nombre d'administrateurs
+   */
+  getAdminCount(): number {
+    return this.users.filter(user => user.role === 'ADMIN').length;
+  }
+
+  /**
+   * Compte le nombre d'utilisateurs actifs
+   */
+  getActiveCount(): number {
+    return this.users.filter(user => user.statut === 'ACTIF').length;
+  }
+
+  /**
+   * Compte le nombre d'utilisateurs inactifs
+   */
+  getInactiveCount(): number {
+    return this.users.filter(user => user.statut === 'INACTIF').length;
+  }
+
+  /**
+   * Formate une date au format français (robuste)
+   * Accepte string, Date, ou tout champ potentiellement mal typé
+   */
+  formatDate(dateInput: any): string {
+    // Si c'est déjà une string ISO, on affiche direct
+    if (typeof dateInput === 'string' && dateInput.match(/^\d{4}-\d{2}-\d{2}T/)) {
+      const date = new Date(dateInput);
+      if (isNaN(date.getTime())) return 'N/A';
+      return date.toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
+    }
+    // Sinon, fallback robuste
+    let dateString = dateInput;
+    if (!dateString && typeof dateInput === 'object' && dateInput !== null) {
+      dateString = dateInput.dateInscription || dateInput.dateinscription || dateInput.date || '';
+    }
+    if (!dateString || typeof dateString !== 'string') return 'N/A';
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'N/A';
+    return date.toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
+  }
+
+  /**
+   * Retourne la dernière connexion formatée
+   * (À adapter selon votre structure de données)
+   */
+  getLastConnection(user: UserData): string {
+    // Si vous avez une propriété lastConnection dans votre UserData
+    // if (user.lastConnection) {
+    //   const lastConnection = new Date(user.lastConnection);
+    //   const now = new Date();
+    //   const diffTime = Math.abs(now.getTime() - lastConnection.getTime());
+    //   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    //   
+    //   if (diffDays === 1) {
+    //     return 'Il y a 1 jour';
+    //   } else if (diffDays < 7) {
+    //     return `Il y a ${diffDays} jours`;
+    //   } else {
+    //     return this.formatDate(user.lastConnection);
+    //   }
+    // }
+    
+    // Pour l'instant, retourner une valeur par défaut
+    return 'N/A';
+  }
 }
