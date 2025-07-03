@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators, FormArray, ReactiveFormsModule} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators, FormArray, ReactiveFormsModule, AbstractControl} from '@angular/forms';
 import {CommunityService} from '../../../../member/services/community.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AuthService} from '../../../../member/services/auth.service';
@@ -59,6 +59,34 @@ export class CommunityPostCreationComponent implements OnInit{
         });
       }
     });
+
+    this.postForm.get('pollOptions')?.setValidators([
+      (control: AbstractControl) => {
+        if (control.value && control.value.length === 1 && control.value[0].trim() !== '') {
+          return { minOptions: true };
+        }
+        return null;
+      }
+    ]);
+
+    this.postForm.get('pollDeadline')?.setValidators([
+      (control: AbstractControl) => {
+        const hasPollOptions = this.pollOptions.controls.some(opt => opt.value && opt.value.trim() !== '');
+        if (hasPollOptions) {
+          if (!control.value) {
+            return { requiredIfPoll: true };
+          }
+          const today = new Date();
+          const selected = new Date(control.value);
+          if (selected <= today) {
+            return { minDate: true };
+          }
+        }
+        return null;
+      }
+    ]);
+
+
   }
 
   checkAuthentication(): boolean {
@@ -112,6 +140,8 @@ export class CommunityPostCreationComponent implements OnInit{
 
   addPollOption() {
     this.pollOptions.push(this.fb.control(''));
+    this.postForm.get('pollDeadline')?.markAsTouched();
+    this.postForm.get('pollDeadline')?.updateValueAndValidity();
   }
 
   removePollOption(index: number) {

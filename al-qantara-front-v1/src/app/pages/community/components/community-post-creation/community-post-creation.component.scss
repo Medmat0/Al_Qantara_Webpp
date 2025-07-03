@@ -1,0 +1,64 @@
+form {
+  max-width: 540px;
+  margin: 2rem auto;
+  background: #f8fafc;
+  padding: 2rem 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(25, 118, 210, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+label {
+  font-weight: 600;
+  color: #1976d2;
+  margin-bottom: 0.3rem;
+}
+
+input[type="text"],
+input[type="date"],
+textarea {
+  width: 100%;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid #b3c6e6;
+  border-radius: 6px;
+  font-size: 1rem;
+  margin-bottom: 0.3rem;
+  background: #fff;
+}
+
+textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+button {
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.4rem 1.1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 0.3rem;
+  transition: background 0.2s;
+}
+
+button:disabled {
+  background: #b3c6e6;
+  cursor: not-allowed;
+}
+
+.poll-options-group {
+  background: #e3f0fc;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 0.97rem;
+  margin-top: 0.2rem;
+}
