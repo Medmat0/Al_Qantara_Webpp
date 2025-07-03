@@ -13,7 +13,7 @@
         <span class="breadcrumb-separator">•</span>
         <span class="breadcrumb-current">{{ offre.titre }}</span>
       </div>
-      
+
       <div class="hero-main">
         <div class="hero-info">
           <div class="job-badge">
@@ -85,7 +85,7 @@
             Description du poste
           </h2>
           <div class="description-content">
-            <p>{{ offre.description }}</p>
+            <p [innerHTML]="offre.description"></p>
           </div>
         </div>
 
