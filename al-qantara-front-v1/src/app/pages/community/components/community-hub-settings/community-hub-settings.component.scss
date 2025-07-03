@@ -1,0 +1,111 @@
+.community-settings-container {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.community-card {
+  display: flex;
+  flex-direction: row;
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 1000px;
+  width: 100%;
+  overflow: hidden;
+  font-family: Mulish, sans-serif;
+}
+
+.community-image {
+  flex: 1;
+  background: #f9f9f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+
+  img {
+    max-width: 100%;
+    max-height: 300px;
+    object-fit: contain;
+    border-radius: 0.5rem;
+  }
+}
+
+.community-form {
+  flex: 1;
+  padding: 2rem;
+
+  h2 {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+  }
+
+  .form-group {
+    margin-bottom: 1.2rem;
+
+    label {
+      display: block;
+      margin-bottom: 0.4rem;
+      font-weight: 600;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 0.6rem;
+      border: 1px solid #ccc;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+  }
+
+  .actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+
+    .btn {
+      padding: 0.6rem 1.2rem;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+
+      &.update {
+        background-color: #007bff;
+        color: #fff;
+
+        &:hover {
+          background-color: #0069d9;
+        }
+      }
+
+      &.delete {
+        background-color: #dc3545;
+        color: #fff;
+
+        &:hover {
+          background-color: #c82333;
+        }
+      }
+    }
+  }
+
+  .error-message {
+    color: red;
+    margin-top: 1rem;
+  }
+}
+
+.loading-state {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.2rem;
+}

@@ -254,8 +254,15 @@ const deleteCommunityService = async (req) => {
 
     const logoUrl = community.logo;
     if (logoUrl) {
-        const publicId = logoUrl.split("/").pop().split(".")[0];
-        await cloudinary.uploader.destroy(publicId, { resource_type: "raw" });
+        const parts = logoUrl.split("/upload/")[1].split("/");
+        if (parts[0].startsWith("v")) parts.shift();
+        const publicId = parts.join("/").split(".")[0];
+        await cloudinary.uploader
+            .destroy(publicId, {
+                resource_type: "image",
+                invalidate: true
+            })
+            .then(result => console.log("Logo supprimé de Cloudinary :", result));
     } else {
         const err = new Error("Logo non trouvé");
         err.status = 404;

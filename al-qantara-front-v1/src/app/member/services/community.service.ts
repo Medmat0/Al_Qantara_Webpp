@@ -131,27 +131,27 @@ export class CommunityService {
         );
     }
 
-  modifyCommunity(communityId: number, logo?: File | null, nom?: string, description?: string): Observable<any> {
-        const formData = new FormData();
-        if (logo) {
-            formData.append('logo', logo);
-        }
-        if (nom) {
-            formData.append('nom', nom);
-        }
-        if (description) {
-            formData.append('description', description);
-        }
+    modifyCommunity(communityId: number, logo?: File | null, nom?: string, description?: string): Observable<any> {
+          const formData = new FormData();
+          if (logo) {
+              formData.append('logo', logo);
+          }
+          if (nom) {
+              formData.append('nom', nom);
+          }
+          if (description) {
+              formData.append('description', description);
+          }
 
-        return this.http.patch<any>(`${this.apiUrl}/${communityId}`, formData, { withCredentials: true }).pipe(
-            tap((response) => {
-                console.log('Community modified successfully:', response);
-            }),
-            catchError((error) => {
-                console.error('Error modifying community:', error);
-                return throwError(() => error);
-            })
-        );
+          return this.http.patch<any>(`${this.apiUrl}/${communityId}`, formData, { withCredentials: true }).pipe(
+              tap((response) => {
+                  console.log('Community modified successfully:', response);
+              }),
+              catchError((error) => {
+                  console.error('Error modifying community:', error);
+                  return throwError(() => error);
+              })
+          );
 
     }
 
