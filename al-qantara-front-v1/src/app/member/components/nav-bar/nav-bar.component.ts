@@ -18,6 +18,7 @@ export class NavBarComponent {
   username: string | null = null;
   isUserMenuOpen: boolean = false;
   isMenuOpen = false;
+  userRole: string | null = null;
 
   constructor(
     private authService: AuthService,
@@ -36,11 +37,14 @@ export class NavBarComponent {
       if (status) {
         const user = localStorage.getItem('utilisateur');
         if (user) {
-          this.username = JSON.parse(user).prenom;
+          const userObj = JSON.parse(user);
+          this.username = userObj.prenom;
+          this.userRole = userObj.role || null;
           this.cdr.detectChanges();
         }
       } else {
         this.username = null;
+        this.userRole = null;
       }
     });
   }
@@ -81,5 +85,15 @@ export class NavBarComponent {
 
   navigateTo(path: string): void {
     this.router.navigate([path]);
+  }
+
+  // Affiche le bouton "Devenir membre" si l'utilisateur est connecté, a le rôle "user" et n'est pas déjà membre
+  showBecomeMemberButton(): boolean {
+    // Si le rôle est "user" (et pas "membre" ou autre)
+    return this.isAuthenticated && this.userRole === 'user';
+  }
+
+  goToAdhesion(): void {
+    this.router.navigate(['/adhesion']);
   }
 }

@@ -1,48 +1,183 @@
-<div class="offre-container" *ngIf="offre">
-  <!-- Header : Titre + Entreprise + Lieu + Type de contrat -->
-  <div class="offre-header">
-    <h1>{{ offre.titre }}</h1>
-    <div class="offre-info">
-      <span class="dot">•</span>
-      <span>{{ offre.lieuDeTravail }}</span>
-      <span class="dot">•</span>
-      <span>{{ offre.typeDeContrat }}</span>
-      <span class="dot">•</span>
-      <span> Date de début: {{ offre.dateDebut | date:'dd/MM/yyyy' }}</span>
+<div class="offre-detail-container">
+  <!-- Hero Section -->
+  <div class="hero-section" *ngIf="offre">
+    <div class="hero-content">
+      <div class="breadcrumb">
+        <span class="breadcrumb-item" (click)="goBack()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 12H5"></path>
+            <path d="M12 19l-7-7 7-7"></path>
+          </svg>
+          Retour aux offres
+        </span>
+        <span class="breadcrumb-separator">•</span>
+        <span class="breadcrumb-current">{{ offre.titre }}</span>
+      </div>
+      
+      <div class="hero-main">
+        <div class="hero-info">
+          <div class="job-badge">
+            <span class="badge-text">{{ offre.typeDeContrat }}</span>
+          </div>
+          <h1 class="job-title">{{ offre.titre }}</h1>
+          <div class="job-meta">
+            <div class="meta-item">
+              <svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+              <span>{{ offre.lieuDeTravail }}</span>
+            </div>
+            <div class="meta-item" *ngIf="offre.entreprise">
+              <svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 21h18"></path>
+                <path d="M5 21V7l8-4v18"></path>
+                <path d="M19 21V11l-6-4"></path>
+              </svg>
+              <span>{{ offre.entreprise }}</span>
+            </div>
+            <div class="meta-item">
+              <svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              <span>Début : {{ offre.dateDebut | date:'dd/MM/yyyy' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Tags de l'offre -->
-  <div class="offre-tags">
-    <h2>Tags de l'offre</h2>
-    <div class="tags">
-      <span class="tag" *ngFor="let tag of offre.tags">{{ tag }}</span>
+  <!-- Main Content -->
+  <div class="main-content" *ngIf="offre">
+    <div class="content-grid">
+      <!-- Left Column - Job Details -->
+      <div class="job-details">
+        <!-- Tags Section -->
+        <div class="section-card" *ngIf="offre.tags && offre.tags.length > 0">
+          <h2 class="section-title">
+            <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+              <line x1="7" y1="7" x2="7.01" y2="7"></line>
+            </svg>
+            Compétences recherchées
+          </h2>
+          <div class="tags-container">
+            <span class="skill-tag" *ngFor="let tag of offre.tags">
+              {{ tag }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Description Section -->
+        <div class="section-card">
+          <h2 class="section-title">
+            <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14,2 14,8 20,8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10,9 9,9 8,9"></polyline>
+            </svg>
+            Description du poste
+          </h2>
+          <div class="description-content">
+            <p>{{ offre.description }}</p>
+          </div>
+        </div>
+
+        <!-- Additional Info -->
+        <div class="section-card info-grid">
+          <h2 class="section-title">
+            <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="6" x2="12" y2="12"></line>
+              <line x1="16" y1="16" x2="12" y2="12"></line>
+            </svg>
+            Informations complémentaires
+          </h2>
+          <div class="info-items">
+            <div class="info-item">
+              <span class="info-label">Type de contrat</span>
+              <span class="info-value contract-type">{{ offre.typeDeContrat }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Lieu de travail</span>
+              <span class="info-value">{{ offre.lieuDeTravail }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Date de début</span>
+              <span class="info-value">{{ offre.dateDebut | date:'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="info-item" *ngIf="offre.datePublication">
+              <span class="info-label">Date de publication</span>
+              <span class="info-value">{{ offre.datePublication | date:'dd/MM/yyyy' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column - Application Card -->
+      <div class="sidebar">
+        <div class="application-card">
+          <div class="card-header">
+            <h3>{{ offre.titre }}</h3>
+            <div class="card-meta">
+              <span>{{ offre.lieuDeTravail }}</span>
+              <span class="separator">•</span>
+              <span>{{ offre.typeDeContrat }}</span>
+            </div>
+          </div>
+
+          <div class="card-content">
+            <button class="apply-button" (click)="scrollToForm()">
+              <span>Postuler maintenant</span>
+              <svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14"></path>
+                <path d="M12 5l7 7-7 7"></path>
+              </svg>
+            </button>
+
+            <div class="publication-date" *ngIf="offre.datePublication">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12,6 12,12 16,14"></polyline>
+              </svg>
+              <span>Publiée le {{ offre.datePublication | date:'dd/MM/yyyy' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+          <button class="action-button secondary" (click)="shareOffer()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="18" cy="5" r="3"></circle>
+              <circle cx="6" cy="12" r="3"></circle>
+              <circle cx="18" cy="19" r="3"></circle>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+            Partager
+          </button>
+          <button class="action-button secondary" (click)="saveOffer()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+            </svg>
+            Sauvegarder
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Description de l'offre -->
-  <div class="offre-description">
-    <h2>Les missions du poste</h2>
-    <p>{{ offre.description }}</p>
-  </div>
-
-  <!-- Carte latérale : Rappel et bouton -->
-  <div class="offre-card">
-    <h3>{{ offre.titre }}</h3>
-    <div class="offre-lieu-type">
-      <span>{{ offre.lieuDeTravail }}</span>
-      <span class="dot">•</span>
-      <span>{{ offre.typeDeContrat }}</span>
+  <!-- Application Form Section -->
+  <div class="form-section" id="application-form">
+    <div class="form-container">
+      <app-candidature-form [offre]="offre"></app-candidature-form>
     </div>
-    <button class="btn-postuler">Postuler</button>
-    <p class="offre-date">
-      Publiée le {{ offre.datePublication | date:'dd/MM/yyyy' }}
-    </p>
   </div>
-</div>
-<div>
-  <app-candidature-form
-    [offre]="offre"
-  >
-  </app-candidature-form>
 </div>

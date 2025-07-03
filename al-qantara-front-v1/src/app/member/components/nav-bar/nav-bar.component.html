@@ -32,6 +32,10 @@
           <button *ngIf="showButtons && !isAuthenticated" class="register" (click)="navigateTo('/auth/register')">S'inscrire</button>
           <button *ngIf="showButtons && !isAuthenticated" class="login" (click)="navigateTo('/auth/login')">Se Connecter</button>
         </div>
+        <!-- Bouton Devenir membre pour les users non membres -->
+        <button *ngIf="showBecomeMemberButton()" class="become-member" (click)="goToAdhesion()">
+          Devenir membre
+        </button>
         <div class="user-menu" *ngIf="isAuthenticated">
           <button class="user-button" (click)="toggleUserMenu()">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">

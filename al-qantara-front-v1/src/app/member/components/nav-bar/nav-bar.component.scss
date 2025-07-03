@@ -192,6 +192,21 @@ nav {
   }
 }
 
+.become-member {
+  background-color: #6b1c1c;
+  color: #fff8f0;
+  font-weight: 600;
+  margin-left: 10px;
+  margin-right: 10px;
+  border-radius: 8px;
+  padding: 0 25px;
+  transition: background 0.2s;
+}
+.become-member:hover {
+  background-color: #4d1010;
+  color: #c9b18e;
+}
+
 .user-menu {
   position: relative;
 

@@ -1,23 +1,77 @@
-form {
-  background: #f9f9f9;
-  padding: 2rem;
-  border-radius: 16px;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-  max-width: 900px;
-  margin: auto;
-  font-family: Arial, sans-serif;
-  color: #2c2c2c;
+@mixin smooth-transition($properties: all, $duration: 0.3s) {
+  transition: $properties $duration cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Titre des sections */
+// Palette inspirée du logo Al Qantara (bordeaux, beige, doré)
+$primary-color: #6b1c1c; // bordeaux foncé
+$primary-hover: #4d1010; // bordeaux plus foncé
+$secondary-color: #f8f4f0; // beige clair
+$accent-color: #c9b18e; // doré/sable
+$text-dark: #2d1a13; // brun foncé
+$text-medium: #7c5c4a; // brun moyen
+$text-light: #bfae9c; // beige/gris clair
+$background: #3a0d0d; // fond bordeaux très foncé
+$white: #fff8f0; // blanc cassé
+$border-color: #e5d5c3; // beige pour bordures
+$shadow-sm: 0 1px 2px 0 rgb(107 28 28 / 0.05);
+$shadow-md: 0 4px 6px -1px rgb(107 28 28 / 0.10), 0 2px 4px -2px rgb(107 28 28 / 0.10);
+$shadow-lg: 0 10px 15px -3px rgb(107 28 28 / 0.10), 0 4px 6px -4px rgb(107 28 28 / 0.10);
+
+.candidature-form-card.section-card {
+  background: $white;
+  border-radius: 20px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: $shadow-md;
+  animation: fadeInUp 0.6s ease-out;
+  @include smooth-transition;
+  &:hover {
+    box-shadow: $shadow-lg;
+  }
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: $text-dark;
+    margin: 0 0 1.5rem 0;
+    .section-icon {
+      width: 24px;
+      height: 24px;
+      color: $primary-color;
+    }
+  }
+  .already-applied {
+    color: $primary-color;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-align: center;
+    margin: 2rem 0;
+    font-family: inherit;
+  }
+}
+
+form {
+  background: none;
+  box-shadow: none;
+  padding: 0;
+  border-radius: 0;
+  max-width: 100%;
+  margin: 0;
+  color: $text-dark;
+  font-family: inherit;
+  animation: none;
+}
+
 label {
   font-weight: 600;
   margin-bottom: 0.5rem;
   display: block;
-  color: #333;
+  color: $primary-color;
+  font-size: 1.05rem;
 }
 
-/* CV + bouton autofill */
 .cv-upload-container {
   display: flex;
   align-items: center;
@@ -27,33 +81,32 @@ label {
 
 input[type="file"] {
   font-size: 0.95rem;
-  border: 1px solid #ddd;
+  border: 1px solid $border-color;
   border-radius: 10px;
   padding: 0.45rem;
-  background-color: white;
+  background-color: $secondary-color;
   flex-grow: 1;
 }
 
-/* Bouton "Auto-remplir depuis le CV" */
 .autofill-btn {
-  background-color: #4b1c1a;
-  color: white;
+  background: linear-gradient(135deg, $primary-color, $primary-hover);
+  color: $white;
   border: none;
   border-radius: 20px;
   padding: 0.5rem 1.2rem;
   font-size: 0.95rem;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  font-weight: 600;
+  transition: background 0.3s;
 }
-
 .autofill-btn:hover {
-  background-color: #611e1b;
+  background: linear-gradient(135deg, $primary-hover, #2d1a13);
+  color: $accent-color;
 }
 
-/* Spinner */
 .circular-loader .spinner {
   border: 4px solid #f3f3f3;
-  border-top: 4px solid #4b1c1a;
+  border-top: 4px solid $primary-color;
   border-radius: 50%;
   width: 28px;
   height: 28px;
@@ -64,28 +117,33 @@ input[type="file"] {
   to { transform: rotate(360deg); }
 }
 
-/* Grille pour expériences et compétences */
 .exp-comp-container {
   display: flex;
   flex-wrap: wrap;
   gap: 2rem;
   margin-bottom: 2rem;
 }
-
 .exp-comp-container > div {
   flex: 1;
   min-width: 300px;
 }
 
-/* Inputs */
 input[type="text"],
 textarea {
   width: 100%;
   padding: 0.6rem 0.8rem;
-  border: 1px solid #ccc;
+  border: 1px solid $border-color;
   border-radius: 12px;
   margin-bottom: 0.8rem;
   font-size: 0.95rem;
+  background: $secondary-color;
+  color: $text-dark;
+  transition: border 0.2s;
+}
+input[type="text"]:focus,
+textarea:focus {
+  border-color: $primary-color;
+  outline: none;
 }
 
 textarea {
@@ -93,47 +151,48 @@ textarea {
   min-height: 120px;
 }
 
-/* Boutons secondaires */
 button[type="button"] {
-  background-color: #4b1c1a;
-  color: white;
+  background: linear-gradient(135deg, $primary-color, $primary-hover);
+  color: $white;
   border: none;
   border-radius: 20px;
   padding: 0.4rem 1rem;
   font-size: 0.9rem;
   margin-top: 0.2rem;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  font-weight: 500;
+  transition: background 0.3s;
 }
-
 button[type="button"]:hover {
-  background-color: #611e1b;
+  background: linear-gradient(135deg, $primary-hover, #2d1a13);
+  color: $accent-color;
 }
-
 button[disabled] {
   background-color: #ccc;
+  color: $text-light;
   cursor: not-allowed;
 }
 
-/* Bouton Submit */
 button[type="submit"] {
   display: block;
   width: 100%;
-  background-color: #4b1c1a;
-  color: #fff;
+  background: linear-gradient(135deg, $primary-color, $primary-hover);
+  color: $white;
   padding: 0.7rem;
   font-size: 1rem;
   border: none;
   border-radius: 24px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  font-weight: 700;
+  margin-top: 1.5rem;
+  box-shadow: $shadow-md;
+  transition: background 0.3s;
 }
-
 button[type="submit"]:hover {
-  background-color: #611e1b;
+  background: linear-gradient(135deg, $primary-hover, #2d1a13);
+  color: $accent-color;
 }
 
-/* Validation / erreur */
 .is-invalid {
   border-color: #e74c3c;
   background-color: #fdf0f0;
@@ -143,4 +202,228 @@ button[type="submit"]:hover {
   color: #e74c3c;
   font-size: 0.85rem;
   margin-bottom: 0.5rem;
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .candidature-form-card.section-card {
+    padding: 1.5rem;
+    border-radius: 15px;
+  }
+  .exp-comp-container {
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+  .exp-comp-container > div {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .candidature-form-card.section-card {
+    padding: 1rem;
+    border-radius: 10px;
+  }
+  label {
+    font-size: 0.98rem;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+form {
+  background: $white;
+  padding: 2.5rem 2rem;
+  border-radius: 20px;
+  box-shadow: $shadow-md;
+  max-width: 900px;
+  margin: auto;
+  font-family: Arial, sans-serif;
+  color: $text-dark;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: block;
+  color: $primary-color;
+  font-size: 1.05rem;
+}
+
+.cv-upload-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+input[type="file"] {
+  font-size: 0.95rem;
+  border: 1px solid $border-color;
+  border-radius: 10px;
+  padding: 0.45rem;
+  background-color: $secondary-color;
+  flex-grow: 1;
+}
+
+.autofill-btn {
+  background: linear-gradient(135deg, $primary-color, $primary-hover);
+  color: $white;
+  border: none;
+  border-radius: 20px;
+  padding: 0.5rem 1.2rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+.autofill-btn:hover {
+  background: linear-gradient(135deg, $primary-hover, #2d1a13);
+  color: $accent-color;
+}
+
+.circular-loader .spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid $primary-color;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.exp-comp-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+.exp-comp-container > div {
+  flex: 1;
+  min-width: 300px;
+}
+
+input[type="text"],
+textarea {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid $border-color;
+  border-radius: 12px;
+  margin-bottom: 0.8rem;
+  font-size: 0.95rem;
+  background: $secondary-color;
+  color: $text-dark;
+  transition: border 0.2s;
+}
+input[type="text"]:focus,
+textarea:focus {
+  border-color: $primary-color;
+  outline: none;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+button[type="button"] {
+  background: linear-gradient(135deg, $primary-color, $primary-hover);
+  color: $white;
+  border: none;
+  border-radius: 20px;
+  padding: 0.4rem 1rem;
+  font-size: 0.9rem;
+  margin-top: 0.2rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.3s;
+}
+button[type="button"]:hover {
+  background: linear-gradient(135deg, $primary-hover, #2d1a13);
+  color: $accent-color;
+}
+button[disabled] {
+  background-color: #ccc;
+  color: $text-light;
+  cursor: not-allowed;
+}
+
+button[type="submit"] {
+  display: block;
+  width: 100%;
+  background: linear-gradient(135deg, $primary-color, $primary-hover);
+  color: $white;
+  padding: 0.7rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 24px;
+  cursor: pointer;
+  font-weight: 700;
+  margin-top: 1.5rem;
+  box-shadow: $shadow-md;
+  transition: background 0.3s;
+}
+button[type="submit"]:hover {
+  background: linear-gradient(135deg, $primary-hover, #2d1a13);
+  color: $accent-color;
+}
+
+.is-invalid {
+  border-color: #e74c3c;
+  background-color: #fdf0f0;
+}
+
+.error {
+  color: #e74c3c;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+// Responsive
+@media (max-width: 768px) {
+  form {
+    padding: 1.5rem 0.5rem;
+    border-radius: 15px;
+  }
+  .exp-comp-container {
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+  .exp-comp-container > div {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  form {
+    padding: 1rem 0.2rem;
+    border-radius: 10px;
+  }
+  label {
+    font-size: 0.98rem;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
