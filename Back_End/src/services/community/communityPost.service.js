@@ -6,10 +6,17 @@ const createCommunityPostService = async (req) => {
     const { titre, contenu, tags, pollOptions, pollDeadline } = req.body;
     const communityId = parseInt(req.params.communityId);
     const userId = req.user.id;
+
     if (!titre || !contenu || (!tags || tags.length === 0)) {
         const err = new Error("Le titre et le contenu du post sont requis, au moins un tag doit être fourni.");
         err.status = 400;
         throw err;
+    }
+
+    // Récupère l'URL de l'image si uploadée
+    let imageUrl = null;
+    if (req.file && req.file.path) {
+        imageUrl = req.file.path;
     }
 
     // Vérifie que la communauté existe
@@ -38,6 +45,7 @@ const createCommunityPostService = async (req) => {
                 tags,
                 isPoll: true,
                 pollDeadline: new Date(pollDeadline),
+                image: imageUrl,
                 community: { connect: { id: communityId } },
                 auteur: { connect: { id: userId } },
                 pollOptions: {
@@ -55,6 +63,7 @@ const createCommunityPostService = async (req) => {
                 titre,
                 contenu,
                 tags,
+                image: imageUrl,
                 community: { connect: { id: communityId } },
                 auteur: { connect: { id: userId } }
             },
@@ -66,6 +75,7 @@ const createCommunityPostService = async (req) => {
 
     return newPost;
 }
+
 const deleteCommunityPostService = async (req) => {
     const postId = parseInt(req.params.postId);
     const communityId = parseInt(req.params.communityId);
@@ -187,18 +197,18 @@ const getCommunityPostByIdService = async (req) => {
     const post = await prisma.communityPost.findFirst({
         where: { id: postId, communityId: communityId },
         include: {
-            community: {
-                select: { id: true }
+            community: { select: { id: true, nom: true, logo: true } },
+            auteur: { select: { id: true, nom: true, prenom: true } },
+            likes: { select: { id: true, utilisateurId: true } },
+            commentaires: {
+                include: {
+                    auteur: { select: { id: true, nom: true, prenom: true } },
+                    likes: { select: { id: true, commentaireId: true, utilisateurId: true, dateLike: true } }
+                }
             },
-            likes: {
-                select: { id: true, utilisateurId: true }
-            },
-            commentaires: true,
             pollOptions: {
                 include: {
-                    votes: {
-                        select: { id: true, utilisateurId: true }
-                    }
+                    votes: { select: { id: true, utilisateurId: true } }
                 }
             }
         }
@@ -217,9 +227,80 @@ const getCommunityPostByIdService = async (req) => {
         throw err;
     }
 
-    return post;
-
+    return {
+        ...post,
+        communityNom: post.community.nom,
+        communityLogo: post.community.logo
+    };
 }
+
+const getCommunityPostByNameService = async (req) => {
+    const postName = req.query.name;
+    let tags = req.query.tags;
+
+    if (typeof tags === 'string') {
+        tags = tags.split(',').map(t => t.trim()).filter(t => t.length > 0);
+    }
+    if (!Array.isArray(tags)) tags = [];
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    if ((typeof postName !== 'string' || postName.trim() === '') && tags.length === 0) {
+        const err = new Error("Un mot/phrase de recherche ou au moins un tag est requis dans la query.");
+        err.status = 400;
+        throw err;
+    }
+
+    const where = {};
+    if (postName && postName.trim() !== '') {
+        where.titre = { contains: postName, mode: 'insensitive' };
+    }
+    if (tags.length > 0) {
+        where.tags = { hasSome: tags };
+    }
+
+    const total = await prisma.communityPost.count({ where });
+
+    const posts = await prisma.communityPost.findMany({
+        where,
+        include: {
+            community: { select: { id: true, nom: true, logo: true } },
+        },
+        orderBy: {
+            dateCreation: 'desc'
+        },
+        skip,
+        take: limit
+    });
+
+    if (!posts || posts.length === 0) {
+        return {
+            posts: [],
+            page,
+            limit,
+            total,
+            totalPages: 0
+        }
+    }
+
+    const result = posts.map(post => ({
+        ...post,
+        communityNom: post.community.nom,
+        communityLogo: post.community.logo
+    }));
+
+    return {
+        posts: result,
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit)
+    };
+}
+
+
 
 const getCommunityPostsService = async (req) => {
     const communityId = parseInt(req.params.communityId);
@@ -230,7 +311,7 @@ const getCommunityPostsService = async (req) => {
     // Vérifie que la communauté existe
     const community = await prisma.community.findUnique({
         where: { id: communityId },
-        select: { id: true }
+        select: { id: true, nom: true, logo: true }
     });
 
     if (!community) {
@@ -245,7 +326,7 @@ const getCommunityPostsService = async (req) => {
     });
 
     // Récupère les posts de la communauté avec pagination
-    const posts = await prisma.communityPost.findMany({
+    const listOfPosts = await prisma.communityPost.findMany({
         where: { communityId: communityId },
         include: {
             auteur: {
@@ -268,12 +349,19 @@ const getCommunityPostsService = async (req) => {
         take: limit
     });
 
+    const posts = listOfPosts.map(post => ({
+        ...post,
+        communityNom: community.nom,
+        communityLogo: community.logo
+    }));
+
     return {
         posts,
         page,
         limit,
         total,
         totalPages: Math.ceil(total / limit)
+
     };
 }
 
@@ -297,18 +385,18 @@ const likeOrDislikeCommunityPostService = async (req) => {
         throw err;
     }
 
-    // Vérifie si l'utilisateur a déjà liké le post
     const userId = req.user.id;
     const existingLike = post.likes.find(like => like.utilisateurId === userId);
 
+    let like;
     if (existingLike) {
         // Supprime le like
-        await prisma.communityPostLike.delete({
+        like = await prisma.communityPostLike.delete({
             where: { id: existingLike.id }
         });
     } else {
         // Ajoute le like
-        await prisma.communityPostLike.create({
+        like = await prisma.communityPostLike.create({
             data: {
                 postId: postId,
                 utilisateurId: userId
@@ -316,17 +404,7 @@ const likeOrDislikeCommunityPostService = async (req) => {
         });
     }
 
-    // Retourne le post avec les likes mis à jour
-    const postWithLikes = await prisma.communityPost.findUnique({
-        where: { id: postId },
-        include: {
-            likes: true,
-            auteur: {
-                select: { id: true, nom: true, prenom: true }
-            }
-        }
-    });
-    return postWithLikes;
+    return like;
 }
 
 const addVoteToPollService = async (req) => {
@@ -387,6 +465,7 @@ export {
     deleteCommunityPostService,
     modifyCommunityPostService,
     getCommunityPostByIdService,
+    getCommunityPostByNameService,
     getCommunityPostsService,
     likeOrDislikeCommunityPostService,
     addVoteToPollService

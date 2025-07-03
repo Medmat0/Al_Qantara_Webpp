@@ -23,35 +23,37 @@ const addPostCommentService = async (req) => {
     }
 
     // Ajout du commentaire
-    await prisma.communityPostCommentaire.create({
+    const createdComment = await prisma.communityPostCommentaire.create({
         data: {
             contenu: content,
             postId: postId,
             auteurId: userId
-        }
-    });
-
-    // Retourne le post avec ses commentaires et likes
-    const postWithCommentsAndLikes = await prisma.communityPost.findUnique({
-        where: { id: postId },
+        },
         include: {
-            commentaires: {
-                include: {
-                    auteur: true,
-                    likes: true,
-                    replies: {
-                        include: {
-                            auteur: true,
-                            likes: true
-                        }
-                    }
+            auteur: {
+                select: {
+                    id: true,
+                    nom: true,
+                    prenom: true
                 }
             },
-            likes: true
+            likes: true,
+            replies: {
+                include: {
+                    auteur: {
+                        select: {
+                            id: true,
+                            nom: true,
+                            prenom: true
+                        }
+                    },
+                    likes: true
+                }
+            }
         }
     });
 
-    return postWithCommentsAndLikes;
+    return createdComment;
 }
 
 const deletePostCommentService = async (req) => {
@@ -133,17 +135,14 @@ const modifyPostCommentService = async (req) => {
 
 const likeDislikePostCommentService = async (req) => {
     const commentId = parseInt(req.params.commentId);
-    const postId = parseInt(req.params.postId);
-    const communityId = parseInt(req.params.communityId);
     const userId = req.user.id;
 
-    // Vérifie que le commentaire existe et qu'il appartient au bon post et à la bonne communauté
+    // Vérifie que le commentaire existe
     const comment = await prisma.communityPostCommentaire.findFirst({
-        where: { id: commentId, postId: postId },
-        include: { auteur: true, post: true }
+        where: { id: commentId },
     });
 
-    if (!comment || comment.post.communityId !== communityId) {
+    if (!comment) {
         const err = new Error("Commentaire non trouvé.");
         err.status = 404;
         throw err;
@@ -154,62 +153,22 @@ const likeDislikePostCommentService = async (req) => {
         where: { commentaireId: commentId, utilisateurId: userId }
     });
 
-    let message = "";
+    let like = null;
     if (existingLike) {
         // Si l'utilisateur a déjà liké, on supprime le like
         await prisma.communityPostCommentaireLike.delete({
             where: { id: existingLike.id }
         });
-        message = "Like supprimé avec succès.";
     } else {
-        // Sinon, on ajoute un like
-        await prisma.communityPostCommentaireLike.create({
+        like = await prisma.communityPostCommentaireLike.create({
             data: {
                 commentaireId: commentId,
                 utilisateurId: userId
             }
         });
-        message = "Commentaire liké avec succès.";
     }
 
-    // Retourne le post complet sans le rôle de l'utilisateur
-    const postWithCommentsAndLikes = await prisma.communityPost.findUnique({
-        where: { id: postId },
-        include: {
-            commentaires: {
-                include: {
-                    auteur: {
-                        select: {
-                            id: true,
-                            nom: true,
-                            prenom: true,
-
-                        }
-                    },
-                    likes: true,
-                    replies: {
-                        include: {
-                            auteur: {
-                                select: {
-                                    id: true,
-                                    nom: true,
-                                    prenom: true,
-                                }
-                            },
-                            likes: true
-                        }
-                    }
-                }
-            },
-            likes: true
-        }
-    });
-
-    return {
-        message,
-        commentId: commentId,
-        post: postWithCommentsAndLikes
-    };
+    return like;
 }
 
 const addCommentToCommentService = async (req) => {
@@ -241,21 +200,24 @@ const addCommentToCommentService = async (req) => {
         throw err;
     }
 
-    // Ajout du commentaire
-    await prisma.communityPostCommentaire.create({
+    // Ajout du commentaire en réponse
+    const createdReply = await prisma.communityPostCommentaire.create({
         data: {
             contenu: content,
             postId: postId,
             auteurId: userId,
             parentId: commentId
-        }
-    });
-
-    // Retourne le post avec ses commentaires et likes (sans le rôle de l'utilisateur)
-    const postWithCommentsAndLikes = await prisma.communityPost.findUnique({
-        where: { id: postId },
+        },
         include: {
-            commentaires: {
+            auteur: {
+                select: {
+                    id: true,
+                    nom: true,
+                    prenom: true
+                }
+            },
+            likes: true,
+            replies: {
                 include: {
                     auteur: {
                         select: {
@@ -264,28 +226,14 @@ const addCommentToCommentService = async (req) => {
                             prenom: true
                         }
                     },
-                    likes: true,
-                    replies: {
-                        include: {
-                            auteur: {
-                                select: {
-                                    id: true,
-                                    nom: true,
-                                    prenom: true
-                                }
-                            },
-                            likes: true
-                        }
-                    }
+                    likes: true
                 }
-            },
-            likes: true
+            }
         }
     });
 
-    return postWithCommentsAndLikes;
+    return createdReply;
 }
-
 export {
     addPostCommentService,
     deletePostCommentService,

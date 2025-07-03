@@ -19,6 +19,19 @@ export class AuthInterceptor implements HttpInterceptor {
           localStorage.removeItem('utilisateur');
           this.router.navigate(['/']);
         }
+        // Redirection si l'utilisateur n'est pas authentifié
+        if (
+          error.status === 401 &&
+          error.error &&
+          (error.error.message === 'Access token not found in cookies' || error.error === 'Access token not found in cookies')
+        ) {
+          localStorage.removeItem('utilisateur');
+          if (confirm('Veuillez vous connecter pour continuer.')) {
+
+            this.router.navigate(['/auth/login']);
+          }
+        }
+
         return throwError(() => error);
       })
     );

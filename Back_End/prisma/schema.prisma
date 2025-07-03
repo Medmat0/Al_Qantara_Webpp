@@ -18,8 +18,8 @@ model Utilisateur {
   role                     Role
   dateInscription          DateTime
   statut                   Statut
-  statutEnLigne           StatutEnLigne @default(HORS_LIGNE)
-  derniereActivite        DateTime?    @default(now())
+  statutEnLigne            StatutEnLigne            @default(HORS_LIGNE)
+  derniereActivite         DateTime?                @default(now())
   emailVerificationToken   String?                  @db.VarChar(255)
   emailVerified            Boolean                  @default(false)
   passwordResetToken       String?                  @db.VarChar(255)
@@ -109,11 +109,11 @@ enum TypeEvenement {
 }
 
 model Newsletter {
-  id              Int      @id @default(autoincrement())
-  email           String   @unique @db.VarChar(255)
-  dateInscription DateTime @default(now())
-  statut          StatutNewsletter @default(ACTIF)
-  tokenDesinscription String? @db.VarChar(255)
+  id                  Int              @id @default(autoincrement())
+  email               String           @unique @db.VarChar(255)
+  dateInscription     DateTime         @default(now())
+  statut              StatutNewsletter @default(ACTIF)
+  tokenDesinscription String?          @db.VarChar(255)
 }
 
 enum StatutNewsletter {
@@ -123,12 +123,12 @@ enum StatutNewsletter {
 }
 
 model NewsletterEnvoyee {
-  id          Int       @id @default(autoincrement())
-  titre       String    @db.VarChar(255)
-  contenu     String    @db.Text
-  dateEnvoi   DateTime  @default(now())
-  destinataires Int     @default(0)
-  statut      StatutEnvoi @default(EN_COURS)
+  id            Int         @id @default(autoincrement())
+  titre         String      @db.VarChar(255)
+  contenu       String      @db.Text
+  dateEnvoi     DateTime    @default(now())
+  destinataires Int         @default(0)
+  statut        StatutEnvoi @default(EN_COURS)
 }
 
 enum StatutEnvoi {
@@ -378,12 +378,12 @@ enum TypePieceJointe {
 }
 
 model RemboursementDemande {
-  id             Int      @id @default(autoincrement())
-  utilisateurId  Int
-  evenementId    Int
-  status         String   // "en_attente", "accepte", "refuse", "rembourse"
-  dateDemande    DateTime @default(now())
-  raison         String?
+  id            Int      @id @default(autoincrement())
+  utilisateurId Int
+  evenementId   Int
+  status        String // "en_attente", "accepte", "refuse", "rembourse"
+  dateDemande   DateTime @default(now())
+  raison        String?
 }
 
 model Community {
@@ -403,6 +403,7 @@ model Community {
 model CommunityPost {
   id           Int                        @id @default(autoincrement())
   titre        String                     @db.VarChar(255)
+  image        String?                    @db.VarChar(255)
   contenu      String                     @db.Text
   tags         String[]                   @db.VarChar(100)
   modified     Boolean                    @default(false)

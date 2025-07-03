@@ -1,0 +1,44 @@
+<div class="community-research-root">
+  <div class="community-container">
+    <form (ngSubmit)="searchCommunityPost()" class="community-search-form">
+      <input type="text" [(ngModel)]="searchName" name="searchName" placeholder="Nom du post..." />
+      <div class="tags-input">
+        <input type="text" [(ngModel)]="tagInput" name="tagInput" placeholder="Ajouter un tag..." (keydown.enter)="addTag(); $event.preventDefault();" />
+        <button type="button" (click)="addTag()" [disabled]="!tagInput.trim()">Ajouter tag</button>
+      </div>
+      <div class="tags-list">
+        <span *ngFor="let tag of tags; let i = index" class="tag">
+          {{ tag }}
+          <span class="remove-tag" (click)="removeTag(i)">×</span>
+        </span>
+      </div>
+      <button type="submit" [disabled]="loading">
+        <span *ngIf="!loading">Rechercher</span>
+        <span *ngIf="loading" class="circular-loader">
+          <span>Rechercher</span>
+        </span>
+      </button>
+    </form>
+    <div *ngIf="loading && posts.length === 0" class="circular-loader center-loader">
+      <span class="spinner"></span>
+    </div>
+    <div *ngIf="error" class="error">{{ error }}</div>
+    <div *ngIf="posts.length > 0" class="community-result-list">
+    <div *ngFor="let post of posts" (click)="goToCommunityPostDescription(post.communityId, post.id)" class="community-result">
+
+      <div class="top-bar">
+        <img *ngIf="post.communityLogo" [src]="post.communityLogo" alt="logo" class="small-logo" />
+        <div class="community-name">Posté sur: {{ post.communityNom }}</div>
+      </div>
+      <div class="name">Titre: {{ post.titre }}</div>
+
+      <div class="meta">
+        <span *ngFor="let tag of post.tags" class="tag">{{ tag }}</span>
+      </div>
+
+      <div class="desc">{{ post.contenu }}</div>
+
+    </div>
+  </div>
+  </div>
+</div>

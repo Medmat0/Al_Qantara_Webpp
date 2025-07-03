@@ -1,0 +1,36 @@
+<div class="community-hub-root">
+  <div class="community-info-box" *ngIf="community">
+    <div class="logo" *ngIf="community.logo">
+      <img [src]="community.logo" alt="logo" />
+    </div>
+    <div class="info">
+      <div class="name">{{ community.nom }}</div>
+      <div class="desc">{{ community.description }}</div>
+      <div class="meta">
+        <span>Créée le {{ community.dateCreation | date:'dd/MM/yyyy' }}</span>
+        <span *ngIf="community.createdBy"> | Créateur ID : {{ community.createdBy }}</span>
+      </div>
+    </div>
+    <div class="actions">
+      <button (click)="goToPostCreation()">Créer un post</button>
+      <button *ngIf="isModerator" (click)="goToMembers()" >Voir les membres</button>
+      <button *ngIf="isMember === false" (click)="joinCommunity()">Rejoindre</button>
+      <button *ngIf="isMember === true" (click)="leaveCommunity()">Quitter</button>
+      <button *ngIf="isModerator" (click)="goToSettings()" >Paramètres</button>
+    </div>
+
+  </div>
+  <div class="community-posts-scrollable">
+    <div *ngFor="let post of posts">
+      <div (click)="goToPost(post)" style="cursor: pointer;">
+        <app-community-post
+          *ngFor="let post of posts"
+          [post]="post"
+          [isModerator]="isModerator"
+          (postEvent)="onPostEvent($event)">
+        </app-community-post>
+      </div>
+    </div>
+    <div *ngIf="posts.length === 0" class="no-posts">Aucun post dans cette communauté.</div>
+  </div>
+</div>
