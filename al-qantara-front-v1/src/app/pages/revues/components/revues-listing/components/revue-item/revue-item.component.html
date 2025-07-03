@@ -1,17 +1,53 @@
 <div class="revue-item">
-  <img
-  [src]="getPreviewUrl(revue.fichier)" alt="Revue Image"
-  >
-  <div class="revue-description">
-    <h2>{{ revue.titre }}</h2>
-    <h3>Date: {{ revue.mois }} {{revue.annee}}</h3>
-    <p>{{revue.description}}</p>
-    <div class="stats" *ngIf="showStats">
-      <p>👀:{{revue.nombreVues}}</p>
-      <div class="download-numbers">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="20px" width="20px"><title>tray-arrow-down</title><path d="M2 12H4V17H20V12H22V17C22 18.11 21.11 19 20 19H4C2.9 19 2 18.11 2 17V12M12 15L17.55 9.54L16.13 8.13L13 11.25V2H11V11.25L7.88 8.13L6.46 9.55L12 15Z" /></svg>
-        <p>:{{revue.nombreTelechargements}}</p>
+  <div class="revue-image-container">
+    <img
+      [src]="getPreviewUrl(revue.fichier)" 
+      [alt]="revue.titre"
+      class="revue-image"
+      loading="lazy"
+    />
+    <div class="image-overlay">
+      <div class="overlay-content">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="preview-icon">
+          <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+        </svg>
+        <span>Aperçu</span>
       </div>
+    </div>
+  </div>
+  
+  <div class="revue-content">
+    <div class="revue-header">
+      <h2 class="revue-title">{{ revue.titre }}</h2>
+      <div class="revue-date">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="date-icon">
+          <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+        </svg>
+        <span>{{ revue.mois }} {{ revue.annee }}</span>
+      </div>
+    </div>
+    
+    <p class="revue-description">{{ revue.description }}</p>
+    
+    <div class="revue-stats" *ngIf="showStats">
+      <div class="stat-item">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="stat-icon">
+          <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+        </svg>
+        <span class="stat-value">{{ revue.nombreVues | number }}</span>
+        <span class="stat-label">vues</span>
+      </div>
+      
+      
+    
+    <div class="revue-actions">
+      <button class="action-btn primary" [attr.aria-label]="'Lire ' + revue.titre">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M8 5v14l11-7z"/>
+        </svg>
+        <span>Lire</span>
+      </button>
+    
     </div>
   </div>
 </div>

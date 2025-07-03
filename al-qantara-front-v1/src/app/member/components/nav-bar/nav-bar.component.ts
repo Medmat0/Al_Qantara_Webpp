@@ -87,10 +87,10 @@ export class NavBarComponent {
     this.router.navigate([path]);
   }
 
-  // Affiche le bouton "Devenir membre" si l'utilisateur est connecté, a le rôle "user" et n'est pas déjà membre
+  // Affiche le bouton "Devenir membre" si l'utilisateur est connecté, a le rôle "user" (non "membre" ou "admin")
   showBecomeMemberButton(): boolean {
-    // Si le rôle est "user" (et pas "membre" ou autre)
-    return this.isAuthenticated && this.userRole === 'user';
+    // Correction : certains backends stockent le rôle en majuscule ou minuscule, on gère les deux
+    return this.isAuthenticated && (this.userRole?.toLowerCase() === 'user');
   }
 
   goToAdhesion(): void {

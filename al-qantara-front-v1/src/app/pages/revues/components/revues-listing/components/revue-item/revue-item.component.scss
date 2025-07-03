@@ -1,111 +1,321 @@
-.revue-item {
+// Harmonisation avec articles-listing
+$primary-color: #835353;
+$primary-hover: #6b2e2e;
+$secondary-color: #d59c9c;
+$secondary-hover: #bfa6a6;
+$accent-color: #06b6d4;
+$background-card: #ffffff;
+$background-light: #f8fafc;
+$text-primary: #1f2937;
+$text-secondary: #6b7280;
+$text-muted: #9ca3af;
+$border-color: #e5e7eb;
+$border-light: #f3f4f6;
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+$gradient-primary: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
+$gradient-overlay: linear-gradient(135deg, rgba(131, 83, 83, 0.8) 0%, rgba(213, 156, 156, 0.8) 100%);
+
+// Mixins
+@mixin flex-center {
   display: flex;
-  flex-direction: row;
   align-items: center;
-  gap: 2em;
-  border: 1px solid #ddd;
-  padding: 1em;
-  border-radius: 8px;
-  background: #fff;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  max-width: 100%;
-  font-family: "Mulish", sans-serif;
-  cursor: pointer;
+  justify-content: center;
 }
 
-.revue-item img {
-  width: 200px;
-  height: auto;
-  object-fit: cover;
-  border-radius: 8px;
+@mixin button-base {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+  
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.revue-item {
+  display: flex;
+  gap: 1.5rem;
+  background: $background-card;
+  border-radius: 0.75rem;
+  box-shadow: $shadow-sm;
+  border: 1px solid $border-color;
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-lg;
+    border-color: $primary-color;
+    
+    .image-overlay {
+      opacity: 1;
+    }
+    
+    .revue-image {
+      transform: scale(1.05);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 0;
+  }
+}
+
+// Image section
+.revue-image-container {
+  position: relative;
   flex-shrink: 0;
+  width: 240px;
+  height: 320px;
+  overflow: hidden;
+  border-radius: 0.75rem 0 0 0.75rem;
+  
+  @media (max-width: 768px) {
+    width: 100%;
+    height: 200px;
+    border-radius: 0.75rem 0.75rem 0 0;
+  }
+  
+  @media (max-width: 480px) {
+    height: 160px;
+  }
+}
+
+.revue-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease-in-out;
+}
+
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: $gradient-overlay;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  @include flex-center;
+  
+  .overlay-content {
+    @include flex-center;
+    flex-direction: column;
+    gap: 0.5rem;
+    color: white;
+    text-align: center;
+    
+    .preview-icon {
+      width: 2rem;
+      height: 2rem;
+      fill: currentColor;
+    }
+    
+    span {
+      font-weight: 600;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+  }
+}
+
+// Content section
+.revue-content {
+  flex: 1;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 0.75rem;
+  }
+}
+
+.revue-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  
+  .revue-title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: $text-primary;
+    line-height: 1.2;
+    
+    @media (max-width: 768px) {
+      font-size: 1.25rem;
+    }
+    
+    @media (max-width: 480px) {
+      font-size: 1.125rem;
+    }
+  }
+  
+  .revue-date {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: $text-secondary;
+    font-size: 0.875rem;
+    font-weight: 500;
+    
+    .date-icon {
+      width: 1rem;
+      height: 1rem;
+      fill: currentColor;
+    }
+  }
 }
 
 .revue-description {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5em;
-}
-
-.revue-description h2 {
   margin: 0;
-  font-size: 1.5em;
-}
-
-.revue-description h3 {
-  margin: 0;
-  color: #666;
-  font-size: 1em;
-}
-
-.revue-description p {
-  margin-top: 0.5em;
+  color: $text-secondary;
   line-height: 1.6;
-}
-
-.download-numbers{
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-@media (max-width: 768px) {
-  .revue-item {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .revue-item img {
-    width: 100%;
-    max-width: 300px;
-  }
-
-  .revue-description {
-    align-items: center;
-  }
-}
-
-@media (max-width: 480px) {
-  .revue-item {
-    padding: 0.5em;
-    max-width: 80%;
-  }
-
-  .revue-item img {
-    width: 100%;
-    max-width: 200px;
-  }
-
-  .revue-description h2 {
-    font-size: 1.2em;
-  }
-
-  .revue-description h3 {
-    font-size: 0.9em;
-  }
-  .revue-description p {
+  font-size: 0.875rem;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  
+  @media (max-width: 480px) {
     display: none;
   }
 }
 
-
-@media (max-width: 470px) {
-  .revue-item {
-    padding: 0.5em;
+// Stats section
+.revue-stats {
+  display: flex;
+  gap: 1.5rem;
+  
+  @media (max-width: 480px) {
+    gap: 1rem;
   }
-
-  .revue-item img {
-    width: 100%;
-    max-width: 200px;
+  
+  .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: $background-light;
+    border-radius: 0.5rem;
+    border: 1px solid $border-color;
+    
+    .stat-icon {
+      width: 1rem;
+      height: 1rem;
+      fill: $text-muted;
+    }
+    
+    .stat-value {
+      font-weight: 600;
+      color: $text-primary;
+      font-size: 0.875rem;
+    }
+    
+    .stat-label {
+      color: $text-muted;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    @media (max-width: 480px) {
+      padding: 0.375rem 0.5rem;
+      gap: 0.25rem;
+      
+      .stat-label {
+        display: none;
+      }
+    }
   }
+}
 
-  .revue-description h2 {
-    font-size: 1.2em;
+// Actions section
+.revue-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: auto;
+  
+  @media (max-width: 480px) {
+    gap: 0.5rem;
   }
+  
+  .action-btn {
+    @include button-base;
+    flex: 1;
+    
+    svg {
+      width: 1rem;
+      height: 1rem;
+      fill: currentColor;
+    }
+    
+    &.primary {
+      background: $gradient-primary;
+      color: white;
+      
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: $shadow-md;
+      }
+    }
+    
+    &.secondary {
+      background: $background-light;
+      color: $text-secondary;
+      border: 1px solid $border-color;
+      
+      &:hover {
+        background: $secondary-color;
+        color: white;
+        border-color: $secondary-color;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      padding: 0.5rem 1rem;
+      font-size: 0.8rem;
+      
+      span {
+        display: none;
+      }
+    }
+  }
+}
 
-  .revue-description h3 {
-    font-size: 0.9em;
-  }
+// Animations and transitions
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(1rem); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.revue-item {
+  animation: fadeIn 0.3s ease-out;
 }
