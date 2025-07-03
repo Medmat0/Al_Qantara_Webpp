@@ -1,8 +1,9 @@
-import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
-import {DatePipe, NgForOf, NgIf} from '@angular/common';
-import {FormsModule} from '@angular/forms';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { DatePipe, NgForOf, NgIf } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
+import { PaymentModalComponent } from '../payment-modal/payment-modal.component';
 
 @Component({
   selector: 'app-event-modal',
@@ -13,7 +14,9 @@ import { CommonModule } from '@angular/common';
     FormsModule,
     DatePipe,
     NgForOf,
-    CommonModule
+    CommonModule,
+    PaymentModalComponent
+
   ],
   styleUrl: './event-modal.component.scss'
 })
@@ -24,16 +27,22 @@ export class EventModalComponent implements OnChanges {
   @Input() loading = false;
   @Input() error = '';
   @Input() hasLikedEvenement = false;
+  @Input() unsubscribeConfirmed = false;
   @Output() close = new EventEmitter<void>();
   @Output() like = new EventEmitter<void>();
   @Output() comment = new EventEmitter<string>();
   @Output() participate = new EventEmitter<void>();
   @Output() unsubscribe = new EventEmitter<void>();
-  @Input() unsubscribeConfirmed = false;
+
   safeMapUrl: SafeResourceUrl | null = null;
   commentText = '';
   showCommentForm = false;
   showComments = false;
+
+  showPaymentModal = false;
+  errorMessage = '';
+  loadingPayment = false;
+  errorPaymentMessage = '';
 
   constructor(private sanitizer: DomSanitizer) {
     if (this.event && !Array.isArray(this.event.comments)) {
@@ -42,7 +51,6 @@ export class EventModalComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    // Update map URL when event changes
     if (changes['event'] && this.event) {
       this.safeMapUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
         'https://www.openstreetmap.org/export/embed.html?bbox=' +
@@ -54,9 +62,7 @@ export class EventModalComponent implements OnChanges {
       );
     }
 
-    // Handle participation changes
     if (changes['isParticipating'] && !changes['isParticipating'].currentValue) {
-      // If user is no longer participating, clear participation data
       this.participation = null;
     }
   }
@@ -72,13 +78,31 @@ export class EventModalComponent implements OnChanges {
       this.showCommentForm = false;
     }
   }
+
   onPayWithHelloAsso() {
-    console.log('Paiement HelloAsso déclenché');
+    this.errorPaymentMessage = '';
+    const utilisateur = JSON.parse(localStorage.getItem('utilisateur') || '{}');
+    if (
+      utilisateur &&
+      (utilisateur.id === this.event?.createur?.id ||
+        utilisateur.email === this.event?.createur?.email)
+    ) {
+      this.errorPaymentMessage = "Le créateur de l'événement ne peut pas acheter de billet pour son propre événement.";
+      return;
+    }
+    this.showPaymentModal = true;
   }
+
   handleShare() {
     const subject = `Invitation à l'événement: ${this.event.titre}`;
     const body = `Bonjour,\n\nJe vous invite à l'événement "${this.event.titre}" qui se déroulera le ${this.formatDateTime(this.event.dateDebut)} à ${this.event.lieu}.\n\nPour plus d'informations, visitez notre site web.\n\nCordialement`;
     window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  }
+
+  closePaymentModal() {
+    this.showPaymentModal = false;
+    this.loadingPayment = false;
+    this.errorMessage = '';
   }
 
   get eventImage(): string {

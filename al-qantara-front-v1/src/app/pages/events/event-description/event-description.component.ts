@@ -42,6 +42,8 @@ export class EventDescriptionComponent {
   isParticipating = false;
   participation: any = null;
   unsubscribeConfirmed: boolean = false;
+  errorPaymentMessage = '';
+  showPaymentModal = false;
 
   constructor(private route: ActivatedRoute, private router: Router, private sanitizer: DomSanitizer, private cdr: ChangeDetectorRef) {
     this.authService.authStatus$.subscribe((status) => {
@@ -64,6 +66,10 @@ export class EventDescriptionComponent {
       if (this.evenementId !== null) {
         this.evenementService.getEvenementById(this.evenementId).subscribe({
           next: (response) => {
+            if (!response || !response.id) {
+              this.router.navigate(['/not-found']);
+              return;
+            }
             this.evenement = response;
             if (this.userId && Array.isArray(this.evenement.likes)) {
               this.hasLikedEvenement = this.evenement.likes.some((like: LikeEvenement) => like.utilisateurId === this.userId);
@@ -103,6 +109,7 @@ export class EventDescriptionComponent {
           },
           error: (error) => {
             console.error('Erreur lors du fetch de l\'événement:', error);
+            this.router.navigate(['/not-found']);
           }
         });
       }
@@ -275,6 +282,20 @@ export class EventDescriptionComponent {
       return this.evenement.images[0];
     }
     return 'assets/main-icon.jpg';
+  }
+
+  onPayWithHelloAsso() {
+    this.errorPaymentMessage = '';
+    const utilisateur = JSON.parse(localStorage.getItem('utilisateur') || '{}');
+    if (
+      utilisateur &&
+      (utilisateur.id === this.evenement?.createur?.id ||
+        utilisateur.email === this.evenement?.createur?.email)
+    ) {
+      this.errorPaymentMessage = "Le créateur de l'événement ne peut pas acheter de billet pour son propre événement.";
+      return;
+    }
+    this.showPaymentModal = true;
   }
 
 }

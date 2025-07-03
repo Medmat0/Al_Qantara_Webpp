@@ -36,7 +36,9 @@
   <div
     class="event-item-container"
     *ngFor="let event of upcomingEvenements"
-    (click)="openModal(event)">
+    (click)="openModal(event)"
+    [class.payant-badge]="event.isPayant"
+  >
     <app-event-item [event]="event"></app-event-item>
   </div>
 </div>

@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-
+import {NotFoundComponent} from './pages/not-found/not-found.component';
 
 export const routes: Routes = [
   {path: '', loadChildren: () => import('./pages/home/home.routes').then(m => m.default)},
@@ -11,5 +11,7 @@ export const routes: Routes = [
   {path: 'events', loadChildren: () => import('./pages/events/events.routes').then(m => m.default)},
   {path: 'recruitment', loadChildren: () => import('./pages/recruitment/recruitment.routes').then(m => m.default)},
   {path: 'adhesion', loadChildren: () => import('./pages/adhesion/adhesion.routes').then(m => m.default)},
-  {path: '**', redirectTo: '', pathMatch: 'full'},
+  {path: 'articles', loadChildren: () => import('./pages/articles/articles.routes').then(m => m.default)},
+  {path: 'not-found', component: NotFoundComponent},
+  {path: '**', redirectTo: 'not-found', pathMatch: 'full'},
 ];

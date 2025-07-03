@@ -11,7 +11,8 @@ const getAllArticlesService = async () => {
     const articles = await prisma.article.findMany({
       include: {
         revue: true,
-        createur: true
+        createur: true,
+        categories: true
       },
       orderBy: {
         dateSoumission: 'desc'
@@ -24,4 +25,4 @@ const getAllArticlesService = async () => {
   }
 };
 
-export { getAllArticlesService }; 
+export { getAllArticlesService };

@@ -53,6 +53,8 @@
           class="btn-pay">
           {{ loading ? 'Paiement en cours...' : '💳 Acheter un billet' }}
         </button>
+        <div *ngIf="errorPaymentMessage" class="error">{{ errorPaymentMessage }}</div>
+
         <button
           *ngIf="!event.isPayant && !isParticipating && event.placesRestantes > 0"
           (click)="participate.emit()"
@@ -60,6 +62,7 @@
           class="btn-participate">
           {{ loading ? 'Participation en cours...' : '🎫 Participer à l\'événement' }}
         </button>
+
         <button
           *ngIf="isParticipating"
           (click)="unsubscribe.emit()"
@@ -112,4 +115,12 @@
       <div>Chargement de l'événement...</div>
     </ng-template>
   </div>
+
+  <app-payment-modal
+    *ngIf="showPaymentModal"
+    [event]="event"
+    [loading]="loadingPayment"
+    [errorMessage]="errorMessage"
+    (close)="closePaymentModal()"
+  ></app-payment-modal>
 </div>

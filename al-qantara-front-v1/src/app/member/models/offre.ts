@@ -9,4 +9,7 @@ export interface Offre {
   typeDeContrat: TypeContrat;
   dateDebut: string; // ISO 8601
   datePublication: string;
+  entreprise?: string;
+  salaire?: string;
+  teletravailPossible?: boolean;
 }

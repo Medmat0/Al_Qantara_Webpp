@@ -1,0 +1,35 @@
+<!-- 404 Not Found HTML Component (Angular Compatible) -->
+<div class="container container-star">
+  <div *ngFor="let i of [].constructor(30)"></div>
+  <div *ngFor="let i of [].constructor(30)" class="star-1"></div>
+  <div *ngFor="let i of [].constructor(30)" class="star-2"></div>
+</div>
+<div class="container container-bird">
+  <div *ngFor="let i of [].constructor(6)" class="bird bird-anim">
+    <div class="bird-container">
+      <div class="wing wing-left">
+        <div class="wing-left-top"></div>
+      </div>
+      <div class="wing wing-right">
+        <div class="wing-right-top"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container-title">
+  <div class="title">
+    <span class="number">4</span>
+    <div class="moon">
+      <div class="face">
+        <div class="mouth"></div>
+        <div class="eyes">
+          <div class="eye-left"></div>
+          <div class="eye-right"></div>
+        </div>
+      </div>
+    </div>
+    <span class="number">4</span>
+  </div>
+  <div class="subtitle">Prenez un verre de thé à la menthe, respirez… puis repartez découvrir.</div>
+  <button (click)="goBack()">Page d'acceuil</button>
+</div>

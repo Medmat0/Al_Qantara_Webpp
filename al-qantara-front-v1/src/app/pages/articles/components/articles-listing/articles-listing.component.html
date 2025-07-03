@@ -1,0 +1,41 @@
+<div class="articles-listing-container">
+  <h2>Articles</h2>
+  <div *ngIf="isLoading" class="loading">Chargement...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div class="articles-filters-bar">
+    <input
+      type="text"
+      placeholder="Rechercher par titre, auteur ou revue..."
+      [(ngModel)]="searchTerm"
+      (ngModelChange)="onSearchChange()"
+      class="articles-search-input"
+    />
+    <select [(ngModel)]="selectedCategory" (change)="onCategoryChange()" class="articles-category-select">
+      <option value="">Toutes les catégories</option>
+      <option *ngFor="let cat of categories" [value]="cat.nom">{{ cat.nom }}</option>
+    </select>
+  </div>
+
+  <div class="articles-list">
+    <div *ngFor="let article of filteredArticles" class="article-card">
+      <div *ngIf="article.revue && article.revue.fichier" class="article-image-container">
+        <img [src]="getPreviewUrl(article.revue.fichier)" alt="Aperçu revue" class="article-image" />
+      </div>
+      <div class="article-header">
+        <h3>{{ article.titre }}</h3>
+        <span class="article-date">{{ article.dateSoumission | date: 'dd/MM/yyyy' }}</span>
+      </div>
+      <div class="article-meta">
+        <span class="article-author">Par {{ article.auteur }}</span>
+      </div>
+      <div class="article-content-preview">
+        <span [innerHTML]="article.contenu | slice:0:200"></span><span *ngIf="article.contenu.length > 200">...</span>
+      </div>
+      <div class="article-footer">
+        <button class="btn btn-primary">Lire l'article</button>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="!isLoading && filteredArticles.length === 0" class="no-articles">Aucun article trouvé.</div>
+</div>

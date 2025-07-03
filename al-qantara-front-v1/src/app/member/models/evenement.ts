@@ -23,6 +23,7 @@ export interface Evenement {
   partages?: PartageEvenement[];
   participations?: ParticipationEvenement[];
   acces?: AccesEvenement[];
+  isPayant?: boolean;
 }
 
 
