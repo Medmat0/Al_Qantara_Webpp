@@ -1,65 +1,87 @@
-.profile-view-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #f9f9f9;
-    min-height: 100vh;
-    padding: 2rem;
+.profile-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  font-family: 'Mulish', sans-serif;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+}
+
+.profile-header {
+  border-left: 5px solid #9e2e2c;
+  padding-left: 1rem;
+  margin-bottom: 2rem;
+
+  h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    color: #333;
   }
-  
-  .profile-box {
-    background-color: #fff;
-    padding: 2.5rem;
-    border-radius: 12px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-    width: 100%;
-    max-width: 500px;
-    font-family: 'Mulish', sans-serif;
-  
-    h2 {
-      font-size: 2rem;
+
+  .description {
+    font-size: 1rem;
+    color: #777;
+  }
+}
+.profile-field + .profile-field {
+  border-top: 1px solid #eee;
+  padding-top: 1rem;
+}
+.profile-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  .profile-field {
+    display: flex;
+    flex-direction: column;
+
+    label {
       font-weight: 600;
-      margin-bottom: 0.5rem;
+      color: #555;
+      margin-bottom: 0.3rem;
     }
-  
-    .description {
-      color: #777;
-      margin-bottom: 2rem;
-      font-size: 0.95rem;
+
+    span {
+      background-color: #f4f4f4;
+      padding: 0.8rem 1rem;
+      border-radius: 6px;
+      color: #333;
     }
-  
-    .profile-group {
-      margin-bottom: 1.5rem;
-  
-      label {
-        display: block;
-        font-weight: 500;
-        margin-bottom: 0.25rem;
-        color: #555;
-      }
-  
-      p {
-        background-color: #f0f0f0;
-        padding: 0.75rem 1rem;
-        border-radius: 6px;
-        margin: 0;
-      }
-    }
-  
+  }
+
+  .action-bar {
+    text-align: right;
+    margin-top: 1rem;
+
     button {
-      margin-top: 1.5rem;
-      padding: 0.75rem;
       background-color: #9e2e2c;
-      color: white;
+      color: #fff;
       border: none;
       border-radius: 6px;
+      padding: 0.8rem 1.5rem;
       font-size: 1rem;
+      font-weight: 500;
       cursor: pointer;
-      transition: background-color 0.3s;
-  
+      transition: background-color 0.3s ease;
+
       &:hover {
         background-color: #7d1f1d;
       }
     }
   }
-  
+}
+
+
+@media screen and (max-width: 600px) {
+  .profile-header h1 {
+    font-size: 1.7rem;
+  }
+
+  .profile-content {
+    gap: 1rem;
+  }
+}

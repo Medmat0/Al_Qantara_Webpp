@@ -1,28 +1,29 @@
-<div class="profile-view-container">
-  <div class="profile-box">
-    <h2>Mon Profil</h2>
-    <p class="description">Informations liées à votre compte</p>
+<div class="profile-container">
+  <div class="profile-header">
+    <h1>Mon Profil</h1>
+    <p class="description">Gérez les informations associées à votre compte</p>
+  </div>
 
-    <div class="profile-group">
-      <label>Prénom</label>
-      <p>{{ user?.prenom }}</p>
+  <div class="profile-content">
+    <div class="profile-field">
+      <label> Prénom</label>
+      <span>{{ user?.prenom }}</span>
+    </div>
+    <div class="profile-field">
+      <label> Nom</label>
+      <span>{{ user?.nom }}</span>
+    </div>
+    <div class="profile-field">
+      <label> Email</label>
+      <span>{{ user?.email }}</span>
+    </div>
+    <div class="profile-field">
+      <label> Téléphone</label>
+      <span>{{ user?.telephone || 'Non renseigné' }}</span>
     </div>
 
-    <div class="profile-group">
-      <label>Nom</label>
-      <p>{{ user?.nom }}</p>
+    <div class="action-bar">
+      <button routerLink="/profile/edit">✏️ Modifier mon profil</button>
     </div>
-
-    <div class="profile-group">
-      <label>Email</label>
-      <p>{{ user?.email }}</p>
-    </div>
-
-    <div class="profile-group">
-      <label>Téléphone</label>
-      <p>{{ user?.telephone }}</p>
-    </div>
-
-    <button routerLink="/profile/edit">Modifier mon profil</button>
   </div>
 </div>
