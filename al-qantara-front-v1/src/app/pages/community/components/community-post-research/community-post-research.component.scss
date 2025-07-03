@@ -20,6 +20,16 @@
   max-width: 480px;
 }
 
+.community-container {
+  width: 100%;
+  max-width: 480px; /* largeur centrale */
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2rem;
+}
+
+
 .community-search-form input[type="text"] {
   padding: 0.7rem 1.2rem;
   border-radius: 18px;
@@ -125,7 +135,7 @@
   cursor: pointer;
   transition: background-color 0.2s ease;
   width: 100%;
-  max-width: 600px;
+  max-width: 480px;
 }
 
 .community-result:hover {
@@ -186,4 +196,11 @@
   margin-bottom: 1.2rem;
   font-size: 1.05rem;
   text-align: center;
+}
+@media screen and (max-width: 520px) {
+  .community-search-form,
+  .community-result {
+    width: 90%;
+    max-width: none;
+  }
 }

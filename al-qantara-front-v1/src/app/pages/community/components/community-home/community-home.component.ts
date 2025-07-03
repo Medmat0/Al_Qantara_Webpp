@@ -21,7 +21,7 @@ export class CommunityHomeComponent implements OnInit {
   posts: any[] = [];
   loading = true;
   error: string | null = null;
-  isModerator: boolean = false;
+  isModerator: boolean = false; // By default, we do not fetch if moderator in main home
 
 
   constructor(private communityService: CommunityService, private router: Router) {}

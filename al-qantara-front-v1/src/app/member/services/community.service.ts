@@ -41,6 +41,23 @@ export class CommunityService {
         );
     }
 
+    createCommunity(logo:File, nom:string, description:string): Observable<any> {
+        const formData = new FormData();
+        formData.append('logo', logo);
+        formData.append('nom', nom);
+        formData.append('description', description);
+
+        return this.http.post<any>(`${this.apiUrl}`, formData, { withCredentials: true }).pipe(
+            tap((response) => {
+                console.log('Community created successfully:', response);
+            }),
+            catchError((error) => {
+                console.error('Error creating community:', error);
+                return throwError(() => error);
+            })
+        );
+    }
+
     getCommunityByName(name: string): Observable<any> {
         return this.http.get<any>(`${this.apiUrl}/name`, { params: { name } }).pipe(
             tap((response) => {
@@ -53,24 +70,24 @@ export class CommunityService {
         );
     }
 
-  getCommunityPostsByName(name?: string, tags?: string[], page: number = 1, limit: number = 10): Observable<any> {
-    const params: any = {};
-    if (name) params.name = name;
-    if (tags && tags.length > 0) params.tags = tags.join(',');
-    params.page = page;
-    params.limit = limit;
+    getCommunityPostsByName(name?: string, tags?: string[], page: number = 1, limit: number = 10): Observable<any> {
+      const params: any = {};
+      if (name) params.name = name;
+      if (tags && tags.length > 0) params.tags = tags.join(',');
+      params.page = page;
+      params.limit = limit;
 
-    return this.http.get<any>(`${this.apiUrl}/posts/name`, { params }).pipe(
-      tap((response) => {
-        console.log('Fetched community posts by name/tags:', response);
-      }),
-      // Ne pas faire de map ici, retourne l'objet brut
-      catchError((error) => {
-        console.error('Error fetching community posts by name/tags:', error);
-        return throwError(() => new Error('Erreur lors de la récupération des posts'));
-      })
-    );
-  }
+      return this.http.get<any>(`${this.apiUrl}/posts/name`, { params }).pipe(
+        tap((response) => {
+          console.log('Fetched community posts by name/tags:', response);
+        }),
+        // Ne pas faire de map ici, retourne l'objet brut
+        catchError((error) => {
+          console.error('Error fetching community posts by name/tags:', error);
+          return throwError(() => new Error('Erreur lors de la récupération des posts'));
+        })
+      );
+    }
 
 
 
@@ -109,6 +126,42 @@ export class CommunityService {
             }),
             catchError((error) => {
                 console.error('Error fetching community post by ID:', error);
+                return throwError(() => error);
+            })
+        );
+    }
+
+  modifyCommunity(communityId: number, logo?: File | null, nom?: string, description?: string): Observable<any> {
+        const formData = new FormData();
+        if (logo) {
+            formData.append('logo', logo);
+        }
+        if (nom) {
+            formData.append('nom', nom);
+        }
+        if (description) {
+            formData.append('description', description);
+        }
+
+        return this.http.patch<any>(`${this.apiUrl}/${communityId}`, formData, { withCredentials: true }).pipe(
+            tap((response) => {
+                console.log('Community modified successfully:', response);
+            }),
+            catchError((error) => {
+                console.error('Error modifying community:', error);
+                return throwError(() => error);
+            })
+        );
+
+    }
+
+    deleteCommunity(communityId: number): Observable<any> {
+        return this.http.delete<any>(`${this.apiUrl}/${communityId}`, { withCredentials: true }).pipe(
+            tap((response) => {
+                console.log('Community deleted successfully:', response);
+            }),
+            catchError((error) => {
+                console.error('Error deleting community:', error);
                 return throwError(() => error);
             })
         );

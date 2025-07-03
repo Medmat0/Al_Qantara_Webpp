@@ -12,10 +12,11 @@
       </div>
     </div>
     <div class="actions">
-      <button (click)="gotToPostCreation()">Créer un post</button>
-      <button>Voir les membres</button>
+      <button (click)="goToPostCreation()">Créer un post</button>
+      <button *ngIf="isModerator" (click)="goToMembers()" >Voir les membres</button>
       <button *ngIf="isMember === false" (click)="joinCommunity()">Rejoindre</button>
       <button *ngIf="isMember === true" (click)="leaveCommunity()">Quitter</button>
+      <button *ngIf="isModerator" (click)="goToSettings()" >Paramètres</button>
     </div>
 
   </div>

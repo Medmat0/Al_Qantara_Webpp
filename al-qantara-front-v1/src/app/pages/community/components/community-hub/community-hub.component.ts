@@ -113,15 +113,27 @@ export class CommunityHubComponent implements OnInit {
     });
   }
 
-  gotToPostCreation(){
-    if (this.checkAuthentication()) {
-      this.router.navigate([`/communities/${this.communityId}/posts/create`]);
-    }
-  }
+
 
   onPostEvent(event: any) {
     if (event?.type === 'deleted') {
       this.posts = this.posts.filter(post => post.id !== event.postId);
+    }
+  }
+
+  goToMembers() {
+    // Rediriger vers la page des membres de la communauté
+    this.router.navigate([`/communities/${this.communityId}/members`]);
+  }
+
+  goToSettings() {
+    // Rediriger vers la page des paramètres de la communauté
+    this.router.navigate([`/communities/${this.communityId}/settings`]);
+  }
+
+  goToPostCreation(){
+    if (this.checkAuthentication()) {
+      this.router.navigate([`/communities/${this.communityId}/posts/create`]);
     }
   }
 

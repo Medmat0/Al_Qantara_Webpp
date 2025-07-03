@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, HostListener} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CommunityService } from '../../../../member/services/community.service';
@@ -18,20 +18,32 @@ export class CommunityPostResearchComponent implements OnDestroy {
   tags: string[] = [];
 
   page = 1;
-  limit = 10;
+  limit = 3;
   hasMore = true;
   error: string | null = null;
   loading = false;
+  loaderStartTime: number = 0;
   private intervalId: any;
   private lastSearched = '';
 
   constructor(private communityService: CommunityService, private router: Router) {
     this.startAutoSearch();
+    window.addEventListener('scroll', this.onScroll, true);
   }
 
   ngOnDestroy() {
     if (this.intervalId) clearInterval(this.intervalId);
+    window.removeEventListener('scroll', this.onScroll, true);
   }
+
+  onScroll = (): void => {
+    if (this.loading || !this.hasMore || (!this.searchName.trim() && this.tags.length === 0)) return;
+    const scrollPosition = window.innerHeight + window.scrollY;
+    const threshold = document.body.offsetHeight - 200;
+    if (scrollPosition >= threshold) {
+      this.loadMorePosts();
+    }
+  };
 
   addTag() {
     const tag = this.tagInput.trim();
@@ -61,13 +73,32 @@ export class CommunityPostResearchComponent implements OnDestroy {
   loadMorePosts() {
     if (this.loading || !this.hasMore) return;
     this.loading = true;
-    this.communityService.getCommunityPostsByName(this.searchName.trim(), [], this.page, this.limit).subscribe({
+    const loaderStartTime = Date.now();
+
+    this.communityService.getCommunityPostsByName(
+      this.searchName.trim(),
+      this.tags,
+      this.page,
+      this.limit
+    ).subscribe({
       next: (response) => {
         const newPosts = response.posts || [];
         if (newPosts.length < this.limit) this.hasMore = false;
-        this.posts = [...this.posts, ...newPosts];
-        this.page++;
-        this.loading = false;
+
+        const elapsed = Date.now() - loaderStartTime;
+        const minDuration = 250;
+
+        const finish = () => {
+          this.posts = [...this.posts, ...newPosts];
+          this.page++;
+          this.loading = false;
+        };
+
+        if (elapsed < minDuration) {
+          setTimeout(finish, minDuration - elapsed);
+        } else {
+          finish();
+        }
       },
       error: () => {
         this.loading = false;
@@ -88,6 +119,7 @@ export class CommunityPostResearchComponent implements OnDestroy {
       this.error = null;
       this.posts = [];
       this.loading = true;
+      this.loaderStartTime = Date.now();
     }
     this.lastSearched = this.searchName.trim();
     this.page = 1;
@@ -99,17 +131,35 @@ export class CommunityPostResearchComponent implements OnDestroy {
       this.limit
     ).subscribe({
       next: (response) => {
-        this.posts = response.posts || [];
-        this.hasMore = (response.posts && response.posts.length === this.limit);
-        this.loading = false;
-        this.error = this.posts.length === 0 ? 'Aucun post trouvé.' : null;
-        this.page = 2;
+        const elapsed = Date.now() - this.loaderStartTime;
+        const minDuration = 250;
+        const finish = () => {
+          this.posts = response.posts || [];
+          this.hasMore = (response.posts && response.posts.length === this.limit);
+          this.loading = false;
+          this.error = this.posts.length === 0 ? 'Aucun post trouvé.' : null;
+          this.page = 2;
+        };
+        if (elapsed < minDuration) {
+          setTimeout(finish, minDuration - elapsed);
+        } else {
+          finish();
+        }
       },
       error: (err) => {
-        this.error = err.error?.message || 'Erreur lors de la recherche.';
-        this.posts = [];
-        this.hasMore = false;
-        this.loading = false;
+        const elapsed = Date.now() - this.loaderStartTime;
+        const minDuration = 2500;
+        const finish = () => {
+          this.error = err.error?.message || 'Erreur lors de la recherche.';
+          this.posts = [];
+          this.hasMore = false;
+          this.loading = false;
+        };
+        if (elapsed < minDuration) {
+          setTimeout(finish, minDuration - elapsed);
+        } else {
+          finish();
+        }
       }
     });
   }
