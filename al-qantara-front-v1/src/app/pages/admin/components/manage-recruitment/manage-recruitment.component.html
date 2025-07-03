@@ -1,66 +1,152 @@
 <div class="manage-recruitment-container">
-
-
-  <div class="offers-list">
-    <div class="offer-card" *ngFor="let offer of offers">
-      <div class="offer-content">
-        <h3>{{ offer.titre }}</h3>
-        <div class="offer-details">
-          <p><strong>Type de contrat:</strong> {{ offer.typeDeContrat }}</p>
-          <p><strong>Lieu:</strong> {{ offer.lieuDeTravail }}</p>
-          <p><strong>Date de début:</strong> {{ offer.dateDebut | date:'dd/MM/yyyy' }}</p>
-        </div>
-        <div class="tags">
-          <span class="tag" *ngFor="let tag of offer.tags">{{ tag }}</span>
+  <!-- Header avec titre et statistiques -->
+  <div class="header-section">
+    <div class="header-content">
+      <div class="title-section">
+        <h1>Gestion des Recrutements</h1>
+        <p class="subtitle">Gérez vos offres d'emploi et suivez les candidatures</p>
+      </div>
+      <div class="stats-cards">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+              <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+            </svg>
+          </div>
+          <div class="stat-content">
+            <span class="stat-number">{{ offers.length }}</span>
+            <span class="stat-label">Offres actives</span>
+          </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Filtres et actions -->
+  <div class="filters-section">
+    <div class="search-bar">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
+        <path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" />
+      </svg>
+      <input type="text" placeholder="Rechercher une offre..." />
+    </div>
+    <div class="filter-controls">
+      <select class="filter-select">
+        <option value="">Tous les contrats</option>
+        <option value="cdi">CDI</option>
+        <option value="cdd">CDD</option>
+        <option value="stage">Stage</option>
+        <option value="freelance">Freelance</option>
+      </select>
+    
+    </div>
+  </div>
+
+  <!-- Liste des offres -->
+  <div class="offers-grid">
+    <div class="offer-card" *ngFor="let offer of offers">
+      <!-- Badge de statut -->
+      <div class="offer-status">
+        <span class="status-badge active">Active</span>
+      </div>
+      
+      <!-- Contenu principal -->
+      <div class="offer-header">
+        <h3 class="offer-title">{{ offer.titre }}</h3>
+        <div class="offer-meta">
+          <span class="meta-item">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
+              <path d="M12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5M12,2A7,7 0 0,0 5,9C5,14.25 12,22 12,22C12,22 19,14.25 19,9A7,7 0 0,0 12,2Z" />
+            </svg>
+            {{ offer.lieuDeTravail }}
+          </span>
+          <span class="meta-item">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
+              <path d="M19,19H5V8H19M16,1V3H8V1H6V3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3H18V1M17,12H12V17H17V12Z" />
+            </svg>
+            {{ offer.dateDebut | date:'dd/MM/yyyy' }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Détails de l'offre -->
+      <div class="offer-details">
+        <div class="detail-row">
+          <span class="detail-label">Type de contrat</span>
+          <span class="detail-value contract-type">{{ offer.typeDeContrat }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Date de publication</span>
+          <span class="detail-value">{{ offer.datePublication | date:'dd/MM/yyyy' }}</span>
+        </div>
+      </div>
+
+      <!-- Tags -->
+      <div class="tags-section" *ngIf="offer.tags && offer.tags.length > 0">
+        <span class="tag" *ngFor="let tag of offer.tags">{{ tag }}</span>
+      </div>
+
+      <!-- Actions -->
       <div class="offer-actions">
-        <button
-          class="view-applicants-btn"
+        <button 
+          class="action-btn view-btn"
           (click)="viewApplicants(offer.id)"
-          aria-label="Voir les candidats"
-          title="Voir les candidats"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="20px" width="20px">
+          title="Voir les candidats">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18">
             <path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
           </svg>
+          <span>Candidats</span>
         </button>
-        <button
-          class="edit-btn"
+        <button 
+          class="action-btn edit-btn"
           (click)="editOffer(offer.id)"
-          aria-label="Modifier l'offre"
-          title="Modifier l'offre"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="20px" width="20px">
+          title="Modifier l'offre">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18">
             <path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
           </svg>
+          <span>Modifier</span>
         </button>
-        <button
-          class="delete-btn"
+        <button 
+          class="action-btn delete-btn"
           (click)="deleteOffer(offer.id)"
-          aria-label="Supprimer l'offre"
-          title="Supprimer l'offre"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="20px" width="20px">
+          title="Supprimer l'offre">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18">
             <path d="M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M8,9H16V19H8V9M15.5,4L14.5,3H9.5L8.5,4H5V6H19V4H15.5Z" />
           </svg>
+          <span>Supprimer</span>
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Modal d'édition -->
+  <!-- État vide -->
+  <div class="empty-state" *ngIf="offers.length === 0">
+    <div class="empty-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="64" height="64">
+        <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+      </svg>
+    </div>
+    <h3>Aucune offre d'emploi</h3>
+    <p>Commencez par créer votre première offre d'emploi</p>
+    <button class="add-offer-btn primary">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
+        <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
+      </svg>
+      Créer une offre
+    </button>
+  </div>
+
+  <!-- Modals -->
   <app-edit-recruitment
     *ngIf="selectedOfferId"
     [offerId]="selectedOfferId"
     (closeModal)="closeEditModal()"
-    (offerUpdated)="onOfferUpdated()"
-  ></app-edit-recruitment>
+    (offerUpdated)="onOfferUpdated()">
+  </app-edit-recruitment>
 
-  <!-- Modal de liste des candidats -->
   <app-applicant-list
     [offerId]="applicantsOfferId"
     [isVisible]="showApplicantsModal"
-    (close)="closeApplicantsModal()"
-  ></app-applicant-list>
+    (close)="closeApplicantsModal()">
+  </app-applicant-list>
 </div>

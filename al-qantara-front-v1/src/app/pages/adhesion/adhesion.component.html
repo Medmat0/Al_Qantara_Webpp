@@ -1,0 +1,393 @@
+<div class="adhesion-container">
+  <!-- Header avec logo -->
+  <header class="page-header">
+    <div class="logo-container">
+      <img src="assets/main-icon.jpg" alt="Al Qantara" class="association-logo">
+      <div class="logo-text">
+        <h1>Al Qantara</h1>
+        <p>Association Culturelle Marocaine</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section avec profil utilisateur à gauche -->
+  <section class="hero-section hero-with-profile">
+    <div class="hero-flex">
+      <div *ngIf="utilisateur" class="user-profile-card">
+        <div class="profile-header">
+          <div class="profile-avatar">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="profile-info">
+            <h2>Bienvenue, {{ utilisateur?.prenom }} {{ utilisateur?.nom }}</h2>
+            <span class="profile-badge">{{ utilisateur?.statut }}</span>
+          </div>
+        </div>
+        <div class="profile-details">
+          <div class="detail-item">
+            <i class="fas fa-envelope"></i>
+            <span>{{ utilisateur?.email }}</span>
+          </div>
+          <div class="detail-item">
+            <i class="fas fa-calendar"></i>
+            <span>Membre depuis {{ dateInscriptionFr }}</span>
+          </div>
+          <div class="detail-item">
+            <i class="fas fa-shield-alt"></i>
+            <span>{{ utilisateur?.role }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-content">
+        <div class="hero-background">
+          <div class="hero-particles"></div>
+        </div>
+        <div class="hero-content-inner">
+          <div class="hero-badge">
+            <i class="fas fa-star"></i>
+            <span>Association Al Qantara</span>
+          </div>
+          <h1 class="hero-title">
+            Rejoignez notre
+            <span class="gradient-text">communauté</span>
+          </h1>
+          <p class="hero-subtitle">
+            Devenez membre et soutenez la culture marocaine tout en profitant d'avantages exclusifs et d'un réseau unique.
+          </p>
+          <div class="hero-stats">
+            <div class="stat-item">
+              <span class="stat-number">500+</span>
+              <span class="stat-label">Membres</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">50+</span>
+              <span class="stat-label">Événements</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">10+</span>
+              <span class="stat-label">Années</span>
+            </div>
+          </div>
+
+          <!-- Section Adhésion intégrée dans le hero -->
+          <div class="hero-actions-section">
+            <!-- Bloc Adhésion -->
+            <div class="hero-pricing-card">
+              <div class="pricing-header">
+                <div class="price-badge">Adhésion annuelle</div>
+                <div class="price">
+                  <span class="currency">€</span>
+                  <span class="amount">20</span>
+                  <span class="period">/an</span>
+                </div>
+                <p class="price-description">Accès complet aux avantages</p>
+              </div>
+              <div class="pricing-features">
+                <div class="feature-item">
+                  <i class="fas fa-check"></i>
+                  <span>Tous les événements</span>
+                </div>
+                <div class="feature-item">
+                  <i class="fas fa-check"></i>
+                  <span>Réseau professionnel</span>
+                </div>
+                <div class="feature-item">
+                  <i class="fas fa-check"></i>
+                  <span>Réductions partenaires</span>
+                </div>
+              </div>
+              
+              <!-- Boutons d'adhésion -->
+              <ng-container *ngIf="utilisateur && utilisateur.statut !== 'Membre' && utilisateur.statut !== 'Actif'">
+                <ng-container *ngIf="!showPayment">
+                  <button class="cta-button primary" (click)="showPayment = true">
+                    <span>Payer l'adhésion 20€</span>
+                    <i class="fas fa-euro-sign"></i>
+                  </button>
+                </ng-container>
+              </ng-container>
+              <ng-container *ngIf="utilisateur && (utilisateur.statut === 'Membre' || utilisateur.statut === 'Actif')">
+                <button class="cta-button primary" disabled>
+                  <span>Déjà membre</span>
+                  <i class="fas fa-check"></i>
+                </button>
+              </ng-container>
+            </div>
+
+            <!-- Bloc Don -->
+            <div class="hero-donation-card">
+              <div class="donation-header">
+                <div class="donation-icon">
+                  <i class="fas fa-heart"></i>
+                </div>
+                <h3>Soutenez notre mission</h3>
+                <p>Votre don nous aide à développer notre communauté</p>
+              </div>
+              
+              <div class="donation-amounts">
+                <button class="amount-btn" [class.active]="donationAmount === 10" (click)="choisirMontantDon(10)">10€</button>
+                <button class="amount-btn" [class.active]="donationAmount === 25" (click)="choisirMontantDon(25)">25€</button>
+                <button class="amount-btn featured" [class.active]="donationAmount === 50" (click)="choisirMontantDon(50)">50€</button>
+                <button class="amount-btn" [class.active]="donationAmount === 100" (click)="choisirMontantDon(100)">100€</button>
+                <button class="amount-btn custom" [class.active]="donationAmount === 0" (click)="choisirMontantDon('autre')">Autre</button>
+                <input *ngIf="donationAmount === 0" type="number" min="1" class="custom-donation-input" placeholder="Montant" [value]="customDonation" (input)="setCustomDonation($event)" />
+              </div>
+              
+              <button class="cta-button secondary" (click)="ouvrirModalDon()">
+                <i class="fas fa-heart"></i>
+                <span>Faire un don</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Avantages + FAQ côte à côte -->
+  <div class="info-sections">
+    <!-- Avantages modernisés -->
+    <section class="benefits-section">
+      <div class="section-header">
+        <h2 class="section-title">Pourquoi nous rejoindre ?</h2>
+        <p class="section-subtitle">Découvrez tous les avantages de votre adhésion</p>
+      </div>
+      <div class="benefits-grid">
+        <div class="benefit-card">
+          <div class="benefit-icon">
+            <i class="fas fa-calendar-star"></i>
+          </div>
+          <div class="benefit-content">
+            <h3>Événements exclusifs</h3>
+            <p>Accès prioritaire à nos événements culturels, ateliers et rencontres communautaires.</p>
+            <div class="benefit-features">
+              <span class="feature-tag">Soirées culturelles</span>
+              <span class="feature-tag">Ateliers</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="benefit-card featured">
+          <div class="benefit-badge">Populaire</div>
+          <div class="benefit-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="benefit-content">
+            <h3>Réseau professionnel</h3>
+            <p>Rejoignez une communauté de 500+ membres engagés et développez votre réseau professionnel.</p>
+            <div class="benefit-features">
+              <span class="feature-tag">Networking</span>
+              <span class="feature-tag">Mentorat</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="benefit-card">
+          <div class="benefit-icon">
+            <i class="fas fa-gift"></i>
+          </div>
+          <div class="benefit-content">
+            <h3>Avantages membres</h3>
+            <p>Réductions exclusives chez nos partenaires et offres spéciales réservées aux adhérents.</p>
+            <div class="benefit-features">
+              <span class="feature-tag">-20% partenaires</span>
+              <span class="feature-tag">Offres VIP</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ modernisée -->
+    <section class="faq-section">
+      <div class="section-header">
+        <h2 class="section-title">Questions fréquentes</h2>
+      </div>
+      <div class="faq-container">
+        <div class="faq-item">
+          <div class="faq-question">
+            <h3>Quel est le montant de l'adhésion ?</h3>
+            <i class="fas fa-plus"></i>
+          </div>
+          <div class="faq-answer">
+            <p>L'adhésion coûte <strong>20€ par an</strong> et inclut tous les avantages : accès aux événements, réseau professionnel, et réductions partenaires.</p>
+          </div>
+        </div>
+        
+        <div class="faq-item">
+          <div class="faq-question">
+            <h3>Puis-je annuler mon adhésion ?</h3>
+            <i class="fas fa-plus"></i>
+          </div>
+          <div class="faq-answer">
+            <p>Oui, vous pouvez annuler votre adhésion à tout moment. Contactez-nous à <strong>contact&#64;alqantara.org</strong> pour procéder à l'annulation.</p>
+          </div>
+        </div>
+        
+        <div class="faq-item">
+          <div class="faq-question">
+            <h3>Comment se passe le paiement ?</h3>
+            <i class="fas fa-plus"></i>
+          </div>
+          <div class="faq-answer">
+            <p>Le paiement s'effectue de manière <strong>100% sécurisée</strong> via notre plateforme. Nous acceptons les cartes bancaires et PayPal.</p>
+          </div>
+        </div>
+        
+        <div class="faq-item">
+          <div class="faq-question">
+            <h3>Quand puis-je accéder aux événements ?</h3>
+            <i class="fas fa-plus"></i>
+          </div>
+          <div class="faq-answer">
+            <p>Dès validation de votre adhésion, vous recevrez un <strong>email de confirmation</strong> avec l'accès à notre agenda d'événements privés.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Modal Popup de Paiement -->
+  <div *ngIf="showPayment" class="payment-modal-overlay" (click)="closeModalOnOverlay($event)">
+    <div class="payment-modal" (click)="$event.stopPropagation()">
+      <button class="close-button" (click)="showPayment = false" aria-label="Fermer">
+        <i class="fas fa-times"></i>
+      </button>
+      
+      <div class="payment-content">
+        <div class="payment-header">
+          <div class="payment-icon">
+            <i class="fas fa-credit-card"></i>
+          </div>
+          <h2>Paiement de l'adhésion</h2>
+          <p class="payment-subtitle">Finalisez votre adhésion à Al Qantara</p>
+        </div>
+
+        <div class="order-summary">
+          <h3>Résumé de la commande</h3>
+          <div class="order-item">
+            <div class="item-info">
+              <span class="item-name">Adhésion annuelle Al Qantara</span>
+              <span class="item-description">Accès complet aux événements et avantages</span>
+            </div>
+            <span class="item-price">20€</span>
+          </div>
+          
+          <div class="order-total">
+            <div class="total-row">
+              <span>Sous-total</span>
+              <span>20€</span>
+            </div>
+            <div class="total-row final">
+              <span>Total à payer</span>
+              <span class="total-price">20€</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="payment-actions">
+          <button class="btn-secondary" (click)="showPayment = false">
+            <i class="fas fa-arrow-left"></i>
+            <span>Annuler</span>
+          </button>
+          <button class="btn-primary" (click)="payerAdhesion()" [disabled]="loadingPayment">
+            <span *ngIf="!loadingPayment">
+              <i class="fab fa-cc-visa"></i>
+              Payer avec HelloAsso
+            </span>
+            <span *ngIf="loadingPayment">
+              <i class="fas fa-spinner fa-spin"></i>
+              Chargement...
+            </span>
+          </button>
+        </div>
+
+        <div class="payment-info">
+          <div class="security-badge">
+            <i class="fas fa-shield-alt"></i>
+            <span>Paiement 100% sécurisé</span>
+          </div>
+          <img src="https://www.helloasso.com/assets/img/logo-helloasso.png" 
+               alt="HelloAsso" 
+               class="payment-logo" />
+          <div class="payment-methods">
+            <i class="fab fa-cc-visa"></i>
+            <i class="fab fa-cc-mastercard"></i>
+            <i class="fab fa-paypal"></i>
+          </div>
+        </div>
+
+        <div *ngIf="paymentError" class="error-message">
+          <i class="fas fa-exclamation-triangle"></i>
+          <span>{{ paymentError }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Don -->
+  <div *ngIf="showDonationPayment" class="payment-modal-overlay" (click)="showDonationPayment = false">
+    <div class="payment-modal" (click)="$event.stopPropagation()">
+      <button class="close-button" (click)="showDonationPayment = false" aria-label="Fermer">
+        <i class="fas fa-times"></i>
+      </button>
+      <div class="payment-content">
+        <div class="payment-header">
+          <div class="payment-icon">
+            <i class="fas fa-donate"></i>
+          </div>
+          <h2>{{ donationLabel }}</h2>
+          <p class="payment-subtitle">Merci pour votre soutien à Al Qantara</p>
+        </div>
+        <div class="order-summary">
+          <h3>Résumé du don</h3>
+          <div class="order-item">
+            <div class="item-info">
+              <span class="item-name">Don à Al Qantara</span>
+              <span class="item-description">Votre générosité fait la différence</span>
+            </div>
+            <span class="item-price">{{ donationAmount || customDonation }}€</span>
+          </div>
+          <div class="order-total">
+            <div class="total-row final">
+              <span>Total à payer</span>
+              <span class="total-price">{{ donationAmount || customDonation }}€</span>
+            </div>
+          </div>
+        </div>
+        <div class="payment-actions">
+          <button class="btn-secondary" (click)="showDonationPayment = false">
+            <i class="fas fa-arrow-left"></i>
+            <span>Annuler</span>
+          </button>
+          <button class="btn-primary" (click)="payerDon()" [disabled]="loadingPayment">
+            <span *ngIf="!loadingPayment">
+              <i class="fab fa-cc-visa"></i>
+              Payer avec HelloAsso
+            </span>
+            <span *ngIf="loadingPayment">
+              <i class="fas fa-spinner fa-spin"></i>
+              Chargement...
+            </span>
+          </button>
+        </div>
+        <div class="payment-info">
+          <div class="security-badge">
+            <i class="fas fa-shield-alt"></i>
+            <span>Paiement 100% sécurisé</span>
+          </div>
+          <img src="https://www.helloasso.com/assets/img/logo-helloasso.png" alt="HelloAsso" class="payment-logo" />
+          <div class="payment-methods">
+            <i class="fab fa-cc-visa"></i>
+            <i class="fab fa-cc-mastercard"></i>
+            <i class="fab fa-paypal"></i>
+          </div>
+        </div>
+        <div *ngIf="donationError" class="error-message">
+          <i class="fas fa-exclamation-triangle"></i>
+          <span>{{ donationError }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

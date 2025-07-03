@@ -51,10 +51,16 @@
         [ngClass]="{'ng-invalid': form.get('categorie')?.invalid && form.get('categorie')?.touched}"
       >
         <ng-template ng-option-tmp let-item="item" let-index="index">
-          <span (click)="$event.stopPropagation()">{{ item.nom }}</span>
-          <button type="button" class="delete-category-btn" (click)="openDeleteCategoryModal(item); $event.stopPropagation();" tabindex="-1" title="Supprimer la catégorie">
-            <span class="delete-x">&times;</span>
-          </button>
+          <div class="category-option-wrapper">
+            <span class="category-name" (click)="$event.stopPropagation()">{{ item.nom }}</span>
+            <button type="button"
+                    class="delete-category-btn"
+                    (click)="openDeleteCategoryModal(item); $event.stopPropagation();"
+                    tabindex="-1"
+                    title="Supprimer la catégorie">
+              <span class="delete-x">&times;</span>
+            </button>
+          </div>
         </ng-template>
       </ng-select>
       <button type="button" class="add-category-btn" (click)="openCategoryModal()">Ajouter une catégorie</button>

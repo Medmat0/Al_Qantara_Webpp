@@ -32,9 +32,9 @@ export class AddEvenementComponent {
     numero: '',
     rue: '',
     codePostal: '',
-    ville: '',  
-    isPaid : null,
-    price : null,        // add payant && add price 
+    ville: '',
+    isPaid : false,
+    price : 0,        // add payant && add price
     type: '',
     placesTotal: null as number | null,
     images: [] as string[],
@@ -71,12 +71,12 @@ export class AddEvenementComponent {
 
   handleAddressSelect(suggestion: AddressSuggestion): void {
     const address = suggestion.address;
-    
+
     this.event.numero = address.house_number || '';
     this.event.rue = address.road || address.street || '';
     this.event.codePostal = address.postcode || '';
     this.event.ville = address.city || address.town || address.village || '';
-    
+
     this.addressSearchInput = this.addressService.formatSuggestion(suggestion);
     this.showSuggestions = false;
   }
@@ -132,16 +132,16 @@ export class AddEvenementComponent {
       this.errorMessage = "Veuillez entrer un prix valide pour un événement payant.";
       return;
     }
-    
+
     if (form.valid && !this.isSubmitting) {
       this.isSubmitting = true;
       this.errorMessage = '';
-      
+
       try {
         console.log('Images à uploader:', this.selectedImages.map(img => ({ name: img.name, size: img.size })));
-        console.log('Vidéo à uploader:', this.selectedVideo ? { 
-          name: this.selectedVideo.name, 
-          size: this.selectedVideo.size 
+        console.log('Vidéo à uploader:', this.selectedVideo ? {
+          name: this.selectedVideo.name,
+          size: this.selectedVideo.size
         } : null);
 
         const eventData = {
@@ -155,7 +155,7 @@ export class AddEvenementComponent {
           images: [] as string[],
           video: undefined,
           estPayant: this.event.isPaid,
-          price: this.event.isPaid ? this.event.price : null
+          price: this.event.isPaid ? this.event.price : false
         };
 
         const response = await this.evenementService.createEvenement(
@@ -192,8 +192,8 @@ export class AddEvenementComponent {
       codePostal: '',
       ville: '',
       type: '',
-      isPaid : null,
-      price : null,
+      isPaid : false,
+      price : 0,
       placesTotal: null,
       images: [],
       video: null

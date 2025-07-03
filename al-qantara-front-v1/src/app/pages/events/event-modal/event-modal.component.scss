@@ -8,6 +8,7 @@
   justify-content: center;
   overflow-y: auto;
   padding: 2rem;
+  animation: fadeIn 0.3s ease-out;
 }
 
 .modal-content {
@@ -19,8 +20,10 @@
   max-height: 80vh;
   overflow-y: auto;
   max-width: 640px;
+  margin: 2rem auto;
   box-shadow: 0 10px 30px rgba(0,0,0,0.2);
   position: relative;
+  animation: slideUp 0.3s ease-out;
 }
 
 .close-btn {
@@ -35,11 +38,51 @@
   color: #666;
 }
 
+.media {
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f8f5f2;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px rgba(158,46,44,0.07);
+  padding: 1.2rem 0.5rem;
+}
+
+.event-image {
+  max-width: 90%;
+  max-height: 320px;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(158,46,44,0.10);
+  object-fit: cover;
+  background: #fff;
+  transition: transform 0.18s, box-shadow 0.18s;
+  margin: 0 auto;
+  display: block;
+}
+.event-image:hover {
+  transform: scale(1.025);
+  box-shadow: 0 8px 32px rgba(158,46,44,0.16);
+}
+
 .media-content {
   width: 100%;
+  border-radius: 16px;
+  object-fit: cover;
+}
+
+.media-placeholder {
+  width: 100%;
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f4f6;
+  color: #bbb;
+  font-size: 1.1rem;
   border-radius: 8px;
   margin-top: 1rem;
-  object-fit: cover;
+  border: 1.5px dashed #e0e0e0;
 }
 
 iframe {
@@ -67,6 +110,36 @@ iframe {
   font-size: 0.85rem;
   color: #059669;
   margin-top: 0.5rem;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.actions button, .actions .action-btn {
+  border: none;
+  background: #f3f4f6;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.actions button:hover, .actions .action-btn:hover {
+  background: #e5e7eb;
+}
+
+.comment {
+  background: #f9fafb;
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin-top: 0.5rem;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .comment-section {
@@ -105,7 +178,7 @@ iframe {
 }
 
 textarea.form-control {
-  width: 100%;
+  width: 97%;
   padding: 1.1rem;
   border-radius: 12px;
   border: 1.5px solid #e5e7eb;
@@ -146,6 +219,31 @@ textarea.form-control::placeholder {
   box-shadow: 0 4px 16px #2563eb;
 }
 .btn-send:disabled {
+  background: #bcd7fa;
+  color: #fff;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn-pay {
+  background: #f3f4f6;
+  color: #3b82f6;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  font-weight: 600;
+  margin-right: 0.5rem;
+  transition: background 0.18s, color 0.18s;
+  box-shadow: none;
+  text-transform: none;
+}
+.btn-pay:hover, .btn-pay:focus {
+  background: #e5e7eb;
+  color: #2563eb;
+}
+.btn-pay:disabled {
   background: #bcd7fa;
   color: #fff;
   cursor: not-allowed;
@@ -198,6 +296,17 @@ textarea.form-control::placeholder {
 .comment-card .close-comment-btn:hover, .comment-card .close-comment-btn:focus {
   background: #f3f4f6;
   color: #6b7280;
+}
+
+.error {
+  color: #ffffff;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  margin-top: 12px;
+  text-align: center;
+  background-color: #fd6363;
+  padding: 10px;
+  border-radius: 4px;
 }
 
 @media (max-width: 600px) {
@@ -276,6 +385,9 @@ textarea.form-control::placeholder {
   font-weight: 600;
   box-shadow: 0 2px 8px rgba(37,99,235,0.10);
   padding: 0.7rem 1.7rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  text-transform: none;
   transition: background 0.18s, box-shadow 0.18s, transform 0.09s;
 }
 .actions .btn-participate:hover, .actions .btn-participate:focus {
@@ -402,4 +514,13 @@ textarea.form-control::placeholder {
   margin: 1.5rem 0;
   text-align: center;
   border-radius: 8px;
+}
+@keyframes fadeIn {
+  from { background: rgba(0,0,0,0); }
+  to { background: rgba(0,0,0,0.5); }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }

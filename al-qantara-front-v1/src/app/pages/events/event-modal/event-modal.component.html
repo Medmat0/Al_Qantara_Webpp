@@ -14,8 +14,7 @@
           <video [src]="event.video" controls class="media-content"></video>
         </ng-container>
         <ng-template #imageBlock>
-          <img *ngIf="event.images?.length" [src]="event.images[0]" [alt]="event.titre" class="media-content" />
-          <div *ngIf="!event.images?.length" class="media-placeholder">Aucun média disponible</div>
+          <img [src]="eventImage" [alt]="event.titre" class="media-content event-image" />
         </ng-template>
       </div>
 
@@ -54,6 +53,8 @@
           class="btn-pay">
           {{ loading ? 'Paiement en cours...' : '💳 Acheter un billet' }}
         </button>
+        <div *ngIf="errorPaymentMessage" class="error">{{ errorPaymentMessage }}</div>
+
         <button
           *ngIf="!event.isPayant && !isParticipating && event.placesRestantes > 0"
           (click)="participate.emit()"
@@ -61,6 +62,7 @@
           class="btn-participate">
           {{ loading ? 'Participation en cours...' : '🎫 Participer à l\'événement' }}
         </button>
+
         <button
           *ngIf="isParticipating"
           (click)="unsubscribe.emit()"
@@ -108,12 +110,17 @@
           <div class="text-gray-400 text-sm">Aucun commentaire pour le moment.</div>
         </ng-template>
       </div>
-      <div class="flex justify-end mt-4">
-        <button (click)="close.emit()" class="btn-close">Fermer</button>
-      </div>
     </ng-container>
     <ng-template #loadingTpl>
       <div>Chargement de l'événement...</div>
     </ng-template>
   </div>
+
+  <app-payment-modal
+    *ngIf="showPaymentModal"
+    [event]="event"
+    [loading]="loadingPayment"
+    [errorMessage]="errorMessage"
+    (close)="closePaymentModal()"
+  ></app-payment-modal>
 </div>

@@ -19,6 +19,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
       nom: true,
       prenom: true,
       email: true,
+      telephone: true,
       photoProfil: true,
       role: true,
       dateInscription: true,

@@ -1,13 +1,13 @@
 import { Component, HostListener } from '@angular/core';
 import {Router, RouterLink} from '@angular/router';
-import { NgIf } from '@angular/common';
+import { NgIf, NgClass } from '@angular/common';
 import { NavbarService } from '../../services/navbar.service';
 import { AuthService } from '../../services/auth.service';
 import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-nav-bar',
-  imports: [RouterLink, NgIf],
+  imports: [RouterLink, NgIf, NgClass],
   templateUrl: './nav-bar.component.html',
   standalone: true,
   styleUrl: './nav-bar.component.scss'
@@ -17,6 +17,8 @@ export class NavBarComponent {
   isAuthenticated: boolean = false;
   username: string | null = null;
   isUserMenuOpen: boolean = false;
+  isMenuOpen = false;
+  userRole: string | null = null;
 
   constructor(
     private authService: AuthService,
@@ -35,17 +37,24 @@ export class NavBarComponent {
       if (status) {
         const user = localStorage.getItem('utilisateur');
         if (user) {
-          this.username = JSON.parse(user).prenom;
+          const userObj = JSON.parse(user);
+          this.username = userObj.prenom;
+          this.userRole = userObj.role || null;
           this.cdr.detectChanges();
         }
       } else {
         this.username = null;
+        this.userRole = null;
       }
     });
   }
 
   toggleUserMenu(): void {
     this.isUserMenuOpen = !this.isUserMenuOpen;
+  }
+
+  toggleMenu(): void {
+    this.isMenuOpen = !this.isMenuOpen;
   }
 
   @HostListener('document:click', ['$event'])
@@ -72,5 +81,19 @@ export class NavBarComponent {
   navigateToProfile(): void {
     this.isUserMenuOpen = false;  // Ferme le menu
     this.router.navigate(['/profile']);
+  }
+
+  navigateTo(path: string): void {
+    this.router.navigate([path]);
+  }
+
+  // Affiche le bouton "Devenir membre" si l'utilisateur est connecté, a le rôle "user" (non "membre" ou "admin")
+  showBecomeMemberButton(): boolean {
+    // Correction : certains backends stockent le rôle en majuscule ou minuscule, on gère les deux
+    return this.isAuthenticated && (this.userRole?.toLowerCase() === 'user');
+  }
+
+  goToAdhesion(): void {
+    this.router.navigate(['/adhesion']);
   }
 }

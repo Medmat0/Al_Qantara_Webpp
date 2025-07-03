@@ -1,12 +1,12 @@
 import {Component, Input, OnInit } from '@angular/core';
-import {AsyncPipe, NgIf} from '@angular/common';
+import {NgIf, DecimalPipe} from '@angular/common';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-revue-item',
   imports: [
     NgIf,
-    AsyncPipe
+    DecimalPipe
   ],
   templateUrl: './revue-item.component.html',
   standalone: true,

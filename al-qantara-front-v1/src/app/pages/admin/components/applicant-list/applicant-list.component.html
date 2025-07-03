@@ -40,26 +40,48 @@
           </div>
 
           <div class="applicant-actions">
-            <a class="download-cv" (click)="downloadCV(applicant.cv)" title="Télécharger le CV">
-              <i class="fas fa-file-pdf"></i> CV
-            </a>
-
-            <div class="status-actions" *ngIf="applicant.statut === 'EN_ATTENTE'">
-              <button class="action-button accept" (click)="updateStatus(applicant.id, 'CONFIRME')">Accepter</button>
-              <button class="action-button reject" (click)="updateStatus(applicant.id, 'ANNULE')">Refuser</button>
-              <button class="action-button meeting" (click)="scheduleInterview(applicant.id)">Réunion</button>
-            </div>
-
-            <div class="status-display" *ngIf="applicant.statut === 'CONFIRME'">
-              <span class="status-accepted">Accepté</span>
-            </div>
-
-            <div class="status-display" *ngIf="applicant.statut === 'ANNULE'">
-              <span class="status-rejected">Refusé</span>
-            </div>
+            <ng-container *ngIf="applicant.statut === 'EN_ATTENTE'; else refusedBlock">
+              <a class="download-cv" (click)="downloadCV(applicant.cv)" title="Télécharger le CV">
+                <i class="fas fa-file-pdf"></i> CV
+              </a>
+              <div class="status-actions">
+                <button class="action-button accept" (click)="accepteApplicant(applicant.id)">Accepter</button>
+                <button class="action-button reject" (click)="refuseApplicant(applicant.id)">Refuser</button>
+                <button class="action-button meeting" (click)="scheduleInterview(applicant.id)">Réunion</button>
+              </div>
+            </ng-container>
+            <ng-template #refusedBlock>
+              <div class="status-display" *ngIf="applicant.statut === 'REJETEE'">
+                <span class="status-rejected" style="color: #e74c3c; font-weight: bold;">Refusé</span>
+              </div>
+              <div class="status-display" *ngIf="applicant.statut === 'ACCEPTEE'">
+                <a class="download-cv" (click)="downloadCV(applicant.cv)" title="Télécharger le CV">
+                  <i class="fas fa-file-pdf"></i> CV
+                </a>
+                <span class="status-accepted" style="color: #27ae60; font-weight: bold; margin-left: 10px;">Accepté</span>
+              </div>
+            </ng-template>
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Popup de planification de réunion -->
+<div class="modal-overlay" *ngIf="showMeetingModal">
+  <div class="modal-container meeting-modal">
+    <div class="modal-header">
+      <h3>Planifier une réunion</h3>
+      <button class="close-button" (click)="closeMeetingModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <label for="meetingDate">Date et heure de la réunion</label>
+      <input type="datetime-local" id="meetingDate" [(ngModel)]="meetingDate" name="meetingDate" required>
+      <div class="error-message" *ngIf="meetingError">{{ meetingError }}</div>
+    </div>
+    <div class="modal-footer">
+      <button class="action-button" (click)="planifierReunion()">Planifier la réunion</button>
     </div>
   </div>
 </div>
