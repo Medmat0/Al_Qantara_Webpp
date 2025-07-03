@@ -18,6 +18,8 @@ export class ArticlesListingComponent implements OnInit {
   filteredArticles: Article[] = [];
   searchTerm: string = '';
   selectedCategory: string = '';
+  selectedSort: string = 'date-desc';
+  viewMode: 'grid' | 'list' = 'grid';
   isLoading = true;
   error: string | null = null;
 
@@ -42,6 +44,7 @@ export class ArticlesListingComponent implements OnInit {
     });
   }
 
+
   onSearchChange(): void {
     this.applyFilters();
   }
@@ -50,9 +53,23 @@ export class ArticlesListingComponent implements OnInit {
     this.applyFilters();
   }
 
+  onSortChange(event: any): void {
+    this.selectedSort = event.target.value;
+    this.applyFilters();
+  }
+
+  setViewMode(mode: 'grid' | 'list') {
+    this.viewMode = mode;
+  }
+
+  clearSearch(): void {
+    this.searchTerm = '';
+    this.applyFilters();
+  }
+
   applyFilters(): void {
     const search = this.searchTerm.toLowerCase();
-    this.filteredArticles = this.articles.filter(article => {
+    let filtered = this.articles.filter(article => {
       const matchTitre = article.titre.toLowerCase().includes(search);
       const matchAuteur = article.auteur.toLowerCase().includes(search);
       // Recherche sur les catégories (noms)
@@ -61,11 +78,34 @@ export class ArticlesListingComponent implements OnInit {
       const matchCatFilter = this.selectedCategory ? (article.categories && article.categories.some(cat => cat.nom === this.selectedCategory)) : true;
       return (matchTitre || matchAuteur || matchCategorie) && matchCatFilter;
     });
+
+    // Tri
+    switch (this.selectedSort) {
+      case 'date-desc':
+        filtered = filtered.sort((a, b) => new Date(b.dateSoumission).getTime() - new Date(a.dateSoumission).getTime());
+        break;
+      case 'date-asc':
+        filtered = filtered.sort((a, b) => new Date(a.dateSoumission).getTime() - new Date(b.dateSoumission).getTime());
+        break;
+      case 'title':
+        filtered = filtered.sort((a, b) => a.titre.localeCompare(b.titre));
+        break;
+      case 'author':
+        filtered = filtered.sort((a, b) => a.auteur.localeCompare(b.auteur));
+        break;
+    }
+    this.filteredArticles = filtered;
   }
 
   getPreviewUrl(pdfUrl: string): string {
     if (!pdfUrl) return '';
     const onePage = pdfUrl.replace('/upload/', '/upload/pg_1/');
     return onePage.replace('.pdf', '.jpg');
+  }
+
+  getCategoryName(article: Article): string {
+    return article.categories && article.categories.length > 0 && article.categories[0].nom 
+      ? article.categories[0].nom 
+      : 'Général';
   }
 }

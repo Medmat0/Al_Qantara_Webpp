@@ -36,7 +36,8 @@ export class RecruitmentListComponent implements OnInit {
     { value: 'CDI', label: 'CDI' },
     { value: 'CDD', label: 'CDD' },
     { value: 'Stage', label: 'Stage' },
-    { value: 'Freelance', label: 'Freelance' }
+    { value: 'Freelance', label: 'Freelance' },
+    { value: 'Bénévolat', label: 'Bénévolat' }
   ];
 
   constructor(

@@ -1,41 +1,222 @@
-<div class="articles-listing-container">
-  <h2>Articles</h2>
-  <div *ngIf="isLoading" class="loading">Chargement...</div>
-  <div *ngIf="error" class="error">{{ error }}</div>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Articles - Listing Moderne</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="articles-listing-container">
+        <div class="page-header">
+            <h1 class="page-title">
+                <span class="title-gradient">Articles</span>
+                <span class="title-accent">Découvrez nos dernières publications</span>
+            </h1>
+            <div class="header-stats">
+                <div class="stat-item">
+                    <span class="stat-number">{{ articles.length }}</span>
+                    <span class="stat-label">Articles</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">{{ categories.length }}</span>
+                    <span class="stat-label">Catégories</span>
+                </div>
+            </div>
+        </div>
 
-  <div class="articles-filters-bar">
-    <input
-      type="text"
-      placeholder="Rechercher par titre, auteur ou revue..."
-      [(ngModel)]="searchTerm"
-      (ngModelChange)="onSearchChange()"
-      class="articles-search-input"
-    />
-    <select [(ngModel)]="selectedCategory" (change)="onCategoryChange()" class="articles-category-select">
-      <option value="">Toutes les catégories</option>
-      <option *ngFor="let cat of categories" [value]="cat.nom">{{ cat.nom }}</option>
-    </select>
-  </div>
+        <div class="loading-state" *ngIf="isLoading">
+            <div class="loading-spinner">
+                <div class="spinner"></div>
+                <span>Chargement des articles...</span>
+            </div>
+        </div>
 
-  <div class="articles-list">
-    <div *ngFor="let article of filteredArticles" class="article-card">
-      <div *ngIf="article.revue && article.revue.fichier" class="article-image-container">
-        <img [src]="getPreviewUrl(article.revue.fichier)" alt="Aperçu revue" class="article-image" />
-      </div>
-      <div class="article-header">
-        <h3>{{ article.titre }}</h3>
-        <span class="article-date">{{ article.dateSoumission | date: 'dd/MM/yyyy' }}</span>
-      </div>
-      <div class="article-meta">
-        <span class="article-author">Par {{ article.auteur }}</span>
-      </div>
-      <div class="article-content-preview">
-        <span [innerHTML]="article.contenu | slice:0:200"></span><span *ngIf="article.contenu.length > 200">...</span>
-      </div>
-      <div class="article-footer">
-        <button class="btn btn-primary">Lire l'article</button>
-      </div>
+        <div class="error-state" *ngIf="error">
+            <div class="error-icon">⚠️</div>
+            <span>{{ error }}</span>
+        </div>
+
+        <div class="search-filters-section">
+            <div class="search-container">
+                <div class="search-input-wrapper">
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    <input
+                        type="text"
+                        placeholder="Rechercher par titre, auteur ou revue..."
+                        [(ngModel)]="searchTerm"
+                        (ngModelChange)="onSearchChange()"
+                        class="search-input"
+                    />
+                    <button class="search-clear" *ngIf="searchTerm" (click)="clearSearch()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="filters-container">
+                <div class="filter-group">
+                    <label class="filter-label">Catégorie</label>
+                    <select [(ngModel)]="selectedCategory" (change)="onCategoryChange()" class="category-select">
+                        <option value="">Toutes les catégories</option>
+                        <option *ngFor="let cat of categories" [value]="cat.nom">{{ cat.nom }}</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Tri</label>
+                    <select class="sort-select" [(ngModel)]="selectedSort" (change)="onSortChange($event)">
+                        <option value="date-desc">Plus récent</option>
+                        <option value="date-asc">Plus ancien</option>
+                        <option value="title">Titre A-Z</option>
+                        <option value="author">Auteur A-Z</option>
+                    </select>
+                </div>
+
+                <div class="view-toggle">
+                    <button class="view-btn" [class.active]="viewMode === 'grid'" (click)="setViewMode('grid')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                    </button>
+                    <button class="view-btn" [class.active]="viewMode === 'list'" (click)="setViewMode('list')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <line x1="8" y1="6" x2="21" y2="6"></line>
+                            <line x1="8" y1="12" x2="21" y2="12"></line>
+                            <line x1="8" y1="18" x2="21" y2="18"></line>
+                            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div [ngClass]="viewMode === 'grid' ? 'articles-grid' : 'articles-list'" id="articles-container">
+            <div *ngFor="let article of filteredArticles" class="article-card">
+                <div class="article-image-container" *ngIf="article.revue && article.revue.fichier">
+                    <img [src]="getPreviewUrl(article.revue.fichier)" alt="Aperçu revue" class="article-image" />
+                    <div class="image-overlay">
+                        <button class="preview-btn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="article-content">
+                    <div class="article-header">
+                        <div class="article-meta-top">
+                            <span class="article-category">{{ getCategoryName(article) }}</span>
+                            <span class="article-date">{{ article.dateSoumission | date: 'dd/MM/yyyy' }}</span>
+                        </div>
+                        <h3 class="article-title">{{ article.titre }}</h3>
+                        <div class="article-author">
+                            <div class="author-avatar">
+                                <span>{{ article.auteur.charAt(0).toUpperCase() }}</span>
+                            </div>
+                            <span class="author-name">{{ article.auteur }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="article-preview">
+                        <p [innerHTML]="article.contenu | slice:0:150"></p>
+                        <span *ngIf="article.contenu.length > 150" class="read-more-indicator">...</span>
+                    </div>
+                    
+                    <div class="article-footer">
+                        <div class="article-stats">
+                            
+                        </div>
+                        <button class="read-btn">
+                            <span>Lire l'article</span>
+                            <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12,5 19,12 12,19"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="no-articles" *ngIf="!isLoading && filteredArticles.length === 0">
+            <div class="no-articles-icon">📄</div>
+            <h3>Aucun article trouvé</h3>
+            <p>Essayez de modifier vos critères de recherche ou explorez d'autres catégories.</p>
+        </div>
+
+        <div class="load-more-section" *ngIf="filteredArticles.length > 0">
+            <button class="load-more-btn">
+                <span>Charger plus d'articles</span>
+                <div class="btn-bg"></div>
+            </button>
+        </div>
     </div>
-  </div>
-  <div *ngIf="!isLoading && filteredArticles.length === 0" class="no-articles">Aucun article trouvé.</div>
-</div>
+
+    <script>
+        // Animation des cartes au scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.article-card');
+            cards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(card);
+            });
+
+            // Toggle vue grille/liste
+            const viewBtns = document.querySelectorAll('.view-btn');
+            const articlesContainer = document.getElementById('articles-container');
+            
+            viewBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    viewBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    const view = btn.dataset.view;
+                    articlesContainer.className = view === 'list' ? 'articles-list' : 'articles-grid';
+                });
+            });
+
+            // Animation du bouton de chargement
+            const loadMoreBtn = document.querySelector('.load-more-btn');
+            if (loadMoreBtn) {
+                loadMoreBtn.addEventListener('click', () => {
+                    loadMoreBtn.classList.add('loading');
+                    setTimeout(() => {
+                        loadMoreBtn.classList.remove('loading');
+                    }, 2000);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

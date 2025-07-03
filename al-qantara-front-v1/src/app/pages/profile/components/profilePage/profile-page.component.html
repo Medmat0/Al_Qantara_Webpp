@@ -1,28 +1,128 @@
-<div class="profile-view-container">
-  <div class="profile-box">
-    <h2>Mon Profil</h2>
-    <p class="description">Informations liées à votre compte</p>
+<div class="profile-container">
+  <!-- Header Section -->
+  <div class="profile-header">
+    <div class="profile-avatar">
+      <div class="avatar-placeholder">
+        <i class="fas fa-user"></i>
+      </div>
+    </div>
+    <div class="profile-info">
+      <h1>{{ user?.prenom }} {{ user?.nom }}</h1>
+      <p class="role-badge" [ngClass]="user?.role?.toLowerCase()">{{ user?.role }}</p>
+      <p class="join-date">Membre depuis {{ formatDate(user?.dateInscription) }}</p>
+    </div>
+    <div class="profile-actions">
+      <button class="edit-btn" routerLink="/profile/edit">
+        <i class="fas fa-edit"></i>
+        Modifier le profil
+      </button>
+    </div>
+  </div>
 
-    <div class="profile-group">
-      <label>Prénom</label>
-      <p>{{ user?.prenom }}</p>
+  <!-- Main Content -->
+  <div class="profile-content">
+    <!-- Personal Information Card -->
+    <div class="info-card">
+      <div class="card-header">
+        <h3><i class="fas fa-user-circle"></i> Informations personnelles</h3>
+      </div>
+      <div class="card-content">
+        <div class="info-grid">
+          <div class="info-item">
+            <label>Prénom</label>
+            <p>{{ user?.prenom || 'Non renseigné' }}</p>
+          </div>
+          <div class="info-item">
+            <label>Nom</label>
+            <p>{{ user?.nom || 'Non renseigné' }}</p>
+          </div>
+          <div class="info-item">
+            <label>Email</label>
+            <p>{{ user?.email || 'Non renseigné' }}</p>
+          </div>
+          <div class="info-item">
+            <label>Téléphone</label>
+            <p>{{ user?.telephone || 'Non renseigné' }}</p>
+          </div>
+          <div class="info-item">
+            <label>Statut</label>
+            <span class="status-badge" [ngClass]="user?.statut?.toLowerCase()">
+              {{ user?.statut || 'Non défini' }}
+            </span>
+          </div>
+          <div class="info-item">
+            <label>Date d'inscription</label>
+            <p>{{ formatDate(user?.dateInscription) }}</p>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="profile-group">
-      <label>Nom</label>
-      <p>{{ user?.nom }}</p>
+    <!-- Events Participation Card -->
+    <div class="info-card" *ngIf="user?.participations?.length > 0">
+      <div class="card-header">
+        <h3><i class="fas fa-calendar-alt"></i> Mes participations aux événements</h3>
+        <span class="badge">{{ user?.participations?.length }}</span>
+      </div>
+      <div class="card-content">
+        <div class="events-list">
+          <div class="event-item" *ngFor="let participation of user?.participations">
+            <div class="event-info">
+              <h4>{{ participation.evenement.titre }}</h4>
+              <p class="event-date">
+                <i class="fas fa-calendar"></i>
+                {{ formatDate(participation.evenement.dateDebut) }} - {{ formatDate(participation.evenement.dateFin) }}
+              </p>
+            </div>
+            <div class="event-status">
+              <span class="status-badge" [ngClass]="participation.statut?.toLowerCase().replace('_', '-')">
+                {{ getStatusText(participation.statut) }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="profile-group">
-      <label>Email</label>
-      <p>{{ user?.email }}</p>
+    <!-- Adhesion Card (if exists) -->
+    <div class="info-card" *ngIf="user?.adhesion">
+      <div class="card-header">
+        <h3><i class="fas fa-id-card"></i> Adhésion</h3>
+      </div>
+      <div class="card-content">
+        <p>{{ user?.adhesion }}</p>
+      </div>
     </div>
 
-    <div class="profile-group">
-      <label>Téléphone</label>
-      <p>{{ user?.telephone }}</p>
+    <!-- Quick Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-calendar-check"></i>
+        </div>
+        <div class="stat-content">
+          <h4>{{ user?.participations?.length || 0 }}</h4>
+          <p>Événements</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-crown"></i>
+        </div>
+        <div class="stat-content">
+          <h4>{{ user?.role || 'N/A' }}</h4>
+          <p>Rôle</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="stat-content">
+          <h4>{{ user?.statut || 'N/A' }}</h4>
+          <p>Statut</p>
+        </div>
+      </div>
     </div>
-
-    <button routerLink="/profile/edit">Modifier mon profil</button>
   </div>
 </div>

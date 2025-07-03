@@ -1,40 +1,204 @@
 <div class="edit-profile-container">
-  <div class="form-box">
-    <h2>Modifier votre profil</h2>
-    <p class="description">Mettez à jour vos informations personnelles</p>
+  <!-- Header Section -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="header-icon">
+        <i class="fas fa-user-edit"></i>
+      </div>
+      <div class="header-text">
+        <h1>Modifier votre profil</h1>
+        <p>Mettez à jour vos informations personnelles et vos paramètres de sécurité</p>
+      </div>
+    </div>
+    <button class="back-btn" routerLink="/profile">
+      <i class="fas fa-arrow-left"></i>
+      Retour au profil
+    </button>
+  </div>
 
-    <form (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label for="prenom">Prénom</label>
-        <input id="prenom" type="text" placeholder="Votre prénom" [(ngModel)]="prenom" name="prenom" />
-      </div>
+  <!-- Main Content -->
+  <div class="edit-content">
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-state">
+      <div class="spinner"></div>
+      <p>Chargement de votre profil...</p>
+    </div>
 
-      <div class="form-group">
-        <label for="nom">Nom</label>
-        <input id="nom" type="text" placeholder="Votre nom" [(ngModel)]="nom" name="nom" />
-      </div>
+    <!-- Form Content -->
+    <div *ngIf="!loading" class="form-wrapper">
+      <!-- Personal Information Section -->
+      <div class="form-section">
+        <div class="section-header">
+          <h3><i class="fas fa-user-circle"></i> Informations personnelles</h3>
+          <p>Modifiez vos informations de base</p>
+        </div>
+        
+        <form (ngSubmit)="onSubmit()" class="profile-form">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="prenom">
+                <i class="fas fa-user"></i>
+                Prénom
+              </label>
+              <input 
+                id="prenom" 
+                type="text" 
+                placeholder="Votre prénom" 
+                [(ngModel)]="prenom" 
+                name="prenom"
+                class="form-input"
+              />
+            </div>
 
-      <div class="form-group">
-        <label for="telephone">Téléphone</label>
-        <input id="telephone" type="text" placeholder="+33..." [(ngModel)]="telephone" name="telephone" />
-      </div>
+            <div class="form-group">
+              <label for="nom">
+                <i class="fas fa-user"></i>
+                Nom
+              </label>
+              <input 
+                id="nom" 
+                type="text" 
+                placeholder="Votre nom" 
+                [(ngModel)]="nom" 
+                name="nom"
+                class="form-input"
+              />
+            </div>
 
-      <div class="form-group">
-        <label for="currentPassword">Mot de passe actuel</label>
-        <input id="currentPassword" type="password" placeholder="Mot de passe actuel" [(ngModel)]="currentPassword" name="currentPassword" />
-      </div>
-      <div class="form-group">
-        <label for="newPassword">Nouveau mot de passe</label>
-        <input id="newPassword" type="password" placeholder="Nouveau mot de passe" [(ngModel)]="newPassword" name="newPassword" />
-      </div>
-      <div class="form-group">
-        <label for="confirmPassword">Confirmer le nouveau mot de passe</label>
-        <input id="confirmPassword" type="password" placeholder="Confirmer le nouveau mot de passe" [(ngModel)]="confirmPassword" name="confirmPassword" />
-      </div>
-      <div *ngIf="errorMessage" class="form-error">{{ errorMessage }}</div>
-      <div *ngIf="successMessage" class="form-success">{{ successMessage }}</div>
+            <div class="form-group full-width">
+              <label for="telephone">
+                <i class="fas fa-phone"></i>
+                Téléphone
+              </label>
+              <input 
+                id="telephone" 
+                type="tel" 
+                placeholder="+33 1 23 45 67 89" 
+                [(ngModel)]="telephone" 
+                name="telephone"
+                class="form-input"
+              />
+            </div>
+          </div>
 
-      <button type="submit">Enregistrer</button>
-    </form>
+          <!-- Password Change Section -->
+          <div class="password-section">
+            <div class="section-header">
+              <h3><i class="fas fa-lock"></i> Modifier le mot de passe</h3>
+              <p>Laissez vide si vous ne souhaitez pas changer votre mot de passe</p>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group full-width">
+                <label for="currentPassword">
+                  <i class="fas fa-key"></i>
+                  Mot de passe actuel
+                </label>
+                <div class="password-input-wrapper">
+                  <input 
+                    id="currentPassword" 
+                    [type]="showCurrentPassword ? 'text' : 'password'"
+                    placeholder="Votre mot de passe actuel" 
+                    [(ngModel)]="currentPassword" 
+                    name="currentPassword"
+                    class="form-input"
+                  />
+                  <button 
+                    type="button" 
+                    class="toggle-password"
+                    (click)="togglePasswordVisibility('current')"
+                  >
+                    <i [class]="showCurrentPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="newPassword">
+                  <i class="fas fa-unlock"></i>
+                  Nouveau mot de passe
+                </label>
+                <div class="password-input-wrapper">
+                  <input 
+                    id="newPassword" 
+                    [type]="showNewPassword ? 'text' : 'password'"
+                    placeholder="Nouveau mot de passe" 
+                    [(ngModel)]="newPassword" 
+                    name="newPassword"
+                    class="form-input"
+                  />
+                  <button 
+                    type="button" 
+                    class="toggle-password"
+                    (click)="togglePasswordVisibility('new')"
+                  >
+                    <i [class]="showNewPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                  </button>
+                </div>
+                <div class="password-strength" *ngIf="newPassword">
+                  <div class="strength-bar">
+                    <div class="strength-fill" [ngClass]="getPasswordStrength()"></div>
+                  </div>
+                  <span class="strength-text">{{ getPasswordStrengthText() }}</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="confirmPassword">
+                  <i class="fas fa-check-circle"></i>
+                  Confirmer le nouveau mot de passe
+                </label>
+                <div class="password-input-wrapper">
+                  <input 
+                    id="confirmPassword" 
+                    [type]="showConfirmPassword ? 'text' : 'password'"
+                    placeholder="Confirmer le mot de passe" 
+                    [(ngModel)]="confirmPassword" 
+                    name="confirmPassword"
+                    class="form-input"
+                  />
+                  <button 
+                    type="button" 
+                    class="toggle-password"
+                    (click)="togglePasswordVisibility('confirm')"
+                  >
+                    <i [class]="showConfirmPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                  </button>
+                </div>
+                <div *ngIf="confirmPassword && newPassword !== confirmPassword" class="password-mismatch">
+                  <i class="fas fa-exclamation-triangle"></i>
+                  Les mots de passe ne correspondent pas
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Messages -->
+          <div class="messages-section">
+            <div *ngIf="errorMessage" class="alert alert-error">
+              <i class="fas fa-exclamation-circle"></i>
+              {{ errorMessage }}
+            </div>
+            <div *ngIf="successMessage" class="alert alert-success">
+              <i class="fas fa-check-circle"></i>
+              {{ successMessage }}
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" routerLink="/profile">
+              <i class="fas fa-times"></i>
+              Annuler
+            </button>
+            <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
+              <i class="fas fa-save"></i>
+              <span *ngIf="!isSubmitting">Enregistrer les modifications</span>
+              <span *ngIf="isSubmitting">Enregistrement...</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </div>
