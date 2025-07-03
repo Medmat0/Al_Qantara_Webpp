@@ -1,0 +1,53 @@
+<form [formGroup]="postForm" (ngSubmit)="onSubmit(communityId)">
+  <label>Titre:</label>
+  <input formControlName="titre" required>
+  <div *ngIf="postForm.get('titre')?.invalid && postForm.get('titre')?.touched" class="error-message">
+    Titre requis
+  </div>
+
+  <label>Contenu:</label>
+  <textarea formControlName="contenu" required></textarea>
+  <div *ngIf="postForm.get('contenu')?.invalid && postForm.get('contenu')?.touched" class="error-message">
+    Contenu requis
+  </div>
+
+  <label>Tags:</label>
+  <div formArrayName="tags">
+    <div *ngFor="let tag of tags.controls; let i = index">
+      <input [formControlName]="i" required>
+      <button type="button" (click)="removeTag(i)" *ngIf="tags.length > 1">Supprimer</button>
+    </div>
+    <button type="button" (click)="addTag()">Ajouter un tag</button>
+    <div *ngIf="tags.invalid && postForm.get('tags')?.touched" class="error-message">
+      Au moins un tag requis
+    </div>
+  </div>
+
+  <label>Image:</label>
+  <input type="file" (change)="onFileSelected($event)">
+
+  <div class="poll-options-group">
+    <label>Sondage:</label>
+    <div formArrayName="pollOptions">
+      <div *ngFor="let option of pollOptions.controls; let i = index">
+        <input [formControlName]="i" placeholder="Option de sondage">
+        <button type="button" (click)="removePollOption(i)" *ngIf="pollOptions.length > 1">Supprimer</button>
+      </div>
+      <button type="button" (click)="addPollOption()">Ajouter une option</button>
+      <div *ngIf="postForm.get('pollOptions')?.errors?.['minOptions'] && postForm.get('pollOptions')?.touched" class="error-message">
+        Un sondage doit avoir au moins deux options.
+      </div>
+    </div>
+
+    <label>Date limite du sondage:</label>
+    <input type="date" formControlName="pollDeadline">
+    <div *ngIf="postForm.get('pollDeadline')?.errors?.['requiredIfPoll'] && postForm.get('pollDeadline')?.touched" class="error-message">
+      La date limite est obligatoire si un sondage est créé.
+    </div>
+    <div *ngIf="postForm.get('pollDeadline')?.errors?.['minDate'] && postForm.get('pollDeadline')?.touched" class="error-message">
+      La date limite doit être ultérieure à aujourd'hui.
+    </div>
+  </div>
+
+  <button type="submit" [disabled]="postForm.invalid">Créer le post</button>
+</form>

@@ -1,0 +1,29 @@
+<div class="community-home-root">
+  <div class="community-home-posts">
+    <div *ngIf="loading">Chargement des posts...</div>
+    <div *ngIf="error" class="error">{{ error }}</div>
+    <div *ngIf="!loading && !error">
+      <ng-container *ngIf="posts.length > 0; else noPosts">
+        <app-community-post
+          *ngFor="let post of posts"
+          [post]="post"
+          [isModerator]="isModerator"
+          (postEvent)="onPostEvent($event)"
+          (click)="goToPost(post)"
+          style="cursor: pointer;">
+        </app-community-post>
+      </ng-container>
+      <ng-template #noPosts>
+        <div>Aucun post à afficher.</div>
+      </ng-template>
+    </div>
+  </div>
+  <div>
+    <button routerLink="/communities/research">Rechercher une communauté</button>
+    <button (click)="goToCreationForm()">Créer une communauté</button>
+    <app-community-propositions
+      (communitySelected)="onCommunitySelected($event)"
+      class="community-propositions-fixed"
+    ></app-community-propositions>
+  </div>
+</div>

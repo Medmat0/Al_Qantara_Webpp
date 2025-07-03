@@ -1,5 +1,5 @@
 import {
-    getCommunityPostByIdService,
+    getCommunityPostByIdService, getCommunityPostByNameService,
     getCommunityPostsService
 } from "../../../services/community/communityPost.service.js";
 
@@ -31,4 +31,17 @@ const getCommunityPosts = async (req, res) => {
     }
 }
 
-export { getCommunityPostById, getCommunityPosts };
+const getCommunityPostByName = async (req, res) => {
+    try {
+        const communityPost = await getCommunityPostByNameService(req);
+        return res.status(200).json(communityPost);
+    } catch (error) {
+        const status = error.status || 500;
+        console.error("Error fetching community post by name:", error);
+        res.status(status).json({
+            message: error.message || "Erreur lors de la récupération du post de la communauté."
+        });
+    }
+}
+
+export { getCommunityPostById, getCommunityPosts, getCommunityPostByName };

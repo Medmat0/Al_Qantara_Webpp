@@ -1,0 +1,64 @@
+<div class="post-description-root" *ngIf="post">
+  <div class="post-title">{{ post.titre }}</div>
+  <div class="post-meta">
+    <img *ngIf="post.communityLogo" [src]="post.communityLogo" alt="Logo de la communauté" class="community-logo">
+    Communauté: <span *ngIf="post.communityNom">{{ post.communityNom }}</span>
+    Auteur : <span *ngIf="post.auteur">{{ post.auteur.prenom }} {{ post.auteur.nom }}</span> | {{ post.dateCreation | date:'dd/MM/yyyy HH:mm' }}
+  </div>
+  <div class="post-tags">
+    <span *ngFor="let tag of post.tags" class="tag">#{{ tag }}</span>
+  </div>
+  <div class="post-content">{{ post.contenu }}</div>
+  <img *ngIf="post.image" [src]="post.image" alt="Image du post" />
+  <div *ngIf="post.isPoll" class="poll-banner">
+    <span class="poll-title">🗳️ Sondage disponible sur ce post !</span>
+    <ul class="poll-options">
+      <li *ngFor="let option of post.pollOptions; let i = index">
+        <button
+          class="poll-option-btn"
+          [disabled]="hasVoted"
+          (click)="votePollOption(i)">
+          {{ option.label }}
+        </button>
+        <span *ngIf="hasVoted && selectedOption === i" class="voted-label">Votre choix</span>
+        <span *ngIf="hasVoted" class="votes-count">
+      ({{ option.votes?.length || 0 }} vote{{ option.votes?.length > 1 ? 's' : '' }})
+    </span>
+      </li>
+    </ul>
+    <span class="poll-deadline">Date limite : {{ post.pollDeadline | date:'dd/MM/yyyy' }}</span>
+    <div *ngIf="voteError" class="poll-error">{{ voteError }}</div>
+    <div *ngIf="voteSuccess" class="poll-success">Merci pour votre vote !</div>
+  </div>
+
+
+  <button (click)="likeDislikePost($event)">Like | {{ post.likes?.length || 0 }}</button>
+  <button *ngIf="post.auteurId === userId" (click)="deletePost()">Supprimer</button>
+  <div class="comments-section">
+    <app-comment
+      *ngFor="let comment of post.commentaires"
+      [comment]="comment"
+      [replyFormVisible]="replyFormVisible"
+      [replyContent]="replyContent"
+      [toggleReplyForm]="toggleReplyForm"
+      [addReply]="addReply"
+      [likeDislikeComment]="likeDislikeComment"
+      [deleteComment]="deleteComment"
+      [isModerator]="isModerator"
+      [userId]="userId"
+    ></app-comment>
+  </div>
+  <form (ngSubmit)="addComment()" #commentForm="ngForm" class="add-comment-form">
+    <textarea
+      name="commentContent"
+      [(ngModel)]="newCommentContent"
+      required
+      placeholder="Ajouter un commentaire..."
+      rows="2"
+      class="comment-input"
+    ></textarea>
+    <button type="submit" [disabled]="commentForm.invalid">Envoyer</button>
+  </form>
+</div>
+<div *ngIf="loading" class="loading">Chargement...</div>
+<div *ngIf="error" class="error">{{ error }}</div>

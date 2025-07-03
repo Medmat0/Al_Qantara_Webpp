@@ -73,7 +73,6 @@ const isBanished = asyncHandler(async (req, res, next) => {
     if (isBanned) {
         return res.status(403).json({ accepted: false, message: "Vous êtes banni de cette communauté, vous ne pouvez pas continuer" });
     }else {
-        console.log("Vous n'êtes pas banni de cette communauté, vous pouvez continuer");
     }
 
     next();

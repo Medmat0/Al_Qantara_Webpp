@@ -6,21 +6,11 @@ const prisma = new PrismaClient();
 
 const createCommunityService = async(req) => {
 
+    console.log("createCommunityService called");
+
     const { nom, description } = req.body;
     const logo = req.file;
     const userId = req.user.id;
-
-    // Vérification du rôle utilisateur
-    const user = await prisma.utilisateur.findUnique({
-        where: { id: userId },
-        select: { role: true }
-    });
-
-    if (user.role !== "ADMIN" && user.role !== "ADHERENT") {
-        const err = new Error("Vous n'avez pas les droits nécessaires pour créer une communauté.");
-        err.status = 403;
-        throw err;
-    }
 
     // Vérification si une communauté avec le même nom existe déjà
     const existingCommunity = await prisma.community.findFirst({
@@ -41,11 +31,7 @@ const createCommunityService = async(req) => {
     // Upload image to Cloudinary
     let imageUrl = null;
     if (logo) {
-        const uploadResult = await cloudinary.uploader.upload(logo.path, {
-            folder: 'logoCommunities',
-            resource_type: 'image'
-        });
-        imageUrl = uploadResult.secure_url;
+        imageUrl = logo.path;
     }
     // Création de la communauté + ajout du créateur en tant que modérateur d'office
     const newCommunity = await prisma.community.create({
@@ -55,6 +41,10 @@ const createCommunityService = async(req) => {
             logo: imageUrl,
             createdBy: userId,
             moderateurs: {
+                connect: { id: userId }
+            }
+            ,
+            membres: {
                 connect: { id: userId }
             }
         }
@@ -73,8 +63,8 @@ const getCommunityByIdService = async (req) => {
             nom: true,
             logo: true,
             description: true,
-            createdBy: true,
-            dateCreation: true
+            dateCreation: true,
+            membres: { select: { id: true } }
         }
     });
 
@@ -84,7 +74,14 @@ const getCommunityByIdService = async (req) => {
         throw err;
     }
 
-    return community;
+    return {
+        id: community.id,
+        nom: community.nom,
+        logo: community.logo,
+        description: community.description,
+        dateCreation: community.dateCreation,
+        nbrMembre: community.membres.length
+    };
 }
 
 const getCommunitiesService = async (req) => {
@@ -102,9 +99,7 @@ const getCommunitiesService = async (req) => {
                 id: true,
                 nom: true,
                 logo: true,
-                description: true,
-                createdBy: true,
-                dateCreation: true
+                description: true
             }
         })
     ]);
@@ -120,35 +115,97 @@ const getCommunitiesService = async (req) => {
 
 
 const getCommunityByNameService = async (req) => {
-    const { name } = req.query;
-    console.log(name);
+    const name = req.query.name;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
 
-    if (!name) {
-        const err = new Error("Le nom de la communauté est requis.");
+    if (!name || typeof name !== 'string' || name.trim() === '') {
+        const err = new Error("Un mot ou une phrase de recherche est requis dans la query.");
         err.status = 400;
         throw err;
     }
 
-    const community = await prisma.community.findUnique({
-        where: { nom: name },
+    const total = await prisma.community.count({
+        where: {
+            nom: {
+                contains: name,
+                mode: 'insensitive'
+            }
+        }
+    });
+
+    const communities = await prisma.community.findMany({
+        where: {
+            nom: {
+                contains: name,
+                mode: 'insensitive'
+            }
+        },
         select: {
             id: true,
             nom: true,
             logo: true,
             description: true,
-            createdBy: true,
-            dateCreation: true
-        }
+            dateCreation: true,
+            membres: { select: { id: true } }
+        },
+        orderBy: {
+            dateCreation: 'desc'
+        },
+        skip,
+        take: limit
     });
 
-    if (!community) {
-        const err = new Error("Aucune communauté avec ce nom trouvée.");
-        err.status = 404;
-        throw err;
+    if (!communities || communities.length === 0) {
+        return {
+            communities: [],
+            page,
+            limit,
+            total: 0,
+            totalPages: 0
+        };
     }
 
-    return community;
+    const result = communities.map(community => ({
+        id: community.id,
+        nom: community.nom,
+        logo: community.logo,
+        description: community.description,
+        dateCreation: community.dateCreation,
+        nbrMembre: community.membres.length
+    }));
+
+    return {
+        communities: result,
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit)
+    };
 };
+
+
+const getRandomCommunitiesFromService = async (req) => {
+    const communities = await prisma.$queryRaw`
+        SELECT
+            c.id,
+            c.nom,
+            c.logo,
+            c.description,
+            COUNT(cm."A") AS "nbMembres"
+        FROM "Community" c
+                 LEFT JOIN "_CommunityMembres" cm ON c.id = cm."A"
+        GROUP BY c.id
+        ORDER BY RANDOM()
+            LIMIT 3;
+    `;
+    return communities.map(c => ({
+        ...c,
+        nbMembres: Number(c.nbMembres)
+    }));
+};
+
 
 const deleteCommunityService = async (req) => {
     const { communityId } = req.params;
@@ -183,8 +240,14 @@ const deleteCommunityService = async (req) => {
 
     const logoUrl = community.logo;
     if (logoUrl) {
-        const publicId = logoUrl.split("/").pop().split(".")[0];
-        await cloudinary.uploader.destroy(publicId, { resource_type: "raw" });
+        const parts = logoUrl.split("/upload/")[1].split("/");
+        if (parts[0].startsWith("v")) parts.shift();
+        const publicId = parts.join("/").split(".")[0];
+        await cloudinary.uploader
+            .destroy(publicId, {
+                resource_type: "image",
+                invalidate: true
+            })
     } else {
         const err = new Error("Logo non trouvé");
         err.status = 404;
@@ -238,15 +301,24 @@ const modifyCommunityService = async (req) => {
     if (logo) {
         //suppression de l'ancien logo si présent
         if (community.logo) {
-            const publicId = community.logo.split("/").pop().split(".")[0];
-            await cloudinary.uploader.destroy(publicId, { resource_type: "image" });
+            const logoUrl = community.logo;
+            if (logoUrl) {
+                const parts = logoUrl.split("/upload/")[1].split("/");
+                if (parts[0].startsWith("v")) parts.shift();
+                const publicId = parts.join("/").split(".")[0];
+                await cloudinary.uploader
+                    .destroy(publicId, {
+                        resource_type: "image",
+                        invalidate: true
+                    })
+            } else {
+                const err = new Error("Logo non trouvé");
+                err.status = 404;
+                throw err;
+            }
         }
-        // Upload du nouveau logo
-        const uploadResult = await cloudinary.uploader.upload(logo.path, {
-            folder: 'logoCommunities',
-            resource_type: 'image'
-        });
-        data.logo = uploadResult.secure_url;
+
+        data.logo = logo.path;
     }
 
     const updatedCommunity = await prisma.community.update({
@@ -325,6 +397,9 @@ const leaveCommunityService = async (req) => {
         data: {
             membres: {
                 disconnect: { id: userId }
+            },
+            moderateurs: {
+                disconnect: { id: userId }
             }
         }
     });
@@ -332,6 +407,69 @@ const leaveCommunityService = async (req) => {
     return { success: true, message: "Vous avez quitté la communauté avec succès", communityId: community.id };
 }
 
+const getRandomPostsFromCommunitiesService = async (req) => {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const total = await prisma.communityPost.count();
+
+    // Récupère les posts avec auteur, likes, commentaires, pollOptions et infos communauté
+    const posts = await prisma.communityPost.findMany({
+        skip,
+        take: limit,
+        orderBy: { dateCreation: 'desc' },
+        include: {
+            auteur: {
+                select: { id: true, nom: true, prenom: true }
+            },
+            likes: {
+                select: {
+                    id: true,
+                    utilisateurId: true,
+                    dateLike: true,
+                    utilisateur: {
+                        select: { id: true, nom: true, prenom: true }
+                    }
+                }
+            },
+            commentaires: true,
+            pollOptions: true,
+            community: {
+                select: { nom: true, logo: true }
+            }
+        }
+    });
+
+    // Conversion des bigints éventuels et formatage
+    const postsWithDetails = posts.map(post => {
+        const safePost = {};
+        for (const key in post) {
+            if (typeof post[key] === 'bigint') {
+                safePost[key] = Number(post[key]);
+            } else {
+                safePost[key] = post[key];
+            }
+        }
+        return {
+            ...safePost,
+            auteur: post.auteur,
+            likes: post.likes,
+            commentaires: post.commentaires,
+            pollOptions: post.pollOptions,
+            communityNom: post.community.nom,
+            communityLogo: post.community.logo
+        };
+    });
+
+    return {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+        posts: postsWithDetails
+    };
+};
 
 
 export {
@@ -339,8 +477,10 @@ export {
     getCommunityByIdService,
     getCommunityByNameService,
     getCommunitiesService,
+    getRandomCommunitiesFromService,
     deleteCommunityService,
     modifyCommunityService,
     joinCommunityService,
-    leaveCommunityService
+    leaveCommunityService,
+    getRandomPostsFromCommunitiesService
 };
