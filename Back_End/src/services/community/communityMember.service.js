@@ -98,7 +98,6 @@ const promoteMemberService = async (req) => {
 const banMemberService = async (req) => {
     const {communityId, memberId} = req.params;
     const userCommunityRole = req.userCommunityRole;
-    console.log("Bannissement du membre:", memberId, "de la communauté:", communityId);
 
     // Vérifie si la communauté existe
     const community = await prisma.community.findUnique({
@@ -124,7 +123,7 @@ const banMemberService = async (req) => {
     }
 
     if (member.id === req.userId || community.moderateurs.some(mod => mod.id === parseInt(memberId))) {
-        throw {status: 403, message: "Vous ne pouvez pas vous bannir vous-même ou bannir un modérateur."};
+        throw {status: 403, message: "Vous ne pouvez pas vous bannir vous-même."};
     }
 
     const isBanned = community.membresbannis.some(bannedMember => bannedMember.id === parseInt(memberId));

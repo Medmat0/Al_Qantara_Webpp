@@ -16,6 +16,7 @@ export class CommunityMembersComponent implements OnInit {
   membresbannis: any[] = [];
   loading = true;
   communityId!: number;
+  actionError: string | null = null;
 
   // Pagination
   membresPage = 1;
@@ -83,9 +84,10 @@ export class CommunityMembersComponent implements OnInit {
         if (!this.membresbannis.some(m => m.id === member.id)) {
           this.membresbannis = [...this.membresbannis, { ...member }];
         }
+        this.actionError = null;
       },
       error: (err) => {
-        console.error('Erreur lors du bannissement:', err);
+        this.actionError = "Erreur lors du bannissement : " + (err?.error?.message || "Veuillez réessayer.");
       }
     });
   }
@@ -98,9 +100,11 @@ export class CommunityMembersComponent implements OnInit {
         if (!this.membres.some(m => m.id === member.id)) {
           this.membres = [...this.membres, { ...member }];
         }
+        this.actionError = null;
       },
       error: (err) => {
-        console.error('Erreur lors du débannissement:', err);
+        this.actionError = "Erreur lors du débannissement : " + (err?.error?.message || "Veuillez réessayer.");
+
       }
     });
   }
@@ -112,9 +116,10 @@ export class CommunityMembersComponent implements OnInit {
         if (!this.moderateurs.some(m => m.id === member.id)) {
           this.moderateurs = [...this.moderateurs, { ...member }];
         }
+        this.actionError = null;
       },
       error: (err) => {
-        console.error('Erreur lors de la promotion:', err);
+        this.actionError = "Erreur lors de la promotion : " + (err?.error?.message || "Veuillez réessayer.");
       }
     });
   }
@@ -131,9 +136,10 @@ export class CommunityMembersComponent implements OnInit {
         if (!this.membres.some(m => m.id === moderator.id)) {
           this.membres = [...this.membres, { ...moderator }];
         }
+        this.actionError = null;
       },
       error: (err) => {
-        console.error('Erreur lors de la rétrogradation:', err);
+        this.actionError = "Erreur lors de la rétrogradation : " + (err?.error?.message || "Veuillez réessayer.");
       }
     });
   }
