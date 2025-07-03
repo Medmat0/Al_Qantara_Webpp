@@ -66,6 +66,10 @@ export class EventDescriptionComponent {
       if (this.evenementId !== null) {
         this.evenementService.getEvenementById(this.evenementId).subscribe({
           next: (response) => {
+            if (!response || !response.id) {
+              this.router.navigate(['/not-found']);
+              return;
+            }
             this.evenement = response;
             if (this.userId && Array.isArray(this.evenement.likes)) {
               this.hasLikedEvenement = this.evenement.likes.some((like: LikeEvenement) => like.utilisateurId === this.userId);
@@ -105,6 +109,7 @@ export class EventDescriptionComponent {
           },
           error: (error) => {
             console.error('Erreur lors du fetch de l\'événement:', error);
+            this.router.navigate(['/not-found']);
           }
         });
       }

@@ -31,7 +31,10 @@ export class RevueDescriptionComponent implements OnInit {
   private fetchRevueDetails(id: number): void {
     this.revueService.getRevueById(id).subscribe({
       next: (response: Revue) => {
-        console.log('Revue fetched successfully:', response);
+        if (!response || !response.id) {
+          this.router.navigate(['/not-found']);
+          return;
+        }
 
         // Map response directly to the Revue model
         this.revue.id = response.id;
@@ -49,6 +52,7 @@ export class RevueDescriptionComponent implements OnInit {
       },
       error: (error: any) => {
         console.error('Error fetching revue:', error);
+        this.router.navigate(['/not-found']);
       }
     });
   }
