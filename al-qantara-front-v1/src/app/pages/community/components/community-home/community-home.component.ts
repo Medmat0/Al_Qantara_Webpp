@@ -5,6 +5,8 @@ import { CommunityPostComponent } from '../community-post/community-post.compone
 import { CommunityPropositionsComponent } from '../community-propositions/community-propositions.component';
 import { Router, RouterModule } from '@angular/router';
 import {AuthService} from '../../../../member/services/auth.service';
+import { CommunityPostResearchComponent } from '../community-post-research/community-post-research.component';
+import { CommunityResearchComponent } from '../community-research/community-research.component';
 
 @Component({
   selector: 'app-community-home',
@@ -13,7 +15,9 @@ import {AuthService} from '../../../../member/services/auth.service';
     CommonModule,
     CommunityPostComponent,
     CommunityPropositionsComponent,
-    RouterModule
+    RouterModule,
+    CommunityPostResearchComponent,
+    CommunityResearchComponent
   ],
   templateUrl: './community-home.component.html',
   styleUrl: './community-home.component.scss'
@@ -22,9 +26,11 @@ export class CommunityHomeComponent implements OnInit {
   posts: any[] = [];
   loading = true;
   error: string | null = null;
-  isModerator: boolean = false; // By default, we do not fetch if moderator in main home
+  isModerator: boolean = false;
   userId: number | null = null;
   isAuthenticated: boolean = false;
+
+  showResearchPopup = false; // Par défaut, le popup est fermé
 
   constructor(
     private communityService: CommunityService,
@@ -87,11 +93,39 @@ export class CommunityHomeComponent implements OnInit {
     console.log('Aller au post:', post);
   }
 
-
   goToCreationForm() {
     if (this.checkAuthentication()) {
       this.router.navigate(['/communities/create']);
     }
+  }
+    trackByPostId(index: number, post: any): any {
+    return post.id;
+  }
+
+  openResearchPopup() {
+    console.log('POPUP CLICK - AVANT:', this.showResearchPopup);
+    this.showResearchPopup = true;
+    console.log('POPUP CLICK - APRÈS:', this.showResearchPopup);
+    
+    // Empêcher le scroll de la page
+    document.body.style.overflow = 'hidden';
+    document.body.style.paddingRight = '15px'; // Compensate for scrollbar
+    
+    // Force le reflow pour s'assurer que l'affichage est mis à jour
+    setTimeout(() => {
+      const overlay = document.querySelector('.community-popup-overlay');
+      if (overlay) {
+        console.log('POPUP OVERLAY FOUND AND VISIBLE');
+      }
+    }, 10);
+  }
+
+  closeResearchPopup() {
+    this.showResearchPopup = false;
+    
+    // Restaurer le scroll
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
   }
 
 }

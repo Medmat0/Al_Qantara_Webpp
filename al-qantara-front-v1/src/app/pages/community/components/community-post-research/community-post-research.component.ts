@@ -5,7 +5,7 @@ import { CommunityService } from '../../../../member/services/community.service'
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-community-research',
+  selector: 'app-community-post-research',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './community-post-research.component.html',

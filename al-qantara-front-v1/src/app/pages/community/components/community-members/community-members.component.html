@@ -1,6 +1,7 @@
-<div *ngIf="actionError" class="error-message">{{ actionError }}</div>
-<div *ngIf="loading">Chargement des membres...</div>
-<div *ngIf="!loading">
+<div class="community-members-popup-root">
+  <div *ngIf="actionError" class="error-message">{{ actionError }}</div>
+  <div *ngIf="loading">Chargement des membres...</div>
+  <div *ngIf="!loading">
   <h3>Modérateurs</h3>
   <ul class="members-list">
     <li *ngFor="let member of moderateurs" class="member-item">
@@ -80,5 +81,6 @@
     <button (click)="changeMembresBannisPage(-1)" [disabled]="membresBannisPage === 1">&lt;</button>
     Page {{membresBannisPage}} / {{membresBannisTotalPages}}
     <button (click)="changeMembresBannisPage(1)" [disabled]="membresBannisPage >= membresBannisTotalPages">&gt;</button>
+  </div>
   </div>
 </div>

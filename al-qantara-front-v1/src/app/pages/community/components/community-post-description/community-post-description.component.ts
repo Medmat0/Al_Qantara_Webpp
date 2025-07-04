@@ -365,4 +365,46 @@ export class CommunityPostDescriptionComponent implements OnInit {
   }
 
 
+  get isLiked(): boolean {
+    if (!this.post || !this.userId || !this.post.likes) { return false; }
+    return this.post.likes.some((like: any) => like.utilisateurId === this.userId);
+  }
+
+  get canDelete(): boolean {
+    if (!this.post || !this.userId) { return false; }
+    return this.isModerator || (this.post.auteur && this.post.auteur.id === this.userId);
+  }
+
+    scrollToCommentForm() {
+    const el = document.getElementById('commentFormAnchor');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Optionally focus the textarea
+      const textarea = el.querySelector('textarea');
+      if (textarea) {
+        (textarea as HTMLTextAreaElement).focus();
+      }
+    }
+  }
+
+  // Total comments (including replies)
+  get totalComments(): number {
+    function count(comments: any[]): number {
+      if (!comments) return 0;
+      let total = 0;
+      for (const c of comments) {
+        total++;
+        if (c.replies && c.replies.length) {
+          total += count(c.replies);
+        }
+      }
+      return total;
+    }
+    return this.post && this.post.commentaires ? count(this.post.commentaires) : 0;
+  }
+
+  goToCommunityHub() {
+    this.router.navigate(['/communities', this.communityId]);
+  }
+
 }

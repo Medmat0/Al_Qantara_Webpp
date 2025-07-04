@@ -3,12 +3,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommunityService } from '../../../../member/services/community.service';
 import { CommonModule } from '@angular/common';
 import { CommunityPostComponent } from '../community-post/community-post.component';
+import { CommunityMembersComponent } from '../community-members/community-members.component';
 import {AuthService} from '../../../../member/services/auth.service';
 
 @Component({
   selector: 'app-community-hub',
   standalone: true,
-  imports: [CommonModule, CommunityPostComponent],
+  imports: [CommonModule, CommunityPostComponent, CommunityMembersComponent],
   templateUrl: './community-hub.component.html',
   styleUrl: './community-hub.component.scss'
 })
@@ -22,6 +23,7 @@ export class CommunityHubComponent implements OnInit {
   userId: number | null = null;
   isAuthenticated: boolean = false;
   isModerator: boolean = false;
+  showMembersPopup = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -121,9 +123,16 @@ export class CommunityHubComponent implements OnInit {
     }
   }
 
-  goToMembers() {
-    // Rediriger vers la page des membres de la communauté
-    this.router.navigate([`/communities/${this.communityId}/members`]);
+  openMembersPopup() {
+    this.showMembersPopup = true;
+    document.body.style.overflow = 'hidden';
+    document.body.style.paddingRight = '15px';
+  }
+
+  closeMembersPopup() {
+    this.showMembersPopup = false;
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
   }
 
   goToSettings() {
@@ -165,5 +174,12 @@ export class CommunityHubComponent implements OnInit {
         this.error = err.error?.message || 'Erreur lors du départ de la communauté.';
       }
     });
+  }
+    trackByPostId(index: number, post: any): any {
+    return post.id;
+  }
+
+  goToCommunityHome() {
+    this.router.navigate(['/communities']);
   }
 }

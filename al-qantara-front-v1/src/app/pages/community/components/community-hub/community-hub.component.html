@@ -1,36 +1,156 @@
-<div class="community-hub-root">
-  <div class="community-info-box" *ngIf="community">
-    <div class="logo" *ngIf="community.logo">
-      <img [src]="community.logo" alt="logo" />
+<div class="community-hub-container">
+  <!-- Header Section -->
+  <header class="community-header" *ngIf="community">
+    <div class="back-to-home-container top-header">
+      <button class="back-to-home-btn" (click)="goToCommunityHome()">
+        <span class="btn-icon">🏠</span>
+        <span>Retour à l'accueil des communautés</span>
+      </button>
     </div>
-    <div class="info">
-      <div class="name">{{ community.nom }}</div>
-      <div class="desc">{{ community.description }}</div>
-      <div class="meta">
-        <span>Créée le {{ community.dateCreation | date:'dd/MM/yyyy' }}</span>
-        <span *ngIf="community.createdBy"> | Créateur ID : {{ community.createdBy }}</span>
+    <div class="header-background">
+      <div class="header-overlay"></div>
+    </div>
+    
+    <div class="community-card">
+      <div class="card-content">
+        <div class="community-visual">
+          <div class="logo-container" *ngIf="community.logo">
+            <img 
+              [src]="community.logo" 
+              [alt]="'Logo de ' + community.nom"
+              class="community-logo" />
+           
+          </div>
+          <div class="default-logo" *ngIf="!community.logo">
+            <span class="default-icon">🏠</span>
+             <div class="logo-ring"></div>
+          </div>
+        </div>
+        
+        <div class="community-details">
+          <h1 class="community-name">{{ community.nom }}</h1>
+          <p class="community-description">{{ community.description }}</p>
+          
+          <div class="community-meta">
+            <div class="meta-item">
+              <span class="meta-icon">📅</span>
+              <span class="meta-text">
+                Créée le {{ community.dateCreation | date:'dd/MM/yyyy' }}
+              </span>
+            </div>
+            <div class="meta-item" *ngIf="community.createdBy">
+              <span class="meta-icon">👤</span>
+              <span class="meta-text">
+                Créateur ID : {{ community.createdBy }}
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="actions">
-      <button (click)="goToPostCreation()">Créer un post</button>
-      <button *ngIf="isModerator" (click)="goToMembers()" >Voir les membres</button>
-      <button *ngIf="isMember === false" (click)="joinCommunity()">Rejoindre</button>
-      <button *ngIf="isMember === true" (click)="leaveCommunity()">Quitter</button>
-      <button *ngIf="isModerator" (click)="goToSettings()" >Paramètres</button>
-    </div>
+      
+      <div class="community-actions">
+        <button 
+          (click)="goToPostCreation()"
+          class="btn btn-primary create-post-btn">
+          <span class="btn-icon">✍️</span>
+          <span>Créer un post</span>
+        </button>
+        
+        <div class="action-row">
+          <button 
+            *ngIf="isModerator" 
+            (click)="openMembersPopup()"
+            class="btn btn-secondary">
+            <span class="btn-icon">👥</span>
+            <span>Membres</span>
+          </button>
 
-  </div>
-  <div class="community-posts-scrollable">
-    <div *ngFor="let post of posts">
-      <div (click)="goToPost(post)" style="cursor: pointer;">
-        <app-community-post
-          *ngFor="let post of posts"
-          [post]="post"
-          [isModerator]="isModerator"
-          (postEvent)="onPostEvent($event)">
-        </app-community-post>
+          
+          <button 
+            *ngIf="isMember === false" 
+            (click)="joinCommunity()"
+            class="btn btn-success join-btn">
+            <span class="btn-icon">➕</span>
+            <span>Rejoindre</span>
+          </button>
+          
+          <button 
+            *ngIf="isMember === true" 
+            (click)="leaveCommunity()"
+            class="btn btn-outline leave-btn">
+            <span class="btn-icon">🚪</span>
+            <span>Quitter</span>
+          </button>
+          
+          <button 
+            *ngIf="isModerator" 
+            (click)="goToSettings()"
+            class="btn btn-ghost settings-btn">
+            <span class="btn-icon">⚙️</span>
+            <span>Paramètres</span>
+          </button>
+        </div>
       </div>
     </div>
-    <div *ngIf="posts.length === 0" class="no-posts">Aucun post dans cette communauté.</div>
+  </header>
+
+  <!-- Posts Section -->
+  <main class="posts-section">
+    <div class="posts-header">
+      <h2 class="section-title">
+        <span class="title-icon">📋</span>
+        Publications récentes
+      </h2>
+      <div class="posts-count" *ngIf="posts.length > 0">
+        {{ posts.length }} post{{ posts.length > 1 ? 's' : '' }}
+      </div>
+    </div>
+    
+    <div class="posts-container">
+      <div class="posts-grid" *ngIf="posts.length > 0">
+        <div 
+          *ngFor="let post of posts; trackBy: trackByPostId"
+          class="post-wrapper"
+          (click)="goToPost(post)">
+          <app-community-post
+            [post]="post"
+            [isModerator]="isModerator"
+            [isOnCommunityPage]="true"
+            (postEvent)="onPostEvent($event)">
+          </app-community-post>
+        </div>
+      </div>
+      
+      <div class="empty-state" *ngIf="posts.length === 0">
+        <div class="empty-illustration">
+          <div class="empty-icon">📝</div>
+          <div class="empty-particles">
+            <span class="particle"></span>
+            <span class="particle"></span>
+            <span class="particle"></span>
+          </div>
+        </div>
+        <h3 class="empty-title">Aucun post dans cette communauté</h3>
+        <p class="empty-description">
+          Soyez le premier à partager quelque chose avec cette communauté !
+        </p>
+        <button 
+          (click)="goToPostCreation()"
+          class="btn btn-primary empty-action">
+          <span class="btn-icon">✍️</span>
+          <span>Créer le premier post</span>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Back to Community Home Button (moved to top left) -->
+  <!-- ...reste du header... -->
+
+<!-- Popup Membres (en dehors du container principal) -->
+<div class="community-popup-overlay" *ngIf="showMembersPopup" (click)="closeMembersPopup()">
+  <div class="community-popup" (click)="$event.stopPropagation()">
+    <button class="close-popup" (click)="closeMembersPopup()">✖</button>
+    <app-community-members [communityId]="communityId"></app-community-members>
   </div>
 </div>

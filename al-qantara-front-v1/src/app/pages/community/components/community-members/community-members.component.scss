@@ -1,87 +1,185 @@
+
+// Modern popup style for community members
+.community-members-popup-root {
+  min-width: 340px;
+  max-width: 650px;
+  width: 100%;
+  background: #fff !important;
+  border-radius: 22px;
+  box-shadow: 0 8px 40px rgba(131, 83, 83, 0.18);
+  border: 1.5px solid #e5e7eb;
+  padding: 2.2rem 1.5rem 1.5rem 1.5rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1.5rem;
+  z-index: 10001 !important;
+  position: relative;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
 .members-list {
   list-style: none;
   padding: 0;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
 }
 .member-item {
   display: flex;
   align-items: center;
-  padding: 12px 0;
-  border-bottom: 1px solid #eee;
+  padding: 1.1rem 1rem;
+  border-radius: 16px;
+  background: linear-gradient(90deg, #fff 80%, #f8f5f2 100%);
+  box-shadow: 0 2px 10px rgba(201, 179, 124, 0.07);
+  border: 1.5px solid #e5e7eb;
+  transition: box-shadow 0.2s, background 0.2s;
+  gap: 1.2rem;
+}
+.member-item:hover {
+  box-shadow: 0 4px 18px rgba(201, 179, 124, 0.13);
+  background: linear-gradient(90deg, #fffbe9 80%, #f8f5f2 100%);
 }
 .avatar {
-  width: 48px;
-  height: 48px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
-  background: #f0f0f0;
+  background: linear-gradient(135deg, #bfa6a6 0%, #c9b37c 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 16px;
+  margin-right: 18px;
   overflow: hidden;
+  box-shadow: 0 2px 8px rgba(201, 179, 124, 0.10);
 }
 .avatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 50%;
+  border: 2.5px solid #fff;
 }
 .initials {
-  font-weight: bold;
-  font-size: 1.2em;
-  color: #555;
+  font-weight: 800;
+  font-size: 1.3em;
+  color: #835353;
+  letter-spacing: 1px;
 }
 .info {
   flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
 }
 .name {
-  font-weight: 600;
-  font-size: 1.1em;
+  font-weight: 700;
+  font-size: 1.15em;
+  color: #835353;
+  margin-bottom: 0.1rem;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 .email {
-  color: #888;
-  font-size: 0.95em;
+  color: #bfa6a6;
+  font-size: 0.98em;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 .role {
   display: inline-block;
   margin-top: 2px;
-  padding: 2px 8px;
-  border-radius: 8px;
-  font-size: 0.85em;
-  background: #e0e0e0;
-  color: #333;
+  padding: 2px 12px;
+  border-radius: 12px;
+  font-size: 0.92em;
+  background: #f8f5f2;
+  color: #835353;
+  border: 1px solid #e5e7eb;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 .role.admin {
   background: #ffe0e0;
   color: #c00;
+  border: 1.5px solid #c00;
 }
 .role.user {
   background: #e0f7fa;
   color: #00796b;
+  border: 1.5px solid #00796b;
 }
-
 .ban-btn {
-  margin-left: 16px;
-  background: #ffdddd;
+  margin-left: 18px;
+  background: linear-gradient(135deg, #ffdddd 0%, #ffe0e0 100%);
   color: #c00;
   border: none;
-  border-radius: 6px;
-  padding: 4px 10px;
+  border-radius: 10px;
+  padding: 7px 18px;
   cursor: pointer;
-  font-weight: 600;
-  transition: background 0.2s;
+  font-weight: 700;
+  font-size: 1em;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(255, 221, 221, 0.10);
 }
 .ban-btn:hover {
-  background: #ffb3b3;
+  background: linear-gradient(135deg, #ffb3b3 0%, #ffe0e0 100%);
+  color: #fff;
 }
 .pagination {
-  margin: 10px 0 20px 0;
+  margin: 18px 0 24px 0;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 14px;
+  justify-content: center;
+}
+.pagination button {
+  background: linear-gradient(135deg, #835353 0%, #c9b37c 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 16px;
+  font-weight: 600;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.pagination button:disabled {
+  background: #e5e7eb;
+  color: #bfa6a6;
+  cursor: not-allowed;
+}
+.error-message {
+  color: #dc3545;
+  margin-bottom: 1.2rem;
+  font-weight: 700;
+  text-align: center;
+  font-size: 1.08em;
 }
 
-.error-message {
-  color: red;
-  margin-bottom: 1rem;
-  font-weight: bold;
+// Responsive
+@media (max-width: 600px) {
+  .community-members-popup-root {
+    min-width: 98vw;
+    max-width: 98vw;
+    padding: 1rem 0.5rem;
+  }
+  .member-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.7rem;
+    padding: 1rem 0.5rem;
+  }
+  .avatar {
+    margin-right: 0;
+    margin-bottom: 0.5rem;
+  }
+  .info {
+    width: 100%;
+  }
 }

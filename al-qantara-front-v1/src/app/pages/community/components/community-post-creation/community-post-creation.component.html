@@ -1,53 +1,157 @@
-<form [formGroup]="postForm" (ngSubmit)="onSubmit(communityId)">
-  <label>Titre:</label>
-  <input formControlName="titre" required>
-  <div *ngIf="postForm.get('titre')?.invalid && postForm.get('titre')?.touched" class="error-message">
-    Titre requis
-  </div>
-
-  <label>Contenu:</label>
-  <textarea formControlName="contenu" required></textarea>
-  <div *ngIf="postForm.get('contenu')?.invalid && postForm.get('contenu')?.touched" class="error-message">
-    Contenu requis
-  </div>
-
-  <label>Tags:</label>
-  <div formArrayName="tags">
-    <div *ngFor="let tag of tags.controls; let i = index">
-      <input [formControlName]="i" required>
-      <button type="button" (click)="removeTag(i)" *ngIf="tags.length > 1">Supprimer</button>
+<div class="create-post-container">
+  <div class="form-card">
+    <div class="form-header">
+      <h2>Créer un nouveau post</h2>
+      <p>Partagez vos idées avec la communauté</p>
     </div>
-    <button type="button" (click)="addTag()">Ajouter un tag</button>
-    <div *ngIf="tags.invalid && postForm.get('tags')?.touched" class="error-message">
-      Au moins un tag requis
-    </div>
-  </div>
 
-  <label>Image:</label>
-  <input type="file" (change)="onFileSelected($event)">
-
-  <div class="poll-options-group">
-    <label>Sondage:</label>
-    <div formArrayName="pollOptions">
-      <div *ngFor="let option of pollOptions.controls; let i = index">
-        <input [formControlName]="i" placeholder="Option de sondage">
-        <button type="button" (click)="removePollOption(i)" *ngIf="pollOptions.length > 1">Supprimer</button>
+    <form [formGroup]="postForm" (ngSubmit)="onSubmit(communityId)">
+      <!-- Titre -->
+      <div class="form-group">
+        <label for="titre">Titre</label>
+        <input 
+          id="titre" 
+          type="text" 
+          formControlName="titre" 
+          placeholder="Donnez un titre à votre post..."
+          required
+        >
+        <div *ngIf="postForm.get('titre')?.invalid && postForm.get('titre')?.touched" 
+             class="error-message">
+          <i class="error-icon">⚠</i>
+          Titre requis
+        </div>
       </div>
-      <button type="button" (click)="addPollOption()">Ajouter une option</button>
-      <div *ngIf="postForm.get('pollOptions')?.errors?.['minOptions'] && postForm.get('pollOptions')?.touched" class="error-message">
-        Un sondage doit avoir au moins deux options.
+
+      <!-- Contenu -->
+      <div class="form-group">
+        <label for="contenu">Contenu</label>
+        <textarea 
+          id="contenu" 
+          formControlName="contenu" 
+          placeholder="Écrivez votre message..."
+          required
+        ></textarea>
+        <div *ngIf="postForm.get('contenu')?.invalid && postForm.get('contenu')?.touched" 
+             class="error-message">
+          <i class="error-icon">⚠</i>
+          Contenu requis
+        </div>
       </div>
-    </div>
 
-    <label>Date limite du sondage:</label>
-    <input type="date" formControlName="pollDeadline">
-    <div *ngIf="postForm.get('pollDeadline')?.errors?.['requiredIfPoll'] && postForm.get('pollDeadline')?.touched" class="error-message">
-      La date limite est obligatoire si un sondage est créé.
-    </div>
-    <div *ngIf="postForm.get('pollDeadline')?.errors?.['minDate'] && postForm.get('pollDeadline')?.touched" class="error-message">
-      La date limite doit être ultérieure à aujourd'hui.
-    </div>
+      <!-- Tags -->
+      <div class="form-group">
+        <label>Tags</label>
+        <div class="tags-container" formArrayName="tags">
+          <div class="tag-input-group" *ngFor="let tag of tags.controls; let i = index">
+            <input 
+              [formControlName]="i" 
+              placeholder="Entrez un tag..."
+              required
+            >
+            <button 
+              type="button" 
+              class="btn-remove" 
+              (click)="removeTag(i)" 
+              *ngIf="tags.length > 1"
+              title="Supprimer ce tag"
+            >
+              ×
+            </button>
+          </div>
+          <button type="button" class="btn-add" (click)="addTag()">
+            <i class="add-icon">+</i>
+            Ajouter un tag
+          </button>
+          <div *ngIf="tags.invalid && postForm.get('tags')?.touched" 
+               class="error-message">
+            <i class="error-icon">⚠</i>
+            Au moins un tag requis
+          </div>
+        </div>
+      </div>
+
+      <!-- Image -->
+      <div class="form-group">
+        <label for="image">Image (optionnel)</label>
+        <div class="file-input-wrapper">
+          <input 
+            id="image" 
+            type="file" 
+            (change)="onFileSelected($event)"
+            accept="image/*"
+          >
+          <span class="file-input-label">Choisir une image</span>
+        </div>
+      </div>
+
+      <!-- Sondage -->
+      <div class="form-group poll-section">
+        <div class="section-header">
+          <h3>Sondage (optionnel)</h3>
+          <p>Créez un sondage pour recueillir l'avis de la communauté</p>
+        </div>
+        
+        <div formArrayName="pollOptions">
+          <div class="poll-option-group" *ngFor="let option of pollOptions.controls; let i = index">
+            <input 
+              [formControlName]="i" 
+              placeholder="Option {{ i + 1 }}"
+            >
+            <button 
+              type="button" 
+              class="btn-remove" 
+              (click)="removePollOption(i)" 
+              *ngIf="pollOptions.length > 1"
+              title="Supprimer cette option"
+            >
+              ×
+            </button>
+          </div>
+          
+          <button type="button" class="btn-add" (click)="addPollOption()">
+            <i class="add-icon">+</i>
+            Ajouter une option
+          </button>
+          
+          <div *ngIf="postForm.get('pollOptions')?.errors?.['minOptions'] && postForm.get('pollOptions')?.touched" 
+               class="error-message">
+            <i class="error-icon">⚠</i>
+            Un sondage doit avoir au moins deux options.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="pollDeadline">Date limite du sondage</label>
+          <input 
+            id="pollDeadline" 
+            type="date" 
+            formControlName="pollDeadline"
+          >
+          <div *ngIf="postForm.get('pollDeadline')?.errors?.['requiredIfPoll'] && postForm.get('pollDeadline')?.touched" 
+               class="error-message">
+            <i class="error-icon">⚠</i>
+            La date limite est obligatoire si un sondage est créé.
+          </div>
+          <div *ngIf="postForm.get('pollDeadline')?.errors?.['minDate'] && postForm.get('pollDeadline')?.touched" 
+               class="error-message">
+            <i class="error-icon">⚠</i>
+            La date limite doit être ultérieure à aujourd'hui.
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="form-actions">
+        <button 
+          type="submit" 
+          class="btn-primary" 
+          [disabled]="postForm.invalid"
+        >
+          <i class="submit-icon">✓</i>
+          Publier le post
+        </button>
+      </div>
+    </form>
   </div>
-
-  <button type="submit" [disabled]="postForm.invalid">Créer le post</button>
-</form>
+</div>

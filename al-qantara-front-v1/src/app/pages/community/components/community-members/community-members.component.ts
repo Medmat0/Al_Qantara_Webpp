@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { CommunityService } from '../../../../member/services/community.service';
 import { NgClass, NgForOf, NgIf } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
@@ -9,13 +9,14 @@ import { ActivatedRoute } from '@angular/router';
   styleUrl: './community-members.component.scss',
   imports: [NgForOf, NgClass, NgIf],
   standalone: true
+
 })
 export class CommunityMembersComponent implements OnInit {
+  @Input() communityId!: number;
   membres: any[] = [];
   moderateurs: any[] = [];
   membresbannis: any[] = [];
   loading = true;
-  communityId!: number;
   actionError: string | null = null;
 
   // Pagination
@@ -27,7 +28,10 @@ export class CommunityMembersComponent implements OnInit {
   constructor(private communityService: CommunityService, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    this.communityId = Number(this.route.snapshot.paramMap.get('communityId')!);
+    // Si communityId est fourni en input, on l'utilise, sinon on tente de le récupérer depuis la route (fallback)
+    if (!this.communityId && this.route.snapshot.paramMap.get('communityId')) {
+      this.communityId = Number(this.route.snapshot.paramMap.get('communityId'));
+    }
     this.loadMembers();
   }
 

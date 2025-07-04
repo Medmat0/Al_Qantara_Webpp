@@ -1,13 +1,15 @@
+
 import {Component, Input, Output, EventEmitter, inject, ChangeDetectorRef, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CommunityService } from '../../../../member/services/community.service';
-import {AuthService} from '../../../../member/services/auth.service';
-import {Router, RouterModule} from '@angular/router';
+import { AuthService } from '../../../../member/services/auth.service';
+import { Router, RouterModule } from '@angular/router';
+import { CommentComponent } from '../comment/comment.component';
 
 @Component({
   selector: 'app-community-post',
   standalone: true,
-  imports: [ CommonModule, RouterModule ],
+  imports: [ CommonModule, RouterModule, CommentComponent ],
   templateUrl: './community-post.component.html',
   styleUrl: './community-post.component.scss'
 })
@@ -15,11 +17,15 @@ export class CommunityPostComponent implements OnInit {
   @Input() post: any;
   @Output() postEvent = new EventEmitter<any>();
   @Input() isModerator: boolean = false;
+  @Input() isOnCommunityPage: boolean = false;
   communityService = inject(CommunityService);
-  isOnCommunityPage = false;
   authService = inject(AuthService);
   isAuthenticated = false;
   userId: number | null = null;
+
+  // For comments/replies
+  replyFormVisible: { [key: number]: boolean } = {};
+  replyContent: { [key: number]: string } = {};
 
   constructor(private cdr: ChangeDetectorRef, private router: Router) {
     this.authService.authStatus$.subscribe((status) => {
@@ -31,18 +37,17 @@ export class CommunityPostComponent implements OnInit {
         }
       }
     });
-
-    this.router.events.subscribe(() => {
-      this.checkIfOnCommunityPage();
-    });
+    this.toggleReplyForm = this.toggleReplyForm.bind(this);
+    this.addReply = this.addReply.bind(this);
+    this.likeDislikeComment = this.likeDislikeComment.bind(this);
+    this.deleteComment = this.deleteComment.bind(this);
   }
 
-  ngOnInit() {
-    this.checkIfOnCommunityPage();
-  }
+  ngOnInit() {}
 
-  checkIfOnCommunityPage() {
-    this.isOnCommunityPage = this.router.url === `/communities/${this.post?.communityId}`;
+  get isLiked(): boolean {
+    if (!this.userId || !this.post?.likes) return false;
+    return this.post.likes.some((like: any) => like.utilisateurId === this.userId);
   }
 
   likeDislikePost(event: MouseEvent) {
@@ -90,5 +95,48 @@ export class CommunityPostComponent implements OnInit {
     }
   }
 
+  // --- Comment/reply logic for child CommentComponent ---
+  toggleReplyForm(commentId: number) {
+    this.replyFormVisible[commentId] = !this.replyFormVisible[commentId];
+  }
 
+  addReply(commentId: number) {
+    // This should call a service to add a reply, then update post.commentaires accordingly
+    // For now, just close the form
+    this.replyFormVisible[commentId] = false;
+    this.replyContent[commentId] = '';
+    // You can emit an event or call a parent method here if needed
+  }
+
+  likeDislikeComment(comment: any) {
+    // This should call a service to like/dislike a comment, then update comment.likes accordingly
+    // For now, just toggle a dummy like
+    if (!comment.likes) comment.likes = [];
+    const idx = comment.likes.findIndex((like: any) => like.utilisateurId === this.userId);
+    if (idx !== -1) {
+      comment.likes.splice(idx, 1);
+    } else {
+      comment.likes.push({ utilisateurId: this.userId });
+    }
+  }
+
+  deleteComment(comment: any) {
+    // This should call a service to delete a comment, then update post.commentaires accordingly
+    // For now, just remove from array
+    if (this.post && this.post.commentaires) {
+      const removeRecursive = (comments: any[], id: number): boolean => {
+        for (let i = 0; i < comments.length; i++) {
+          if (comments[i].id === id) {
+            comments.splice(i, 1);
+            return true;
+          }
+          if (comments[i].replies && removeRecursive(comments[i].replies, id)) {
+            return true;
+          }
+        }
+        return false;
+      };
+      removeRecursive(this.post.commentaires, comment.id);
+    }
+  }
 }
