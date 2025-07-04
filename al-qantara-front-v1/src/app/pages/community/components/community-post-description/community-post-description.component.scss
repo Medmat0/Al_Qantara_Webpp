@@ -1,3 +1,5 @@
+// Fix post image size
+
 // Al Qantara inspired palette
 $primary-color: #835353; // bordeaux
 $primary-hover: #6b2e2e; // bordeaux foncé
@@ -237,6 +239,28 @@ $transition-transform: transform 0.15s ease-in-out;
   }
 }
 
+.post-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+.post-image img {
+  display: block;
+  max-width: 100% !important;
+  max-height: 400px !important;
+  width: auto !important;
+  height: auto !important;
+  object-fit: scale-down !important;
+  border-radius: 8px;
+  background: #f8f5f2;
+  box-shadow: 0 2px 12px rgba(201, 179, 124, 0.10);
+}
+
+
 // Poll section
 .poll-section {
   background: linear-gradient(135deg, $background-blue-50 0%, rgba(239, 246, 255, 0.5) 100%);
@@ -291,7 +315,9 @@ $transition-transform: transform 0.15s ease-in-out;
       flex-wrap: wrap;
     }
   }
-  
+
+
+
   .poll-option {
     @include button-primary;
     padding: $spacing-3 $spacing-5;
