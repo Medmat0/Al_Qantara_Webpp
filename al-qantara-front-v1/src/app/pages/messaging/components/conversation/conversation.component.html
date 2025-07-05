@@ -25,7 +25,13 @@
   </div>
 
   <div class="chat-footer">
-    <input type="text" placeholder="Tapez un message..."/>
+    <input
+      type="text"
+      placeholder="Tapez un message..."
+      [(ngModel)]="messageInput"
+      (keyup.enter)="envoyerMessage(messageInput)"
+    />
+    <button (click)="envoyerMessage(messageInput)">Envoyer</button>
   </div>
 </div>
 

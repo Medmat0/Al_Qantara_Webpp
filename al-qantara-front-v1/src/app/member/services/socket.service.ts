@@ -8,7 +8,7 @@ import {API_URL} from '../../utils/config';
   providedIn: 'root',
 })
 export class SocketService {
-  private socket: Socket;
+  public socket: Socket;
   private readonly SOCKET_URL = API_URL;
 
   // Pour suivre les changements d'état en ligne
