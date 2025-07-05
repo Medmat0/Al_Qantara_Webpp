@@ -1,18 +1,54 @@
-import { Component, OnInit } from '@angular/core';
+  
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NewsletterService } from '../../../../admin/services/newsletter.service';
-
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { NgxEditorModule, Editor, Toolbar } from 'ngx-editor';
+
+// Interfaces
+interface Subscriber {
+  email: string;
+  dateInscription: Date;
+  statut: string;
+}
+
+interface NewsletterHistory {
+  titre: string;
+  dateEnvoi: Date;
+  destinataires: number;
+  statut: string;
+}
 
 @Component({
   selector: 'app-admin-newsletter',
   templateUrl: './admin-newsletter.component.html',
   styleUrls: ['./admin-newsletter.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, NgxEditorModule],
 })
-export class AdminNewsletterComponent implements OnInit {
+export class AdminNewsletterComponent implements OnInit, OnDestroy {
+  showNewsletterModal: boolean = false;
+  selectedNewsletter: any = null;
+  openNewsletterModal(newsletter: any) {
+    this.selectedNewsletter = newsletter;
+    this.showNewsletterModal = true;
+  }
+
+  closeNewsletterModal() {
+    this.showNewsletterModal = false;
+    this.selectedNewsletter = null;
+  }
+  editor!: Editor;
+  toolbar: Toolbar = [
+    [
+      'bold', 'italic', 'underline', 'strike',
+      'code', 'blockquote', 'ordered_list', 'bullet_list',
+      'link', 'image', 'text_color', 'background_color',
+      'align_left', 'align_center', 'align_right', 'align_justify',
+      'undo', 'redo'
+    ]
+  ];
   newsletterForm: FormGroup;
   sending = false;
   sendSuccess: string | null = null;
@@ -28,21 +64,28 @@ export class AdminNewsletterComponent implements OnInit {
 
   constructor(private fb: FormBuilder, private newsletterService: NewsletterService) {
     this.newsletterForm = this.fb.group({
-      titre: ['', Validators.required],
-      contenu: ['', Validators.required]
+      titre: ['', [Validators.required, Validators.minLength(5)]],
+      contenu: ['', [Validators.required, Validators.minLength(10)]]
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
+    this.editor = new Editor();
     this.loadSubscribers();
     this.loadHistory();
   }
 
-  sendNewsletter() {
+  ngOnDestroy(): void {
+    this.editor?.destroy();
+  }
+
+  sendNewsletter(): void {
     if (this.newsletterForm.invalid) return;
+    
     this.sending = true;
     this.sendSuccess = null;
     this.sendError = null;
+    
     this.newsletterService.sendNewsletter(this.newsletterForm.value).subscribe({
       next: (res) => {
         this.sending = false;
@@ -57,9 +100,10 @@ export class AdminNewsletterComponent implements OnInit {
     });
   }
 
-  loadSubscribers() {
+  loadSubscribers(): void {
     this.loadingSubscribers = true;
     this.subscribersError = null;
+    
     this.newsletterService.getSubscribers().subscribe({
       next: (res) => {
         this.subscribers = res.data || [];
@@ -72,9 +116,10 @@ export class AdminNewsletterComponent implements OnInit {
     });
   }
 
-  loadHistory() {
+  loadHistory(): void {
     this.loadingHistory = true;
     this.historyError = null;
+    
     this.newsletterService.getHistory().subscribe({
       next: (res) => {
         this.history = res.data || [];
@@ -85,5 +130,23 @@ export class AdminNewsletterComponent implements OnInit {
         this.loadingHistory = false;
       }
     });
+  }
+
+  // TrackBy functions for better performance
+  trackByEmail(index: number, subscriber: any): string {
+    return subscriber.email;
+  }
+
+  trackByTitle(index: number, historyItem: any): string {
+    return historyItem.titre;
+  }
+
+  // Getters for form validation
+  get titre() {
+    return this.newsletterForm.get('titre');
+  }
+
+  get contenu() {
+    return this.newsletterForm.get('contenu');
   }
 }
