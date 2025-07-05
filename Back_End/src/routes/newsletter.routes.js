@@ -6,7 +6,9 @@ import {
   seDesinscrireNewsletter,
   getAbonnesController,
   getHistoriqueController,
-  getStatutAbonnement
+  getStatutAbonnement,
+  supprimerNewsletter,
+  changerStatutNewsletter
 } from "../controllers/newsletter/newsletterController.js";
 
 const router = express.Router();
@@ -21,8 +23,13 @@ router.get("/statut/:utilisateurId", getStatutAbonnement);
 router.delete("/desinscription/:utilisateurId", seDesinscrireNewsletter);
 
 // Routes protégées (admin uniquement)
+
+
 router.post("/envoyer", authMiddleware, isAdmin, envoyerNewsletterController);
 router.get("/abonnes", authMiddleware, isAdmin, getAbonnesController);
 router.get("/historique", authMiddleware, isAdmin, getHistoriqueController);
+
+router.delete("/:newsletterId", authMiddleware, isAdmin, supprimerNewsletter);  
+router.patch("/:newsletterId/statut", authMiddleware, isAdmin, changerStatutNewsletter);
 
 export default router; 
