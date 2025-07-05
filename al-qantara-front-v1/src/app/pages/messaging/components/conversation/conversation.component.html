@@ -1,1 +1,36 @@
-<p>conversation works!</p>
+<div class="chat-container" *ngIf="conversation?.messages?.length > 0; else emptyState">
+  <div class="chat-header">
+    <div class="user-info">
+      <div class="avatar">
+        <img *ngIf="conversation.utilisateur.photoProfil" [src]="conversation.utilisateur.photoProfil" />
+        <div *ngIf="!conversation.utilisateur.photoProfil" class="initials">
+          {{ conversation.utilisateur.prenom[0] }}{{ conversation.utilisateur.nom[0] }}
+        </div>
+      </div>
+      <div class="name">{{ conversation.utilisateur.prenom }} {{ conversation.utilisateur.nom }}</div>
+    </div>
+  </div>
+
+  <div class="chat-messages">
+    <div
+      class="message"
+      *ngFor="let msg of conversation.messages"
+      [ngClass]="{ 'sent': isCurrentUser(msg.expediteurId), 'received': !isCurrentUser(msg.expediteurId) }"
+    >
+      <div class="bubble">
+        <div class="content">{{ msg.contenu }}</div>
+        <div class="time">{{ msg.dateEnvoi | date: 'shortTime' }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-footer">
+    <input type="text" placeholder="Tapez un message..."/>
+  </div>
+</div>
+
+<ng-template #emptyState>
+  <div class="empty">
+    Sélectionnez une conversation pour commencer à discuter.
+  </div>
+</ng-template>

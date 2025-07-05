@@ -1,1 +1,50 @@
-<p>conversations works!</p>
+<div class="sidebar">
+  <div class="header">
+    <h2>Messagerie</h2>
+  </div>
+
+  <div class="conversations" *ngIf="!loading && conversations.length > 0">
+    <div
+      class="conversation"
+      *ngFor="let conv of conversations"
+      (click)="selectConversation(conv)"
+    >
+      <div class="avatar">
+        <img
+          *ngIf="conv.utilisateur.photoProfil"
+          [src]="conv.utilisateur.photoProfil"
+          alt="avatar"
+        />
+        <div *ngIf="!conv.utilisateur.photoProfil" class="initials">
+          {{ conv.utilisateur.prenom[0] }}{{ conv.utilisateur.nom[0] }}
+        </div>
+      </div>
+
+      <div class="info">
+        <div class="top">
+          <span class="name">{{ conv.utilisateur.prenom }} {{ conv.utilisateur.nom }}</span>
+          <span class="date">
+            {{ conv.dernierMessage.dateEnvoi | date: 'shortTime' }}
+          </span>
+        </div>
+
+        <div class="bottom">
+          <span class="message">{{ conv.dernierMessage.contenu }}</span>
+          <span *ngIf="conv.nonLus > 0" class="badge">{{ conv.nonLus }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="empty" *ngIf="!loading && conversations.length === 0">
+    Aucune conversation
+  </div>
+
+  <div class="loading" *ngIf="loading">
+    Chargement...
+  </div>
+
+  <div class="error" *ngIf="error">
+    {{ error }}
+  </div>
+</div>
