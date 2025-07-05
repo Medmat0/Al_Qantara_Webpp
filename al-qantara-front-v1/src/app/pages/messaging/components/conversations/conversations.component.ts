@@ -43,5 +43,19 @@ export class ConversationsComponent implements OnInit {
     console.log('Conversation sélectionnée :', conv);
   }
 
+  rafraichirConversations() {
+    this.loading = true;
+    this.messagerieService.getConversations().subscribe({
+      next: (res) => {
+        this.conversations = res.data;
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = err.message || 'Erreur lors du chargement des conversations';
+        this.loading = false;
+      }
+    });
+  }
+
 
 }

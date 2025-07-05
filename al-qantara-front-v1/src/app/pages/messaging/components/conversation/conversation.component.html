@@ -21,6 +21,7 @@
         <div class="content">{{ msg.contenu }}</div>
         <div class="time">{{ msg.dateEnvoi | date: 'shortTime' }}</div>
       </div>
+      <button *ngIf="isCurrentUser(msg.expediteurId)" (click)="deleteMessage(msg.id)" >Supprimer</button>
     </div>
   </div>
 

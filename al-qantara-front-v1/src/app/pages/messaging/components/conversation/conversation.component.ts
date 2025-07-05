@@ -4,6 +4,7 @@ import {DatePipe, NgClass, NgForOf, NgIf} from '@angular/common';
 import {AuthService} from '../../../../member/services/auth.service';
 import { SocketService } from '../../../../member/services/socket.service';
 import {FormsModule} from '@angular/forms';
+import { Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-conversation',
@@ -20,6 +21,8 @@ import {FormsModule} from '@angular/forms';
 })
 export class ConversationComponent implements OnChanges {
   @Input() conversation: any;
+  @Output() messageEnvoye = new EventEmitter<any>();
+
   userId: number | null = null;
   isAuthenticated: boolean = false;
   private socketListener: any;
@@ -103,10 +106,25 @@ export class ConversationComponent implements OnChanges {
         this.socketService.emit('nouveauMessage', { message: res.data });
         this.conversation.messages.push(res.data);
         this.messageInput = '';
+        this.messageEnvoye.emit(res.data);
       },
       error: (err) => {
         console.error('Erreur lors de l\'envoi du message :', err);
       }
     });
+  }
+
+  deleteMessage(messageId: number): void {
+    if(confirm('Êtes-vous sûr de vouloir supprimer ce message ?')) {
+      this.messagerieService.deleteMessage(messageId).subscribe({
+        next: (res) => {
+          this.conversation.messages = this.conversation.messages.filter((msg: any) => msg.id !== messageId);
+          console.log('Message deleted successfully:', res);
+        },
+        error: (err) => {
+          console.error('Error deleting message:', err);
+        }
+      });
+    }
   }
 }
