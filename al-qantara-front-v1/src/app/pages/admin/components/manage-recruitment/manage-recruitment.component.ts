@@ -1,3 +1,4 @@
+
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RecruitmentService } from '../../services/recruitment.service';
@@ -17,20 +18,25 @@ interface Offer {
   createdBy: number;
 }
 
+import { FormsModule } from '@angular/forms';
+
 @Component({
   selector: 'app-manage-recruitment',
   templateUrl: './manage-recruitment.component.html',
   styleUrls: ['./manage-recruitment.component.scss'],
   standalone: true,
-  imports: [CommonModule, EditRecruitmentComponent, ApplicantListComponent]
+  imports: [CommonModule, FormsModule, EditRecruitmentComponent, ApplicantListComponent]
 })
 export class ManageRecruitmentComponent implements OnInit {
-  offers: Offer[] = [];
-  selectedOfferId: number | null = null;
+  public offers: Offer[] = [];
+  public filteredOffers: Offer[] = [];
+  public searchTerm: string = '';
+  public selectedContract: string = '';
+  public selectedOfferId: number | null = null;
 
   // Variables pour la modale des candidats
-  applicantsOfferId: number | null = null;
-  showApplicantsModal: boolean = false;
+  public applicantsOfferId: number | null = null;
+  public showApplicantsModal: boolean = false;
 
   constructor(
     private recruitmentService: RecruitmentService,
@@ -49,12 +55,26 @@ export class ManageRecruitmentComponent implements OnInit {
           this.offers = response.offres.sort((a: any, b: any) =>
             a.titre.localeCompare(b.titre, 'fr', { sensitivity: 'base' })
           );
+          this.applyFilters();
           console.log('Offres chargées et triées:', this.offers);
         }
       },
       error: (error) => {
         console.error('Erreur lors de la récupération des offres:', error);
       }
+    });
+  }
+
+  applyFilters(): void {
+    this.filteredOffers = this.offers.filter(offer => {
+      const matchesSearch = this.searchTerm
+        ? (offer.titre?.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+           offer.description?.toLowerCase().includes(this.searchTerm.toLowerCase()))
+        : true;
+      const matchesContract = this.selectedContract
+        ? offer.typeDeContrat?.toLowerCase() === this.selectedContract.toLowerCase()
+        : true;
+      return matchesSearch && matchesContract;
     });
   }
 
@@ -87,6 +107,10 @@ export class ManageRecruitmentComponent implements OnInit {
   viewApplicants(id: number): void {
     this.applicantsOfferId = id;
     this.showApplicantsModal = true;
+  }
+
+  goToCreateOffer(): void {
+    this.router.navigate(['/admin/recruitments/add']);
   }
 
   closeApplicantsModal(): void {

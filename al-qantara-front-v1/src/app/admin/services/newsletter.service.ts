@@ -21,4 +21,12 @@ export class NewsletterService {
   getHistory(): Observable<any> {
     return this.http.get(`${this.baseUrl}/newsletter/historique`, { withCredentials: true });
   }
+
+  deleteSubscriber(newsletterId: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/newsletter/${newsletterId}`, { withCredentials: true });
+  }
+
+  updateSubscriberStatus(newsletterId: number, statut: 'ACTIF' | 'INACTIF' | 'DESINSCRIT'): Observable<any> {
+    return this.http.patch(`${this.baseUrl}/newsletter/${newsletterId}/statut`, { statut }, { withCredentials: true });
+  }
 }

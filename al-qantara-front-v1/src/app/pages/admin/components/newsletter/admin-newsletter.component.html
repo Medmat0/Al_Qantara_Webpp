@@ -132,6 +132,10 @@
                 <i class="icon-status"></i>
                 Statut
               </th>
+              <th>
+                <i class="icon-alert"></i>
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -139,8 +143,25 @@
               <td class="email-cell">{{ sub.email }}</td>
               <td class="date-cell">{{ sub.dateInscription | date:'dd/MM/yyyy HH:mm' }}</td>
               <td class="status-cell">
-                <span class="status-badge status-active">{{ sub.statut }}</span>
+                <span class="status-badge" [ngClass]="{
+                  'status-active': sub.statut === 'ACTIF',
+                  'status-inactive': sub.statut === 'INACTIF',
+                  'status-desinscrit': sub.statut === 'DESINSCRIT'
+                }">{{ sub.statut }}</span>
               </td>
+              <td class="actions-cell">
+                <button class="action-btn danger" title="Supprimer l'abonné" (click)="onDeleteSubscriber(sub.id, $event)">
+                  <i class="icon-trash"></i>
+                </button>
+                <button *ngIf="sub.statut !== 'ACTIF'" class="action-btn success" title="Activer" (click)="onUpdateStatus(sub.id, 'ACTIF', $event)">
+                  <i class="icon-check"></i>
+                </button>
+                <button *ngIf="sub.statut === 'ACTIF'" class="action-btn warning" title="Désactiver" (click)="onUpdateStatus(sub.id, 'INACTIF', $event)">
+                  <i class="icon-block"></i>
+                </button>
+              </td>
+      <div *ngIf="subscriberActionMessage" class="alert alert-success" style="margin-top:1rem;">{{ subscriberActionMessage }}</div>
+      <div *ngIf="subscriberActionError" class="alert alert-error" style="margin-top:1rem;">{{ subscriberActionError }}</div>
             </tr>
           </tbody>
         </table>

@@ -57,6 +57,8 @@ export class AdminNewsletterComponent implements OnInit, OnDestroy {
   subscribers: any[] = [];
   loadingSubscribers = false;
   subscribersError: string | null = null;
+  subscriberActionError: string | null = null;
+  subscriberActionMessage: string | null = null;
 
   history: any[] = [];
   loadingHistory = false;
@@ -99,7 +101,38 @@ export class AdminNewsletterComponent implements OnInit, OnDestroy {
       }
     });
   }
+    
 
+  onDeleteSubscriber(id: number, event: Event) {
+    event.stopPropagation();
+    if (!confirm('Confirmer la suppression de cet abonné ?')) return;
+    this.newsletterService.deleteSubscriber(id).subscribe({
+      next: () => {
+        this.subscriberActionMessage = 'Abonné supprimé avec succès.';
+        this.loadSubscribers();
+        setTimeout(() => this.subscriberActionMessage = null, 3000);
+      },
+      error: (err) => {
+        this.subscriberActionError = err?.error?.message || 'Erreur lors de la suppression.';
+        setTimeout(() => this.subscriberActionError = null, 4000);
+      }
+    });
+  }
+
+  onUpdateStatus(id: number, statut: 'ACTIF' | 'INACTIF' | 'DESINSCRIT', event: Event) {
+    event.stopPropagation();
+    this.newsletterService.updateSubscriberStatus(id, statut).subscribe({
+      next: () => {
+        this.subscriberActionMessage = `Statut mis à jour : ${statut}`;
+        this.loadSubscribers();
+        setTimeout(() => this.subscriberActionMessage = null, 3000);
+      },
+      error: (err) => {
+        this.subscriberActionError = err?.error?.message || 'Erreur lors du changement de statut.';
+        setTimeout(() => this.subscriberActionError = null, 4000);
+      }
+    });
+  }
   loadSubscribers(): void {
     this.loadingSubscribers = true;
     this.subscribersError = null;
@@ -149,4 +182,7 @@ export class AdminNewsletterComponent implements OnInit, OnDestroy {
   get contenu() {
     return this.newsletterForm.get('contenu');
   }
+
+
+   
 }
