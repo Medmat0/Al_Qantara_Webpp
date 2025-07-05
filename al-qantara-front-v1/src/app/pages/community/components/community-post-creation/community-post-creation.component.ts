@@ -23,6 +23,7 @@ export class CommunityPostCreationComponent implements OnInit{
   userId: number | null = null;
   isAuthenticated: boolean = false;
   selectedFile: File | null = null;
+  imagePreview: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -152,6 +153,15 @@ export class CommunityPostCreationComponent implements OnInit{
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       this.selectedFile = input.files[0];
+      // Générer un aperçu de l'image
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.imagePreview = e.target.result;
+      };
+      reader.readAsDataURL(this.selectedFile);
+    } else {
+      this.selectedFile = null;
+      this.imagePreview = null;
     }
   }
 

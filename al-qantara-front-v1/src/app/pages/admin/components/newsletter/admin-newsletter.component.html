@@ -1,0 +1,69 @@
+<div class="newsletter-admin-container">
+  <h2>Gestion des Newsletters</h2>
+
+  <!-- Formulaire d'envoi -->
+  <form [formGroup]="newsletterForm" (ngSubmit)="sendNewsletter()" class="newsletter-form">
+    <h3>Créer et envoyer une newsletter</h3>
+    <div class="form-group">
+      <label for="titre">Titre</label>
+      <input id="titre" formControlName="titre" type="text" placeholder="Titre de la newsletter" required />
+    </div>
+    <div class="form-group">
+      <label for="contenu">Contenu (HTML autorisé)</label>
+      <textarea id="contenu" formControlName="contenu" rows="6" placeholder="Contenu HTML..." required></textarea>
+    </div>
+    <button type="submit" [disabled]="newsletterForm.invalid || sending">Envoyer</button>
+    <div *ngIf="sendSuccess" class="success-message">{{ sendSuccess }}</div>
+    <div *ngIf="sendError" class="error-message">{{ sendError }}</div>
+  </form>
+
+  <!-- Liste des abonnés -->
+  <div class="subscribers-section">
+    <h3>Abonnés à la newsletter</h3>
+    <div *ngIf="loadingSubscribers">Chargement...</div>
+    <div *ngIf="subscribersError" class="error-message">{{ subscribersError }}</div>
+    <table *ngIf="subscribers.length">
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Date d'inscription</th>
+          <th>Statut</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let sub of subscribers">
+          <td>{{ sub.email }}</td>
+          <td>{{ sub.dateInscription | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td>{{ sub.statut }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div *ngIf="!loadingSubscribers && !subscribers.length">Aucun abonné pour le moment.</div>
+  </div>
+
+  <!-- Historique des newsletters -->
+  <div class="history-section">
+    <h3>Historique des envois</h3>
+    <div *ngIf="loadingHistory">Chargement...</div>
+    <div *ngIf="historyError" class="error-message">{{ historyError }}</div>
+    <table *ngIf="history.length">
+      <thead>
+        <tr>
+          <th>Titre</th>
+          <th>Date d'envoi</th>
+          <th>Destinataires</th>
+          <th>Statut</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let h of history">
+          <td>{{ h.titre }}</td>
+          <td>{{ h.dateEnvoi | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td>{{ h.destinataires }}</td>
+          <td>{{ h.statut }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div *ngIf="!loadingHistory && !history.length">Aucune newsletter envoyée pour le moment.</div>
+  </div>
+</div>
