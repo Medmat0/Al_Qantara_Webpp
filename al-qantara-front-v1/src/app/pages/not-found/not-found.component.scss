@@ -1,3 +1,4 @@
+@use 'sass:math';
 @import url('https://fonts.googleapis.com/css?family=Lato|Russo+One');
 // Palette Al Qantara
 $primary-dark: #6b1c1c; // bordeaux foncé
@@ -65,15 +66,15 @@ body { padding: 0; margin: 0; }
   }
 }
 @for $i from 1 through (30) {
-  $top: random(100)+vh;
-  $left: random(100)+vw;
-  $size: random(6) + 3px;
+  $top: math.random(100)+vh;
+  $left: math.random(100)+vw;
+  $size: math.random(6) + 3px;
   .star-1:nth-of-type(#{$i}) {
     top: $top;
     left: $left;
     width: $size;
-    height: $size/3;
-    animation-delay: random(5) + s;
+    height: math.div($size, 3);
+    //animation-delay: math.random(5) + s;
     &:before {
       width: $size *2;
       height: $size *2;
@@ -88,15 +89,15 @@ body { padding: 0; margin: 0; }
   animation: twinkle 5s infinite ease-in-out;
 }
 @for $i from 31 through (60) {
-  $top: random(100)+vh;
-  $left: random(100)+vw;
-  $size: random(3) + 1px;
+  $top: math.random(100)+vh;
+  $left: math.random(100)+vw;
+  $size: math.random(3) + 1px;
   .star-2:nth-of-type(#{$i}) {
     top: $top;
     left: $left;
     width: $size;
     height: $size;
-    animation-delay: random(5) + s;
+    animation-delay: math.random(5) + s;
     &:before {
       width: $size *2;
       height: $size *2;
