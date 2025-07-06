@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { ViewChild, ElementRef, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { MessagerieService } from '../../../../member/services/messagerie.service';
 import {DatePipe, NgClass, NgForOf, NgIf} from '@angular/common';
 import {AuthService} from '../../../../member/services/auth.service';
@@ -22,6 +22,8 @@ import { Output, EventEmitter } from '@angular/core';
 export class ConversationComponent implements OnChanges {
   @Input() conversation: any;
   @Output() messageEnvoye = new EventEmitter<any>();
+
+  @ViewChild('messagesContainer') messagesContainer!: ElementRef;
 
   userId: number | null = null;
   isAuthenticated: boolean = false;
@@ -54,6 +56,7 @@ export class ConversationComponent implements OnChanges {
       this.messagerieService.getConversationByUserId(this.conversation.utilisateur.id).subscribe({
         next: (res) => {
           this.conversation.messages = res.data || [];
+          setTimeout(() => this.scrollToBottom(), 0); // scroll après le rendu
         }
       });
 
@@ -61,11 +64,18 @@ export class ConversationComponent implements OnChanges {
     }
   }
 
+  private scrollToBottom(): void {
+    try {
+      this.messagesContainer.nativeElement.scrollTop = this.messagesContainer.nativeElement.scrollHeight;
+    } catch (err) {}
+  }
+
   registerSocketListener() {
     if (this.socketListener) {
       this.socketService.socket.off('nouveauMessage', this.socketListener);
     }
     this.socketListener = (data: any) => {
+      console.log('Nouveau message reçu via socket:', data);
       if (
         this.conversation &&
         (
@@ -107,6 +117,7 @@ export class ConversationComponent implements OnChanges {
         this.conversation.messages.push(res.data);
         this.messageInput = '';
         this.messageEnvoye.emit(res.data);
+        setTimeout(() => this.scrollToBottom(), 0);
       },
       error: (err) => {
         console.error('Erreur lors de l\'envoi du message :', err);

@@ -1,6 +1,13 @@
 <div class="sidebar">
   <div class="header">
     <h2>Messagerie</h2>
+    <button (click)="openModal()">Nouvelle Conversation</button>
+    <app-users-list
+      *ngIf="showModal"
+      [users]="users"
+      (close)="showModal = false"
+      (startConversation)="handleStartConversation($event)">
+    </app-users-list>
   </div>
 
   <div class="conversations" *ngIf="!loading && conversations.length > 0">
@@ -24,12 +31,12 @@
         <div class="top">
           <span class="name">{{ conv.utilisateur.prenom }} {{ conv.utilisateur.nom }}</span>
           <span class="date">
-            {{ conv.dernierMessage.dateEnvoi | date: 'shortTime' }}
+            {{ conv.dernierMessage?.dateEnvoi | date: 'shortTime' }}
           </span>
         </div>
 
         <div class="bottom">
-          <span class="message">{{ conv.dernierMessage.contenu }}</span>
+          <span class="message">{{ conv.dernierMessage?.contenu }}</span>
           <span *ngIf="conv.nonLus > 0" class="badge">{{ conv.nonLus }}</span>
         </div>
       </div>

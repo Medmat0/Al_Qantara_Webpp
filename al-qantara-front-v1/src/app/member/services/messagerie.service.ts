@@ -16,6 +16,18 @@ export class MessagerieService {
     private router: Router,
   ) {}
 
+  getAllUsers(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/utilisateurs`, { withCredentials: true }).pipe(
+      tap((response) => {
+        console.log('All users fetched successfully:', response);
+      }),
+      catchError((error) => {
+        console.error('Error fetching all users:', error);
+        return throwError(() => new Error('Failed to fetch all users'));
+      })
+    );
+  }
+
 
   sendMessage(message: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}`, message, { withCredentials: true }).pipe(

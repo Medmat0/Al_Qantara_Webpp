@@ -1,0 +1,17 @@
+<div class="modal-backdrop" (click)="close.emit()"></div>
+<div class="modal">
+  <h3>Nouvelle conversation</h3>
+  <ul>
+    <li *ngFor="let user of users" (click)="selectUser(user.id)">
+      <span class="avatar" *ngIf="user.photoProfil">
+        <img [src]="user.photoProfil" alt="avatar" />
+      </span>
+      <span class="avatar initials" *ngIf="!user.photoProfil">
+        {{ user.prenom[0] }}{{ user.nom[0] }}
+      </span>
+      <span class="name">{{ user.prenom }} {{ user.nom }}</span>
+      <span class="status" [ngClass]="user.statutEnLigne">{{ user.statutEnLigne }}</span>
+    </li>
+  </ul>
+  <button (click)="close.emit()">Annuler</button>
+</div>

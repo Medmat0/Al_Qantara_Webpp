@@ -1,4 +1,4 @@
-<div class="chat-container" *ngIf="conversation?.messages?.length > 0; else emptyState">
+<div class="chat-container" *ngIf="conversation; else emptyState">
   <div class="chat-header">
     <div class="user-info">
       <div class="avatar">
@@ -11,7 +11,7 @@
     </div>
   </div>
 
-  <div class="chat-messages">
+  <div class="chat-messages" #messagesContainer *ngIf="conversation.messages.length > 0">
     <div
       class="message"
       *ngFor="let msg of conversation.messages"
@@ -23,6 +23,10 @@
       </div>
       <button *ngIf="isCurrentUser(msg.expediteurId)" (click)="deleteMessage(msg.id)" >Supprimer</button>
     </div>
+  </div>
+
+  <div class="empty" *ngIf="conversation.messages.length === 0">
+    Aucun message. Envoyez-en un pour commencer la conversation.
   </div>
 
   <div class="chat-footer">
