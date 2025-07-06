@@ -106,6 +106,10 @@
                 accept="image/*">
               <span class="file-input-label">Choisir une image</span>
             </div>
+            <div *ngIf="selectedFile" class="image-preview-block">
+              <div class="image-filename">Fichier sélectionné : {{ selectedFile.name }}</div>
+              <img *ngIf="imagePreview" [src]="imagePreview" alt="Aperçu de l'image" class="image-preview" />
+            </div>
           </div>
 
           <!-- Sondage -->
@@ -240,7 +244,7 @@
             <div class="meta-item">
               <span class="meta-icon">📅</span>
               <span class="meta-text">
-                Créée le {{ community?.dateCreation | date:'dd/MM/yyyy' }}
+                Crée le {{ community?.dateCreation | date:'dd/MM/yyyy' }}
               </span>
             </div>
             <div class="meta-item" *ngIf="community?.createdBy">

@@ -1,3 +1,28 @@
+// Aperçu image upload
+.image-preview-block {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.image-filename {
+  font-size: 0.95rem;
+  color: #684a4a;
+  background: #f7fafc;
+  border-radius: 6px;
+  padding: 0.25rem 0.75rem;
+}
+
+.image-preview {
+  max-width: 180px;
+  max-height: 120px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(101, 48, 35, 0.10);
+  border: 1px solid #e2e8f0;
+  object-fit: cover;
+}
 .create-post-container {
   display: flex;
   justify-content: center;

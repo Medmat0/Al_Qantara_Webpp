@@ -33,6 +33,7 @@ export class CommunityHubComponent implements OnInit {
   postForm!: FormGroup;
   selectedFile: File | null = null;
   isSubmitting = false;
+  imagePreview: string | null = null;
 
   openPostSearchPopup() {
     this.showPostSearchPopup = true;
@@ -171,15 +172,22 @@ export class CommunityHubComponent implements OnInit {
         alert('Le fichier est trop volumineux. Taille maximale : 5MB');
         return;
       }
-      
       // Vérifier le type de fichier
       const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
       if (!allowedTypes.includes(file.type)) {
         alert('Type de fichier non supporté. Formats acceptés : JPEG, PNG, GIF, WebP');
         return;
       }
-      
       this.selectedFile = file;
+      // Générer l'aperçu
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.imagePreview = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      this.selectedFile = null;
+      this.imagePreview = null;
     }
   }
 
@@ -242,9 +250,9 @@ export class CommunityHubComponent implements OnInit {
     // Reset des options de sondage
     this.pollOptions.clear();
     
-    // Reset du fichier
+    // Reset du fichier et de l'aperçu
     this.selectedFile = null;
-    
+    this.imagePreview = null;
     // Reset de l'input file
     const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
     if (fileInput) {

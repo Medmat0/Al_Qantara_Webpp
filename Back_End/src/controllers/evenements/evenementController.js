@@ -1,3 +1,4 @@
+
 import {
   addEvenementService,
   deleteEvenementService,
@@ -11,6 +12,21 @@ import {
   shareEvenementService,
   getCloudinarySignatureService
 } from "../../services/evenements/index.js";
+import { editEvenementService } from "../../services/evenements/editEvenement.service.js";
+// Éditer un événement
+export const editEvenement = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const utilisateurId = req.user.id;
+    const updatedEvenement = await editEvenementService(id, req.body, utilisateurId);
+    res.status(200).json({
+      message: "Événement modifié avec succès. Les participants ont été notifiés.",
+      evenement: updatedEvenement
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message, error: error.message });
+  }
+}
 
 
 export const getCloudinarySignature = async (req, res) => {

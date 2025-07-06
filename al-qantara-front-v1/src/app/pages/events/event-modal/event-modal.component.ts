@@ -101,6 +101,15 @@ export class EventModalComponent implements OnChanges {
     return new Date(dateStr).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' });
   }
 
+  isEventPassed(): boolean {
+    if (!this.event || !this.event.dateFin) {
+      return false;
+    }
+    const now = new Date();
+    const eventEndDate = new Date(this.event.dateFin);
+    return eventEndDate < now;
+  }
+
   handleCommentSubmit() {
     if (this.commentText.trim()) {
       this.comment.emit(this.commentText);

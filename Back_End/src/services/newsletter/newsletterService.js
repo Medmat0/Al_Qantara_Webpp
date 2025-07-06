@@ -1,3 +1,31 @@
+/**
+ * Supprimer une newsletter par son ID
+ */
+export const supprimerNewsletterService = async (newsletterId) => {
+  try {
+    await prisma.newsletter.delete({
+      where: { id: parseInt(newsletterId) }
+    });
+    return true;
+  } catch (error) {
+    throw new Error("Erreur lors de la suppression de la newsletter");
+  }
+};
+
+/**
+ * Changer le statut d'une newsletter (ACTIF, INACTIF, DESINSCRIT)
+ */
+export const changerStatutNewsletterService = async (newsletterId, statut) => {
+  try {
+    const updated = await prisma.newsletter.update({
+      where: { id: parseInt(newsletterId) },
+      data: { statut }
+    });
+    return updated;
+  } catch (error) {
+    throw new Error("Erreur lors de la mise à jour du statut de la newsletter");
+  }
+};
 import { PrismaClient } from "@prisma/client";
 import { sendEmailToUser } from "../../utils/email.config.js";
 import crypto from "crypto";

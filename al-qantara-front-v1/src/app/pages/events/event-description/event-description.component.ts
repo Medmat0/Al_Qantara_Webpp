@@ -334,6 +334,16 @@ export class EventDescriptionComponent {
   formatDateTime(dateStr: string) {
     return new Date(dateStr).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' });
   }
+
+  isEventPassed(): boolean {
+    if (!this.evenement || !this.evenement.dateFin) {
+      return false;
+    }
+    const now = new Date();
+    const eventEndDate = new Date(this.evenement.dateFin);
+    return eventEndDate < now;
+  }
+
   handleShare() {
     /*
     const subject = `Invitation à l'événement: ${this.evenement.titre}`;
