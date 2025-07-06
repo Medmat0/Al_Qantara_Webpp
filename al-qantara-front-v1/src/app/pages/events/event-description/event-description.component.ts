@@ -7,6 +7,8 @@ import {DomSanitizer} from '@angular/platform-browser';
 import {FormsModule} from '@angular/forms';
 import {DatePipe, NgClass, NgForOf, NgIf} from '@angular/common';
 import { ChangeDetectorRef } from '@angular/core';
+import {MessagerieService} from '../../../member/services/messagerie.service';
+import {UsersListComponent} from '../../messaging/components/users-list/users-list.component';
 
 @Component({
   selector: 'app-event-description',
@@ -15,7 +17,8 @@ import { ChangeDetectorRef } from '@angular/core';
     NgIf,
     NgForOf,
     NgClass,
-    DatePipe
+    DatePipe,
+    UsersListComponent
   ],
   templateUrl: './event-description.component.html',
   standalone: true,
@@ -25,6 +28,7 @@ export class EventDescriptionComponent {
 
   authService = inject(AuthService);
   evenementService= inject(EvenementService);
+  messagerieService = inject(MessagerieService);
 
   userId: number | null = null;
   isAuthenticated = false;
@@ -34,6 +38,11 @@ export class EventDescriptionComponent {
 
   commentText = '';
   safeMapUrl: any = null;
+
+  showShareMenu = false;
+  users: any[] = []; // Liste des utilisateurs pour la modal de partage
+  showUsersModal = false; // Contrôle l'affichage de la modal de partage
+
 
   // propriétés pour la gestion visuelle de la description
   loading = false;
@@ -56,8 +65,6 @@ export class EventDescriptionComponent {
       }
     });
   }
-
-
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
@@ -114,6 +121,62 @@ export class EventDescriptionComponent {
         });
       }
     });
+  }
+
+
+  copyLink() {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url);
+    this.showShareMenu = false;
+    alert('Lien copié !');
+  }
+
+  shareByMessage() {
+    this.openModal();
+    this.showShareMenu = false;
+  }
+
+  shareOnLinkedIn() {
+    const url = encodeURIComponent(window.location.href);
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
+    this.showShareMenu = false;
+  }
+
+  shareOnInstagram() {
+    alert('Le partage direct sur Instagram n\'est pas supporté depuis le web.');
+    this.showShareMenu = false;
+  }
+
+  openModal() {
+    this.messagerieService.getAllUsers().subscribe({
+      next: res => {
+        this.users = res.data;
+        this.showUsersModal = true;
+      }
+    });
+  }
+
+  handleShareEventByMessage(user: any) {
+    if (!this.checkAuthentication()) return;
+    console.log("test user choisi",user);
+
+    const preloadedMessage = {
+      destinataireId: user,
+      contenu: 'Regardez cet événement : ' + this.evenement.titre + ' qui se déroulera le ' + this.formatDateTime(this.evenement.dateDebut) + ' à ' + this.evenement.lieu,
+      type: 'EVENEMENT',
+      evenementId: this.evenementId
+    };
+    console.log("preloadedMessage", preloadedMessage);
+
+    this.router.navigate(['/messaging'], {
+      queryParams: {
+        destinataireId: user,
+        contenu: preloadedMessage.contenu,
+        type: preloadedMessage.type,
+        evenementId: preloadedMessage.evenementId
+      }
+    });
+    this.showUsersModal = false;
   }
 
   checkAuthentication(): boolean {
@@ -272,9 +335,12 @@ export class EventDescriptionComponent {
     return new Date(dateStr).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' });
   }
   handleShare() {
+    /*
     const subject = `Invitation à l'événement: ${this.evenement.titre}`;
     const body = `Bonjour,\n\nJe vous invite à l'événement "${this.evenement.titre}" qui se déroulera le ${this.formatDateTime(this.evenement.dateDebut)} à ${this.evenement.lieu}.\n\nPour plus d'informations, visitez notre site web.\n\nCordialement`;
     window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+     */
   }
 
   get eventImage(): string {

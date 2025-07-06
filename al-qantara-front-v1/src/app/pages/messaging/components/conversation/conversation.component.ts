@@ -5,6 +5,7 @@ import {AuthService} from '../../../../member/services/auth.service';
 import { SocketService } from '../../../../member/services/socket.service';
 import {FormsModule} from '@angular/forms';
 import { Output, EventEmitter } from '@angular/core';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-conversation',
@@ -29,11 +30,15 @@ export class ConversationComponent implements OnChanges {
   isAuthenticated: boolean = false;
   private socketListener: any;
   messageInput: string = '';
+  preloadedType: string | null = null;
+  preloadedEvenementId: number | null = null;
 
 
   constructor(private messagerieService: MessagerieService,
               private authService: AuthService,
-              private socketService: SocketService) {
+              private socketService: SocketService,
+              private router: Router
+  ) {
 
     this.authService.authStatus$.subscribe((status) => {
       this.isAuthenticated = status;
@@ -105,10 +110,14 @@ export class ConversationComponent implements OnChanges {
       console.warn('Message vide, non envoyé.');
       return;
     }
+
+    // Si un message préchargé de type EVENEMENT doit être envoyé
+    const isPreloaded = this.preloadedType === 'EVENEMENT' && this.preloadedEvenementId;
     const messageData = {
       destinataireId: this.conversation.utilisateur.id,
       contenu: message.trim(),
-      type: 'TEXTE'
+      type: isPreloaded ? 'EVENEMENT' : 'TEXTE',
+      evenementId: isPreloaded ? this.preloadedEvenementId : undefined
     };
 
     this.messagerieService.sendMessage(messageData).subscribe({
@@ -117,6 +126,13 @@ export class ConversationComponent implements OnChanges {
         this.conversation.messages.push(res.data);
         this.messageInput = '';
         this.messageEnvoye.emit(res.data);
+
+        // Après l’envoi du message préchargé, repasser en mode texte
+        if (isPreloaded) {
+          this.preloadedType = null;
+          this.preloadedEvenementId = null;
+        }
+
         setTimeout(() => this.scrollToBottom(), 0);
       },
       error: (err) => {
@@ -137,5 +153,17 @@ export class ConversationComponent implements OnChanges {
         }
       });
     }
+  }
+
+  goToSharedEvent(evenementId: number | undefined): void {
+    if (evenementId) {
+      this.router.navigate(['/events', evenementId]);
+    }
+  }
+
+  annulerPartageEvenement(): void {
+    this.preloadedType = null;
+    this.preloadedEvenementId = null;
+    this.messageInput = '';
   }
 }

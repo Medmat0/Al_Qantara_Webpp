@@ -114,3 +114,18 @@
   color: #999;
   font-size: 1rem;
 }
+
+.cancel-event-btn {
+  margin-left: 8px;
+  background: #fff3f3;
+  color: #d32f2f;
+  border: 1px solid #d32f2f;
+  border-radius: 20px;
+  padding: 8px 14px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  &:hover {
+    background: #ffeaea;
+  }
+}

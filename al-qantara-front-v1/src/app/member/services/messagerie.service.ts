@@ -41,6 +41,18 @@ export class MessagerieService {
     );
   }
 
+  sendEventMessage(eventId: number, message: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}`, message, { withCredentials: true }).pipe(
+      tap((response) => {
+        console.log('Event message sent successfully:', response);
+      }),
+      catchError((error) => {
+        console.error('Error sending event message:', error);
+        return throwError(() => new Error('Failed to send event message'));
+      })
+    );
+  }
+
   deleteMessage(messageId: number): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/${messageId}`, { withCredentials: true }).pipe(
       tap((response) => {
