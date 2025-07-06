@@ -87,5 +87,13 @@
   (unsubscribe)="onUnsubscribeEvenement(selectedEvent)"
   [unsubscribeConfirmed]="unsubscribeConfirmed"
   (comment)="onAddComment(selectedEvent,$event)"
+  (shareByMessageEvent)="onShareByMessageFromModal($event)"
   (close)="closeModal()">
 </app-event-modal>
+
+<app-users-list
+  *ngIf="showUsersModal"
+  [users]="users"
+  (close)="showUsersModal = false"
+  (startConversation)="onShareByMessage($event)">
+</app-users-list>

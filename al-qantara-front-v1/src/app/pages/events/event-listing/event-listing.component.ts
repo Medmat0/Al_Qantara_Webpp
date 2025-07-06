@@ -8,6 +8,8 @@ import {EvenementService} from '../../../member/services/evenement.service';
 import { Router } from '@angular/router';
 import {Evenement, LikeEvenement} from '../../../member/models/evenement';
 import {AuthService} from '../../../member/services/auth.service';
+import {UsersListComponent} from '../../messaging/components/users-list/users-list.component';
+import {MessagerieService} from '../../../member/services/messagerie.service';
 
 @Component({
   selector: 'app-event-listing',
@@ -16,7 +18,8 @@ import {AuthService} from '../../../member/services/auth.service';
     NgForOf,
     EventModalComponent,
     NgIf,
-    FormsModule
+    FormsModule,
+    UsersListComponent
 
   ],
   templateUrl: './event-listing.component.html',
@@ -29,6 +32,7 @@ export class EventListingComponent {
   evenementService = inject(EvenementService);
   authService = inject(AuthService);
   router = inject(Router);
+  messagerieService = inject(MessagerieService);
 
   // Search and filter properties
   searchTerm: string = '';
@@ -50,6 +54,10 @@ export class EventListingComponent {
   participation: any = null;
   unsubscribeConfirmed = false;
   isAuthenticated = false;
+
+  users: any[] = []; // Liste des utilisateurs pour la modal de partage
+  showUsersModal = false; // Contrôle l'affichage de la modal de partage
+  eventToShare: any = null;
 
   userId: number | null = null;
   constructor() {
@@ -286,11 +294,11 @@ export class EventListingComponent {
 
   get filteredEvenements() {
     let filtered = this.events;
-    
+
     //search filter
     if (this.searchTerm.trim()) {
       const searchLower = this.searchTerm.toLowerCase();
-      filtered = filtered.filter(event => 
+      filtered = filtered.filter(event =>
         event.titre.toLowerCase().includes(searchLower) ||
         event.description.toLowerCase().includes(searchLower) ||
         event.lieu.toLowerCase().includes(searchLower)
@@ -300,17 +308,17 @@ export class EventListingComponent {
     //sorting filter
     switch (this.selectedFilter) {
       case 'most-recent':
-        filtered = [...filtered].sort((a, b) => 
+        filtered = [...filtered].sort((a, b) =>
           new Date(b.dateDebut).getTime() - new Date(a.dateDebut).getTime()
         );
         break;
       case 'most-old':
-        filtered = [...filtered].sort((a, b) => 
+        filtered = [...filtered].sort((a, b) =>
           new Date(a.dateDebut).getTime() - new Date(b.dateDebut).getTime()
         );
         break;
       case 'most-popular':
-        filtered = [...filtered].sort((a, b) => 
+        filtered = [...filtered].sort((a, b) =>
           (b.likes?.length || 0) - (a.likes?.length || 0)
         );
         break;
@@ -346,7 +354,7 @@ export class EventListingComponent {
   }
 
   get happeningNowEvenements() {
-    return this.filteredEvenements.filter(event => 
+    return this.filteredEvenements.filter(event =>
       new Date(event.dateDebut) <= this.now && new Date(event.dateFin) >= this.now
     );
   }
@@ -354,4 +362,48 @@ export class EventListingComponent {
   get pastEvenements() {
     return this.filteredEvenements.filter(event => new Date(event.dateFin) < this.now);
   }
+
+  openUsersModal() {
+    this.messagerieService.getAllUsers().subscribe({
+      next: res => {
+        this.users = res.data;
+        this.showUsersModal = true;
+      }
+    });
+  }
+
+  formatDateTime(dateStr: string) {
+    return new Date(dateStr).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' });
+  }
+
+  onShareByMessage(user: any) {
+    if (!this.checkAuthentication()) return;
+    if (!this.eventToShare) return;
+
+    this.router.navigate(['/messaging'], {
+      queryParams: {
+        destinataireId: user,
+        contenu: `Regardez cet événement : ${this.eventToShare.titre} qui se déroulera le ${this.formatDateTime(this.eventToShare.dateDebut)} à ${this.eventToShare.lieu}`,
+        type: 'EVENEMENT',
+        evenementId: this.eventToShare.id
+      }
+    });
+    this.showModal = false;
+    this.showUsersModal = false;
+    this.eventToShare = null;
+  }
+
+  onShareByMessageFromModal(event: any) {
+    this.eventToShare = event;
+    this.messagerieService.getAllUsers().subscribe({
+      next: res => {
+        this.users = res.data;
+        this.showUsersModal = true;
+      }
+    });
+  }
+
+
+
+
 }
