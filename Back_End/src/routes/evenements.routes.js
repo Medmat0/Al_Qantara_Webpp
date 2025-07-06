@@ -11,7 +11,8 @@ import {
   rateEvenement,
   getEvenementRatings,
   shareEvenement,
-  getCloudinarySignature
+  getCloudinarySignature,
+  editEvenement
 } from "../controllers/evenements/evenementController.js";
 import { participerEvenement, checkParticipation, checkQRCodeParticipation } from "../controllers/evenements/participationEvenement.js";
 import { desinscriptionEvenement } from "../controllers/evenements/desinscriptionEvenement.js";
@@ -24,10 +25,11 @@ const router = express.Router();
 router.get("/cloudinary-signature", getCloudinarySignature);
 
 // CRUD événements (contrôleur unique)
-router.post("/", authMiddleware,isAdmin, addEvenement);
+router.post("/", authMiddleware, isAdmin, addEvenement);
 router.delete("/:id", authMiddleware, isAdmin, deleteEvenement);
 router.get("/", getEvenements);
 router.get("/:id", getEvenementById);
+router.patch("/:id", authMiddleware, isAdmin, editEvenement);
 
 // Like
 router.post("/:id/like", authMiddleware, toggleLikeEvenement);
