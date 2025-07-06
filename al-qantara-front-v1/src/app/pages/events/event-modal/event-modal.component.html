@@ -42,7 +42,15 @@
         <div [ngClass]="{'like-container': true, 'liked': hasLikedEvenement}">
           <button (click)="like.emit()" class="btn-like">❤️ {{ event.likes?.length || 0 }}</button>
         </div>
-        <button (click)="handleShare()" class="btn-share">📤 Partager</button>
+        <div class="dropdown d-inline-block" (mouseleave)="showShareMenu = false">
+          <button (click)="showShareMenu = !showShareMenu" class="btn-share">📤 Partager</button>
+          <ul *ngIf="showShareMenu" class="share-menu">
+            <li (click)="copyLink()"><span>🔗 Copier le lien</span></li>
+            <li (click)="shareByMessage()"><span>💬 Message</span></li>
+            <li (click)="shareOnLinkedIn()"><span>in LinkedIn</span></li>
+            <li (click)="shareOnInstagram()"><span>📸 Instagram</span></li>
+          </ul>
+        </div>
       </div>
 
       <div class="mb-2">

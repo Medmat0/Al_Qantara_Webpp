@@ -17,10 +17,10 @@ import messagerieRoutes from './src/routes/messagerie.routes.js';
 import { setUserOnline, setUserOffline, cleanupInactiveUsers } from './src/services/messagerie/onlineStatusService.js';
 import newsletterRoutes from './src/routes/newsletter.routes.js';
 import adhesionRoutes from './src/routes/adhesion.routes.js';
-
 import bodyParser from "body-parser";
 import helmet from "helmet";
 import communityRoutes from "./src/routes/community.routes.js";
+import socketAuthMiddleware from "./src/middleware/socketAuth.middleware.js";
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -33,44 +33,34 @@ const io = new Server(httpServer, {
   }
 });
 
+io.use(socketAuthMiddleware);
+
 // Stockage des connexions utilisateurs
 const userSockets = new Map();
 
 // Gestion des connexions Socket.IO
-io.on('connection', (socket) => {
-  console.log('Un utilisateur s\'est connecté');
+io.on('connection', async (socket) => {
+  const user = socket.user;
+  console.log(`Utilisateur connecté : ${user.nom} ${user.prenom}`);
 
-  // Authentification de l'utilisateur
-  socket.on('authenticate', async (userId) => {
-    try {
-      userSockets.set(userId, socket.id);
-      
-      // Marquer l'utilisateur comme en ligne
-      const updatedUser = await setUserOnline(userId);
-      
-      // Notifier les autres utilisateurs
-      socket.broadcast.emit('userStatusChanged', {
-        userId: updatedUser.id,
-        status: 'EN_LIGNE',
-        user: {
-          id: updatedUser.id,
-          nom: updatedUser.nom,
-          prenom: updatedUser.prenom
-        }
-      });
-      
-      console.log(`Utilisateur ${userId} authentifié et marqué comme en ligne`);
-    } catch (error) {
-      console.error('Erreur lors de l\'authentification:', error);
+  userSockets.set(user.id, socket.id);
+
+  const updatedUser = await setUserOnline(user.id);
+
+  socket.broadcast.emit('userStatusChanged', {
+    userId: updatedUser.id,
+    status: 'EN_LIGNE',
+    user: {
+      id: updatedUser.id,
+      nom: updatedUser.nom,
+      prenom: updatedUser.prenom
     }
   });
 
   // Mise à jour de l'activité utilisateur
-  socket.on('userActivity', async (userId) => {
+  socket.on('userActivity', async () => {
     try {
-      // Ici on pourrait mettre à jour la dernière activité
-      // mais pour l'instant on garde juste la connexion active
-      console.log(`Activité utilisateur ${userId} mise à jour`);
+      console.log(`Activité utilisateur ${user.id} mise à jour`);
     } catch (error) {
       console.error('Erreur lors de la mise à jour de l\'activité:', error);
     }
@@ -79,34 +69,20 @@ io.on('connection', (socket) => {
   // Déconnexion
   socket.on('disconnect', async () => {
     try {
-      let disconnectedUserId = null;
-      
-      // Trouver l'utilisateur déconnecté
-      for (const [userId, socketId] of userSockets.entries()) {
-        if (socketId === socket.id) {
-          disconnectedUserId = userId;
-          userSockets.delete(userId);
-          break;
-        }
-      }
+      userSockets.delete(user.id);
+      const updatedUser = await setUserOffline(user.id);
 
-      if (disconnectedUserId) {
-        // Marquer l'utilisateur comme hors ligne
-        const updatedUser = await setUserOffline(disconnectedUserId);
-        
-        // Notifier les autres utilisateurs
-        socket.broadcast.emit('userStatusChanged', {
-          userId: updatedUser.id,
-          status: 'HORS_LIGNE',
-          user: {
-            id: updatedUser.id,
-            nom: updatedUser.nom,
-            prenom: updatedUser.prenom
-          }
-        });
-        
-        console.log(`Utilisateur ${disconnectedUserId} déconnecté et marqué comme hors ligne`);
-      }
+      socket.broadcast.emit('userStatusChanged', {
+        userId: updatedUser.id,
+        status: 'HORS_LIGNE',
+        user: {
+          id: updatedUser.id,
+          nom: updatedUser.nom,
+          prenom: updatedUser.prenom
+        }
+      });
+
+      console.log(`Utilisateur ${user.id} déconnecté et marqué comme hors ligne`);
     } catch (error) {
       console.error('Erreur lors de la déconnexion:', error);
     }
@@ -119,14 +95,12 @@ setInterval(async () => {
     const cleanedCount = await cleanupInactiveUsers();
     if (cleanedCount > 0) {
       console.log(`${cleanedCount} utilisateurs inactifs nettoyés`);
-      
-      // Notifier tous les clients du nettoyage
       io.emit('inactiveUsersCleaned', { count: cleanedCount });
     }
   } catch (error) {
     console.error('Erreur lors du nettoyage des utilisateurs inactifs:', error);
   }
-}, 5 * 60 * 1000); // 5 minutes
+}, 5 * 60 * 1000);
 
 // Middleware pour rendre io accessible dans les routes
 app.use((req, res, next) => {

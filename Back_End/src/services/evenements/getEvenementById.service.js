@@ -60,6 +60,19 @@ const getEvenementByIdService = async (evenementId) => {
               }
             }
           }
+        },
+        participations: {
+          include: {
+            utilisateur: {
+              select: {
+                id: true,
+                nom: true,
+                prenom: true,
+                email: true,
+                photoProfil: true
+              }
+            }
+          }
         }
       }
     });
