@@ -21,14 +21,14 @@
         <p>{{ evenement.description }}</p>
       </div>
 
-      <div class="mb-2">
+      <div class="mb-2 lieu-section">
         <strong>Lieu</strong>
-        <div>{{ evenement.lieu }}</div>
+        <div class="lieu-address">{{ evenement.lieu }}</div>
         <iframe
           width="100%"
           height="200"
           [src]="safeMapUrl"
-          style="border-radius:8px;margin-top:0.5rem;"
+          style="border-radius:12px;"
         ></iframe>
       </div>
 
@@ -41,10 +41,8 @@
           <button (click)="onLikeEvenement(evenement)" class="btn-like">❤️ {{ evenement.likes?.length || 0 }}</button>
         </div>
         <button (click)="handleShare()" class="btn-share">📤 Partager</button>
-      </div>
 
-      <div class="mb-2">
-        <!-- Affichage conditionnel des boutons selon event payant et créateur -->
+        <!-- Boutons de participation dans la section actions -->
         <ng-container *ngIf="!isParticipating && evenement.placesRestantes > 0 && !isEventPassed()">
           <button
             *ngIf="evenement.isPayant"
@@ -68,6 +66,9 @@
           class="btn-unsubscribe">
           {{ loading ? 'Désinscription en cours...' : '❌ Se désinscrire' }}
         </button>
+      </div>
+
+      <div class="mb-2">
         <div *ngIf="errorPaymentMessage" class="error">{{ errorPaymentMessage }}</div>
 
         <!-- Message pour événement passé -->
