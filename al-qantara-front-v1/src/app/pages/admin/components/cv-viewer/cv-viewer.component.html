@@ -1,0 +1,44 @@
+<div class="cv-viewer-backdrop" *ngIf="isVisible" (click)="closeViewer()">
+  <div class="cv-viewer-modal" (click)="$event.stopPropagation()">
+    <div class="cv-viewer-header">
+      <h3>CV - {{ applicantName }}</h3>
+      <button class="close-button" (click)="closeViewer()">×</button>
+    </div>
+    <div class="cv-viewer-container">
+      <ngx-extended-pdf-viewer
+        *ngIf="pdfSrc"
+        [src]="pdfSrc"
+        [height]="'85vh'"
+        [showToolbar]="true"
+        [showSecondaryToolbarButton]="false"
+        [showPresentationModeButton]="false"
+        [showSpreadButton]="false"
+        [showSidebarButton]="false"
+        [showFindButton]="false"
+        [showHandToolButton]="false"
+        [showRotateButton]="false"
+        [showZoomButtons]="true"
+        [showDownloadButton]="true"
+        [showPagingButtons]="true"
+        [showPrintButton]="false"
+        [showOpenFileButton]="false"
+        [enablePrint]="false"
+        [showDrawEditor]="false"
+        [showTextEditor]="false"
+        [showStampEditor]="false"
+        [showHighlightEditor]="false"
+        [zoom]="'auto'"
+        [spread]="'off'"
+        [language]="'fr'">
+      </ngx-extended-pdf-viewer>
+      <div *ngIf="!pdfSrc && loading" class="loading">
+        <div class="spinner"></div>
+        <p>Chargement du CV...</p>
+      </div>
+      <div *ngIf="error" class="error">
+        <p>{{ error }}</p>
+        <button (click)="retryLoad()" class="retry-button">Réessayer</button>
+      </div>
+    </div>
+  </div>
+</div>
