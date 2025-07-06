@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RecruitmentService } from '../../services/recruitment.service';
 import { DatePipe } from '@angular/common';
+import { CvViewerComponent } from '../cv-viewer/cv-viewer.component';
 
 interface Applicant {
   id: number;
@@ -25,7 +26,7 @@ interface Applicant {
   templateUrl: './applicant-list.component.html',
   styleUrls: ['./applicant-list.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CvViewerComponent],
   providers: [DatePipe]
 })
 export class ApplicantListComponent implements OnInit, OnChanges {
@@ -42,6 +43,10 @@ export class ApplicantListComponent implements OnInit, OnChanges {
   meetingDate: string = '';
   meetingApplicantId: number | null = null;
   meetingError: string = '';
+
+  showCvViewer: boolean = false;
+  currentCvUrl: string = '';
+  currentApplicantName: string = '';
 
   constructor(
     private recruitmentService: RecruitmentService,
@@ -167,5 +172,17 @@ export class ApplicantListComponent implements OnInit, OnChanges {
         console.error('Erreur lors de l\'acceptation:', error);
       }
     });
+  }
+
+  openCvViewer(cvUrl: string, applicantName: string): void {
+    this.currentCvUrl = cvUrl;
+    this.currentApplicantName = applicantName;
+    this.showCvViewer = true;
+  }
+
+  closeCvViewer(): void {
+    this.showCvViewer = false;
+    this.currentCvUrl = '';
+    this.currentApplicantName = '';
   }
 }
