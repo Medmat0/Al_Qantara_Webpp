@@ -47,7 +47,7 @@
 
       <div class="mb-2">
         <button
-          *ngIf="event.isPayant && event.placesRestantes > 0"
+          *ngIf="event.isPayant && event.placesRestantes > 0 && !isEventPassed()"
           (click)="onPayWithHelloAsso()"
           [disabled]="loading"
           class="btn-pay">
@@ -56,7 +56,7 @@
         <div *ngIf="errorPaymentMessage" class="error">{{ errorPaymentMessage }}</div>
 
         <button
-          *ngIf="!event.isPayant && !isParticipating && event.placesRestantes > 0"
+          *ngIf="!event.isPayant && !isParticipating && event.placesRestantes > 0 && !isEventPassed()"
           (click)="participate.emit()"
           [disabled]="loading"
           class="btn-participate">
@@ -64,12 +64,17 @@
         </button>
 
         <button
-          *ngIf="isParticipating"
+          *ngIf="isParticipating && !isEventPassed()"
           (click)="unsubscribe.emit()"
           [disabled]="loading"
           class="btn-unsubscribe">
           {{ loading ? 'Désinscription en cours...' : '❌ Se désinscrire' }}
         </button>
+
+        <!-- Message pour événement passé -->
+        <div *ngIf="isEventPassed()" class="event-passed-message">
+          <span class="event-passed-text">📅 Cet événement est terminé</span>
+        </div>
       </div>
 
       <div *ngIf="isParticipating && participation" class="mb-2">
