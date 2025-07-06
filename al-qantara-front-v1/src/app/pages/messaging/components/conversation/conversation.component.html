@@ -1,0 +1,76 @@
+<div class="chat-container" *ngIf="conversation; else emptyState">
+  <div class="chat-header">
+    <div class="user-info">
+      <div class="avatar">
+        <img *ngIf="conversation.utilisateur.photoProfil" [src]="conversation.utilisateur.photoProfil" />
+        <div *ngIf="!conversation.utilisateur.photoProfil" class="initials">
+          {{ conversation.utilisateur.prenom[0] }}{{ conversation.utilisateur.nom[0] }}
+        </div>
+      </div>
+      <div class="name">{{ conversation.utilisateur.prenom }} {{ conversation.utilisateur.nom }}</div>
+    </div>
+  </div>
+
+  <div class="chat-messages" #messagesContainer *ngIf="conversation?.messages?.length > 0">
+    <div
+      class="message"
+      *ngFor="let msg of conversation.messages"
+      [ngClass]="{ 'sent': isCurrentUser(msg.expediteurId), 'received': !isCurrentUser(msg.expediteurId) }"
+    >
+      <div class="bubble">
+        <!-- Affichage spécial pour les messages d'événement -->
+        <ng-container *ngIf="msg.type === 'EVENEMENT'; else texteClassique">
+          <div class="event-message">
+            <div class="event-title">{{ msg.evenement?.titre }}</div>
+            <div class="event-date">
+              {{ msg.evenement?.dateDebut | date: 'dd/MM/yyyy HH:mm' }}
+              <span *ngIf="msg.evenement?.lieu">— {{ msg.evenement.lieu }}</span>
+            </div>
+            <div class="event-description">{{ msg.evenement?.description }}</div>
+            <img
+              *ngIf="msg.evenement?.images?.length > 0"
+              [src]="msg.evenement.images[0]"
+              alt="Image de l'événement"
+              class="event-image"
+            />
+            <button *ngIf="msg.type === 'EVENEMENT'" (click)="goToSharedEvent(msg.evenement?.id)">Voir l'événement</button>
+            <div class="event-content">{{ msg.contenu }}</div>
+          </div>
+        </ng-container>
+        <ng-template #texteClassique>
+          <div class="content">{{ msg.contenu }}</div>
+        </ng-template>
+        <div class="time">{{ msg.dateEnvoi | date: 'shortTime' }}</div>
+      </div>
+      <button *ngIf="isCurrentUser(msg.expediteurId)" (click)="deleteMessage(msg.id)" >Supprimer</button>
+    </div>
+  </div>
+
+  <div class="empty" *ngIf="!conversation?.messages || conversation.messages.length === 0">
+    Aucun message. Envoyez-en un pour commencer la conversation.
+  </div>
+
+  <div class="chat-footer">
+    <input
+      type="text"
+      placeholder="Tapez un message..."
+      [(ngModel)]="messageInput"
+      (keyup.enter)="envoyerMessage(messageInput)"
+    />
+    <button (click)="envoyerMessage(messageInput)">Envoyer</button>
+    <button
+      *ngIf="preloadedType === 'EVENEMENT'"
+      class="cancel-event-btn"
+      (click)="annulerPartageEvenement()"
+      type="button"
+    >
+      Annuler le partage d'événement
+    </button>
+  </div>
+</div>
+
+<ng-template #emptyState>
+  <div class="empty">
+    Sélectionnez une conversation pour commencer à discuter.
+  </div>
+</ng-template>

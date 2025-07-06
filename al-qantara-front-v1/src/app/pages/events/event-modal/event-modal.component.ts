@@ -44,6 +44,12 @@ export class EventModalComponent implements OnChanges {
   loadingPayment = false;
   errorPaymentMessage = '';
 
+  //share
+  showShareMenu = false;
+  @Output() shareByMessageEvent = new EventEmitter<any>();
+
+
+
   constructor(private sanitizer: DomSanitizer) {
     if (this.event && !Array.isArray(this.event.comments)) {
       this.event.comments = [];
@@ -65,6 +71,30 @@ export class EventModalComponent implements OnChanges {
     if (changes['isParticipating'] && !changes['isParticipating'].currentValue) {
       this.participation = null;
     }
+  }
+
+  copyLink() {
+    const url = `/events/${this.event?.id}`;
+    navigator.clipboard.writeText(url);
+    this.showShareMenu = false;
+    alert('Lien copié !');
+  }
+
+  shareByMessage() {
+    this.shareByMessageEvent.emit(this.event);
+    this.showShareMenu = false;
+  }
+
+
+  shareOnLinkedIn() {
+    const url = encodeURIComponent(window.location.href);
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
+    this.showShareMenu = false;
+  }
+
+  shareOnInstagram() {
+    alert('Le partage direct sur Instagram n\'est pas supporté depuis le web.');
+    this.showShareMenu = false;
   }
 
   formatDateTime(dateStr: string) {
@@ -120,4 +150,10 @@ export class EventModalComponent implements OnChanges {
     }
     return 'assets/main-icon.jpg';
   }
+
+
+
+
+
+
 }
