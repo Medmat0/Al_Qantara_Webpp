@@ -46,10 +46,10 @@
             <input 
               id="titre" 
               type="text" 
-              formControlName="titre" 
+              formControlName="title" 
               placeholder="Donnez un titre à votre post..."
               required>
-            <div *ngIf="postForm.get('titre')?.invalid && postForm.get('titre')?.touched" 
+            <div *ngIf="postForm.get('title')?.invalid && postForm.get('title')?.touched" 
                  class="error-message">
               <i class="error-icon">⚠</i>
               Titre requis
@@ -61,10 +61,10 @@
             <label for="contenu">Contenu</label>
             <textarea 
               id="contenu" 
-              formControlName="contenu" 
+              formControlName="description" 
               placeholder="Écrivez votre message..."
               required></textarea>
-            <div *ngIf="postForm.get('contenu')?.invalid && postForm.get('contenu')?.touched" 
+            <div *ngIf="postForm.get('description')?.invalid && postForm.get('description')?.touched" 
                  class="error-message">
               <i class="error-icon">⚠</i>
               Contenu requis
@@ -118,7 +118,6 @@
               <h4>Sondage (optionnel)</h4>
               <p>Créez un sondage pour recueillir l'avis de la communauté</p>
             </div>
-            
             <div formArrayName="pollOptions">
               <div class="poll-option-group" *ngFor="let option of pollOptions.controls; let i = index">
                 <input 
@@ -132,13 +131,11 @@
                   ×
                 </button>
               </div>
-              
               <button type="button" class="btn-add" (click)="addPollOption()">
                 <i class="add-icon">+</i>
                 Ajouter une option
               </button>
             </div>
-
             <div class="form-group">
               <label for="pollDeadline">Date limite du sondage</label>
               <input 

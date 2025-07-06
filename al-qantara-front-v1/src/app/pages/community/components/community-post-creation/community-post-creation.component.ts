@@ -35,7 +35,7 @@ export class CommunityPostCreationComponent implements OnInit{
     this.postForm = this.fb.group({
       titre: ['', Validators.required],
       contenu: ['', Validators.required],
-      tags: this.fb.array([this.fb.control('', Validators.required)], Validators.required),
+      tags: this.fb.array([this.fb.control('')], this.atLeastOneTag),
       pollOptions: this.fb.array([]),
       pollDeadline: ['']
     });
@@ -60,25 +60,29 @@ export class CommunityPostCreationComponent implements OnInit{
         });
       }
     });
-
     this.postForm.get('pollOptions')?.setValidators([
       (control: AbstractControl) => {
-        if (control.value && control.value.length === 1 && control.value[0].trim() !== '') {
-          return { minOptions: true };
-        }
+        // Si aucune option de sondage n'est renseignée, pas d'erreur
+        const filledOptions = control.value?.filter((v: string) => v && v.trim() !== '');
+        if (!filledOptions || filledOptions.length === 0) return null;
+        // Si une seule option renseignée, erreur
+        if (filledOptions.length === 1) return { minOptions: true };
         return null;
       }
     ]);
 
     this.postForm.get('pollDeadline')?.setValidators([
       (control: AbstractControl) => {
-        const hasPollOptions = this.pollOptions.controls.some(opt => opt.value && opt.value.trim() !== '');
-        if (hasPollOptions) {
+        const pollOptionsArr = this.pollOptions.controls.map(opt => opt.value).filter((v: string) => v && v.trim() !== '');
+        if (pollOptionsArr.length > 1) {
           if (!control.value) {
             return { requiredIfPoll: true };
           }
           const today = new Date();
           const selected = new Date(control.value);
+          // On compare seulement la date (pas l'heure)
+          today.setHours(0,0,0,0);
+          selected.setHours(0,0,0,0);
           if (selected <= today) {
             return { minDate: true };
           }
@@ -87,7 +91,21 @@ export class CommunityPostCreationComponent implements OnInit{
       }
     ]);
 
+    // Force update validity when tags or pollOptions change
+    this.tags.valueChanges.subscribe(() => {
+      this.tags.updateValueAndValidity({ onlySelf: true });
+      this.postForm.updateValueAndValidity();
+    });
+    this.pollOptions.valueChanges.subscribe(() => {
+      this.pollOptions.updateValueAndValidity({ onlySelf: true });
+      this.postForm.updateValueAndValidity();
+    });
+  }
 
+  // Custom validator: au moins un tag non vide
+  atLeastOneTag(formArray: AbstractControl) {
+    const arr = (formArray as FormArray).controls;
+    return arr.some(control => control.value && control.value.trim() !== '') ? null : { atLeastOneTag: true };
   }
 
   checkAuthentication(): boolean {
@@ -130,7 +148,7 @@ export class CommunityPostCreationComponent implements OnInit{
   }
 
   addTag() {
-    this.tags.push(this.fb.control('', Validators.required));
+    this.tags.push(this.fb.control(''));
   }
 
   removeTag(index: number) {
