@@ -1,0 +1,67 @@
+<div class="article-container">
+  <div class="loading-state" *ngIf="isLoading">
+    <div class="loading-spinner">
+      <div class="spinner"></div>
+      <span>Chargement de l'article...</span>
+    </div>
+  </div>
+
+  <div class="error-state" *ngIf="error">
+    <div class="error-icon">⚠️</div>
+    <span>{{ error }}</span>
+    <button class="back-btn" (click)="goBack()">Retour aux articles</button>
+  </div>
+
+  <div class="article-content" *ngIf="!isLoading && !error && article">
+    <header class="article-header">
+      <div class="header-actions">
+        <button class="back-btn" (click)="goBack()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="m15 18-6-6 6-6"/>
+          </svg>
+          Retour aux articles
+        </button>
+      </div>
+
+      <div class="article-title-section">
+        <h1 class="article-title">{{ article.titre }}</h1>
+        <div class="article-meta">
+          <div class="author-info">
+            <div class="author-avatar">
+              <span>{{ article.auteur?.charAt(0)?.toUpperCase() }}</span>
+            </div>
+            <span class="author-name">{{ article.auteur }}</span>
+          </div>
+          <div class="article-date">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            {{ article.dateSoumission | date:'dd/MM/yyyy' }}
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <div class="content-wrapper">
+        <div class="article-text">
+          <div [innerHTML]="truncatedContent"></div>
+        </div>
+
+
+        <div class="read-more-section" *ngIf="isContentTruncated">
+          <button class="read-more-btn" (click)="navigateToRevue()">
+            <span>Lire la suite</span>
+            <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12,5 19,12 12,19"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

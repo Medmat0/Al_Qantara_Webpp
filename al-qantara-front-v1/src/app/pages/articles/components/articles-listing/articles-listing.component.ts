@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { ArticlesService } from '../../../../member/services/articles.service';
 import { Article } from '../../../../member/models/article';
 import { FormsModule } from '@angular/forms';
@@ -12,6 +13,7 @@ import { Categorie } from '../../../../member/models/categorie';
   standalone: true,
   imports: [CommonModule, FormsModule],
 })
+
 export class ArticlesListingComponent implements OnInit {
   articles: Article[] = [];
   categories: Categorie[] = [];
@@ -23,7 +25,10 @@ export class ArticlesListingComponent implements OnInit {
   isLoading = true;
   error: string | null = null;
 
-  constructor(private articlesService: ArticlesService) {}
+  constructor(
+    private articlesService: ArticlesService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.articlesService.getAllArticles().subscribe({
@@ -104,8 +109,12 @@ export class ArticlesListingComponent implements OnInit {
   }
 
   getCategoryName(article: Article): string {
-    return article.categories && article.categories.length > 0 && article.categories[0].nom 
-      ? article.categories[0].nom 
+    return article.categories && article.categories.length > 0 && article.categories[0].nom
+      ? article.categories[0].nom
       : 'Général';
+  }
+
+  navigateToArticle(articleId: number): void {
+    this.router.navigate(['/articles', articleId]);
   }
 }

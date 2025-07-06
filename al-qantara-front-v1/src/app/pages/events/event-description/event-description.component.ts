@@ -271,6 +271,16 @@ export class EventDescriptionComponent {
   formatDateTime(dateStr: string) {
     return new Date(dateStr).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' });
   }
+
+  isEventPassed(): boolean {
+    if (!this.evenement || !this.evenement.dateFin) {
+      return false;
+    }
+    const now = new Date();
+    const eventEndDate = new Date(this.evenement.dateFin);
+    return eventEndDate < now;
+  }
+
   handleShare() {
     const subject = `Invitation à l'événement: ${this.evenement.titre}`;
     const body = `Bonjour,\n\nJe vous invite à l'événement "${this.evenement.titre}" qui se déroulera le ${this.formatDateTime(this.evenement.dateDebut)} à ${this.evenement.lieu}.\n\nPour plus d'informations, visitez notre site web.\n\nCordialement`;

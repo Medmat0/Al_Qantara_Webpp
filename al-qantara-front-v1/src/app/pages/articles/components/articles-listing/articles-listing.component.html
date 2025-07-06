@@ -69,7 +69,7 @@
                         <option *ngFor="let cat of categories" [value]="cat.nom">{{ cat.nom }}</option>
                     </select>
                 </div>
-                
+
                 <div class="filter-group">
                     <label class="filter-label">Tri</label>
                     <select class="sort-select" [(ngModel)]="selectedSort" (change)="onSortChange($event)">
@@ -116,7 +116,7 @@
                         </button>
                     </div>
                 </div>
-                
+
                 <div class="article-content">
                     <div class="article-header">
                         <div class="article-meta-top">
@@ -131,17 +131,17 @@
                             <span class="author-name">{{ article.auteur }}</span>
                         </div>
                     </div>
-                    
+
                     <div class="article-preview">
                         <p [innerHTML]="article.contenu | slice:0:150"></p>
                         <span *ngIf="article.contenu.length > 150" class="read-more-indicator">...</span>
                     </div>
-                    
+
                     <div class="article-footer">
                         <div class="article-stats">
-                            
+
                         </div>
-                        <button class="read-btn">
+                        <button class="read-btn" (click)="navigateToArticle(article.id)">
                             <span>Lire l'article</span>
                             <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                 <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -152,7 +152,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="no-articles" *ngIf="!isLoading && filteredArticles.length === 0">
             <div class="no-articles-icon">📄</div>
             <h3>Aucun article trouvé</h3>
@@ -195,12 +195,12 @@
             // Toggle vue grille/liste
             const viewBtns = document.querySelectorAll('.view-btn');
             const articlesContainer = document.getElementById('articles-container');
-            
+
             viewBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
                     viewBtns.forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
-                    
+
                     const view = btn.dataset.view;
                     articlesContainer.className = view === 'list' ? 'articles-list' : 'articles-grid';
                 });
