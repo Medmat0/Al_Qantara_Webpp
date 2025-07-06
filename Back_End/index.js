@@ -1,4 +1,5 @@
 import express from "express";
+import associationRoutes from './src/routes/association.routes.js';
 import { createServer } from "http";
 import { Server } from "socket.io";
 import authRoutes from "./src/routes/auth.routes.js";
@@ -185,6 +186,7 @@ app.use("/messages", messagerieRoutes);
 app.use("/newsletter", newsletterRoutes);
 app.use("/adhesion", adhesionRoutes);
 app.use("/communities", communityRoutes);
+app.use("/associations", associationRoutes);
 
 // Démarrer le serveur avec Socket.IO
 httpServer.listen(PORT, () => {
