@@ -4,6 +4,8 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators, FormBuilder } 
 import { Editor, NgxEditorModule, Toolbar } from 'ngx-editor';
 import { HttpClient } from '@angular/common/http';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { API_URL } from '../../../../utils/config';
+
 
 @Component({
   selector: 'app-add-article',
@@ -81,7 +83,7 @@ export class AddArticleComponent implements OnInit, OnDestroy {
         categories: selectedIds
       };
       console.log('Body envoyé à l\'API :', article);
-      this.http.post('http://localhost:3000/articles', article, { withCredentials: true }).subscribe(
+      this.http.post('${API_URL}/articles', article, { withCredentials: true }).subscribe(
         (res) => {
           console.log('Article publié avec succès', res);
           // Afficher le message de succès
@@ -102,14 +104,14 @@ export class AddArticleComponent implements OnInit, OnDestroy {
   }
 
   getRevuesTitres() {
-    this.http.get<any[]>('http://localhost:3000/revues/').subscribe(data => {
+    this.http.get<any[]>('${API_URL}/revues/').subscribe(data => {
       this.revues = data.map(r => ({ id: r.id, titre: r.titre }));
       console.log('Revues:', this.revues);
     });
   }
 
   getCategoriesNoms() {
-    this.http.get<any>('http://localhost:3000/articles/categories/all', { withCredentials: true }).subscribe(data => {
+    this.http.get<any>('${API_URL}/articles/categories/all', { withCredentials: true }).subscribe(data => {
       this.categories = (data.categories || []).map((c: any) => ({ id: c.id, nom: c.nom }));
       this.categoriesNoms = this.categories.map(c => c.nom); // pour ng-select
       console.log('Catégories:', this.categories);
@@ -139,7 +141,7 @@ export class AddArticleComponent implements OnInit, OnDestroy {
     this.categorySuccess = '';
     this.categoryError = '';
     const nom = this.categoryForm.value.nom;
-    this.http.post('http://localhost:3000/articles/categories', { nom }, { withCredentials: true }).subscribe({
+    this.http.post('${API_URL}/articles/categories', { nom }, { withCredentials: true }).subscribe({
       next: (res: any) => {
         this.categorySuccess = 'Catégorie ajoutée avec succès !';
         this.loadingCategory = false;
@@ -178,7 +180,7 @@ export class AddArticleComponent implements OnInit, OnDestroy {
     this.loadingDelete = true;
     this.deleteCategorySuccess = '';
     this.deleteCategoryError = '';
-    this.http.delete(`http://localhost:3000/articles/categories/${this.categoryToDelete.id}`, { withCredentials: true })
+    this.http.delete(`${API_URL}/articles/categories/${this.categoryToDelete.id}`, { withCredentials: true })
       .subscribe({
         next: () => {
           this.deleteCategorySuccess = 'Catégorie supprimée avec succès !';

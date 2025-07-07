@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { EditArticleComponent } from '../edit-article/edit-article.component';
+import { API_URL } from '../../../../utils/config';
+
 
 interface Article {
   id: number;
@@ -72,7 +74,7 @@ export class ArticlesComponent implements OnInit {
     this.loading = true;
     this.error = '';
 
-    this.http.get<any>('http://localhost:3000/articles', { withCredentials: true }).subscribe({
+    this.http.get<any>('${API_URL}/articles', { withCredentials: true }).subscribe({
       next: (response) => {
         this.articles = response.articles || [];
         // Extraire la liste unique des catégories
@@ -99,7 +101,7 @@ export class ArticlesComponent implements OnInit {
     if (this.articleToDelete) {
       this.deletingArticleId = this.articleToDelete.id;
 
-      this.http.delete(`http://localhost:3000/articles/${this.articleToDelete.id}`, { withCredentials: true }).subscribe({
+      this.http.delete(`${API_URL}/articles/${this.articleToDelete.id}`, { withCredentials: true }).subscribe({
         next: () => {
           this.articles = this.articles.filter(a => a.id !== this.articleToDelete?.id);
           this.deletingArticleId = null;
