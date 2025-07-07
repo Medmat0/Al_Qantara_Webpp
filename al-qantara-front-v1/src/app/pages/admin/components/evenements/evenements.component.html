@@ -38,7 +38,11 @@
       class="event-item-container"
       *ngFor="let event of filteredEvents"
     >
-      <app-event-item [event]="event"></app-event-item>
+      <app-event-item
+        [event]="event"
+        [isAdminContext]="true"
+        (showParticipants)="onShowParticipants($event)">
+      </app-event-item>
       <button
         class="delete-btn"
         (click)="onDeleteEvent(event)"
@@ -80,6 +84,70 @@
       <div class="modal-actions">
         <button (click)="confirmModal()" class="confirm-btn">Confirmer</button>
         <button (click)="closeModal()" class="cancel-btn">Annuler</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal des participants -->
+  <div class="modal participants-modal" *ngIf="showParticipantsModal">
+    <div class="modal-content participants-modal-content">
+      <div class="modal-header">
+        <h3>Liste des participants - {{ selectedEventTitle }}</h3>
+        <div class="header-actions">
+          <div class="export-buttons" *ngIf="!loadingParticipants && participants.length > 0">
+            <button (click)="exportToPDF()" class="export-btn pdf-btn" title="Exporter en PDF">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+              </svg>
+              PDF
+            </button>
+            <button (click)="exportToCSV()" class="export-btn csv-btn" title="Exporter en CSV">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+              </svg>
+              CSV
+            </button>
+          </div>
+          <button class="close-btn" (click)="closeParticipantsModal()">&times;</button>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <!-- Loading state -->
+        <div *ngIf="loadingParticipants" class="loading-message">
+          Chargement des participants...
+        </div>
+
+        <!-- Participants list -->
+        <div *ngIf="!loadingParticipants && participants.length > 0" class="participants-table-container">
+          <table class="participants-table">
+            <thead>
+              <tr>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Email</th>
+                <th>Téléphone</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let participant of participants">
+                <td>{{ participant.nom }}</td>
+                <td>{{ participant.prenom }}</td>
+                <td>{{ participant.email }}</td>
+                <td>{{ participant.telephone }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- No participants -->
+        <div *ngIf="!loadingParticipants && participants.length === 0" class="no-participants-message">
+          Aucun participant inscrit pour cet événement.
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button (click)="closeParticipantsModal()" class="cancel-btn">Fermer</button>
       </div>
     </div>
   </div>

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Evenement } from '../../../../member/models/evenement';
 import { DatePipe, CommonModule } from '@angular/common';
 
@@ -12,11 +12,19 @@ import { DatePipe, CommonModule } from '@angular/common';
 })
 export class EventItemComponent {
   @Input() event!: Evenement;
+  @Input() isAdminContext: boolean = false;
+  @Output() showParticipants = new EventEmitter<number>();
 
   get eventImage(): string {
     if (Array.isArray(this.event.images) && this.event.images.length > 0 && this.event.images[0]) {
       return this.event.images[0];
     }
     return 'assets/main-icon.jpg';
+  }
+
+  onShowParticipants(): void {
+    if (this.event.placesTotal && this.isAdminContext) {
+      this.showParticipants.emit(this.event.id);
+    }
   }
 }

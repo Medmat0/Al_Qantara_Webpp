@@ -69,6 +69,7 @@ const getEvenementByIdService = async (evenementId) => {
                 nom: true,
                 prenom: true,
                 email: true,
+                telephone : true,
                 photoProfil: true
               }
             }
