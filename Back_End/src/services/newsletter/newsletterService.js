@@ -37,7 +37,28 @@ const prisma = new PrismaClient();
  */
 export const ajouterAbonnementNewsletter = async (email) => {
   try {
-    // Générer un token de désinscription
+    // Vérifier si l'email existe déjà
+    const abonnementExistant = await prisma.newsletter.findUnique({
+      where: { email: email }
+    });
+
+    if (abonnementExistant) {
+      if (abonnementExistant.statut === 'DESINSCRIT') {
+        // Réactiver l'abonnement existant
+        const abonnement = await prisma.newsletter.update({
+          where: { email: email },
+          data: { 
+            statut: 'ACTIF',
+            dateInscription: new Date() // Mettre à jour la date d'inscription
+          }
+        });
+        return abonnement;
+      } else {
+        throw new Error('Cet email est déjà inscrit à la newsletter');
+      }
+    }
+
+    // Créer un nouvel abonnement
     const tokenDesinscription = crypto.randomBytes(32).toString('hex');
     
     const abonnement = await prisma.newsletter.create({
@@ -85,6 +106,37 @@ export const getAbonnementParUtilisateur = async (utilisateurId) => {
     return abonnement;
   } catch (error) {
     throw error;
+  }
+};
+
+/**
+ * Récupérer l'abonnement d'un utilisateur par son email
+ */
+export const getAbonnementParEmail = async (email) => {
+  try {
+    const abonnement = await prisma.newsletter.findUnique({
+      where: { email: email }
+    });
+
+    return abonnement;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Se désinscrire de la newsletter par email
+ */
+export const desinscrireNewsletterParEmail = async (email) => {
+  try {
+    const abonnement = await prisma.newsletter.update({
+      where: { email: email },
+      data: { statut: 'DESINSCRIT' }
+    });
+
+    return abonnement;
+  } catch (error) {
+    throw new Error('Abonnement non trouvé ou déjà désinscrit');
   }
 };
 
