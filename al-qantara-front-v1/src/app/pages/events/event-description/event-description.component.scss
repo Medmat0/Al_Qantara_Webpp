@@ -44,7 +44,6 @@ h2 {
   position: relative;
 
   &::before {
-    content: "📅";
     position: absolute;
     left: 1rem;
     top: 50%;
@@ -136,7 +135,6 @@ h2 {
   }
 }
 
-// Style spécifique pour la section lieu
 .lieu-section {
   background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
   border-radius: 15px;
@@ -155,7 +153,6 @@ h2 {
     margin-bottom: 1rem;
 
     &::before {
-      content: "📍";
       margin-right: 0.5rem;
       font-size: 1.3rem;
     }
@@ -229,6 +226,74 @@ iframe {
   color: #059669;
   margin-top: 0.75rem;
   font-weight: 500;
+}
+
+// Styles essentiels pour le menu de partage seulement
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.share-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  min-width: 180px;
+  padding: 0.5rem 0;
+  margin: 0;
+  list-style: none;
+  margin-top: 0.5rem;
+
+  li {
+    padding: 0;
+    margin: 0;
+
+    span {
+      display: block;
+      padding: 0.75rem 1rem;
+      color: #2d3748;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      font-size: 0.9rem;
+      font-weight: 500;
+
+      &:hover {
+        background-color: #f7fafc;
+        color: #9e2e2c;
+      }
+    }
+
+    &:first-child span {
+      border-radius: 12px 12px 0 0;
+    }
+
+    &:last-child span {
+      border-radius: 0 0 12px 12px;
+    }
+  }
+}
+
+.event-passed-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+  border: 2px solid #f87171;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(248, 113, 113, 0.2);
+
+  .event-passed-text {
+    color: #dc2626;
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
 }
 
 .actions {
@@ -328,33 +393,7 @@ iframe {
   }
 }
 
-.unsubscribe-confirmed-red-box {
-  background: linear-gradient(135deg, #ffe6e6 0%, #fecaca 100%);
-  border-left: 5px solid #ef4444;
-  padding: 1.5rem;
-  margin: 2rem 0;
-  text-align: center;
-  border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(239, 68, 68, 0.2);
-}
-
-.event-passed-message {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
-  background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
-  border: 2px solid #f87171;
-  border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(248, 113, 113, 0.2);
-
-  .event-passed-text {
-    color: #dc2626;
-    font-weight: 600;
-    font-size: 1.1rem;
-  }
-}
-
+// Styles pour les commentaires
 .comment {
   background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
   border-radius: 12px;
@@ -366,21 +405,22 @@ iframe {
   overflow-wrap: break-word;
   max-width: 100%;
   box-sizing: border-box;
+
+  .font-semibold {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #2d3748;
+    font-size: 1rem;
+  }
+
+  .text-xs {
+    font-size: 0.8rem;
+    color: #718096;
+    margin-top: 0.5rem;
+  }
 }
 
-.comment .font-semibold {
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: #2d3748;
-  font-size: 1rem;
-}
-
-.comment .text-xs {
-  font-size: 0.8rem;
-  color: #718096;
-  margin-top: 0.5rem;
-}
-
+// Styles pour les formulaires
 textarea.form-control {
   width: 100%;
   padding: 1rem;
@@ -433,6 +473,7 @@ textarea.form-control {
   }
 }
 
+// Messages d'erreur et de statut
 .error {
   color: white;
   font-size: 1rem;
@@ -459,115 +500,81 @@ textarea.form-control {
   }
 }
 
-// Responsive adjustments
-@media (max-width: 768px) {
-  .actions {
-    flex-direction: column;
-    align-items: center;
+.unsubscribe-confirmed-red-box {
+  background: linear-gradient(135deg, #ffe6e6 0%, #fecaca 100%);
+  border-left: 5px solid #ef4444;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  text-align: center;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(239, 68, 68, 0.2);
+}
 
-    button {
-      width: 100%;
-      max-width: 300px;
+// Style spécifique pour la section places disponibles
+.places-section {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-radius: 20px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  box-shadow: 0 6px 20px rgba(14, 165, 233, 0.08);
+  position: relative;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+    border-radius: 20px;
+    padding: 2px;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: exclude;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    z-index: -1;
+  }
+
+  span {
+    color: #0369a1;
+    font-size: 1.1rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+
+    &::before {
+      font-size: 1.4rem;
+    }
+
+    strong {
+      color: #075985;
+      font-weight: 800;
+      margin: 0;
+      display: inline;
     }
   }
-.btn-pay {
-  background: #f3f4f6;
-  color: #3b82f6;
-  border: none;
-  border-radius: 6px;
-  padding: 0.5rem 0.75rem;
-  font-size: 0.875rem;
 
-  cursor: pointer;
-  font-weight: 600;
-  margin-right: 0.5rem;
-  transition: background 0.18s, color 0.18s;
-  box-shadow: none;
-  text-transform: none;
-}
-.btn-pay:hover, .btn-pay:focus {
-  background: #e5e7eb;
-  color: #2563eb;
-}
-.btn-pay:disabled {
-  background: #bcd7fa;
-  color: #fff;
-  cursor: not-allowed;
-  box-shadow: none;
-}
+  @media (max-width: 768px) {
+    padding: 1rem;
+    margin: 0 0 1.5rem 0;
 
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
+    span {
+      font-size: 1rem;
+      flex-direction: column;
+      gap: 0.25rem;
 
-.btn-share {
-  background: #f3f4f6;
-  color: #861eff;
-  border: none;
-  border-radius: 6px;
-  padding: 0.5rem 0.75rem;
-  font-size: 0.875rem;
-  cursor: pointer;
-  transition: background 0.18s, color 0.18s;
-}
-
-.btn-share:hover, .btn-share:focus {
-  background: #e5e7eb;
-  color: #6d28d9;
-}
-
-.share-menu {
-  position: absolute;
-  left: 0;
-  top: 100%;
-  min-width: 180px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-  z-index: 10;
-  padding: 0.25rem 0;
-  margin-top: 0;
-  list-style: none;
-  animation: fadeIn 0.18s;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-8px);}
-  to { opacity: 1; transform: translateY(0);}
-}
-
-.share-menu li {
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  font-size: 0.95rem;
-  color: #333;
-  transition: background 0.15s;
-  display: flex;
-  align-items: center;
-}
-
-.share-menu li:hover {
-  background: #f3f4f6;
-  color: #861eff;
-}
-.event-passed-message {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  background: #FEF2F2;
-  border: 2px solid #FECACA;
-  border-radius: 8px;
-  margin: 1rem 0;
-}
-
-  .mb-2 {
-    margin-bottom: 1rem;
-  }
-
-  h2 {
-    font-size: 1.8rem;
+      &::before {
+        font-size: 1.2rem;
+      }
+    }
   }
 }
+
+// Style spécifique pour la section lieu
+

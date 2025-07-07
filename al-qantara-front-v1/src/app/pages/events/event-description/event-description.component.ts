@@ -9,6 +9,7 @@ import {DatePipe, NgClass, NgForOf, NgIf} from '@angular/common';
 import { ChangeDetectorRef } from '@angular/core';
 import {MessagerieService} from '../../../member/services/messagerie.service';
 import {UsersListComponent} from '../../messaging/components/users-list/users-list.component';
+import {PaymentModalComponent} from '../payment-modal/payment-modal.component';
 
 @Component({
   selector: 'app-event-description',
@@ -18,7 +19,8 @@ import {UsersListComponent} from '../../messaging/components/users-list/users-li
     NgForOf,
     NgClass,
     DatePipe,
-    UsersListComponent
+    UsersListComponent,
+    PaymentModalComponent
   ],
   templateUrl: './event-description.component.html',
   standalone: true,
@@ -372,6 +374,10 @@ export class EventDescriptionComponent {
       return;
     }
     this.showPaymentModal = true;
+  }
+
+  closePaymentModal() {
+    this.showPaymentModal = false;
   }
 
 }

@@ -16,11 +16,10 @@
         </ng-template>
       </div>
 
-      <div class="mb-2">
+      <div class="description-section">
         <strong>Description</strong>
         <p>{{ evenement.description }}</p>
       </div>
-
       <div class="mb-2 lieu-section">
         <strong>Lieu</strong>
         <div class="lieu-address">{{ evenement.lieu }}</div>
@@ -32,7 +31,7 @@
         ></iframe>
       </div>
 
-      <div class="mb-2">
+      <div class="places-section">
         <span><strong>Places disponibles :</strong> {{ evenement.placesRestantes }}/{{ evenement.placesTotal }}</span>
       </div>
 
@@ -40,7 +39,15 @@
         <div [ngClass]="{'like-container': true, 'liked': hasLikedEvenement}">
           <button (click)="onLikeEvenement(evenement)" class="btn-like">❤️ {{ evenement.likes?.length || 0 }}</button>
         </div>
-        <button (click)="handleShare()" class="btn-share">📤 Partager</button>
+        <div class="dropdown d-inline-block" (mouseleave)="showShareMenu = false">
+          <button (click)="showShareMenu = !showShareMenu" class="btn-share"> Partager</button>
+          <ul *ngIf="showShareMenu" class="share-menu">
+            <li (click)="copyLink()"><span>Copier le lien</span></li>
+            <li (click)="shareByMessage()"><span>Message</span></li>
+            <li (click)="shareOnLinkedIn()"><span>in LinkedIn</span></li>
+            <li (click)="shareOnInstagram()"><span>Instagram</span></li>
+          </ul>
+        </div>
 
         <!-- Boutons de participation dans la section actions -->
         <ng-container *ngIf="!isParticipating && evenement.placesRestantes > 0 && !isEventPassed()">
@@ -49,14 +56,14 @@
             (click)="onPayWithHelloAsso()"
             [disabled]="loading"
             class="btn-pay">
-            {{ loading ? 'Paiement en cours...' : '💳 Acheter un billet' }}
+            {{ loading ? 'Paiement en cours...' : 'Acheter un billet' }}
           </button>
           <button
             *ngIf="!evenement.isPayant"
             (click)="onParticipateToEvenement(evenement)"
             [disabled]="loading"
             class="btn-participate">
-            {{ loading ? 'Participation en cours...' : '🎫 Participer à l\'événement' }}
+            {{ loading ? 'Participation en cours...' : 'Participer à l\'événement' }}
           </button>
         </ng-container>
         <button
@@ -73,7 +80,7 @@
 
         <!-- Message pour événement passé -->
         <div *ngIf="isEventPassed()" class="event-passed-message">
-          <span class="event-passed-text">📅 Cet événement est terminé</span>
+          <span class="event-passed-text">Cet événement est terminé</span>
         </div>
       </div>
 
@@ -119,5 +126,22 @@
     <ng-template #loadingTpl>
       <div>Chargement de l'événement...</div>
     </ng-template>
+
+    <!-- Modal de partage par message -->
+    <app-users-list
+      *ngIf="showUsersModal"
+      [users]="users"
+      (startConversation)="handleShareEventByMessage($event)"
+      (close)="showUsersModal = false"
+    ></app-users-list>
+
+    <!-- Modal de paiement -->
+    <app-payment-modal
+      *ngIf="showPaymentModal"
+      [event]="evenement"
+      [loading]="loading"
+      [errorMessage]="errorPaymentMessage"
+      (close)="closePaymentModal()"
+    ></app-payment-modal>
 
 </div>
