@@ -17,12 +17,9 @@ const createAdhesionCheckoutIntent = async (adhesionData) => {
     // Construction des URLs avec les paramètres (exactement comme pour les événements)
     const baseUrl = FRONTEND_URL;
     const utilisateurId = adhesionData.metadata.utilisateurId;
-    /*const backUrl = `${baseUrl}/payment/cancel?userId=${utilisateurId}`;
-    const errorUrl = `${baseUrl}/payment/error?userId=${utilisateurId}`;
-    const returnUrl = `${baseUrl}/payment/success?userId=${utilisateurId}&type=adhesion`; */
-    const backUrl = `https://google.com`;
-    const errorUrl = `https://youtube.com`;
-    const returnUrl = `https://facebook.com`;
+    const backUrl = `${baseUrl}/adhesion?status=cancel&userId=${utilisateurId}`;
+    const errorUrl = `${baseUrl}/adhesion?status=error&userId=${utilisateurId}`;
+    const returnUrl = `${baseUrl}/adhesion/payment-success?userId=${utilisateurId}&type=adhesion`;
 
     console.log('URLs de redirection adhésion:', { 
       returnUrl: returnUrl.toString(),
@@ -89,7 +86,7 @@ const createDonationCheckoutIntent = async (donationData) => {
     const montant = donationData.metadata.montant;
     const backUrl = `${baseUrl}/adhesion?status=cancel&userId=${utilisateurId}`;
     const errorUrl = `${baseUrl}/adhesion?status=error&userId=${utilisateurId}`;
-    const returnUrl = `${baseUrl}/adhesion?status=success&userId=${utilisateurId}&type=donation&amount=${montant}`;
+    const returnUrl = `${baseUrl}/adhesion/payment-success?userId=${utilisateurId}&type=don&amount=${montant}`;
 
     console.log('URLs de redirection don:', { 
       returnUrl: returnUrl.toString(),

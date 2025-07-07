@@ -3,14 +3,20 @@ import { PrismaClient } from '@prisma/client';
 import { sendEmailToUser } from '../../utils/email.config.js';
 const prisma = new PrismaClient();
 
-export const createRemboursementDemande = async (utilisateurId, evenementId, raison) => {
+export const createRemboursementDemande = async (utilisateurId, evenementId, raison, rib) => {
+  // Validation du RIB (optionnel mais recommandé)
+  if (!rib || rib.trim() === '') {
+    throw new Error('Le RIB est requis pour effectuer une demande de remboursement');
+  }
+
   // Création de la demande
   const demande = await prisma.remboursementDemande.create({
     data: {
       utilisateurId,
       evenementId,
       status: 'en_attente',
-      raison
+      raison,
+      rib: rib.trim()
     },
     include: {
       utilisateur: true,
@@ -27,6 +33,7 @@ export const createRemboursementDemande = async (utilisateurId, evenementId, rai
         <p>Votre demande de remboursement pour l'événement <b>"${demande.evenement?.titre || ''}"</b> a bien été envoyée et sera traitée par l'équipe Al Qantara.</p>
         <p>Statut actuel : <b>En attente</b></p>
         <p>Motif : ${demande.raison || 'Non précisé'}</p>
+        <p>RIB fourni : ${demande.rib ? 'Oui' : 'Non'}</p>
         <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
           <p style="color: #666; font-size: 12px;">© 2024 Al Qantara. Tous droits réservés.</p>
         </div>

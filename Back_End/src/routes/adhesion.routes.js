@@ -6,6 +6,10 @@ import {
   getAdhesionCheckoutDetails,
   checkUserAdhesionStatus
 } from "../controllers/adhesion/adhesionCheckoutController.js";
+import {
+  handlePaymentWebhook,
+  processManualPayment
+} from "../controllers/adhesion/webhookController.js";
 
 const router = express.Router();
 
@@ -20,5 +24,9 @@ router.get("/checkout/:checkoutIntentId", authMiddleware, getAdhesionCheckoutDet
 
 // Route pour vérifier le statut d'adhésion
 router.get("/status/:utilisateurId", authMiddleware, checkUserAdhesionStatus);
+
+// Routes pour les webhooks et traitement des paiements
+router.post("/webhook", handlePaymentWebhook);
+router.post("/process-payment", authMiddleware, processManualPayment);
 
 export default router;
