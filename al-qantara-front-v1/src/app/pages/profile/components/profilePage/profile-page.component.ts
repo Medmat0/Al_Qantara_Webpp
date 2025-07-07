@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { NewsletterService } from '../../../../services/newsletter.service';
 
 @Component({
   selector: 'app-profile-page',
@@ -14,8 +15,17 @@ export class ProfilePageComponent implements OnInit {
   user: any = null;
   loading = true;
   error: string | null = null;
+  
+  // Newsletter state
+  newsletterStatus: any = null;
+  newsletterLoading = false;
+  newsletterMessage: string | null = null;
+  newsletterError: string | null = null;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private newsletterService: NewsletterService
+  ) {}
 
   ngOnInit(): void {
     this.loadUserProfile();
@@ -31,6 +41,11 @@ export class ProfilePageComponent implements OnInit {
           this.user = res.user;
           this.markPastParticipations();
           this.loading = false;
+          
+          // Charger le statut newsletter une fois que l'utilisateur est chargé
+          if (this.user?.email) {
+            this.loadNewsletterStatus();
+          }
         },
         error: (err) => {
           this.user = null;
@@ -115,5 +130,78 @@ export class ProfilePageComponent implements OnInit {
     });
 
     return stats;
+  }
+
+  loadNewsletterStatus(): void {
+    if (!this.user?.email) return;
+    
+    this.newsletterLoading = true;
+    this.newsletterError = null;
+    
+    this.newsletterService.getStatutAbonnement(this.user.email).subscribe({
+      next: (res) => {
+        this.newsletterStatus = res.data;
+        this.newsletterLoading = false;
+      },
+      error: (err) => {
+        console.error('Erreur lors du chargement du statut newsletter:', err);
+        this.newsletterError = 'Erreur lors du chargement du statut newsletter';
+        this.newsletterLoading = false;
+      }
+    });
+  }
+
+  seDesabonnerNewsletter(): void {
+    if (!this.user?.email) return;
+    
+    if (confirm('Êtes-vous sûr de vouloir vous désabonner de la newsletter ?')) {
+      this.newsletterLoading = true;
+      this.newsletterError = null;
+      this.newsletterMessage = null;
+      
+      this.newsletterService.seDesabonner(this.user.email).subscribe({
+        next: (res) => {
+          this.newsletterMessage = 'Vous avez été désabonné avec succès de la newsletter';
+          this.newsletterStatus = { abonne: false, statut: 'DESINSCRIT' };
+          this.newsletterLoading = false;
+          
+          // Effacer le message après 5 secondes
+          setTimeout(() => {
+            this.newsletterMessage = null;
+          }, 5000);
+        },
+        error: (err) => {
+          console.error('Erreur lors du désabonnement:', err);
+          this.newsletterError = 'Erreur lors du désabonnement de la newsletter';
+          this.newsletterLoading = false;
+        }
+      });
+    }
+  }
+
+  sAbonnerNewsletter(): void {
+    if (!this.user?.email) return;
+    
+    this.newsletterLoading = true;
+    this.newsletterError = null;
+    this.newsletterMessage = null;
+    
+    this.newsletterService.sAbonner(this.user.email).subscribe({
+      next: (res) => {
+        this.newsletterMessage = 'Vous avez été abonné avec succès à la newsletter';
+        this.newsletterStatus = { abonne: true, statut: 'ACTIF', dateInscription: new Date() };
+        this.newsletterLoading = false;
+        
+        // Effacer le message après 5 secondes
+        setTimeout(() => {
+          this.newsletterMessage = null;
+        }, 5000);
+      },
+      error: (err) => {
+        console.error('Erreur lors de l\'abonnement:', err);
+        this.newsletterError = err.error?.message || 'Erreur lors de l\'abonnement à la newsletter';
+        this.newsletterLoading = false;
+      }
+    });
   }
 }

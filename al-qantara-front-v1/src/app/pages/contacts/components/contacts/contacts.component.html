@@ -37,6 +37,67 @@
   </div>
 
   <div class="right-container">
+    <!-- Section Newsletter -->
+    <div class="newsletter-container">
+      <div class="newsletter-header">
+        <div class="newsletter-icon">
+          <i class="fas fa-envelope"></i>
+        </div>
+        <h3>Newsletter Al Qantara</h3>
+        <p>Restez informé de nos actualités et événements</p>
+      </div>
+
+      <!-- Si l'utilisateur est connecté -->
+      <div *ngIf="isConnected && utilisateur" class="newsletter-content">
+        <div class="user-info">
+          <span class="user-email">{{ utilisateur.email }}</span>
+          <span class="user-name">{{ utilisateur.prenom }} {{ utilisateur.nom }}</span>
+        </div>
+        
+        <!-- Bouton d'abonnement si pas encore abonné -->
+        <button 
+          *ngIf="!isAlreadySubscribed && !checkingSubscription"
+          class="newsletter-btn" 
+          (click)="sAbonnerNewsletter()" 
+          [disabled]="isSubscribing"
+          [class.loading]="isSubscribing">
+          <i *ngIf="!isSubscribing" class="fas fa-bell"></i>
+          <i *ngIf="isSubscribing" class="fas fa-spinner fa-spin"></i>
+          <span *ngIf="!isSubscribing">S'abonner à la newsletter</span>
+          <span *ngIf="isSubscribing">Abonnement en cours...</span>
+        </button>
+
+        <!-- Message si déjà abonné -->
+        <div *ngIf="isAlreadySubscribed && !checkingSubscription" class="already-subscribed">
+          <i class="fas fa-check-circle"></i>
+          <span>Vous êtes déjà abonné à notre newsletter</span>
+          <p class="subscription-note">Gérez votre abonnement depuis votre profil</p>
+        </div>
+
+        <!-- Loading lors de la vérification -->
+        <div *ngIf="checkingSubscription" class="checking-subscription">
+          <i class="fas fa-spinner fa-spin"></i>
+          <span>Vérification de votre abonnement...</span>
+        </div>
+      </div>
+
+      <!-- Si l'utilisateur n'est pas connecté -->
+      <div *ngIf="!isConnected" class="newsletter-login">
+        <p class="login-message">Connectez-vous pour vous abonner à notre newsletter</p>
+        <button class="login-btn" (click)="redirectToLogin()">>
+          <i class="fas fa-sign-in-alt"></i>
+          Se connecter
+        </button>
+      </div>
+
+      <!-- Messages de feedback -->
+      <div *ngIf="subscriptionMessage" class="subscription-feedback" [class.success]="subscriptionSuccess" [class.error]="!subscriptionSuccess">
+        <i class="fas" [class.fa-check-circle]="subscriptionSuccess" [class.fa-exclamation-triangle]="!subscriptionSuccess"></i>
+        <span>{{ subscriptionMessage }}</span>
+      </div>
+    </div>
+
+    <!-- Chatbot -->
     <div class="chatbot-container">
       <div class="chatbot-header">
         <img src="assets/main-icon.jpg" alt="Bot" class="chatbot-avatar" />
