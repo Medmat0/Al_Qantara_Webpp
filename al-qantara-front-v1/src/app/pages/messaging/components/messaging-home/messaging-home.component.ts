@@ -17,7 +17,7 @@ export class MessagingHomeComponent implements OnInit {
 
 
   selectedConversation: any = null;
-
+  selectedUserStatus: 'EN_LIGNE' | 'HORS_LIGNE' | 'INACTIF' = 'HORS_LIGNE';
   preloadedMessageInput: string = '';
   preloadedType: string | null = null;
   preloadedEvenementId: number | null = null;
@@ -39,6 +39,12 @@ export class MessagingHomeComponent implements OnInit {
         this.preloadedEvenementId = params['evenementId'] ? +params['evenementId'] : null;
       }
     });
+  }
+
+  onConversationSelected(conv: any) {
+    this.selectedConversation = conv;
+    if (this.conversationsComponent) {
+      this.selectedUserStatus = (this.conversationsComponent.userStatusMap[conv.utilisateur.id] as 'EN_LIGNE' | 'HORS_LIGNE' | 'INACTIF') || 'HORS_LIGNE';    }
   }
 
   selectConversationByUserId(userId: number) {

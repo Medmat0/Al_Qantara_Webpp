@@ -1,13 +1,13 @@
 <div class="messagerie-layout">
   <app-conversations
     class="sidebar"
-    (conversationSelected)="selectedConversation = $event">
+    (conversationSelected)="onConversationSelected($event)"
+    #conversationsComp>
   </app-conversations>
   <app-conversation
     class="chat"
     [conversation]="selectedConversation"
-    (messageEnvoye)="rafraichirConversation()"
-  >
-
+    [userStatus]="selectedUserStatus"
+    (messageEnvoye)="rafraichirConversation()">
   </app-conversation>
 </div>
