@@ -88,4 +88,19 @@ export class AdhesionService {
       })
     );
   }
+
+  /**
+   * Traite manuellement un paiement (pour les tests)
+   * @param utilisateurId ID de l'utilisateur
+   * @param type Type de paiement (adhésion ou don)
+   * @param montant Montant du paiement (optionnel, requis pour les dons)
+   * @returns Observable de la réponse du traitement de paiement
+   */
+  traiterPaiementManuel(utilisateurId: number, type: string, montant?: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/adhesion/process-payment`, {
+      utilisateurId: utilisateurId,
+      type: type,
+      montant: montant
+    }, { withCredentials: true });
+  }
 }

@@ -105,6 +105,13 @@ export class AdhesionComponent implements OnInit {
     // On reste en mode personnalisé même quand on tape
   }
 
+  selectInputText(event: any) {
+    const input = event.target as HTMLInputElement;
+    if (input) {
+      input.select();
+    }
+  }
+
   ouvrirModalDon() {
     this.showDonationPayment = true;
     this.donationError = null;

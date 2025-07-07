@@ -138,7 +138,7 @@
                        placeholder="Montant en €" 
                        [value]="customDonation" 
                        (input)="setCustomDonation($event)"
-                       (focus)="$event.target.select()" />
+                       (focus)="selectInputText($event)" />
               </div>
               
               <button class="cta-button secondary" (click)="ouvrirModalDon()">

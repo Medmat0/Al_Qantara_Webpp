@@ -8,7 +8,13 @@
     </div>
     <div class="profile-info">
       <h1>{{ user?.prenom }} {{ user?.nom }}</h1>
-      <p class="role-badge" [ngClass]="user?.role?.toLowerCase()">{{ user?.role }}</p>
+      <div class="badges-container">
+        <p class="role-badge" [ngClass]="user?.role?.toLowerCase()">{{ user?.role }}</p>
+        <span class="adherent-badge" *ngIf="user?.role === 'ADHERENT'" [ngClass]="'adherent'">
+          <i class="fas fa-star"></i>
+          Adhérent Actif
+        </span>
+      </div>
       <p class="join-date">Membre depuis {{ formatDate(user?.dateInscription) }}</p>
     </div>
     <div class="profile-actions">
@@ -84,8 +90,39 @@
       </div>
     </div>
 
+    <!-- Adhesion Card -->
+    <div class="info-card adhesion-card" *ngIf="user?.role === 'ADHERENT'">
+      <div class="card-header">
+        <h3><i class="fas fa-star"></i> Statut Adhérent</h3>
+        <span class="badge adherent-active">Actif</span>
+      </div>
+      <div class="card-content">
+        <div class="adhesion-info">
+          <div class="adhesion-status">
+            <div class="status-icon">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="status-details">
+              <h4>Adhésion Active</h4>
+              <p>Vous êtes membre actif d'Al Qantara</p>
+            </div>
+          </div>
+          
+          <div class="adhesion-benefits">
+            <h5>Vos avantages adhérent :</h5>
+            <ul>
+              <li><i class="fas fa-calendar-check"></i> Accès prioritaire aux événements</li>
+              <li><i class="fas fa-users"></i> Réseau professionnel exclusif</li>
+              <li><i class="fas fa-percentage"></i> Réductions partenaires</li>
+              <li><i class="fas fa-envelope"></i> Newsletter mensuelle</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Adhesion Card (if exists) -->
-    <div class="info-card" *ngIf="user?.adhesion">
+    <div class="info-card" *ngIf="user?.adhesion && user?.role !== 'ADHERENT'">
       <div class="card-header">
         <h3><i class="fas fa-id-card"></i> Adhésion</h3>
       </div>
