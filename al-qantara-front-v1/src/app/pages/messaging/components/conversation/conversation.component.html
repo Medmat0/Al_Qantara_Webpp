@@ -7,7 +7,20 @@
           {{ conversation.utilisateur.prenom[0] }}{{ conversation.utilisateur.nom[0] }}
         </div>
       </div>
-      <div class="name">{{ conversation.utilisateur.prenom }} {{ conversation.utilisateur.nom }}</div>
+      <div class="name">
+        {{ conversation.utilisateur.prenom }} {{ conversation.utilisateur.nom }}
+        <span
+          class="status-dot-inline"
+          [ngClass]="{
+                    'online': userStatus === 'EN_LIGNE',
+                    'offline': userStatus === 'HORS_LIGNE',
+                    'inactive': userStatus === 'INACTIF'
+          }"
+        ></span>
+        <span class="status-text">
+          {{ userStatus === 'EN_LIGNE' ? 'En ligne' : (userStatus === 'INACTIF' ? 'Inactif' : 'Hors ligne') }}
+        </span>
+      </div>
     </div>
   </div>
 

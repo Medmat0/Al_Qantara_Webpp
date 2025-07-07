@@ -33,6 +33,7 @@ export class ConversationComponent implements OnChanges {
   preloadedType: string | null = null;
   preloadedEvenementId: number | null = null;
 
+  userStatus: 'EN_LIGNE' | 'HORS_LIGNE' | 'INACTIF' = 'HORS_LIGNE';
 
   constructor(private messagerieService: MessagerieService,
               private authService: AuthService,
@@ -53,6 +54,15 @@ export class ConversationComponent implements OnChanges {
       }
     });
 
+    this.socketService.on('userStatusChanged', (data: any) => {
+      if (
+        this.conversation &&
+        data.userId === this.conversation.utilisateur.id
+      ) {
+        this.userStatus = data.status;
+      }
+    });
+
 
   }
 
@@ -61,11 +71,10 @@ export class ConversationComponent implements OnChanges {
       this.messagerieService.getConversationByUserId(this.conversation.utilisateur.id).subscribe({
         next: (res) => {
           this.conversation.messages = res.data || [];
-          setTimeout(() => this.scrollToBottom(), 0); // scroll après le rendu
+          this.userStatus = res.utilisateur?.statutEnLigne || 'HORS_LIGNE';
+          setTimeout(() => this.scrollToBottom(), 0);
         }
       });
-
-      this.registerSocketListener();
     }
   }
 
