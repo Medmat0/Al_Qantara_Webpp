@@ -117,10 +117,10 @@ export class AuthService {
    */
 
   // Register a new user BASIC MEMBER SO BASE ROLE IS USER -----------------------------------------------------------
-  register(nom: string | null | undefined, prenom: string | null | undefined, email: string | null | undefined, password: string | null | undefined): Observable<any> {
+  register(nom: string | null | undefined, prenom: string | null | undefined, email: string | null | undefined, password: string | null | undefined, telephone: string | null | undefined): Observable<any> {
     // BY DEFAULT ROLE IS USER, IF OTHER ROLE WANTED, LIKE  ADMIN GO THROUGH ADMIN PAGE TO CHANGE ROLE
     const role = 'USER';
-    const body = { nom, prenom, email, password, role };
+    const body = { nom, prenom, email, password, role, telephone };
     return this.http.post(`${this.apiUrl}/register`, body).pipe(
       tap((response: any) => {
         if (response) {

@@ -1,0 +1,645 @@
+
+// Al Qantara inspired palette
+$primary-color: #835353; // bordeaux
+$primary-hover: #6b2e2e; // bordeaux foncé
+$success-color: #bfa6a6; // beige rosé
+$success-hover: #c9b37c; // doré clair
+$error-color: #d2691e; // cuivre/doré foncé
+$error-hover: #8B4A37; // bordeaux foncé
+$warning-color: #c9b37c; // doré
+
+$text-primary: #653023; // bordeaux foncé
+$text-secondary: #835353; // bordeaux
+$text-muted: #bfa6a6; // beige rosé
+$text-light: #fbeee6; // beige très clair
+
+$background-white: #fff8f3;
+$background-gray-50: #fbeee6;
+$background-gray-100: #f8f5f2;
+$background-gray-200: #e5e7eb;
+$background-blue-50: #fbeee6;
+$background-red-50: #f9e5da;
+
+$border-gray-200: #e5e7eb;
+$border-gray-300: #bfa6a6;
+$border-blue-200: #c9b37c;
+$border-red-200: #d2691e;
+
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+$radius-sm: 6px;
+$radius-md: 8px;
+$radius-lg: 12px;
+$radius-xl: 16px;
+$radius-full: 50%;
+
+$spacing-1: 0.25rem;
+$spacing-2: 0.5rem;
+$spacing-3: 0.75rem;
+$spacing-4: 1rem;
+$spacing-5: 1.25rem;
+$spacing-6: 1.5rem;
+$spacing-8: 2rem;
+$spacing-10: 2.5rem;
+$spacing-12: 3rem;
+
+$font-xs: 0.75rem;
+$font-sm: 0.875rem;
+$font-base: 1rem;
+$font-lg: 1.125rem;
+$font-xl: 1.25rem;
+$font-2xl: 1.5rem;
+
+$font-normal: 400;
+$font-medium: 500;
+$font-semibold: 600;
+$font-bold: 700;
+
+$transition-all: all 0.2s ease-in-out;
+$transition-fast: all 0.15s ease-in-out;
+$transition-slow: all 0.3s ease-in-out;
+
+// Mixins
+@mixin button-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-2;
+  padding: $spacing-2 $spacing-3;
+  border: 1px solid transparent;
+  border-radius: $radius-md;
+  font-size: $font-sm;
+  font-weight: $font-medium;
+  line-height: 1.5;
+  text-decoration: none;
+  cursor: pointer;
+  transition: $transition-all;
+  user-select: none;
+  white-space: nowrap;
+  
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+}
+
+@mixin button-primary {
+  @include button-base;
+  background-color: $primary-color;
+  color: $background-white;
+  
+  &:hover:not(:disabled) {
+    background-color: $primary-hover;
+    transform: translateY(-1px);
+    box-shadow: $shadow-md;
+  }
+}
+
+@mixin button-secondary {
+  @include button-base;
+  background-color: $background-gray-100;
+  color: $text-secondary;
+  border-color: $border-gray-200;
+  
+  &:hover:not(:disabled) {
+    background-color: $background-gray-200;
+    color: $text-primary;
+  }
+}
+
+@mixin button-ghost {
+  @include button-base;
+  background-color: transparent;
+  color: $text-secondary;
+  border-color: transparent;
+  
+  &:hover:not(:disabled) {
+    background-color: $background-gray-50;
+    color: $text-primary;
+  }
+}
+
+@mixin input-base {
+  width: 100%;
+  padding: $spacing-3 $spacing-4;
+  border: 1px solid $border-gray-200;
+  border-radius: $radius-md;
+  font-size: $font-base;
+  line-height: 1.5;
+  background-color: $background-white;
+  color: $text-primary;
+  transition: $transition-all;
+  resize: vertical;
+  
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  }
+  
+  &::placeholder {
+    color: $text-muted;
+  }
+}
+
+@mixin card {
+  background: $background-white;
+  border: 1px solid $border-gray-200;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+  transition: $transition-all;
+}
+
+@mixin avatar($size: 2.5rem) {
+  width: $size;
+  height: $size;
+  border-radius: $radius-full;
+  object-fit: cover;
+  border: 2px solid $border-gray-200;
+  box-shadow: $shadow-sm;
+  flex-shrink: 0;
+}
+
+// Main container
+.comments-container {
+  max-width: 76rem;
+  margin: 0 auto;
+  padding: $spacing-4;
+  
+  @media (max-width: 768px) {
+    padding: $spacing-2;
+  }
+}
+
+// Comment item
+.comment-item {
+  @include card;
+  padding: $spacing-6;
+  margin-bottom: $spacing-4;
+  position: relative;
+  
+  &.is-reply {
+    margin-left: $spacing-8;
+    margin-top: $spacing-4;
+    border-left: 3px solid $primary-color;
+    background: $background-gray-50;
+    
+    @media (max-width: 768px) {
+      margin-left: $spacing-4;
+    }
+    
+    .comment-item {
+      margin-left: $spacing-6;
+      background: $background-white;
+      
+      @media (max-width: 768px) {
+        margin-left: $spacing-3;
+      }
+    }
+  }
+  
+  &:hover {
+    box-shadow: $shadow-md;
+  }
+}
+
+// Comment header
+.comment-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: $spacing-4;
+  
+  .comment-author-info {
+    display: flex;
+    align-items: center;
+    gap: $spacing-3;
+    flex: 1;
+    
+    .author-avatar {
+      @include avatar(2.5rem);
+    }
+    
+    .author-details {
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-1;
+      
+      .author-name {
+        font-size: $font-base;
+        font-weight: $font-semibold;
+        color: $text-primary;
+      }
+      
+      .comment-date {
+        font-size: $font-xs;
+        color: $text-muted;
+      }
+    }
+  }
+  
+  .comment-menu {
+    position: relative;
+    
+    .menu-btn {
+      @include button-ghost;
+      width: 2rem;
+      height: 2rem;
+      padding: 0;
+      border-radius: $radius-full;
+      
+      .menu-icon {
+        font-size: $font-lg;
+        font-weight: $font-bold;
+        transform: rotate(90deg);
+      }
+    }
+    
+    .menu-dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: $background-white;
+      border: 1px solid $border-gray-200;
+      border-radius: $radius-md;
+      box-shadow: $shadow-lg;
+      min-width: 8rem;
+      padding: $spacing-1;
+      z-index: 10;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-$spacing-2);
+      transition: $transition-fast;
+      
+      &.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
+      
+      .menu-item {
+        @include button-ghost;
+        width: 100%;
+        justify-content: flex-start;
+        padding: $spacing-2 $spacing-3;
+        border-radius: $radius-sm;
+        font-size: $font-sm;
+        
+        &.delete {
+          color: $error-color;
+          
+          &:hover:not(:disabled) {
+            background-color: $background-red-50;
+            color: $error-hover;
+          }
+        }
+        
+        .menu-icon {
+          font-size: $font-sm;
+        }
+      }
+    }
+  }
+}
+
+// Comment content
+.comment-content {
+  margin-bottom: $spacing-4;
+  
+  .comment-text {
+    font-size: $font-base;
+    line-height: 1.6;
+    color: $text-primary;
+    
+    p {
+      margin: 0 0 $spacing-3 0;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+  
+  .edit-form {
+    .edit-textarea {
+      @include input-base;
+      min-height: 4rem;
+      margin-bottom: $spacing-3;
+    }
+    
+    .edit-actions {
+      display: flex;
+      gap: $spacing-2;
+      
+      .btn {
+        &.btn-primary {
+          @include button-primary;
+        }
+        
+        &.btn-secondary {
+          @include button-secondary;
+        }
+      }
+    }
+  }
+}
+
+// Comment actions
+.comment-actions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-4;
+  padding-top: $spacing-4;
+  border-top: 1px solid $border-gray-200;
+  
+  .action-btn {
+    @include button-ghost;
+    font-size: $font-sm;
+    
+    .action-icon {
+      font-size: $font-base;
+    }
+    
+    .action-count {
+      font-weight: $font-semibold;
+      color: $text-primary;
+    }
+  }
+  
+  .like-btn {
+    &.liked {
+      background: rgba(239, 68, 68, 0.1);
+      color: $error-color;
+      border-color: rgba(239, 68, 68, 0.2);
+      
+      &:hover:not(:disabled) {
+        background: rgba(239, 68, 68, 0.15);
+      }
+    }
+  }
+  
+  .reply-btn {
+    color: $primary-color;
+    
+    &:hover:not(:disabled) {
+      background: $background-blue-50;
+    }
+  }
+  
+  .share-btn {
+    color: $success-color;
+    
+    &:hover:not(:disabled) {
+      background: rgba(16, 185, 129, 0.1);
+    }
+  }
+}
+
+// Reply form
+.reply-form {
+  margin-top: $spacing-4;
+  padding-top: $spacing-4;
+  border-top: 1px solid $border-gray-200;
+  
+  .reply-form-header {
+    display: flex;
+    align-items: center;
+    gap: $spacing-3;
+    margin-bottom: $spacing-3;
+    
+    .reply-avatar {
+      @include avatar(2rem);
+    }
+    
+    .reply-to {
+      font-size: $font-sm;
+      font-weight: $font-medium;
+      color: $text-secondary;
+    }
+  }
+  
+  .reply-textarea {
+    @include input-base;
+    min-height: 3rem;
+    margin-bottom: $spacing-3;
+  }
+  
+  .reply-actions {
+    display: flex;
+    gap: $spacing-2;
+    
+    .btn {
+      &.btn-primary {
+        @include button-primary;
+      }
+      
+      &.btn-secondary {
+        @include button-secondary;
+      }
+    }
+  }
+}
+
+// Replies container
+.replies-container {
+  margin-top: $spacing-4;
+  
+  .replies-header {
+    margin-bottom: $spacing-3;
+    
+    .toggle-replies {
+      @include button-ghost;
+      font-size: $font-sm;
+      padding: $spacing-2;
+      
+      .toggle-icon {
+        font-size: $font-xs;
+        transition: transform $transition-fast;
+        margin-right: $spacing-1;
+      }
+      
+      .replies-count {
+        font-weight: $font-medium;
+        color: $text-primary;
+      }
+    }
+  }
+  
+  .replies-list {
+    .reply-item {
+      border-left: 2px solid $border-gray-200;
+      padding-left: $spacing-4;
+      
+      &:not(:last-child) {
+        margin-bottom: $spacing-3;
+      }
+    }
+  }
+}
+
+// Loading state
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-8;
+  color: $text-secondary;
+  
+  .loading-spinner {
+    margin-bottom: $spacing-4;
+    
+    .spinner {
+      width: 2rem;
+      height: 2rem;
+      border: 2px solid $border-gray-200;
+      border-top: 2px solid $primary-color;
+      border-radius: $radius-full;
+      animation: spin 1s linear infinite;
+    }
+  }
+  
+  .loading-text {
+    font-size: $font-base;
+    font-weight: $font-medium;
+  }
+}
+
+// Empty state
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-12;
+  text-align: center;
+  
+  .empty-icon {
+    font-size: 3rem;
+    margin-bottom: $spacing-4;
+  }
+  
+  .empty-title {
+    font-size: $font-xl;
+    font-weight: $font-semibold;
+    color: $text-primary;
+    margin: 0 0 $spacing-2 0;
+  }
+  
+  .empty-description {
+    font-size: $font-base;
+    color: $text-secondary;
+    margin: 0;
+    max-width: 20rem;
+  }
+}
+
+// Error state
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-8;
+  text-align: center;
+  background: $background-red-50;
+  border: 1px solid $border-red-200;
+  border-radius: $radius-lg;
+  
+  .error-icon {
+    font-size: 2rem;
+    margin-bottom: $spacing-3;
+  }
+  
+  .error-title {
+    font-size: $font-lg;
+    font-weight: $font-semibold;
+    color: $error-color;
+    margin: 0 0 $spacing-2 0;
+  }
+  
+  .error-description {
+    font-size: $font-base;
+    color: $text-secondary;
+    margin: 0 0 $spacing-4 0;
+    max-width: 24rem;
+  }
+  
+  .btn {
+    &.btn-primary {
+      @include button-primary;
+    }
+  }
+}
+
+// Animations
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .comment-item {
+    padding: $spacing-4;
+    
+    &.is-reply {
+      margin-left: $spacing-4;
+    }
+  }
+  
+  .comment-actions {
+    flex-wrap: wrap;
+    gap: $spacing-2;
+  }
+  
+  .action-btn {
+    .action-text {
+      display: none;
+    }
+  }
+  
+  .reply-form,
+  .edit-form {
+    .reply-actions,
+    .edit-actions {
+      flex-direction: column;
+      
+      .btn {
+        width: 100%;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .comments-container {
+    padding: $spacing-2;
+  }
+  
+  .comment-item {
+    padding: $spacing-3;
+    
+    &.is-reply {
+      margin-left: $spacing-2;
+    }
+  }
+  
+  .comment-header {
+    .comment-author-info {
+      gap: $spacing-2;
+      
+      .author-avatar {
+        @include avatar(2rem);
+      }
+    }
+  }
+}

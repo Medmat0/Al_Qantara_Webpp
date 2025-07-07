@@ -1,0 +1,103 @@
+<div class="community-settings-container" *ngIf="!loading && community">
+  <div class="community-card">
+    <!-- Image Section -->
+    <div class="community-image-section">
+      <div class="image-wrapper">
+        <img [src]="community.logo" [alt]="community.nom" />
+        <div class="image-overlay">
+          <div class="overlay-content">
+            <h3>{{ community.nom }}</h3>
+            <p>Logo actuel de la communauté</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Section -->
+    <div class="community-form-section">
+      <div class="form-header">
+        <h2>
+          <i class="header-icon">⚙️</i>
+          Modifier la communauté
+        </h2>
+        <p>Personnalisez les informations de votre communauté</p>
+      </div>
+
+      <form (ngSubmit)="modifyCommunity()">
+        <div class="form-group">
+          <label for="nom">
+            <i class="label-icon">🏷️</i>
+            Nom de la communauté
+          </label>
+          <input 
+            id="nom" 
+            type="text" 
+            [(ngModel)]="community.nom" 
+            name="nom" 
+            placeholder="Entrez le nom de la communauté..."
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="description">
+            <i class="label-icon">📝</i>
+            Description
+          </label>
+          <textarea 
+            id="description" 
+            [(ngModel)]="community.description" 
+            name="description" 
+            placeholder="Décrivez votre communauté en quelques mots..."
+            rows="4"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="logo">
+            <i class="label-icon">🖼️</i>
+            Logo de la communauté
+          </label>
+          <div class="file-input-wrapper">
+            <input 
+              id="logo" 
+              type="file" 
+              (change)="onLogoFileSelected($event)" 
+              name="logo"
+              accept="image/*"
+            />
+            <div class="file-input-display">
+              <i class="upload-icon">📤</i>
+              <span>Choisir un nouveau logo</span>
+              <small>PNG  recommandé</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">
+            <i class="btn-icon">✓</i>
+            Sauvegarder les modifications
+          </button>
+          <button type="button" class="btn btn-danger" (click)="deleteCommunity()">
+            <i class="btn-icon">🗑️</i>
+            Supprimer la communauté
+          </button>
+        </div>
+
+        <div *ngIf="error" class="error-message">
+          <i class="error-icon">⚠️</i>
+          <span>{{ error }}</span>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="loading" class="loading-state">
+  <div class="loading-content">
+    <div class="spinner"></div>
+    <h3>Chargement en cours...</h3>
+    <p>Veuillez patienter</p>
+  </div>
+</div>

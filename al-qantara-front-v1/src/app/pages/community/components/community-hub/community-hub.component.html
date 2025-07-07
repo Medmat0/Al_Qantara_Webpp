@@ -1,0 +1,328 @@
+<div class="reddit-layout-container">
+  <!-- Header fixe -->
+  <header class="main-header">
+    <div class="header-content">
+      <button class="back-btn" (click)="goToCommunityHome()">
+        <span class="btn-icon">🏠</span>
+        <span>Retour à l'accueil</span>
+      </button>
+      <h1 class="community-title">{{ community?.nom }}</h1>
+      <div class="header-actions">
+        <button class="btn btn-ghost" (click)="openMembersPopup()" *ngIf="isModerator">
+          <span class="btn-icon">👥</span>
+          <span>Membres</span>
+        </button>
+        <button class="btn btn-ghost" (click)="goToSettings()" *ngIf="isModerator">
+          <span class="btn-icon">⚙️</span>
+          <span>Paramètres</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Container principal -->
+  <div class="main-container">
+    <!-- Colonne de gauche - Posts + Formulaire -->
+    <div class="posts-column">
+      <!-- Toggle pour créer un post -->
+      <div class="create-post-toggle">
+        <button class="toggle-btn" (click)="toggleCreateForm()">
+          <span class="btn-icon">{{ showCreateForm ? '📝' : '✍️' }}</span>
+          <span>{{ showCreateForm ? 'Masquer le formulaire' : 'Créer un post' }}</span>
+        </button>
+      </div>
+
+      <!-- Formulaire de création (conditionnel) -->
+      <div class="create-post-form" *ngIf="showCreateForm">
+        <div class="form-header">
+          <h3>Nouveau post</h3>
+          <p>Partagez vos idées avec la communauté</p>
+        </div>
+
+        <form [formGroup]="postForm" (ngSubmit)="onSubmit(communityId)">
+          <!-- Titre -->
+          <div class="form-group">
+            <label for="titre">Titre</label>
+            <input 
+              id="titre" 
+              type="text" 
+              formControlName="title" 
+              placeholder="Donnez un titre à votre post..."
+              required>
+            <div *ngIf="postForm.get('title')?.invalid && postForm.get('title')?.touched" 
+                 class="error-message">
+              <i class="error-icon">⚠</i>
+              Titre requis
+            </div>
+          </div>
+
+          <!-- Contenu -->
+          <div class="form-group">
+            <label for="contenu">Contenu</label>
+            <textarea 
+              id="contenu" 
+              formControlName="description" 
+              placeholder="Écrivez votre message..."
+              required></textarea>
+            <div *ngIf="postForm.get('description')?.invalid && postForm.get('description')?.touched" 
+                 class="error-message">
+              <i class="error-icon">⚠</i>
+              Contenu requis
+            </div>
+          </div>
+
+          <!-- Tags -->
+          <div class="form-group">
+            <label>Tags</label>
+            <div class="tags-container" formArrayName="tags">
+              <div class="tag-input-group" *ngFor="let tag of tags.controls; let i = index">
+                <input 
+                  [formControlName]="i" 
+                  placeholder="Entrez un tag..."
+                  required>
+                <button 
+                  type="button" 
+                  class="btn-remove" 
+                  (click)="removeTag(i)" 
+                  *ngIf="tags.length > 1">
+                  ×
+                </button>
+              </div>
+              <button type="button" class="btn-add" (click)="addTag()">
+                <i class="add-icon">+</i>
+                Ajouter un tag
+              </button>
+            </div>
+          </div>
+
+          <!-- Image -->
+          <div class="form-group">
+            <label for="image">Image (optionnel)</label>
+            <div class="file-input-wrapper">
+              <input 
+                id="image" 
+                type="file" 
+                (change)="onFileSelected($event)"
+                accept="image/*">
+              <span class="file-input-label">Choisir une image</span>
+            </div>
+            <div *ngIf="selectedFile" class="image-preview-block">
+              <div class="image-filename">Fichier sélectionné : {{ selectedFile.name }}</div>
+              <img *ngIf="imagePreview" [src]="imagePreview" alt="Aperçu de l'image" class="image-preview" />
+            </div>
+          </div>
+
+          <!-- Sondage -->
+          <div class="form-group poll-section">
+            <div class="section-header">
+              <h4>Sondage (optionnel)</h4>
+              <p>Créez un sondage pour recueillir l'avis de la communauté</p>
+            </div>
+            <div formArrayName="pollOptions">
+              <div class="poll-option-group" *ngFor="let option of pollOptions.controls; let i = index">
+                <input 
+                  [formControlName]="i" 
+                  placeholder="Option {{ i + 1 }}">
+                <button 
+                  type="button" 
+                  class="btn-remove" 
+                  (click)="removePollOption(i)" 
+                  *ngIf="pollOptions.length > 1">
+                  ×
+                </button>
+              </div>
+              <button type="button" class="btn-add" (click)="addPollOption()">
+                <i class="add-icon">+</i>
+                Ajouter une option
+              </button>
+            </div>
+            <div class="form-group">
+              <label for="pollDeadline">Date limite du sondage</label>
+              <input 
+                id="pollDeadline" 
+                type="date" 
+                formControlName="pollDeadline">
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="form-actions">
+            <button 
+              type="submit" 
+              class="btn-primary" 
+              [disabled]="postForm.invalid">
+              <i class="submit-icon">✓</i>
+              Publier le post
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Barre de recherche -->
+      <div class="search-bar">
+        <button class="search-btn" (click)="openPostSearchPopup()">
+          <span class="btn-icon">🔎</span>
+          <span>Rechercher un post dans la communauté...</span>
+        </button>
+      </div>
+
+      <!-- Liste des posts -->
+      <div class="posts-section">
+        <div class="posts-header">
+          <h2 class="section-title">
+            <span class="title-icon">📋</span>
+            Publications récentes
+          </h2>
+          <div class="posts-count" *ngIf="posts.length > 0">
+            {{ posts.length }} post{{ posts.length > 1 ? 's' : '' }}
+          </div>
+        </div>
+        
+        <div class="posts-container">
+          <div class="posts-list" *ngIf="posts.length > 0">
+            <div 
+              *ngFor="let post of posts; trackBy: trackByPostId"
+              class="post-wrapper"
+              (click)="goToPost(post)">
+              <app-community-post
+                [post]="post"
+                [isModerator]="isModerator"
+                [isOnCommunityPage]="true"
+                (postEvent)="onPostEvent($event)">
+              </app-community-post>
+            </div>
+          </div>
+          
+          <div class="empty-state" *ngIf="posts.length === 0">
+            <div class="empty-illustration">
+              <div class="empty-icon">📝</div>
+              <div class="empty-particles">
+                <span class="particle"></span>
+                <span class="particle"></span>
+                <span class="particle"></span>
+              </div>
+            </div>
+            <h3 class="empty-title">Aucun post dans cette communauté</h3>
+            <p class="empty-description">
+              Soyez le premier à partager quelque chose avec cette communauté !
+            </p>
+            <button 
+              (click)="toggleCreateForm()"
+              class="btn btn-primary empty-action">
+              <span class="btn-icon">✍️</span>
+              <span>Créer le premier post</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Colonne de droite - Infos communauté -->
+    <div class="community-sidebar">
+      <div class="community-info-card">
+        <div class="community-visual">
+          <div class="logo-container" *ngIf="community?.logo">
+            <img 
+              [src]="community.logo" 
+              [alt]="'Logo de ' + community.nom"
+              class="community-logo">
+          </div>
+          <div class="default-logo" *ngIf="!community?.logo">
+            <span class="default-icon">🏠</span>
+            <div class="logo-ring"></div>
+          </div>
+        </div>
+
+        <div class="community-details">
+          <h2 class="community-name">{{ community?.nom }}</h2>
+          <p class="community-description">{{ community?.description }}</p>
+          
+          <div class="community-meta">
+            <div class="meta-item">
+              <span class="meta-icon">📅</span>
+              <span class="meta-text">
+                Crée le {{ community?.dateCreation | date:'dd/MM/yyyy' }}
+              </span>
+            </div>
+            <div class="meta-item" *ngIf="community?.createdBy">
+              <span class="meta-icon">👤</span>
+              <span class="meta-text">
+                Créateur ID : {{ community.createdBy }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="community-actions">
+          <button 
+            *ngIf="isMember === false" 
+            (click)="joinCommunity()"
+            class="btn btn-success join-btn">
+            <span class="btn-icon">➕</span>
+            <span>Rejoindre</span>
+          </button>
+          
+          <button 
+            *ngIf="isMember === true" 
+            (click)="leaveCommunity()"
+            class="btn btn-outline leave-btn">
+            <span class="btn-icon">🚪</span>
+            <span>Quitter</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Règles de la communauté -->
+      <div class="community-rules-card">
+        <h3 class="rules-title">
+          <span class="title-icon">📋</span>
+          Règles de la communauté
+        </h3>
+        <div class="rules-list">
+          <div class="rule-item">
+            <span class="rule-number">1.</span>
+            <span class="rule-text">Respectez les autres membres</span>
+          </div>
+          <div class="rule-item">
+            <span class="rule-number">2.</span>
+            <span class="rule-text">Pas de spam ou de contenu inapproprié</span>
+          </div>
+          <div class="rule-item">
+            <span class="rule-number">3.</span>
+            <span class="rule-text">Utilisez des tags pertinents</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Statistiques -->
+      <div class="community-stats-card">
+        <h3 class="stats-title">
+          <span class="title-icon">📊</span>
+          Statistiques
+        </h3>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-number">{{ posts.length }}</div>
+            <div class="stat-label">Posts</div>
+          </div>
+         
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popups -->
+  <div class="community-popup-overlay" *ngIf="showPostSearchPopup" (click)="closePostSearchPopup()">
+    <div class="community-popup" (click)="$event.stopPropagation()">
+      <button class="close-popup" (click)="closePostSearchPopup()">✖</button>
+      <app-community-post-research></app-community-post-research>
+    </div>
+  </div>
+
+  <div class="community-popup-overlay" *ngIf="showMembersPopup" (click)="closeMembersPopup()">
+    <div class="community-popup" (click)="$event.stopPropagation()">
+      <button class="close-popup" (click)="closeMembersPopup()">✖</button>
+      <app-community-members [communityId]="communityId"></app-community-members>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,195 @@
+.admin-nav {
+    position: fixed;
+    top: 80px; // Commence sous le navbar principal
+    left: 0;
+    width: 280px;
+    height: calc(100vh - 80px); // Hauteur ajustée pour ne pas couvrir le navbar principal
+    background-color: #3a0706;
+    color: white;
+    padding: 2rem 1.5rem;
+    padding-top: 2rem; // Réduit le padding-top car on commence déjà à 80px
+    font-family: 'Mulish', sans-serif;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease;
+    z-index: 1000;
+    transform: translateX(-100%);
+
+    &.mobile-open {
+      transform: translateX(0);
+    }
+  }
+
+  .admin-logo {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+    color: white;
+  }
+
+  .admin-nav ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .admin-nav li a {
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: background-color 0.3s;
+    display: block;
+  }
+
+  .admin-nav li a:hover {
+    background-color: rgba(158, 46, 44, 0.5);
+  }
+
+  .admin-nav li a.active {
+    background-color: #9e2e2c;
+  }
+
+  // Bouton hamburger - toujours visible
+.hamburger-menu {
+  display: flex;
+  position: fixed;
+  top: 90px;
+  left: 20px;
+  z-index: 1001;
+  background: #3a0706;
+  border: none;
+  border-radius: 4px;
+  padding: 8px;
+  cursor: pointer;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 40px;
+  height: 40px;
+  transition: all 0.3s ease;
+
+  span {
+    display: block;
+    height: 3px;
+    width: 24px;
+    background: white;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    transform-origin: center;
+    position: relative;
+  }
+
+  &.active {
+    transform: rotate(90deg);
+
+    span {
+      background: white;
+    }
+  }
+
+  &:hover {
+    background: #4a0808;
+  }
+}
+
+// Overlay pour tous les écrans
+.overlay {
+  display: none;
+  position: fixed;
+  top: 80px; // Commence sous le navbar principal
+  left: 0;
+  width: 100%;
+  height: calc(100vh - 80px); // Ne couvre pas le navbar principal
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+
+  &.active {
+    display: block;
+    opacity: 1;
+  }
+}
+
+// Media queries pour responsive
+@media (min-width: 1200px) {
+  .hamburger-menu {
+    top: 100px;
+    left: 30px;
+    width: 45px;
+    height: 45px;
+  }
+
+  .admin-nav {
+    width: 300px;
+    padding: 2.5rem 2rem;
+    padding-top: 2.5rem; // Ajusté car on commence à 80px
+  }
+
+  .admin-logo {
+    font-size: 2rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .admin-nav li a {
+    font-size: 1.1rem;
+    padding: 0.6rem 1.2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .hamburger-menu {
+    top: 110px;
+  }
+
+  .admin-nav {
+    width: 280px;
+    top: 80px; // Assure que même sur mobile, on reste sous le navbar principal
+    height: calc(100vh - 80px);
+  }
+
+  .overlay {
+    top: 80px;
+    height: calc(100vh - 80px);
+  }
+
+  .admin-logo {
+    font-size: 1.6rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .admin-nav li a {
+    font-size: 0.95rem;
+    padding: 0.7rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hamburger-menu {
+    top: 100px;
+  }
+
+  .admin-nav {
+    width: 260px;
+    top: 80px;
+    height: calc(100vh - 80px);
+  }
+
+  .overlay {
+    top: 80px;
+    height: calc(100vh - 80px);
+  }
+
+  .admin-logo {
+    font-size: 1.4rem;
+  }
+
+  .admin-nav li a {
+    font-size: 0.9rem;
+    padding: 0.6rem 0.8rem;
+  }
+}

@@ -1,0 +1,99 @@
+<div class="filters-bar">
+  <div class="search-bar">
+    <input
+      type="text"
+      placeholder="Rechercher un événement..."
+      [(ngModel)]="searchTerm"
+    />
+  </div>
+  <div class="filters">
+    <label for="filter">Trier par :</label>
+    <select id="filter" [(ngModel)]="selectedFilter" (change)="onFilterChange(selectedFilter)">
+      <option value="none">Aucun</option>
+      <option value="most-recent">Plus récents</option>
+      <option value="most-old">Plus anciens</option>
+      <option value="most-popular">Plus populaires</option>
+    </select>
+  </div>
+</div>
+
+<h2>Événements en cours</h2>
+<div *ngIf="happeningNowEvenements.length > 0; else noHappening" class="event-listing event-listing-now">
+  <div
+    class="event-item-container"
+    *ngFor="let event of happeningNowEvenements"
+    (click)="openModal(event)">
+    <app-event-item [event]="event"></app-event-item>
+    <div class="event-now-badge">En cours</div>
+  </div>
+</div>
+<ng-template #noHappening>
+  <div class="no-events-message">Aucun événement en cours pour l'instant.</div>
+</ng-template>
+
+<h2>Événements à venir</h2>
+<div *ngIf="upcomingEvenements.length > 0; else noUpcoming" class="event-listing">
+  <div
+    class="event-item-container"
+    *ngFor="let event of upcomingEvenements"
+    (click)="openModal(event)"
+    [class.payant-badge]="event.isPayant"
+  >
+    <app-event-item [event]="event"></app-event-item>
+  </div>
+</div>
+<ng-template #noUpcoming>
+  <div class="no-events-message">Il n'y a pas d'événements à venir pour l'instant.</div>
+</ng-template>
+
+<h2>Événements passés</h2>
+<div *ngIf="pastEvenements.length > 0; else noPast" class="event-listing event-listing-past">
+  <div
+    class="event-item-container"
+    *ngFor="let event of pastEvenements"
+    (click)="openModal(event)">
+    <app-event-item [event]="event"></app-event-item>
+  </div>
+</div>
+<ng-template #noPast>
+  <div class="no-events-message">Il n'y a pas d'événements passés pour l'instant.</div>
+</ng-template>
+
+<div class="pagination">
+  <button
+    [disabled]="currentPage === 1"
+    (click)="changePage(currentPage - 1)">
+    Previous
+  </button>
+  <span>Page {{ currentPage }} of {{ totalPages }}</span>
+  <button
+    [disabled]="currentPage === totalPages"
+    (click)="changePage(currentPage + 1)">
+    Next
+  </button>
+</div>
+
+<!-- Modal -->
+<app-event-modal
+  *ngIf="showModal"
+  [event]="selectedEvent"
+  (participate)="onParticipateToEvenement(selectedEvent)"
+  [isParticipating]="isParticipating"
+  [participation]="participation"
+  [loading]="loading"
+  (like)="onLikeEvenement(selectedEvent)"
+  [hasLikedEvenement]="hasLikedEvenement"
+  [error]="error"
+  (unsubscribe)="onUnsubscribeEvenement(selectedEvent)"
+  [unsubscribeConfirmed]="unsubscribeConfirmed"
+  (comment)="onAddComment(selectedEvent,$event)"
+  (shareByMessageEvent)="onShareByMessageFromModal($event)"
+  (close)="closeModal()">
+</app-event-modal>
+
+<app-users-list
+  *ngIf="showUsersModal"
+  [users]="users"
+  (close)="showUsersModal = false"
+  (startConversation)="onShareByMessage($event)">
+</app-users-list>

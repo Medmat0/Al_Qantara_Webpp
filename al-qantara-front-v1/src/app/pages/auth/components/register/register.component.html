@@ -1,7 +1,10 @@
 <div class="main-container">
   <div class="left-container">
     <div class="form-container">
-      
+      <div *ngIf="errorMessage" class="form-error register-error">
+        {{ errorMessage }}
+      </div>
+
       <h3>Création de votre compte</h3>
       <h5>Remplissez le formulaire pour créer votre compte</h5>
 
@@ -67,11 +70,19 @@
         <div *ngIf="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched" class="form-error">
           Les deux mots de passe ne correspondent pas, réessayez.
         </div>
+        <h4>Téléphone</h4>
+        <input
+          type="tel"
+          placeholder="Téléphone"
+          formControlName="telephone"
+          required
+          [class.invalid]="registerForm.get('telephone')?.invalid && registerForm.get('telephone')?.touched"
+        >
+        <div *ngIf="registerForm.get('telephone')?.invalid && registerForm.get('telephone')?.touched" class="form-error">
+          Numéro de téléphone invalide ou vide (7 à 15 chiffres, peut commencer par +)
+        </div>
         <button type="submit" [disabled]="registerForm.invalid">Inscription</button>
       </form>
-      <div *ngIf="errorMessage" class="form-error">
-        {{ errorMessage }}
-      </div>
       <p>Déjà un compte ? <a routerLink="/auth/login" class="reset-link">Connectez-vous ici</a></p>
     </div>
   </div>

@@ -5,6 +5,7 @@ import crypto from "crypto";
 import { sendEmailToUser } from "../../utils/email.config.js";
 import { ROLES } from "../../utils/role.enum.js";
 import {STATUS} from "../../utils/status.enum.js"
+import {BASE_URL} from "../../utils/urls.js";
 
 
 const prisma = new PrismaClient();
@@ -16,7 +17,7 @@ const prisma = new PrismaClient();
  * @access  Public
  */
 const registerUser = asyncHandler(async (req, res) => {
-  const { nom, prenom, email, password, role } = req.body;
+  const { nom, prenom, email, password, role, telephone } = req.body;
 
   const emailExist = await prisma.utilisateur.findUnique({ where: { email } });
   if (emailExist) return res.status(400).json({ message: "Email déjà utilisé" });
@@ -31,6 +32,7 @@ const registerUser = asyncHandler(async (req, res) => {
       prenom,
       email,
       motDePasse: hashedPassword,
+      telephone,
       role: userRole,
       dateInscription: new Date(),
       statut: STATUS.ACTIF,

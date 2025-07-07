@@ -1,7 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
-
+import { getRevueByIdService } from "../../services/revues/revue.service.js";
 
 /**
  * @desc    Obtenir une revue par ID (accessible à tous authentifiés)
@@ -12,29 +9,10 @@ const getRevueById = async (req, res) => {
     const { id } = req.params;
   
     try {
-      const revue = await prisma.revue.findUnique({
-        where: { id: parseInt(id) },
-        select: {
-          titre : true,
-          nombreVues : true,
-          nombreTelechargements : true,
-          description : true,
-          mois : true ,
-          annee: true,
-          id: true,
-          fichier: true,
-          datePublication : true,
-          createdBy: true,
-        },
-      });
-  
-      if (!revue) {
-        return res.status(404).json({ message: "Revue non trouvée." });
-      }
-  
+      const revue = await getRevueByIdService(id);
       res.status(200).json(revue);
     } catch (error) {
-      res.status(500).json({ message: "Erreur lors de la récupération de la revue.", error: error.message });
+      res.status(500).json({ message: error.message || "Erreur lors de la récupération de la revue.", error: error.message });
     }
   };
   

@@ -1,0 +1,39 @@
+<div class="payment-modal-overlay">
+  <div class="payment-modal">
+    <button class="close-button" (click)="onClose()">&times;</button>
+
+    <div class="payment-content">
+      <h2>Paiement de l'événement</h2>
+
+      <div class="order-summary">
+        <h3>Résumé de la commande</h3>
+        <p><strong>Événement:</strong> {{ event?.titre }}</p>
+        <p><strong>Date:</strong> {{ event?.dateDebut | date: 'shortDate' }}</p>
+        <p><strong>Lieu:</strong> {{ event?.lieu }}</p>
+
+        <div class="price-summary">
+          <span>Prix total : </span>
+          <span class="total-price">{{ event?.prix }}€</span>
+        </div>
+      </div>
+
+      <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+
+      <div class="payment-actions">
+        <button class="btn-secondary" (click)="onClose()" [disabled]="loading">Annuler</button>
+        <button class="btn-primary" (click)="onPay()" [disabled]="loading">
+          {{ loading ? 'Chargement...' : 'Payer avec HelloAsso' }}
+        </button>
+      </div>
+
+      <div class="payment-info">
+        <p>Paiement sécurisé via HelloAsso</p>
+        <img
+          src="https://cdn.helloasso.com/images/header_public/logo-helloasso1.svg"
+          alt="HelloAsso"
+          class="payment-logo"
+        />
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,123 @@
+<div class="event-description-container">
+    <ng-container *ngIf="evenement; else loadingTpl">
+      <div *ngIf="error" class="alert alert-danger mb-2">{{ error }}</div>
+
+      <h2>{{ evenement.titre }}</h2>
+      <div class="text-sm text-gray-500">
+        {{ formatDateTime(evenement.dateDebut) }} &rarr; {{ formatDateTime(evenement.dateFin) }}
+      </div>
+
+      <div class="media mb-3">
+        <ng-container *ngIf="evenement.video; else imageBlock">
+          <video [src]="evenement.video" controls class="media-content"></video>
+        </ng-container>
+        <ng-template #imageBlock>
+          <img *ngIf="!evenement.video" [src]="eventImage" [alt]="evenement.titre" class="media-content" />
+        </ng-template>
+      </div>
+
+      <div class="mb-2">
+        <strong>Description</strong>
+        <p>{{ evenement.description }}</p>
+      </div>
+
+      <div class="mb-2 lieu-section">
+        <strong>Lieu</strong>
+        <div class="lieu-address">{{ evenement.lieu }}</div>
+        <iframe
+          width="100%"
+          height="200"
+          [src]="safeMapUrl"
+          style="border-radius:12px;"
+        ></iframe>
+      </div>
+
+      <div class="mb-2">
+        <span><strong>Places disponibles :</strong> {{ evenement.placesRestantes }}/{{ evenement.placesTotal }}</span>
+      </div>
+
+      <div class="actions mb-2">
+        <div [ngClass]="{'like-container': true, 'liked': hasLikedEvenement}">
+          <button (click)="onLikeEvenement(evenement)" class="btn-like">❤️ {{ evenement.likes?.length || 0 }}</button>
+        </div>
+        <button (click)="handleShare()" class="btn-share">📤 Partager</button>
+
+        <!-- Boutons de participation dans la section actions -->
+        <ng-container *ngIf="!isParticipating && evenement.placesRestantes > 0 && !isEventPassed()">
+          <button
+            *ngIf="evenement.isPayant"
+            (click)="onPayWithHelloAsso()"
+            [disabled]="loading"
+            class="btn-pay">
+            {{ loading ? 'Paiement en cours...' : '💳 Acheter un billet' }}
+          </button>
+          <button
+            *ngIf="!evenement.isPayant"
+            (click)="onParticipateToEvenement(evenement)"
+            [disabled]="loading"
+            class="btn-participate">
+            {{ loading ? 'Participation en cours...' : '🎫 Participer à l\'événement' }}
+          </button>
+        </ng-container>
+        <button
+          *ngIf="isParticipating && !isEventPassed()"
+          (click)="onUnsubscribeEvenement(evenement)"
+          [disabled]="loading"
+          class="btn-unsubscribe">
+          {{ loading ? 'Désinscription en cours...' : '❌ Se désinscrire' }}
+        </button>
+      </div>
+
+      <div class="mb-2">
+        <div *ngIf="errorPaymentMessage" class="error">{{ errorPaymentMessage }}</div>
+
+        <!-- Message pour événement passé -->
+        <div *ngIf="isEventPassed()" class="event-passed-message">
+          <span class="event-passed-text">📅 Cet événement est terminé</span>
+        </div>
+      </div>
+
+      <div *ngIf="isParticipating && participation" class="mb-2">
+        <div class="confirmed-green-box">
+          <strong>Votre participation est confirmée !</strong>
+          <div>
+            <img [src]="participation.qrCode" alt="QR Code" class="qr-code" />
+            <div class="text-xs text-green-500 mt-2">
+              Un email de confirmation a été envoyé à votre adresse email.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="unsubscribeConfirmed" class="unsubscribe-confirmed-red-box">
+        <strong>Désinscription confirmée&nbsp;!</strong>
+        <div class="text-xs text-red-500 mt-2">
+          Vous avez bien été désinscrit de l'événement.
+        </div>
+      </div>
+
+      <div class="mb-2">
+        <strong>Commentaires</strong>
+        <form (ngSubmit)="handleCommentSubmit()" class="mb-2">
+          <textarea [(ngModel)]="commentText" name="comment" rows="2" class="form-control" placeholder="Écrivez votre commentaire..."></textarea>
+          <div class="mt-1">
+            <button type="submit" [disabled]="!commentText.trim()" class="btn-send">Envoyer</button>
+          </div>
+        </form>
+        <div *ngIf="evenement.comments?.length; else noComments">
+          <div *ngFor="let c of evenement.comments" class="comment">
+            <div class="font-semibold">{{ c.utilisateur.nom }} {{ c.utilisateur.prenom }}</div>
+            <div>{{ c.contenu }}</div>
+            <div class="text-xs text-gray-400">{{ c.dateCommentaire | date:'short' }}</div>
+          </div>
+        </div>
+        <ng-template #noComments>
+          <div class="text-gray-400 text-sm">Aucun commentaire pour le moment.</div>
+        </ng-template>
+      </div>
+    </ng-container>
+    <ng-template #loadingTpl>
+      <div>Chargement de l'événement...</div>
+    </ng-template>
+
+</div>

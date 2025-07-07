@@ -1,31 +1,76 @@
+
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
-  url      =  env("DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
 
 model Utilisateur {
-  id                      Int          @id @default(autoincrement())
-  nom                     String       @db.VarChar(100)
-  prenom                  String       @db.VarChar(100)
-  email                   String       @unique @db.VarChar(255)
-  motDePasse              String       @db.VarChar(255)
-  role                    Role
-  dateInscription         DateTime
-  statut                  Statut
-  emailVerificationToken  String?      @db.VarChar(255) 
-  emailVerified           Boolean      @default(false)    
-  passwordResetToken      String?      @db.VarChar(255)  
-  passwordResetTokenExpire String?    
-  evenements              Evenement[]
-  revues                  Revue[]
-  articles                Article[]
-  adhesion                Adhesion?
-  accesEvenements         AccesEvenement[]
+  id                       Int                      @id @default(autoincrement())
+  nom                      String                   @db.VarChar(100)
+  prenom                   String                   @db.VarChar(100)
+  email                    String                   @unique @db.VarChar(255)
+  motDePasse               String                   @db.VarChar(255)
+  photoProfil              String?                  @db.VarChar(255)
+  telephone                String?                  @db.VarChar(20)
+  role                     Role
+  dateInscription          DateTime
+  statut                   Statut
+  statutEnLigne            StatutEnLigne            @default(HORS_LIGNE)
+  derniereActivite         DateTime?                @default(now())
+  emailVerificationToken   String?                  @db.VarChar(255)
+  emailVerified            Boolean                  @default(false)
+  passwordResetToken       String?                  @db.VarChar(255)
+  passwordResetTokenExpire String?
+  evenements               Evenement[]
+  revues                   Revue[]
+  articles                 Article[]
+  adhesion                 Adhesion?
+  accesEvenements          AccesEvenement[]
+  likes                    LikeEvenement[]
+  commentaires             CommentaireEvenement[]
+  ratings                  RatingEvenement[]
+  partages                 PartageEvenement[]
+  participations           ParticipationEvenement[]
+  offre                    Offre[]
+  candidatures             Candidature[]
+  paiements                PaiementEvenement[]
+  messagesEnvoyes          Message[]                @relation("MessagesEnvoyes")
+  messagesRecus            Message[]                @relation("MessagesRecus")
+  Community                Community[]              @relation("CommunityMembres")
+  communityCreated         Community[]              @relation("CommunitiesCreated")
+
+  CommunityPostLike CommunityPostLike[]
+
+  CommunityPostCommentaire CommunityPostCommentaire[]
+
+  CommunityPost CommunityPost[]
+
+  moderateurCommunity Community[] @relation("CommunityModerateurs")
+
+  CommunityPostCommentaireLike CommunityPostCommentaireLike[]
+
+  PollVote PollVote[]
+
+  membresbannis Community[] @relation("CommunityBannished")
+
+  dons Don[]
 }
+
+model Association {
+  id           Int      @id @default(autoincrement())
+  titre        String   @db.VarChar(255)
+  image        String?  @db.VarChar(255)
+  description  String?  @db.Text
+  coordonnees  String?  @db.VarChar(255)
+  url          String?  @db.VarChar(255)
+  instaUrl     String?  @db.VarChar(255)
+  createdAt    DateTime @default(now())
+}
+
 
 enum Role {
   ADMIN
@@ -38,17 +83,39 @@ enum Statut {
   INACTIF
 }
 
+enum StatutEnLigne {
+  EN_LIGNE
+  HORS_LIGNE
+  INACTIF
+}
+
 model Evenement {
-  id          Int       @id @default(autoincrement())
-  titre       String    @db.VarChar(255)
-  description String
-  dateDebut   DateTime
-  dateFin     DateTime
-  lieu        String    @db.VarChar(255)
-  type        TypeEvenement
-  createdBy   Int
-  createur    Utilisateur @relation(fields: [createdBy], references: [id])
-  acces       AccesEvenement[]
+  id              Int                      @id @default(autoincrement())
+  titre           String                   @db.VarChar(255)
+  description     String
+  dateDebut       DateTime
+  dateFin         DateTime
+  lieu            String                   @db.VarChar(255)
+  type            TypeEvenement
+  createdBy       Int
+  createur        Utilisateur              @relation(fields: [createdBy], references: [id])
+  acces           AccesEvenement[]
+  images          String[]                 @db.VarChar(255)
+  video           String?                  @db.VarChar(255)
+  latitude        Float?
+  longitude       Float?
+  placesTotal     Int?
+  placesRestantes Int?
+  likes           LikeEvenement[]
+  comments        CommentaireEvenement[]
+  ratings         RatingEvenement[]
+  partages        PartageEvenement[]
+  participations  ParticipationEvenement[]
+  isPayant        Boolean                  @default(false)
+  prix            Float?
+  helloAssoId     String?                  @db.VarChar(255)
+  paiements       PaiementEvenement[]
+  messages        Message[]
 }
 
 enum TypeEvenement {
@@ -57,17 +124,40 @@ enum TypeEvenement {
 }
 
 model Newsletter {
-  id              Int    @id @default(autoincrement())
-  email           String @unique @db.VarChar(255)
-  dateInscription DateTime
+  id                  Int              @id @default(autoincrement())
+  email               String           @unique @db.VarChar(255)
+  dateInscription     DateTime         @default(now())
+  statut              StatutNewsletter @default(ACTIF)
+  tokenDesinscription String?          @db.VarChar(255)
+}
+
+enum StatutNewsletter {
+  ACTIF
+  INACTIF
+  DESINSCRIT
+}
+
+model NewsletterEnvoyee {
+  id            Int         @id @default(autoincrement())
+  titre         String      @db.VarChar(255)
+  contenu       String      @db.Text
+  dateEnvoi     DateTime    @default(now())
+  destinataires Int         @default(0)
+  statut        StatutEnvoi @default(EN_COURS)
+}
+
+enum StatutEnvoi {
+  EN_COURS
+  TERMINE
+  ERREUR
 }
 
 model Adhesion {
-  id          Int      @id @default(autoincrement())
-  utilisateur Utilisateur @relation(fields: [utilisateurId], references: [id])
-  utilisateurId Int   @unique
-  dateDemande DateTime
-  statut      StatutAdhesion
+  id            Int            @id @default(autoincrement())
+  utilisateur   Utilisateur    @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+  utilisateurId Int            @unique
+  dateDemande   DateTime
+  statut        StatutAdhesion
 }
 
 enum StatutAdhesion {
@@ -77,49 +167,337 @@ enum StatutAdhesion {
 }
 
 model Contact {
-  id        Int    @id @default(autoincrement())
-  nom       String @db.VarChar(100)
-  email     String @db.VarChar(255)
-  sujet     String @db.VarChar(255)
+  id        Int      @id @default(autoincrement())
+  nom       String   @db.VarChar(100)
+  email     String   @db.VarChar(255)
+  sujet     String   @db.VarChar(255)
   message   String
   dateEnvoi DateTime
 }
 
+// relier article -> revue
+
 model Revue {
-  id              Int          @id @default(autoincrement())
-  titre           String       @db.VarChar(255)
-  description     String?      @db.Text            
-  mois            String?                            
-  annee           String?         
-  fichier         String       @db.VarChar(255)
-  datePublication DateTime
-  nombreVues         Int      @default(0)
-  nombreTelechargements Int   @default(0)
-  createdBy       Int
-  createur        Utilisateur @relation(fields: [createdBy], references: [id])
+  id                    Int         @id @default(autoincrement())
+  titre                 String      @db.VarChar(255)
+  description           String?     @db.Text
+  mois                  String?
+  annee                 String?
+  fichier               String      @db.VarChar(255)
+  datePublication       DateTime
+  nombreVues            Int         @default(0)
+  nombreTelechargements Int         @default(0)
+  createdBy             Int
+  createur              Utilisateur @relation(fields: [createdBy], references: [id])
+  articles              Article[]
 }
 
 model Article {
-  id             Int          @id @default(autoincrement())
-  titre          String       @db.VarChar(255)
-  contenu        String
-  auteur         String       @db.VarChar(100)
+  id             Int                @id @default(autoincrement())
+  titre          String             @db.VarChar(255)
+  contenu        String             @db.Text
+  auteur         String             @db.VarChar(100)
   dateSoumission DateTime
-  statut         StatutArticle
   createdBy      Int
-  createur       Utilisateur @relation(fields: [createdBy], references: [id])
+  createur       Utilisateur        @relation(fields: [createdBy], references: [id])
+  revueId        Int
+  revue          Revue              @relation(fields: [revueId], references: [id], onDelete: Cascade)
+  categories     CategorieArticle[]
 }
 
-enum StatutArticle {
-  EN_ATTENTE
-  APPROUVE
-  REJETE
+model CategorieArticle {
+  id          Int       @id @default(autoincrement())
+  nom         String    @db.VarChar(100)
+  description String?   @db.Text
+  articles    Article[]
 }
 
 model AccesEvenement {
-  id           Int        @id @default(autoincrement())
-  evenementId  Int
+  id            Int         @id @default(autoincrement())
+  evenementId   Int
   utilisateurId Int
-  evenement    Evenement  @relation(fields: [evenementId], references: [id])
-  utilisateur  Utilisateur @relation(fields: [utilisateurId], references: [id])
+  evenement     Evenement   @relation(fields: [evenementId], references: [id], onDelete: Cascade)
+  utilisateur   Utilisateur @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+}
+
+model LikeEvenement {
+  id            Int         @id @default(autoincrement())
+  evenementId   Int
+  utilisateurId Int
+  dateLike      DateTime    @default(now())
+  evenement     Evenement   @relation(fields: [evenementId], references: [id], onDelete: Cascade)
+  utilisateur   Utilisateur @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+
+  @@unique([evenementId, utilisateurId])
+}
+
+model CommentaireEvenement {
+  id              Int         @id @default(autoincrement())
+  evenementId     Int
+  utilisateurId   Int
+  contenu         String
+  dateCommentaire DateTime    @default(now())
+  evenement       Evenement   @relation(fields: [evenementId], references: [id], onDelete: Cascade)
+  utilisateur     Utilisateur @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+}
+
+model RatingEvenement {
+  id               Int         @id @default(autoincrement())
+  evenementId      Int
+  utilisateurId    Int
+  noteOrganisateur Int
+  noteLieu         Int
+  noteAmbiance     Int
+  noteEvenement    Int
+  commentaire      String?
+  dateRating       DateTime    @default(now())
+  evenement        Evenement   @relation(fields: [evenementId], references: [id], onDelete: Cascade)
+  utilisateur      Utilisateur @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+
+  @@unique([evenementId, utilisateurId])
+}
+
+model PartageEvenement {
+  id                Int         @id @default(autoincrement())
+  evenementId       Int
+  utilisateurId     Int
+  emailDestinataire String
+  message           String?
+  datePartage       DateTime    @default(now())
+  evenement         Evenement   @relation(fields: [evenementId], references: [id], onDelete: Cascade)
+  utilisateur       Utilisateur @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+}
+
+model ParticipationEvenement {
+  id                Int                 @id @default(autoincrement())
+  evenementId       Int
+  utilisateurId     Int
+  statut            StatutParticipation @default(EN_ATTENTE)
+  qrCode            String?             @db.Text
+  dateParticipation DateTime            @default(now())
+  evenement         Evenement           @relation(fields: [evenementId], references: [id], onDelete: Cascade)
+  utilisateur       Utilisateur         @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+
+  @@unique([evenementId, utilisateurId])
+}
+
+enum StatutParticipation {
+  EN_ATTENTE
+  CONFIRME
+  ANNULE
+}
+
+enum ContractType {
+  CDI
+  CDD
+  BENEVOLAT
+  FREELANCE
+  STAGE
+  INTERIM
+  APPRENTISSAGE
+}
+
+model Offre {
+  id              Int           @id @default(autoincrement())
+  titre           String        @db.VarChar(255)
+  description     String        @db.Text
+  tags            String[]      @db.VarChar(100)
+  lieuDeTravail   String        @db.VarChar(255)
+  typeDeContrat   ContractType
+  dateDebut       DateTime
+  datePublication DateTime      @default(now())
+  createdBy       Int
+  createur        Utilisateur   @relation(fields: [createdBy], references: [id])
+  candidatures    Candidature[]
+}
+
+model Candidature {
+  id               Int               @id @default(autoincrement())
+  offreId          Int
+  utilisateurId    Int
+  dateCandidature  DateTime          @default(now())
+  statut           StatutCandidature @default(EN_ATTENTE)
+  lettreMotivation String?           @db.Text
+  cv               String?           @db.VarChar(255)
+  skills           String[]          @db.VarChar(100)
+  experiences      String[]          @db.VarChar(500)
+  score            Int?              @default(0)
+  offre            Offre             @relation(fields: [offreId], references: [id], onDelete: Cascade)
+  utilisateur      Utilisateur       @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+
+  @@unique([offreId, utilisateurId])
+}
+
+enum StatutCandidature {
+  EN_ATTENTE
+  ACCEPTEE
+  REJETEE
+}
+
+model PaiementEvenement {
+  id            Int            @id @default(autoincrement())
+  evenementId   Int
+  utilisateurId Int
+  montant       Float
+  statut        StatutPaiement
+  datePaiement  DateTime       @default(now())
+  reference     String         @db.VarChar(255)
+  evenement     Evenement      @relation(fields: [evenementId], references: [id], onDelete: Cascade)
+  utilisateur   Utilisateur    @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+
+  @@unique([evenementId, utilisateurId])
+}
+
+enum StatutPaiement {
+  EN_ATTENTE
+  VALIDE
+  ANNULE
+  REMBOURSE
+}
+
+model Message {
+  id             Int           @id @default(autoincrement())
+  contenu        String        @db.Text
+  type           TypeMessage
+  dateEnvoi      DateTime      @default(now())
+  dateExpiration DateTime
+  estLu          Boolean       @default(false)
+  expediteur     Utilisateur   @relation("MessagesEnvoyes", fields: [expediteurId], references: [id], onDelete: Cascade)
+  expediteurId   Int
+  destinataire   Utilisateur   @relation("MessagesRecus", fields: [destinataireId], references: [id], onDelete: Cascade)
+  destinataireId Int
+  evenement      Evenement?    @relation(fields: [evenementId], references: [id], onDelete: Cascade)
+  evenementId    Int?
+  piecesJointes  PieceJointe[]
+}
+
+model PieceJointe {
+  id        Int             @id @default(autoincrement())
+  type      TypePieceJointe
+  url       String          @db.VarChar(255)
+  message   Message         @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  messageId Int
+}
+
+enum TypeMessage {
+  TEXTE
+  EMOJI
+  GIF
+  EVENEMENT
+}
+
+enum TypePieceJointe {
+  IMAGE
+  GIF
+  FICHIER
+}
+
+model RemboursementDemande {
+  id            Int      @id @default(autoincrement())
+  utilisateurId Int
+  evenementId   Int
+  status        String // "en_attente", "accepte", "refuse", "rembourse"
+  dateDemande   DateTime @default(now())
+  raison        String?
+}
+
+model Community {
+  id            Int             @id @default(autoincrement())
+  nom           String          @unique @db.VarChar(100)
+  logo          String?         @db.VarChar(255)
+  description   String?         @db.Text
+  createdBy     Int
+  createur      Utilisateur     @relation("CommunitiesCreated", fields: [createdBy], references: [id])
+  moderateurs   Utilisateur[]   @relation("CommunityModerateurs")
+  membres       Utilisateur[]   @relation("CommunityMembres")
+  membresbannis Utilisateur[]   @relation("CommunityBannished")
+  dateCreation  DateTime        @default(now())
+  posts         CommunityPost[]
+}
+
+model CommunityPost {
+  id           Int                        @id @default(autoincrement())
+  titre        String                     @db.VarChar(255)
+  image        String?                    @db.VarChar(255)
+  contenu      String                     @db.Text
+  tags         String[]                   @db.VarChar(100)
+  modified     Boolean                    @default(false)
+  auteurId     Int
+  auteur       Utilisateur                @relation(fields: [auteurId], references: [id])
+  communityId  Int
+  community    Community                  @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  dateCreation DateTime                   @default(now())
+  likes        CommunityPostLike[]
+  commentaires CommunityPostCommentaire[]
+  isPoll       Boolean                    @default(false)
+  pollDeadline DateTime?
+  pollOptions  PollOption[]
+}
+
+model PollOption {
+  id              Int           @id @default(autoincrement())
+  index           Int
+  label           String
+  communityPost   CommunityPost @relation(fields: [communityPostId], references: [id], onDelete: Cascade)
+  communityPostId Int
+  votes           PollVote[]
+
+  @@unique([communityPostId, index])
+}
+
+model PollVote {
+  id            Int         @id @default(autoincrement())
+  pollOption    PollOption  @relation(fields: [pollOptionId], references: [id], onDelete: Cascade)
+  pollOptionId  Int
+  utilisateur   Utilisateur @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+  utilisateurId Int
+}
+
+model CommunityPostCommentaire {
+  id           Int                            @id @default(autoincrement())
+  contenu      String                         @db.Text
+  modified     Boolean                        @default(false)
+  auteurId     Int
+  auteur       Utilisateur                    @relation(fields: [auteurId], references: [id])
+  postId       Int
+  post         CommunityPost                  @relation(fields: [postId], references: [id], onDelete: Cascade)
+  dateCreation DateTime                       @default(now())
+  parentId     Int?
+  parent       CommunityPostCommentaire?      @relation("CommentParent", fields: [parentId], references: [id])
+  replies      CommunityPostCommentaire[]     @relation("CommentParent")
+  likes        CommunityPostCommentaireLike[]
+}
+
+model CommunityPostCommentaireLike {
+  id            Int                      @id @default(autoincrement())
+  commentaireId Int
+  utilisateurId Int
+  dateLike      DateTime                 @default(now())
+  commentaire   CommunityPostCommentaire @relation(fields: [commentaireId], references: [id], onDelete: Cascade)
+  utilisateur   Utilisateur              @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+
+  @@unique([commentaireId, utilisateurId])
+}
+
+model CommunityPostLike {
+  id            Int           @id @default(autoincrement())
+  postId        Int
+  utilisateurId Int
+  dateLike      DateTime      @default(now())
+  post          CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  utilisateur   Utilisateur   @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, utilisateurId])
+}
+
+model Don {
+  id            Int            @id @default(autoincrement())
+  utilisateurId Int
+  montant       Float
+  dateDon       DateTime       @default(now())
+  statut        StatutPaiement @default(EN_ATTENTE)
+  reference     String?        @db.VarChar(255)
+  helloAssoId   String?        @db.VarChar(255)
+  message       String?        @db.Text
+  utilisateur   Utilisateur    @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
 }

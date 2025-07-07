@@ -1,0 +1,250 @@
+<div class="newsletter-admin-container">
+  <div class="header-section">
+    <h2 class="page-title">
+      <i class="icon-newsletter"></i>
+      Gestion des Newsletters
+    </h2>
+    <p class="page-subtitle">Créez et gérez vos campagnes de newsletter</p>
+  </div>
+
+  <!-- Formulaire d'envoi -->
+  <div class="card newsletter-form-card">
+    <div class="card-header">
+      <h3 class="card-title">
+        <i class="icon-compose"></i>
+        Créer et envoyer une newsletter
+      </h3>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="newsletterForm" (ngSubmit)="sendNewsletter()" class="newsletter-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="titre" class="form-label">
+              <i class="icon-title"></i>
+              Titre de la newsletter
+            </label>
+            <input 
+              id="titre" 
+              formControlName="titre" 
+              type="text" 
+              class="form-control"
+              placeholder="Saisissez le titre..." 
+              required 
+            />
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="contenu" class="form-label">
+              <i class="icon-content"></i>
+              Contenu (HTML autorisé)
+            </label>
+            <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"></ngx-editor-menu>
+            <ngx-editor
+              [editor]="editor"
+              formControlName="contenu"
+              [placeholder]="'Rédigez votre contenu HTML...'"
+              class="form-control form-textarea"
+            ></ngx-editor>
+          </div>
+        </div>
+        
+        <div class="form-actions">
+          <button 
+            type="submit" 
+            class="btn btn-primary"
+            [disabled]="newsletterForm.invalid || sending"
+          >
+            <i class="icon-send"></i>
+            <span *ngIf="!sending">Envoyer la newsletter</span>
+            <span *ngIf="sending">Envoi en cours...</span>
+          </button>
+        </div>
+        
+        <div *ngIf="sendSuccess" class="alert alert-success">
+          <i class="icon-check"></i>
+          {{ sendSuccess }}
+        </div>
+        <div *ngIf="sendError" class="alert alert-error">
+          <i class="icon-alert"></i>
+          {{ sendError }}
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Dashboard stats -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon stat-icon-subscribers">
+        <i class="icon-users"></i>
+      </div>
+      <div class="stat-content">
+        <h4 class="stat-number">{{ subscribers.length }}</h4>
+        <p class="stat-label">Abonnés actifs</p>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon stat-icon-sent">
+        <i class="icon-mail"></i>
+      </div>
+      <div class="stat-content">
+        <h4 class="stat-number">{{ history.length }}</h4>
+        <p class="stat-label">Newsletters envoyées</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Liste des abonnés -->
+  <div class="card subscribers-card">
+    <div class="card-header">
+      <h3 class="card-title">
+        <i class="icon-users"></i>
+        Abonnés à la newsletter
+      </h3>
+    </div>
+    <div class="card-body">
+      <div *ngIf="loadingSubscribers" class="loading-state">
+        <div class="spinner"></div>
+        <p>Chargement des abonnés...</p>
+      </div>
+      
+      <div *ngIf="subscribersError" class="alert alert-error">
+        <i class="icon-alert"></i>
+        {{ subscribersError }}
+      </div>
+      
+      <div *ngIf="!loadingSubscribers && subscribers.length" class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>
+                <i class="icon-mail"></i>
+                Email
+              </th>
+              <th>
+                <i class="icon-calendar"></i>
+                Date d'inscription
+              </th>
+              <th>
+                <i class="icon-status"></i>
+                Statut
+              </th>
+              <th>
+                <i class="icon-alert"></i>
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let sub of subscribers; trackBy: trackByEmail">
+              <td class="email-cell">{{ sub.email }}</td>
+              <td class="date-cell">{{ sub.dateInscription | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td class="status-cell">
+                <span class="status-badge" [ngClass]="{
+                  'status-active': sub.statut === 'ACTIF',
+                  'status-inactive': sub.statut === 'INACTIF',
+                  'status-desinscrit': sub.statut === 'DESINSCRIT'
+                }">{{ sub.statut }}</span>
+              </td>
+              <td class="actions-cell">
+                <button class="action-btn danger" title="Supprimer l'abonné" (click)="onDeleteSubscriber(sub.id, $event)">
+                  <i class="icon-trash"></i>
+                </button>
+                <button *ngIf="sub.statut !== 'ACTIF'" class="action-btn success" title="Activer" (click)="onUpdateStatus(sub.id, 'ACTIF', $event)">
+                  <i class="icon-check"></i>
+                </button>
+                <button *ngIf="sub.statut === 'ACTIF'" class="action-btn warning" title="Désactiver" (click)="onUpdateStatus(sub.id, 'INACTIF', $event)">
+                  <i class="icon-block"></i>
+                </button>
+              </td>
+      <div *ngIf="subscriberActionMessage" class="alert alert-success" style="margin-top:1rem;">{{ subscriberActionMessage }}</div>
+      <div *ngIf="subscriberActionError" class="alert alert-error" style="margin-top:1rem;">{{ subscriberActionError }}</div>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <div *ngIf="!loadingSubscribers && !subscribers.length" class="empty-state">
+        <i class="icon-empty"></i>
+        <h4>Aucun abonné</h4>
+        <p>Votre liste d'abonnés est vide pour le moment.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Historique des newsletters -->
+  <div class="card history-card">
+    <div class="card-header">
+      <h3 class="card-title">
+        <i class="icon-history"></i>
+        Historique des envois
+      </h3>
+    </div>
+    <div class="card-body">
+      <div *ngIf="loadingHistory" class="loading-state">
+        <div class="spinner"></div>
+        <p>Chargement de l'historique...</p>
+      </div>
+      
+      <div *ngIf="historyError" class="alert alert-error">
+        <i class="icon-alert"></i>
+        {{ historyError }}
+      </div>
+      
+      <div *ngIf="!loadingHistory && history.length" class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>
+                <i class="icon-title"></i>
+                Titre
+              </th>
+              <th>
+                <i class="icon-calendar"></i>
+                Date d'envoi
+              </th>
+              <th>
+                <i class="icon-users"></i>
+                Destinataires
+              </th>
+              <th>
+                <i class="icon-status"></i>
+                Statut
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let h of history; trackBy: trackByTitle" (click)="openNewsletterModal(h)" style="cursor:pointer;">
+              <td class="title-cell">{{ h.titre }}</td>
+              <td class="date-cell">{{ h.dateEnvoi | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td class="count-cell">{{ h.destinataires }}</td>
+              <td class="status-cell">
+                <span class="status-badge status-sent">{{ h.statut }}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Modal d'aperçu newsletter -->
+      <div class="modal-backdrop" *ngIf="showNewsletterModal">
+        <div class="modal newsletter-preview-modal">
+          <h3>{{ selectedNewsletter?.titre }}</h3>
+          <div class="newsletter-preview-content" [innerHTML]="selectedNewsletter?.contenu"></div>
+          <div class="modal-actions">
+            <button type="button" (click)="closeNewsletterModal()">Fermer</button>
+          </div>
+        </div>
+      </div>
+      
+      <div *ngIf="!loadingHistory && !history.length" class="empty-state">
+        <i class="icon-empty"></i>
+        <h4>Aucune newsletter envoyée</h4>
+        <p>Vous n'avez pas encore envoyé de newsletter.</p>
+      </div>
+    </div>
+  </div>
+</div>

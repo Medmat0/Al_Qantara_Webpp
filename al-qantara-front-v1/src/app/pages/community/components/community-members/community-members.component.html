@@ -1,0 +1,86 @@
+<div class="community-members-popup-root">
+  <div *ngIf="actionError" class="error-message">{{ actionError }}</div>
+  <div *ngIf="loading">Chargement des membres...</div>
+  <div *ngIf="!loading">
+  <h3>Modérateurs</h3>
+  <ul class="members-list">
+    <li *ngFor="let member of moderateurs" class="member-item">
+      <div class="avatar">
+        <ng-container *ngIf="member.photoProfil; else initialsMod">
+          <img [src]="member.photoProfil" alt="Photo de {{member.prenom}} {{member.nom}}">
+        </ng-container>
+        <ng-template #initialsMod>
+          <span class="initials">{{ member.prenom[0] }}{{ member.nom[0] }}</span>
+        </ng-template>
+      </div>
+      <div class="info">
+        <div class="name">{{ member.prenom }} {{ member.nom }}</div>
+        <div class="email">{{ member.email }}</div>
+        <div class="role" [ngClass]="member.role.toLowerCase()">{{ member.role }}</div>
+      </div>
+      <button (click)="demoteMember(member)" class="ban-btn">Rétrograder</button>
+      <button (click)="banMember(member)" class="ban-btn">Bannir</button>
+    </li>
+    <li *ngIf="moderateurs.length === 0">Aucun modérateur</li>
+  </ul>
+
+  <h3>Membres</h3>
+  <ul class="members-list">
+    <li *ngFor="let member of pagedMembres" class="member-item">
+      <div class="avatar">
+        <ng-container *ngIf="member.photoProfil; else initialsMem">
+          <img [src]="member.photoProfil" alt="Photo de {{member.prenom}} {{member.nom}}">
+        </ng-container>
+        <ng-template #initialsMem>
+          <span class="initials">{{ member.prenom[0] }}{{ member.nom[0] }}</span>
+        </ng-template>
+      </div>
+      <div class="info">
+        <div class="name">{{ member.prenom }} {{ member.nom }}</div>
+        <div class="email">{{ member.email }}</div>
+        <div class="role" [ngClass]="member.role.toLowerCase()">{{ member.role }}</div>
+      </div>
+      <button
+        *ngIf="isNotModerator(member)"
+        (click)="promoteMember(member)"
+        class="ban-btn"
+      >
+        Promouvoir
+      </button>
+      <button (click)="banMember(member)" class="ban-btn">Bannir</button>
+    </li>
+    <li *ngIf="membres.length === 0">Aucun membre</li>
+  </ul>
+  <div *ngIf="membres.length > membresPageSize" class="pagination">
+    <button (click)="changeMembresPage(-1)" [disabled]="membresPage === 1">&lt;</button>
+    Page {{membresPage}} / {{membresTotalPages}}
+    <button (click)="changeMembresPage(1)" [disabled]="membresPage >= membresTotalPages">&gt;</button>
+  </div>
+
+  <h3>Membres bannis</h3>
+  <ul class="members-list">
+    <li *ngFor="let member of pagedMembresBannis" class="member-item">
+      <div class="avatar">
+        <ng-container *ngIf="member.photoProfil; else initialsBan">
+          <img [src]="member.photoProfil" alt="Photo de {{member.prenom}} {{member.nom}}">
+        </ng-container>
+        <ng-template #initialsBan>
+          <span class="initials">{{ member.prenom[0] }}{{ member.nom[0] }}</span>
+        </ng-template>
+      </div>
+      <div class="info">
+        <div class="name">{{ member.prenom }} {{ member.nom }}</div>
+        <div class="email">{{ member.email }}</div>
+        <div class="role" [ngClass]="member.role.toLowerCase()">{{ member.role }}</div>
+      </div>
+      <button (click)="unbanMember(member)" class="ban-btn">Débannir</button>
+    </li>
+    <li *ngIf="membresbannis.length === 0">Aucun membre banni</li>
+  </ul>
+  <div *ngIf="membresbannis.length > membresBannisPageSize" class="pagination">
+    <button (click)="changeMembresBannisPage(-1)" [disabled]="membresBannisPage === 1">&lt;</button>
+    Page {{membresBannisPage}} / {{membresBannisTotalPages}}
+    <button (click)="changeMembresBannisPage(1)" [disabled]="membresBannisPage >= membresBannisTotalPages">&gt;</button>
+  </div>
+  </div>
+</div>

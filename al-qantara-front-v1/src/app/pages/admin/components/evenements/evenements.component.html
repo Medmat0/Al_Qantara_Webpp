@@ -1,0 +1,154 @@
+<div class="evenements-main-container">
+  <div class="filters-bar">
+    <div class="search-bar">
+      <input
+        type="text"
+        placeholder="Rechercher un événement..."
+        [(ngModel)]="searchTerm"
+      />
+    </div>
+    <div class="filters">
+      <label for="filter">Trier par:</label>
+      <select id="filter" [(ngModel)]="selectedFilter" (change)="onFilterChange(selectedFilter)">
+        <option value="none">Aucun filtre</option>
+        <option value="most-recent">Plus récents d'abord</option>
+        <option value="most-old">Plus anciens d'abord</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Loading state -->
+  <div *ngIf="loading" class="loading-message">
+    Chargement des événements...
+  </div>
+
+  <!-- Error state -->
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+    <button (click)="loadEvents()" class="retry-btn">Réessayer</button>
+  </div>
+
+  <!-- Event list -->
+  <div class="event-list" *ngIf="!loading && !error">
+    <div *ngIf="events.length === 0" class="no-events-message">
+      Aucun événement trouvé.
+    </div>
+
+    <div
+      class="event-item-container"
+      *ngFor="let event of filteredEvents"
+    >
+      <app-event-item
+        [event]="event"
+        [isAdminContext]="true"
+        (showParticipants)="onShowParticipants($event)">
+      </app-event-item>
+      <button
+        class="delete-btn"
+        (click)="onDeleteEvent(event)"
+        [class.deleting]="deletingEventId === event.id"
+        [disabled]="deletingEventId === event.id"
+        aria-label="Supprimer l'événement"
+      >
+        <svg *ngIf="deletingEventId !== event.id" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="20px" width="20px">
+          <title>delete</title>
+          <path d="M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M8,9H16V19H8V9M15.5,4L14.5,3H9.5L8.5,4H5V6H19V4H15.5Z" />
+        </svg>
+        <div *ngIf="deletingEventId === event.id" class="spinner"></div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination" *ngIf="events.length > 0">
+    <button
+      [disabled]="currentPage === 1"
+      (click)="changePage(currentPage - 1)"
+    >
+      Précédent
+    </button>
+    <span>Page {{ currentPage }} sur {{ totalPages }}</span>
+    <button
+      [disabled]="currentPage === totalPages"
+      (click)="changePage(currentPage + 1)"
+    >
+      Suivant
+    </button>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" *ngIf="showModal">
+    <div class="modal-content">
+      <h3>{{modalTitle}}</h3>
+      <p>{{modalMessage}}</p>
+      <div class="modal-actions">
+        <button (click)="confirmModal()" class="confirm-btn">Confirmer</button>
+        <button (click)="closeModal()" class="cancel-btn">Annuler</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal des participants -->
+  <div class="modal participants-modal" *ngIf="showParticipantsModal">
+    <div class="modal-content participants-modal-content">
+      <div class="modal-header">
+        <h3>Liste des participants - {{ selectedEventTitle }}</h3>
+        <div class="header-actions">
+          <div class="export-buttons" *ngIf="!loadingParticipants && participants.length > 0">
+            <button (click)="exportToPDF()" class="export-btn pdf-btn" title="Exporter en PDF">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+              </svg>
+              PDF
+            </button>
+            <button (click)="exportToCSV()" class="export-btn csv-btn" title="Exporter en CSV">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+              </svg>
+              CSV
+            </button>
+          </div>
+          <button class="close-btn" (click)="closeParticipantsModal()">&times;</button>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <!-- Loading state -->
+        <div *ngIf="loadingParticipants" class="loading-message">
+          Chargement des participants...
+        </div>
+
+        <!-- Participants list -->
+        <div *ngIf="!loadingParticipants && participants.length > 0" class="participants-table-container">
+          <table class="participants-table">
+            <thead>
+              <tr>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Email</th>
+                <th>Téléphone</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let participant of participants">
+                <td>{{ participant.nom }}</td>
+                <td>{{ participant.prenom }}</td>
+                <td>{{ participant.email }}</td>
+                <td>{{ participant.telephone }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- No participants -->
+        <div *ngIf="!loadingParticipants && participants.length === 0" class="no-participants-message">
+          Aucun participant inscrit pour cet événement.
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button (click)="closeParticipantsModal()" class="cancel-btn">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>

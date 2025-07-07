@@ -1,0 +1,148 @@
+<div class="users-container">
+  <div class="header">
+    <h2>Gestion des Utilisateurs</h2>
+    <p class="subtitle">Gérez les utilisateurs, leurs rôles et leurs statuts</p>
+  </div>
+
+  <!-- Barre de recherche -->
+  <div class="search-container">
+    <svg class="search-icon" viewBox="0 0 24 24">
+      <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+    </svg>
+    <input 
+      type="text" 
+      class="search-input" 
+      [(ngModel)]="searchTerm"
+      (input)="filterUsers()"
+      placeholder="Rechercher un utilisateur...">
+  </div>
+
+  <!-- Statistiques -->
+  <div class="stats-bar">
+    <div class="stat-card">
+      <div class="stat-number">{{ users.length }}</div>
+      <div class="stat-label">Total utilisateurs</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">{{ getAdminCount() }}</div>
+      <div class="stat-label">Administrateurs</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">{{ getActiveCount() }}</div>
+      <div class="stat-label">Utilisateurs actifs</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">{{ getInactiveCount() }}</div>
+      <div class="stat-label">Comptes inactifs</div>
+    </div>
+  </div>
+
+  <!-- Grille des utilisateurs -->
+  <div class="users-grid" *ngIf="filteredUsers.length > 0">
+    <div class="user-card" *ngFor="let user of filteredUsers">
+      <div class="user-header">
+        <div class="user-avatar">
+          {{ getInitials(user.prenom, user.nom) }}
+        </div>
+        <div class="user-info">
+          <h3>{{ user.prenom }} {{ user.nom }}</h3>
+          <div class="user-email">{{ user.email }}</div>
+        </div>
+      </div>
+      
+      <div class="user-details">
+        <div class="detail-item">
+          <div class="detail-label">Rôle</div>
+          <div class="detail-value">
+            <span class="badge" [class.admin]="user.role === 'ADMIN'" [class.user]="user.role !== 'ADMIN'">
+              {{ user.role }}
+            </span>
+          </div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Statut</div>
+          <div class="detail-value">
+            <span class="badge" [class.active]="user.statut === 'ACTIF'" [class.inactive]="user.statut === 'INACTIF'">
+              {{ user.statut }}
+            </span>
+          </div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Date d'inscription</div>
+          <div class="detail-value">{{ formatDate(user.dateInscription) }}</div>
+        </div>
+       
+      </div>
+      
+      <div class="user-actions">
+        <!-- Bouton Supprimer -->
+        <button 
+          class="action-btn delete-btn" 
+          (click)="openDeleteModal(user)" 
+          title="Supprimer">
+          <svg viewBox="0 0 24 24">
+            <path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
+          </svg>
+        </button>
+        
+        <!-- Bouton Promouvoir/Rétrograder -->
+        <button 
+          *ngIf="user.role !== 'ADMIN'" 
+          class="action-btn promote-btn" 
+          (click)="openPromoteModal(user)" 
+          title="Promouvoir">
+          <svg viewBox="0 0 24 24">
+            <path d="M16,11.78L20.24,4.45L21.97,5.45L16.74,14.5L10.23,10.75L5.46,19H22V21H2V3H4V17.54L9.5,8L16,11.78Z" />
+          </svg>
+        </button>
+        <button 
+          *ngIf="user.role === 'ADMIN'" 
+          class="action-btn demote-btn" 
+          (click)="openDemoteModal(user)" 
+          title="Rétrograder">
+          <svg viewBox="0 0 24 24">
+            <path d="M16,13V11.5A2.5,2.5 0 0,0 13.5,9A2.5,2.5 0 0,0 16,6.5V5A2,2 0 0,0 14,3H10A2,2 0 0,0 8,5V6.5A2.5,2.5 0 0,0 10.5,9A2.5,2.5 0 0,0 8,11.5V13A2,2 0 0,0 10,15H14A2,2 0 0,0 16,13M14,13H10V11.5A0.5,0.5 0 0,1 10.5,11H13.5A0.5,0.5 0 0,1 14,11.5V13M14,6.5A0.5,0.5 0 0,1 13.5,7H10.5A0.5,0.5 0 0,1 10,6.5V5H14V6.5Z" />
+          </svg>
+        </button>
+
+        <!-- Bouton Activer/Désactiver -->
+        <button 
+          class="action-btn status-btn" 
+          [class.active]="user.statut === 'ACTIF'"
+          (click)="openStatusModal(user)" 
+          [title]="user.statut === 'ACTIF' ? 'Désactiver' : 'Activer'">
+          <svg viewBox="0 0 24 24">
+            <path d="M17,7H7A5,5 0 0,0 2,12A5,5 0 0,0 7,17H17A5,5 0 0,0 22,12A5,5 0 0,0 17,7M17,15A3,3 0 0,1 14,12A3,3 0 0,1 17,9A3,3 0 0,1 20,12A3,3 0 0,1 17,15Z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- État vide -->
+  <div class="empty-state" *ngIf="filteredUsers.length === 0 && users.length > 0">
+    <svg viewBox="0 0 24 24">
+      <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+    </svg>
+    <h3>Aucun utilisateur trouvé</h3>
+    <p>Essayez de modifier vos critères de recherche</p>
+  </div>
+
+  <!-- État de chargement -->
+  <div class="loading-state" *ngIf="users.length === 0">
+    <div class="spinner"></div>
+    <p>Chargement des utilisateurs...</p>
+  </div>
+</div>
+
+<!-- Modal de confirmation -->
+<div class="modal" [class.show]="showModal">
+  <div class="modal-content">
+    <h3>{{ modalTitle }}</h3>
+    <p>{{ modalMessage }}</p>
+    <div class="modal-actions">
+      <button class="confirm-btn" (click)="confirmModal()">Confirmer</button>
+      <button class="cancel-btn" (click)="closeModal()">Annuler</button>
+    </div>
+  </div>
+</div>
