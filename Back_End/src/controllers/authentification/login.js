@@ -72,7 +72,7 @@ const login = asyncHandler(async (req, res, next) => {
   res.cookie("refreshToken", refreshToken, {
     maxAge: 90 * 24 * 60 * 60 * 1000,
      secure: true,
-    //sameSite: "None",
+    sameSite: "None",
     httpOnly: true,
 
   });
@@ -80,7 +80,7 @@ const login = asyncHandler(async (req, res, next) => {
   res.cookie("accessToken", accessToken, {
     maxAge: 24 * 60 * 60 * 1000,
     secure: true,
-    //sameSite: "None",
+    sameSite: "None",
     httpOnly: true,
   });
 
