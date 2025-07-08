@@ -30,6 +30,9 @@
       <div class="info">
         <div class="top">
           <span class="name">{{ conv.utilisateur.prenom }} {{ conv.utilisateur.nom }}</span>
+          <span class="status">
+            {{ userStatusMap[conv.utilisateur.id] === 'EN_LIGNE' ? 'En ligne' : 'Hors ligne' }}
+          </span>
           <span class="date">
             {{ conv.dernierMessage?.dateEnvoi | date: 'shortTime' }}
           </span>

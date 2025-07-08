@@ -12,6 +12,26 @@
     border-bottom: 1px solid #ddd;
     font-size: 1.2rem;
     font-weight: bold;
+
+    button {
+      background: #3a0706;
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      padding: 10px 28px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s;
+      margin-top: 12px;
+      box-shadow: 0 2px 8px rgba(58, 7, 6, 0.08);
+
+      &:hover {
+        background: #5a1816;
+        box-shadow: 0 4px 16px rgba(58, 7, 6, 0.15);
+      }
+    }
+
   }
 
   .conversations {
@@ -107,6 +127,24 @@
     text-align: center;
     padding: 20px;
     color: gray;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    min-width: 0 !important;
+    border-right: none;
+    border-bottom: 1px solid #ddd;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 1000;
+    background: #fff;
+    box-shadow: 2px 0 12px rgba(0,0,0,0.08);
+    transition: transform 0.3s;
   }
 }
 

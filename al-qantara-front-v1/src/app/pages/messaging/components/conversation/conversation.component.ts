@@ -1,4 +1,4 @@
-import { ViewChild, ElementRef, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {ViewChild, ElementRef, Component, Input, OnChanges, SimpleChanges, OnInit} from '@angular/core';
 import { MessagerieService } from '../../../../member/services/messagerie.service';
 import {DatePipe, NgClass, NgForOf, NgIf} from '@angular/common';
 import {AuthService} from '../../../../member/services/auth.service';
@@ -20,7 +20,7 @@ import {Router} from '@angular/router';
   standalone: true,
   styleUrl: './conversation.component.scss'
 })
-export class ConversationComponent implements OnChanges {
+export class ConversationComponent implements OnChanges , OnInit{
   @Input() conversation: any;
   @Output() messageEnvoye = new EventEmitter<any>();
 
@@ -33,6 +33,8 @@ export class ConversationComponent implements OnChanges {
   preloadedType: string | null = null;
   preloadedEvenementId: number | null = null;
 
+
+  @Input() userStatus: 'EN_LIGNE' | 'HORS_LIGNE' | 'INACTIF' = 'HORS_LIGNE';
 
   constructor(private messagerieService: MessagerieService,
               private authService: AuthService,
@@ -53,7 +55,20 @@ export class ConversationComponent implements OnChanges {
       }
     });
 
+    this.socketService.on('userStatusChanged', (data: any) => {
+      if (
+        this.conversation &&
+        data.userId === this.conversation.utilisateur.id
+      ) {
+        this.userStatus = data.status;
+      }
+    });
 
+
+  }
+
+  ngOnInit(): void {
+    this.registerSocketListener();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -61,11 +76,9 @@ export class ConversationComponent implements OnChanges {
       this.messagerieService.getConversationByUserId(this.conversation.utilisateur.id).subscribe({
         next: (res) => {
           this.conversation.messages = res.data || [];
-          setTimeout(() => this.scrollToBottom(), 0); // scroll après le rendu
+          setTimeout(() => this.scrollToBottom(), 0);
         }
       });
-
-      this.registerSocketListener();
     }
   }
 
