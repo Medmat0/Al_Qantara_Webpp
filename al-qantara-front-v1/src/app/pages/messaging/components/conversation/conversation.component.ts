@@ -1,4 +1,4 @@
-import { ViewChild, ElementRef, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {ViewChild, ElementRef, Component, Input, OnChanges, SimpleChanges, OnInit} from '@angular/core';
 import { MessagerieService } from '../../../../member/services/messagerie.service';
 import {DatePipe, NgClass, NgForOf, NgIf} from '@angular/common';
 import {AuthService} from '../../../../member/services/auth.service';
@@ -20,7 +20,7 @@ import {Router} from '@angular/router';
   standalone: true,
   styleUrl: './conversation.component.scss'
 })
-export class ConversationComponent implements OnChanges {
+export class ConversationComponent implements OnChanges , OnInit{
   @Input() conversation: any;
   @Output() messageEnvoye = new EventEmitter<any>();
 
@@ -65,6 +65,10 @@ export class ConversationComponent implements OnChanges {
     });
 
 
+  }
+
+  ngOnInit(): void {
+    this.registerSocketListener();
   }
 
   ngOnChanges(changes: SimpleChanges): void {

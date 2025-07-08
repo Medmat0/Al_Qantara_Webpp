@@ -22,6 +22,8 @@ export class MessagingHomeComponent implements OnInit {
   preloadedType: string | null = null;
   preloadedEvenementId: number | null = null;
 
+  showSidebar = false;
+
   constructor(
     private messagerieService: MessagerieService,
     private route: ActivatedRoute
@@ -43,8 +45,12 @@ export class MessagingHomeComponent implements OnInit {
 
   onConversationSelected(conv: any) {
     this.selectedConversation = conv;
+    if (window.innerWidth <= 768) {
+      this.showSidebar = false;
+    }
     if (this.conversationsComponent) {
-      this.selectedUserStatus = (this.conversationsComponent.userStatusMap[conv.utilisateur.id] as 'EN_LIGNE' | 'HORS_LIGNE' | 'INACTIF') || 'HORS_LIGNE';    }
+      this.selectedUserStatus = (this.conversationsComponent.userStatusMap[conv.utilisateur.id] as 'EN_LIGNE' | 'HORS_LIGNE' | 'INACTIF') || 'HORS_LIGNE';
+    }
   }
 
   selectConversationByUserId(userId: number) {
