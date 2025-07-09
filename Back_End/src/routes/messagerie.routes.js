@@ -14,7 +14,7 @@ import {
   markUserOffline,
   markUserInactive,
   getUsersOnlineStatus,
-  updateUserActivity
+  updateUserActivity, getUserOnlineStatus
 } from "../controllers/messagerie/onlineStatusController.js";
 
 const router = express.Router();
@@ -41,6 +41,7 @@ router.get("/conversations", authMiddleware, getConversations);
 router.get("/conversation/:utilisateurId", authMiddleware, getConversation);
 router.delete("/:id", authMiddleware, supprimerMessage);
 router.post("/vu", authMiddleware, marquerMessagesLus);
-router.get("/utilisateurs", authMiddleware, getUtilisateurs); 
+router.get("/utilisateurs", authMiddleware, getUtilisateurs);
+router.get("/online-status/users/:userId", authMiddleware, getUserOnlineStatus);
 
 export default router; 

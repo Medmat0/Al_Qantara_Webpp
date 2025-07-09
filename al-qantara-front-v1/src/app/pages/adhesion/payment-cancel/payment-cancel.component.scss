@@ -1,0 +1,145 @@
+.payment-container {
+  font-family: 'Segoe UI', sans-serif;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.payment-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 3rem;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  text-align: center;
+  position: relative;
+}
+
+.cancel-icon {
+  margin-bottom: 2rem;
+  animation: cancelShake 0.8s ease-in-out;
+}
+
+@keyframes cancelShake {
+  0% {
+    transform: scale(0.5) rotate(-10deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1) rotate(5deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+.cancel-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #F59E0B;
+  margin-bottom: 1rem;
+}
+
+.cancel-message {
+  font-size: 1.1rem;
+  color: #6B7280;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.info-section {
+  margin: 2rem 0;
+  padding: 2rem;
+  background: #FEF3C7;
+  border-radius: 12px;
+  border: 2px solid #FCD34D;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  color: #92400E;
+}
+
+.info-item:last-child {
+  margin-bottom: 0;
+}
+
+.actions-section {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.btn-retry {
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-retry:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+}
+
+.btn-events {
+  background: transparent;
+  color: #6B7280;
+  border: 2px solid #E5E7EB;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-events:hover {
+  border-color: #D1D5DB;
+  color: #374151;
+  background: #F9FAFB;
+}
+
+.btn-retry:active,
+.btn-events:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 640px) {
+  .payment-card {
+    padding: 2rem;
+    margin: 1rem;
+  }
+
+  .cancel-title {
+    font-size: 1.5rem;
+  }
+
+  .cancel-message {
+    font-size: 1rem;
+  }
+
+  .actions-section {
+    gap: 0.75rem;
+  }
+}

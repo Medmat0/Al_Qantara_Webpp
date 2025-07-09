@@ -1,3 +1,5 @@
+// --- Gestion des remboursements ---
+ 
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -70,6 +72,53 @@ export class EvenementsComponent {
         this.loading = false;
       }
     });
+  }
+
+   remboursements: any[] = [];
+  showRemboursementsModal = false;
+  loadingRemboursements = false;
+  actionLoadingId: number | null = null;
+
+  onShowRemboursements(eventId: number): void {
+    const event = this.events.find((e: any) => e.id === eventId);
+    if (!event) { return; }
+    this.selectedEventTitle = event.titre;
+    this.showRemboursementsModal = true;
+    this.loadRemboursements(eventId);
+  }
+
+  loadRemboursements(eventId: number): void {
+    this.loadingRemboursements = true;
+    this.remboursements = [];
+    this.adminEvenementService.getRemboursementsByEvent(eventId).subscribe({
+      next: (data: any[]) => {
+        this.remboursements = data;
+        this.loadingRemboursements = false;
+      },
+      error: () => {
+        this.loadingRemboursements = false;
+      }
+    });
+  }
+
+  updateRemboursementStatus(demandeId: number, status: 'accepte' | 'refuse'): void {
+    this.actionLoadingId = demandeId;
+    this.adminEvenementService.updateRemboursementStatus(demandeId, status).subscribe({
+      next: () => {
+        const idx = this.remboursements.findIndex((d: any) => d.id === demandeId);
+        if (idx > -1) this.remboursements[idx].status = status;
+        this.actionLoadingId = null;
+      },
+      error: () => {
+        this.actionLoadingId = null;
+      }
+    });
+  }
+
+  closeRemboursementsModal(): void {
+    this.showRemboursementsModal = false;
+    this.remboursements = [];
+    this.selectedEventTitle = '';
   }
 
   async onDeleteEvent(event: Evenement): Promise<void> {
@@ -279,5 +328,18 @@ export class EvenementsComponent {
       .replace(/[^a-zA-Z0-9àáâãäåæçèéêëìíîïñòóôõöøùúûüýÿ\s-_]/g, '')
       .replace(/\s+/g, '_')
       .trim();
+  }
+
+  getStatusLabel(status: string): string {
+    switch (status) {
+      case 'en_attente':
+        return 'En attente';
+      case 'accepte':
+        return 'Accepté';
+      case 'refuse':
+        return 'Refusé';
+      default:
+        return status;
+    }
   }
 }

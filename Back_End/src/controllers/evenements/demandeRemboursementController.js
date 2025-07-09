@@ -5,9 +5,17 @@ export const demandeRemboursementController = async (req, res) => {
     const evenementId = parseInt(req.params.id);
     const utilisateurId = 4;
     //const utilisateurId = req.user.id; // À adapter selon ton auth
-    const { raison } = req.body;
-    console.log(raison);
-    const demande = await createRemboursementDemande(utilisateurId, evenementId, raison);
+    const { raison, rib } = req.body;
+    
+    // Validation du RIB
+    if (!rib || rib.trim() === '') {
+      return res.status(400).json({ 
+        message: 'Le RIB est requis pour effectuer une demande de remboursement' 
+      });
+    }
+    
+    console.log('Demande de remboursement:', { raison, rib });
+    const demande = await createRemboursementDemande(utilisateurId, evenementId, raison, rib);
     res.status(201).json(demande);
   } catch (error) {
     res.status(500).json({ message: 'Erreur lors de la création de la demande de remboursement', error: error.message });

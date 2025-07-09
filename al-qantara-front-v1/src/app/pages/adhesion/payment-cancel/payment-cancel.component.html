@@ -1,0 +1,38 @@
+<div class="payment-container">
+  <div class="payment-card">
+    <div class="cancel-icon">
+      <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="12" fill="#F59E0B"/>
+        <path d="M9 9l6 6M15 9l-6 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <h1 class="cancel-title">Paiement annulé</h1>
+    <p class="cancel-message">
+      Vous avez annulé le processus de paiement. Aucun montant n'a été débité de votre compte.
+    </p>
+
+    <div class="info-section">
+      <div class="info-item">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="10" stroke="#6B7280" stroke-width="2"/>
+          <path d="M12 6v6l4 2" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Votre payement n'a pas été débité</span>
+      </div>
+    </div>
+
+    <div class="actions-section">
+      <button class="btn-retry" (click)="retryPayment()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1 4v6h6M23 20v-6h-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Réessayer le paiement
+      </button>
+      <button class="btn-events" (click)="goToEvents()">
+        Retour au adhesion 
+      </button>
+    </div>
+  </div>
+</div>

@@ -30,6 +30,7 @@ export class AdhesionComponent implements OnInit {
   showDonationPayment = false;
   donationAmount: number = 10;
   customDonation: string = '';
+  isCustomDonation: boolean = false; // Nouvelle variable pour gérer l'état personnalisé
   donationError: string | null = null;
   donationLabel: string = '';
 
@@ -87,8 +88,11 @@ export class AdhesionComponent implements OnInit {
   // DON
   choisirMontantDon(montant: number|string) {
     if (montant === 'autre') {
+      this.isCustomDonation = true;
       this.donationAmount = 0;
+      this.customDonation = '';
     } else {
+      this.isCustomDonation = false;
       this.donationAmount = Number(montant);
       this.customDonation = '';
     }
@@ -98,6 +102,14 @@ export class AdhesionComponent implements OnInit {
     const val = Number(event.target.value);
     this.donationAmount = isNaN(val) ? 0 : val;
     this.customDonation = event.target.value;
+    // On reste en mode personnalisé même quand on tape
+  }
+
+  selectInputText(event: any) {
+    const input = event.target as HTMLInputElement;
+    if (input) {
+      input.select();
+    }
   }
 
   ouvrirModalDon() {
@@ -107,8 +119,11 @@ export class AdhesionComponent implements OnInit {
   }
 
   async payerDon() {
-    if (!this.utilisateur || !this.donationAmount || this.donationAmount < 1) {
-      this.donationError = 'Veuillez saisir un montant valide.';
+    // Utiliser la valeur appropriée selon le mode
+    const montantAPayer = this.isCustomDonation ? this.donationAmount : this.donationAmount;
+    
+    if (!this.utilisateur || !montantAPayer || montantAPayer < 1) {
+      this.donationError = 'Veuillez saisir un montant valide (minimum 1€).';
       return;
     }
     
@@ -117,7 +132,7 @@ export class AdhesionComponent implements OnInit {
     
     try {
       // Utiliser le nouveau service de don
-      this.adhesionService.creerPaiementDon(this.donationAmount, Number(this.utilisateur.id)).subscribe({
+      this.adhesionService.creerPaiementDon(montantAPayer, Number(this.utilisateur.id)).subscribe({
         next: (response) => {
           if (response.redirectUrl) {
             window.location.href = response.redirectUrl;

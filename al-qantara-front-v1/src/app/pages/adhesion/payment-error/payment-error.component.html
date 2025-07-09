@@ -1,0 +1,48 @@
+<div class="payment-container">
+  <div class="payment-card">
+    <div class="error-icon">
+      <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="12" fill="#EF4444"/>
+        <path d="M12 8v4M12 16h.01" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <h1 class="error-title">{{ getErrorTitle() }}</h1>
+    <p class="error-message">
+      {{ errorMessage }}
+    </p>
+
+    <div class="warning-notice">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M12 9v4M12 17h.01" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Aucun montant n'a été débité de votre compte</span>
+    </div>
+
+    <div class="countdown-section">
+      <p class="countdown-text">
+        {{ getRedirectMessage() }} <span class="countdown-number">{{ countdown }}</span> secondes
+      </p>
+    </div>
+
+    <div class="actions-section">
+      <button class="btn-retry" (click)="retryPayment()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1 4v6h6M23 20v-6h-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        {{ getRetryButtonText() }}
+      </button>
+      <button class="btn-support" (click)="contactSupport()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Nous contacter
+      </button>
+      <button class="btn-events" (click)="goToHome()">
+        Retour à l'accueil
+      </button>
+    </div>
+  </div>
+</div>

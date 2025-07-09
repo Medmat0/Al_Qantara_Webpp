@@ -54,6 +54,32 @@ export class AdminEvenementService {
     );
   }
 
+  getRemboursementsByEvent(eventId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/${eventId}/remboursements`, { withCredentials: true }).pipe(
+      tap((response) => {
+        console.log('Remboursements pour événement', eventId, ':', response);
+      }),
+      catchError((error) => {
+        this.errorMessage = error.error?.message || 'Erreur lors de la récupération des demandes de remboursement.';
+        console.error('Erreur getRemboursementsByEvent:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  updateRemboursementStatus(demandeId: number, status: 'accepte' | 'refuse'): Observable<any> {
+    return this.http.patch(`${API_URL}/remboursements/${demandeId}/status`, { status }, { withCredentials: true }).pipe(
+      tap((response) => {
+        console.log('Statut remboursement mis à jour:', response);
+      }),
+      catchError((error) => {
+        this.errorMessage = error.error?.message || 'Erreur lors de la mise à jour du statut de remboursement.';
+        console.error('Erreur updateRemboursementStatus:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
   checkQRCodeParticipation(evenementId: number, userId:number): Observable<any> {
     return this.http.get(`${this.apiUrl}/${evenementId}/qr-participation/${userId}`, {withCredentials: true}).pipe(
       tap((response) => {

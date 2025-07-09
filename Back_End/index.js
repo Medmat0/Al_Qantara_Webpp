@@ -136,7 +136,7 @@ app.use(
 
 app.use(cors({
   // Autorise les requêtes CORS seulement depuis le frontend
-  origin: process.env.FRONT_URL,
+  origin: process.env.FRONT_URL || "http://localhost:4200",
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization"],

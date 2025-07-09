@@ -125,12 +125,20 @@
               </div>
               
               <div class="donation-amounts">
-                <button class="amount-btn" [class.active]="donationAmount === 10" (click)="choisirMontantDon(10)">10€</button>
-                <button class="amount-btn" [class.active]="donationAmount === 25" (click)="choisirMontantDon(25)">25€</button>
-                <button class="amount-btn featured" [class.active]="donationAmount === 50" (click)="choisirMontantDon(50)">50€</button>
-                <button class="amount-btn" [class.active]="donationAmount === 100" (click)="choisirMontantDon(100)">100€</button>
-                <button class="amount-btn custom" [class.active]="donationAmount === 0" (click)="choisirMontantDon('autre')">Autre</button>
-                <input *ngIf="donationAmount === 0" type="number" min="1" class="custom-donation-input" placeholder="Montant" [value]="customDonation" (input)="setCustomDonation($event)" />
+                <button class="amount-btn" [class.active]="donationAmount === 10 && !isCustomDonation" (click)="choisirMontantDon(10)">10€</button>
+                <button class="amount-btn" [class.active]="donationAmount === 25 && !isCustomDonation" (click)="choisirMontantDon(25)">25€</button>
+                <button class="amount-btn featured" [class.active]="donationAmount === 50 && !isCustomDonation" (click)="choisirMontantDon(50)">50€</button>
+                <button class="amount-btn" [class.active]="donationAmount === 100 && !isCustomDonation" (click)="choisirMontantDon(100)">100€</button>
+                <button class="amount-btn custom" [class.active]="isCustomDonation" (click)="choisirMontantDon('autre')">Autre montant</button>
+                <input *ngIf="isCustomDonation" 
+                       type="number" 
+                       min="1" 
+                       max="10000"
+                       class="custom-donation-input" 
+                       placeholder="Montant en €" 
+                       [value]="customDonation" 
+                       (input)="setCustomDonation($event)"
+                       (focus)="selectInputText($event)" />
               </div>
               
               <button class="cta-button secondary" (click)="ouvrirModalDon()">
@@ -346,12 +354,12 @@
               <span class="item-name">Don à Al Qantara</span>
               <span class="item-description">Votre générosité fait la différence</span>
             </div>
-            <span class="item-price">{{ donationAmount || customDonation }}€</span>
+            <span class="item-price">{{ donationAmount }}€</span>
           </div>
           <div class="order-total">
             <div class="total-row final">
               <span>Total à payer</span>
-              <span class="total-price">{{ donationAmount || customDonation }}€</span>
+              <span class="total-price">{{ donationAmount }}€</span>
             </div>
           </div>
         </div>
