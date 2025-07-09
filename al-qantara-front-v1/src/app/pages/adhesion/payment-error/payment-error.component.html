@@ -7,11 +7,10 @@
       </svg>
     </div>
 
-    <h1 class="error-title">Erreur de paiement</h1>
+    <h1 class="error-title">{{ getErrorTitle() }}</h1>
     <p class="error-message">
-      Une erreur s'est produite lors du traitement de votre paiement. Veuillez réessayer ou contacter notre support.
+      {{ errorMessage }}
     </p>
-
 
     <div class="warning-notice">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -21,13 +20,19 @@
       <span>Aucun montant n'a été débité de votre compte</span>
     </div>
 
+    <div class="countdown-section">
+      <p class="countdown-text">
+        {{ getRedirectMessage() }} <span class="countdown-number">{{ countdown }}</span> secondes
+      </p>
+    </div>
+
     <div class="actions-section">
       <button class="btn-retry" (click)="retryPayment()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M1 4v6h6M23 20v-6h-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           <path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        Réessayer le paiement
+        {{ getRetryButtonText() }}
       </button>
       <button class="btn-support" (click)="contactSupport()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -35,8 +40,8 @@
         </svg>
         Nous contacter
       </button>
-      <button class="btn-events" (click)="goToEvents()">
-        Retour aux événements
+      <button class="btn-events" (click)="goToHome()">
+        Retour à l'accueil
       </button>
     </div>
   </div>

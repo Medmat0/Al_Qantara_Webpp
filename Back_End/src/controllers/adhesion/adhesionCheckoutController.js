@@ -1,5 +1,5 @@
 import { createAdhesionCheckoutIntent, createDonationCheckoutIntent, getCheckoutIntentDetails } from '../../services/adhesion/adhesionCheckout.service.js';
-import { checkAdhesionStatus } from '../../services/adhesion/adhesion.service.js';
+import { checkAdhesionStatus, processAdhesionPayment } from '../../services/adhesion/adhesion.service.js';
 
 /**
  * @desc    Crée une intention de paiement HelloAsso pour l'adhésion
@@ -19,7 +19,7 @@ const createAdhesionCheckout = async (req, res) => {
 
     // Validation des données du payer - Structure exacte HelloAsso
     const payerData = {
-      email: req.user?.email || 'yassineelmatror@gmail.com',
+      email: req.user?.email || 'yassineelmatroor@gmail.com',
       firstName: req.user?.prenom || "Yassine",
       // Utilisation d'un nom de famille "valide" pour test HelloAsso
       lastName: "Dupont"
@@ -87,7 +87,7 @@ const createDonationCheckout = async (req, res) => {
 
     // Validation des données du payer pour le don - Structure exacte HelloAsso
     const payerData = {
-      email: req.user?.email || 'yassineelmatror@gmail.com',
+      email: req.user?.email || 'yassineelmatroor@gmail.com',
       firstName: req.user?.prenom || "Yassine",
       lastName: req.user?.nom || "El Matroor"
     };
@@ -168,9 +168,76 @@ const checkUserAdhesionStatus = async (req, res) => {
   }
 };
 
+/**
+ * @desc    Crée une adhésion directement (après paiement confirmé)
+ * @method  POST
+ * @route   /adhesion/create
+ */
+const createAdhesion = async (req, res) => {
+  try {
+    const { utilisateurId } = req.body;
+    const userId = req.user?.id || utilisateurId;
+
+    if (!userId) {
+      return res.status(400).json({
+        message: 'ID utilisateur requis'
+      });
+    }
+
+    console.log('Création d\'adhésion pour l\'utilisateur:', userId);
+
+    // Vérifier d'abord si l'utilisateur n'est pas déjà adhérent
+    const currentStatus = await checkAdhesionStatus(userId);
+    if (currentStatus.isAdherent) {
+      return res.status(400).json({
+        message: 'Utilisateur déjà adhérent',
+        statut: currentStatus
+      });
+    }
+
+    // Créer les données de paiement simulées pour le processus
+    const paymentData = {
+      metadata: {
+        utilisateurId: userId,
+        type: 'adhesion'
+      },
+      paymentId: `manual_${Date.now()}`,
+      amount: 20, // Montant de l'adhésion
+      status: 'authorized'
+    };
+
+    // Traiter l'adhésion
+    const result = await processAdhesionPayment(paymentData);
+
+    console.log('Adhésion créée avec succès:', result);
+
+    res.status(201).json({
+      message: 'Adhésion créée avec succès',
+      data: {
+        adhesion: result.adhesion,
+        utilisateur: {
+          id: result.utilisateur.id,
+          nom: result.utilisateur.nom,
+          prenom: result.utilisateur.prenom,
+          email: result.utilisateur.email,
+          role: result.utilisateur.role,
+          statut: result.utilisateur.statut
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Erreur lors de la création de l\'adhésion:', error);
+    res.status(500).json({
+      message: 'Erreur lors de la création de l\'adhésion',
+      error: error.message
+    });
+  }
+};
+
 export { 
   createAdhesionCheckout, 
   createDonationCheckout, 
   getAdhesionCheckoutDetails,
-  checkUserAdhesionStatus
+  checkUserAdhesionStatus,
+  createAdhesion
 };

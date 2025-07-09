@@ -10,7 +10,6 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./payment-cancel.component.scss']
 })
 export class PaymentCancelComponent implements OnInit {
-  evenementId: string | null = null;
   utilisateurId: string | null = null;
 
   constructor(
@@ -20,20 +19,17 @@ export class PaymentCancelComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
-      this.evenementId = params['evenementId'];
       this.utilisateurId = params['utilisateurId'];
     });
   }
 
   retryPayment(): void {
-    if (this.evenementId) {
-      this.router.navigate(['/events', this.evenementId]);
-    } else {
-      this.router.navigate(['/events']);
-    }
+ 
+      this.router.navigate(['/adhesion']);
+    
   }
 
   goToEvents(): void {
-    this.router.navigate(['/events']);
+    this.router.navigate(['/adhesion']);
   }
 }

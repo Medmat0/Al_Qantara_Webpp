@@ -50,6 +50,25 @@
   }
 }
 
+.processing-loader {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.error-icon {
+  animation: errorShake 0.5s ease-in-out;
+}
+
+@keyframes errorShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
 .success-title {
   font-size: 2rem;
   font-weight: 700;
@@ -63,6 +82,20 @@
   &.don {
     color: #f59e0b;
   }
+  
+  &.processing {
+    color: #3b82f6;
+    animation: pulse 2s infinite;
+  }
+  
+  &.error {
+    color: #ef4444;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
 }
 
 .success-message {
@@ -70,6 +103,14 @@
   color: #6B7280;
   margin-bottom: 2rem;
   line-height: 1.6;
+  
+  &.error {
+    color: #ef4444;
+    background: #fef2f2;
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 4px solid #ef4444;
+  }
 }
 
 .payment-info {
@@ -193,6 +234,49 @@
   
   &:active {
     transform: translateY(0);
+  }
+  
+  &:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+    
+    &:hover {
+      transform: none;
+      box-shadow: none;
+    }
+  }
+}
+
+.error-section {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: #fef2f2;
+  border-radius: 8px;
+  border-left: 4px solid #ef4444;
+}
+
+.error-help {
+  color: #7f1d1d;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.btn-contact {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: #dc2626;
+    transform: translateY(-1px);
   }
 }
 

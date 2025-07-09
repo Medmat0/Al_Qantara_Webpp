@@ -103,4 +103,23 @@ export class AdhesionService {
       montant: montant
     }, { withCredentials: true });
   }
+
+  /**
+   * Crée une adhésion directement (après paiement confirmé)
+   * @param utilisateurId ID de l'utilisateur
+   * @returns Observable de la réponse de création d'adhésion
+   */
+  creerAdhesion(utilisateurId: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/adhesion/create`, {
+      utilisateurId: utilisateurId
+    }, { withCredentials: true }).pipe(
+      tap((response) => {
+        console.log('Adhésion créée:', response);
+      }),
+      catchError((error) => {
+        console.error('Erreur création adhésion:', error);
+        return throwError(() => new Error('Erreur lors de la création de l\'adhésion'));
+      })
+    );
+  }
 }

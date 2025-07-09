@@ -4,7 +4,8 @@ import {
   createAdhesionCheckout,
   createDonationCheckout,
   getAdhesionCheckoutDetails,
-  checkUserAdhesionStatus
+  checkUserAdhesionStatus,
+  createAdhesion
 } from "../controllers/adhesion/adhesionCheckoutController.js";
 import {
   handlePaymentWebhook,
@@ -15,6 +16,7 @@ const router = express.Router();
 
 // Routes pour l'adhésion
 router.post("/checkout", authMiddleware, createAdhesionCheckout);
+router.post("/create", authMiddleware, createAdhesion);
 
 // Routes pour les dons
 router.post("/donation/checkout", authMiddleware, createDonationCheckout);
