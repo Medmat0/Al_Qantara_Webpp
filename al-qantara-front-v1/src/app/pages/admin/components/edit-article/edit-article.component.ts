@@ -33,7 +33,7 @@ export class EditArticleComponent implements OnInit, OnDestroy, OnChanges {
   @Input() showModal = false;
   @Output() closeModalEvent = new EventEmitter<void>();
   @Output() articleUpdated = new EventEmitter<void>();
-  
+
   editor!: Editor;
   toolbar: Toolbar = [
     ['bold', 'italic'],
@@ -165,7 +165,7 @@ export class EditArticleComponent implements OnInit, OnDestroy, OnChanges {
   getRevuesTitres(): void {
     // Récupérer la liste des revues pour le sélecteur
     console.log('Début getRevuesTitres');
-    this.http.get<any>('${API_URL}/revues', { withCredentials: true })
+    this.http.get<any>(`${API_URL}/revues`, { withCredentials: true })
       .subscribe({
         next: (response) => {
           console.log('Réponse API revues:', response);
@@ -194,7 +194,7 @@ export class EditArticleComponent implements OnInit, OnDestroy, OnChanges {
 
   getCategoriesNoms(): void {
 
-    this.http.get<any>('${API_URL}/articles/categories/all', { withCredentials: true })
+    this.http.get<any>(`${API_URL}/articles/categories/all`, { withCredentials: true })
       .subscribe({
         next: (response) => {
           this.categories = response.categories;

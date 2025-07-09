@@ -74,7 +74,7 @@ export class ArticlesComponent implements OnInit {
     this.loading = true;
     this.error = '';
 
-    this.http.get<any>('${API_URL}/articles', { withCredentials: true }).subscribe({
+    this.http.get<any>(`${API_URL}/articles`, { withCredentials: true }).subscribe({
       next: (response) => {
         this.articles = response.articles || [];
         // Extraire la liste unique des catégories
@@ -190,7 +190,7 @@ export class ArticlesComponent implements OnInit {
     const pages: (number | string)[] = [];
     const totalPages = this.totalPages;
     const currentPage = this.currentPage;
-    
+
     if (totalPages <= 7) {
       // Si moins de 7 pages, montrer toutes les pages
       for (let i = 1; i <= totalPages; i++) {
@@ -199,29 +199,29 @@ export class ArticlesComponent implements OnInit {
     } else {
       // Toujours montrer la première page
       pages.push(1);
-      
+
       if (currentPage > 3) {
         pages.push('...');
       }
-      
+
       // Montrer les pages autour de la page courante
       const startPage = Math.max(2, currentPage - 1);
       const endPage = Math.min(totalPages - 1, currentPage + 1);
-      
+
       for (let i = startPage; i <= endPage; i++) {
         pages.push(i);
       }
-      
+
       if (currentPage < totalPages - 2) {
         pages.push('...');
       }
-      
+
       // Toujours montrer la dernière page
       if (totalPages > 1) {
         pages.push(totalPages);
       }
     }
-    
+
     return pages;
   }
 
