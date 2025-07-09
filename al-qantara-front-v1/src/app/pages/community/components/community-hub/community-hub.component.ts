@@ -28,7 +28,7 @@ export class CommunityHubComponent implements OnInit {
   showMembersPopup = false;
   showPostSearchPopup = false;
   showCreateForm = false;
-  
+
   // Formulaire de création de post
   postForm!: FormGroup;
   selectedFile: File | null = null;
@@ -58,35 +58,36 @@ export class CommunityHubComponent implements OnInit {
   }
 
   ngOnInit() {
-
-    this.authService.authStatus$.subscribe((status) => {
-      this.isAuthenticated = status;
-      console.log('Authentication status:', this.isAuthenticated);
-      if (status) {
-        const user = localStorage.getItem('utilisateur');
-        if (user) {
-          this.userId = JSON.parse(user).id;
-        }
-      } else {
-        this.userId = null;
-      }
-    });
-
     this.route.paramMap.subscribe(params => {
       const id = params.get('communityId');
       if (id) {
         this.communityId = +id;
         this.fetchCommunity();
         this.fetchPosts();
-        if (this.isAuthenticated) {
+      }
+    });
+
+    this.authService.authStatus$.subscribe((status) => {
+      this.isAuthenticated = status;
+      console.log('Authentication status:', this.isAuthenticated);
+
+      if (status) {
+        const user = localStorage.getItem('utilisateur');
+        if (user) {
+          this.userId = JSON.parse(user).id;
+        }
+
+        if (this.communityId) {
           this.checkMembership();
           this.communityService.isModerator(this.communityId).subscribe({
             next: (isMod) => this.isModerator = isMod,
             error: () => this.isModerator = false
           });
-        } else {
-          this.isMember = false;
         }
+      } else {
+        this.userId = null;
+        this.isMember = false;
+        this.isModerator = false;
       }
     });
   }
@@ -150,7 +151,7 @@ export class CommunityHubComponent implements OnInit {
   onPostTypeChange(event: any) {
     const type = event.target.value;
     this.postForm.patchValue({ type });
-    
+
     // Reset poll options si ce n'est pas un sondage
     if (type !== 'POLL') {
       this.pollOptions.clear();
@@ -203,10 +204,10 @@ export class CommunityHubComponent implements OnInit {
     }
 
     this.isSubmitting = true;
-    
+
     // Préparer les données selon l'interface attendue par le service
     const tags = this.tags.value.filter((tag: string) => tag.trim() !== '');
-    const pollOptions = this.postForm.get('type')?.value === 'POLL' 
+    const pollOptions = this.postForm.get('type')?.value === 'POLL'
       ? this.pollOptions.value.filter((option: string) => option.trim() !== '')
       : [];
 
@@ -240,16 +241,16 @@ export class CommunityHubComponent implements OnInit {
   private resetForm() {
     this.postForm.reset();
     this.postForm.patchValue({ type: 'TEXT' });
-    
+
     // Reset des tags
     while (this.tags.length > 1) {
       this.tags.removeAt(this.tags.length - 1);
     }
     this.tags.at(0).setValue('');
-    
+
     // Reset des options de sondage
     this.pollOptions.clear();
-    
+
     // Reset du fichier et de l'aperçu
     this.selectedFile = null;
     this.imagePreview = null;
