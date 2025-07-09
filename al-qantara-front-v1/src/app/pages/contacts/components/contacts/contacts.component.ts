@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { RequestFormComponent } from '../request-form/request-form.component';
+import {CV_WEB_SERVICE_URL} from '../../../../utils/config';
 
 @Component({
   selector: 'app-contacts',
@@ -14,6 +15,7 @@ import { RequestFormComponent } from '../request-form/request-form.component';
 })
 export class ContactsComponent implements AfterViewInit {
   userMessage: string = '';
+  CV_WEBSERVICE_ASK_URL: string = `${CV_WEB_SERVICE_URL}/chatbot/ask`;
   messages: { from: 'user' | 'bot' | 'typing', text: string }[] = [
     { from: 'bot', text: 'Bonjour ! Je suis le bot de l’association. Posez-moi vos questions.' }
   ];
@@ -36,7 +38,7 @@ export class ContactsComponent implements AfterViewInit {
     this.messages.push({ from: 'typing', text: 'Le bot est en train d’écrire...' });
     this.scrollToBottom();
 
-    this.http.post<{ response: string }>('http://localhost:8000/chatbot/ask', { message })
+    this.http.post<{ response: string }>(this.CV_WEBSERVICE_ASK_URL, { message })
       .subscribe({
         next: (res) => {
           this.removeTyping();
