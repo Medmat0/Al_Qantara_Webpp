@@ -399,6 +399,7 @@ model RemboursementDemande {
   status        String // "en_attente", "accepte", "refuse", "rembourse"
   dateDemande   DateTime @default(now())
   raison        String?
+  rib           String?  @db.VarChar(255)
 }
 
 model Community {

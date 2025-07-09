@@ -136,7 +136,7 @@ app.use(
 
 app.use(cors({
   // Autorise les requêtes CORS seulement depuis le frontend
-  origin: ["http://localhost:4200", "https://23a8-2a02-8428-8533-ea01-b80f-a38f-e50b-d6af.ngrok-free.app", process.env.FRONT_URL].filter(Boolean),
+  origin: process.env.FRONT_URL || "http://localhost:4200",
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization"],

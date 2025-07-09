@@ -1,3 +1,110 @@
+// --- Bouton remboursement ---
+.remboursement-btn {
+  margin-top: 0.5rem;
+  background: #f8f9fa;
+  color: #9e2e2c;
+  border: 1px solid #9e2e2c;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Mulish', sans-serif;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 5px rgba(158, 46, 44, 0.08);
+  &:hover {
+    background: #9e2e2c;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(158, 46, 44, 0.15);
+    transform: translateY(-1px);
+  }
+  svg {
+    stroke: currentColor;
+  }
+}
+
+// --- Statuts remboursement ---
+.statut-attente {
+  color: #ff9800;
+  font-weight: bold;
+  font-family: 'Mulish', sans-serif;
+}
+.statut-accepte {
+  color: #4caf50;
+  font-weight: bold;
+  font-family: 'Mulish', sans-serif;
+}
+.statut-refuse {
+  color: #dc3545;
+  font-weight: bold;
+  font-family: 'Mulish', sans-serif;
+}
+
+// --- Table remboursement ---
+.remboursements-table-container {
+  overflow-x: auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  background: white;
+}
+.remboursements-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+  background: white;
+  th {
+    padding: 1.25rem 1rem;
+    text-align: left;
+    border-bottom: 2px solid #e8ecef;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.95rem;
+    font-family: 'Mulish', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    &:first-child { border-top-left-radius: 12px; }
+    &:last-child { border-top-right-radius: 12px; }
+  }
+  td {
+    padding: 1rem;
+    font-size: 0.95rem;
+    color: #495057;
+    border-bottom: 1px solid #f1f3f4;
+    font-family: 'Mulish', sans-serif;
+    transition: all 0.2s ease;
+  }
+  tbody tr {
+    transition: all 0.2s ease;
+    &:hover {
+      background: linear-gradient(135deg, #fff5f5 0%, #ffeaea 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(158, 46, 44, 0.1);
+    }
+    &:last-child td {
+      border-bottom: none;
+      &:first-child { border-bottom-left-radius: 12px; }
+      &:last-child { border-bottom-right-radius: 12px; }
+    }
+  }
+}
+.no-remboursements-message {
+  text-align: center;
+  padding: 3rem;
+  color: #6c757d;
+  font-style: italic;
+  font-size: 1.1rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  font-family: 'Mulish', sans-serif;
+}
 .evenements-main-container {
   padding: 2rem;
   max-width: 1400px;
@@ -184,7 +291,8 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.1); // Arrière-plan très léger au lieu de noir opaque
+  backdrop-filter: blur(2px); // Léger flou pour garder le focus
   display: flex;
   justify-content: center;
   align-items: center;
@@ -196,7 +304,8 @@
     border-radius: 8px;
     min-width: 300px;
     max-width: 500px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); // Ombre plus visible
+    border: 2px solid rgba(158, 46, 44, 0.1); // Bordure subtile
 
     h3 {
       margin-top: 0;
@@ -245,8 +354,320 @@
   }
 }
 
+// Styles pour le modal des remboursements (copie du modal participants)
+.remboursement-modal {
+  // Overlay transparent pour voir la page en arrière-plan
+  background-color: rgba(0, 0, 0, 0.1) !important; // Très léger au lieu de noir
+  backdrop-filter: blur(1px); // Léger flou pour garder le focus sur le modal
+  
+  .remboursement-modal-content {
+    max-width: 1000px;
+    width: 90vw;
+    max-height: 85vh;
+    padding: 0;
+    overflow: hidden;
+    border-radius: 16px;
+    border: 2px solid rgba(158, 46, 44, 0.1); // Bordure subtile
+    background: white; // Assurer un fond blanc global
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 2.5rem;
+    border-bottom: 1px solid #e8ecef;
+    background: linear-gradient(135deg, #9e2e2c 0%, #7c2323 100%);
+    color: white;
+
+    h3 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: white;
+      font-family: 'Cormorant Garamond', serif;
+      flex: 1;
+    }
+
+    .close-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: white;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.4);
+        transform: scale(1.05);
+      }
+    }
+  }
+
+  .modal-body {
+    padding: 2rem 2.5rem;
+    max-height: 65vh;
+    overflow-y: auto;
+    background: #fafbfc;
+
+    /* Styles de la scrollbar */
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f1f3f4;
+      border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #9e2e2c;
+      border-radius: 4px;
+
+      &:hover {
+        background: #7c2323;
+      }
+    }
+  }
+
+  // Conteneur de tableau pour les remboursements
+  .remboursements-table-container {
+    overflow-x: auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    background: white;
+  }
+
+  // Tableau des remboursements (même style que participants)
+  .remboursements-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+    background: white;
+
+    th {
+      padding: 1.25rem 1rem;
+      text-align: left;
+      border-bottom: 2px solid #e8ecef;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      font-weight: 600;
+      color: #495057;
+      font-size: 0.95rem;
+      font-family: 'Mulish', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+
+      &:first-child {
+        border-top-left-radius: 12px;
+      }
+
+      &:last-child {
+        border-top-right-radius: 12px;
+      }
+    }
+
+    td {
+      padding: 1rem;
+      font-size: 0.95rem;
+      color: #495057;
+      border-bottom: 1px solid #f1f3f4;
+      font-family: 'Mulish', sans-serif;
+      transition: all 0.2s ease;
+      background: white;
+    }
+
+    tbody tr {
+      transition: all 0.2s ease;
+      background: white;
+
+      &:hover {
+        background: linear-gradient(135deg, #fff5f5 0%, #ffeaea 100%) !important;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(158, 46, 44, 0.1);
+      }
+
+      &:last-child td {
+        border-bottom: none;
+
+        &:first-child {
+          border-bottom-left-radius: 12px;
+        }
+
+        &:last-child {
+          border-bottom-right-radius: 12px;
+        }
+      }
+    }
+
+    .status-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: capitalize;
+
+      &.en-attente {
+        background-color: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeaa7;
+      }
+
+      &.accepte {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      &.refuse {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 0.5rem;
+
+      .action-btn {
+        padding: 0.4rem 0.8rem;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+
+        &.accept-btn {
+          background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+          color: white;
+
+          &:hover {
+            background: linear-gradient(135deg, #218838 0%, #1ea083 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(40, 167, 69, 0.3);
+          }
+        }
+
+        &.reject-btn {
+          background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+          color: white;
+
+          &:hover {
+            background: linear-gradient(135deg, #c82333 0%, #a71e2a 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(220, 53, 69, 0.3);
+          }
+        }
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+          transform: none !important;
+          box-shadow: none !important;
+        }
+      }
+    }
+  }
+
+  .modal-footer {
+    padding: 1.5rem 2.5rem;
+    border-top: 1px solid #e8ecef;
+    background: white;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+  }
+
+  .no-remboursements-message {
+    text-align: center;
+    padding: 3rem;
+    color: #6c757d;
+    font-style: italic;
+    font-size: 1.1rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    font-family: 'Mulish', sans-serif;
+
+    &::before {
+      display: block;
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+  }
+
+  .loading-message {
+    text-align: center;
+    padding: 3rem;
+    color: #9e2e2c;
+    font-size: 1.1rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    font-family: 'Mulish', sans-serif;
+
+    &::before {
+      content: "";
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #9e2e2c;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 1rem;
+    }
+  }
+
+  /* Bouton personnalisé */
+  .cancel-btn {
+    background: linear-gradient(135deg, #9e2e2c 0%, #7c2323 100%);
+    color: white;
+    border: none;
+    padding: 0.875rem 2rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Mulish', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(158, 46, 44, 0.3);
+
+    &:hover {
+      background: linear-gradient(135deg, #7c2323 0%, #5a1a1a 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(158, 46, 44, 0.4);
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 10px rgba(158, 46, 44, 0.3);
+    }
+  }
+}
+
 // Styles pour le modal des participants
 .participants-modal {
+  // Overlay transparent pour voir la page en arrière-plan
+  background-color: rgba(0, 0, 0, 0.1) !important; // Très léger au lieu de noir
+  backdrop-filter: blur(2px); // Léger flou pour garder le focus sur le modal
+  
   .participants-modal-content {
     max-width: 1000px;
     width: 90vw;
@@ -254,8 +675,8 @@
     padding: 0;
     overflow: hidden;
     border-radius: 16px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-    border: none;
+    box-shadow: 0 20px 60px rgba(158, 46, 44, 0.25); // Ombre plus visible
+    border: 2px solid rgba(158, 46, 44, 0.1); // Bordure subtile
   }
 
   .modal-header {
@@ -547,6 +968,60 @@
   .event-list {
     grid-template-columns: 1fr;
     gap: 1rem;
+  }
+
+  .remboursement-modal {
+    .remboursement-modal-content {
+      width: 95vw;
+      max-height: 90vh;
+      border-radius: 12px;
+    }
+
+    .modal-header {
+      padding: 1.5rem;
+
+      h3 {
+        font-size: 1.25rem;
+      }
+
+      .close-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 1.25rem;
+      }
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    .modal-footer {
+      padding: 1.5rem;
+    }
+
+    .remboursements-table {
+      font-size: 0.85rem;
+
+      th,
+      td {
+        padding: 0.75rem 0.5rem;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+        gap: 0.25rem;
+
+        .action-btn {
+          font-size: 0.75rem;
+          padding: 0.3rem 0.6rem;
+        }
+      }
+    }
+
+    .cancel-btn {
+      padding: 0.75rem 1.5rem;
+      font-size: 0.9rem;
+    }
   }
 
   .participants-modal {

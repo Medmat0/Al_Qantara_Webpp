@@ -7,6 +7,8 @@ import {
   getAbonnesController,
   getHistoriqueController,
   getStatutAbonnement,
+  getStatutAbonnementParEmail,
+  seDesinscrireNewsletterParEmail,
   supprimerNewsletter,
   changerStatutNewsletter
 } from "../controllers/newsletter/newsletterController.js";
@@ -18,9 +20,11 @@ router.post("/s-abonner", sAbonnerNewsletter);
 
 // Route pour vérifier le statut d'abonnement
 router.get("/statut/:utilisateurId", getStatutAbonnement);
+router.get("/statut-email/:email", getStatutAbonnementParEmail);
 
 // Route pour se désinscrire
 router.delete("/desinscription/:utilisateurId", seDesinscrireNewsletter);
+router.delete("/desinscription-email/:email", seDesinscrireNewsletterParEmail);
 
 // Routes protégées (admin uniquement)
 

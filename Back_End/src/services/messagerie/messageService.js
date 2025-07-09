@@ -123,7 +123,8 @@ const getConversationService = async (utilisateurId, autreUtilisateurId) => {
             id: true,
             nom: true,
             prenom: true,
-            photoProfil: true
+            photoProfil: true,
+            statutEnLigne: true,
           }
         },
         destinataire: {

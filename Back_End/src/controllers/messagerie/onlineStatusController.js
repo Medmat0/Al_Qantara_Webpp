@@ -3,7 +3,7 @@ import {
   setUserOffline,
   setUserInactive,
   getAllUsersOnlineStatus,
-  updateLastActivity
+  updateLastActivity, getUserOnlineStatusService
 } from "../../services/messagerie/onlineStatusService.js";
 
 /**
@@ -151,6 +151,36 @@ const getUsersOnlineStatus = async (req, res) => {
 };
 
 /**
+ * @desc    Récupérer le statut en ligne d'un utilisateur spécifique
+ * @method  GET
+ * @route   /messages/online-status/users/:userId
+ */
+
+const getUserOnlineStatus = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    if (!userId) {
+      return res.status(400).json({
+        message: "ID de l'utilisateur manquant"
+      });
+
+      const user = await getUserOnlineStatusService(userId);
+
+    }
+
+  } catch (error) {
+    console.error("Erreur lors de la récupération du statut de l'utilisateur:", error);
+    res.status(500).json({
+      message: "Erreur lors de la récupération du statut de l'utilisateur",
+      error: error.message
+    });
+
+  }
+}
+
+
+/**
  * @desc    Mettre à jour la dernière activité d'un utilisateur
  * @method  POST
  * @route   /messages/online-status/activity
@@ -185,5 +215,6 @@ export {
   markUserOffline,
   markUserInactive,
   getUsersOnlineStatus,
-  updateUserActivity
+  updateUserActivity,
+  getUserOnlineStatus
 }; 

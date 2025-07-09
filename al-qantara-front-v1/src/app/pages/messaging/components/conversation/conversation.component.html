@@ -7,7 +7,20 @@
           {{ conversation.utilisateur.prenom[0] }}{{ conversation.utilisateur.nom[0] }}
         </div>
       </div>
-      <div class="name">{{ conversation.utilisateur.prenom }} {{ conversation.utilisateur.nom }}</div>
+      <div class="name">
+        {{ conversation.utilisateur.prenom }} {{ conversation.utilisateur.nom }}
+        <span
+          class="status-dot-inline"
+          [ngClass]="{
+                    'online': userStatus === 'EN_LIGNE',
+                    'offline': userStatus === 'HORS_LIGNE',
+                    'inactive': userStatus === 'INACTIF'
+          }"
+        ></span>
+        <span class="status-text">
+          {{ userStatus === 'EN_LIGNE' ? 'En ligne' : (userStatus === 'INACTIF' ? 'Inactif' : 'Hors ligne') }}
+        </span>
+      </div>
     </div>
   </div>
 
@@ -20,19 +33,19 @@
       <div class="bubble">
         <!-- Affichage spécial pour les messages d'événement -->
         <ng-container *ngIf="msg.type === 'EVENEMENT'; else texteClassique">
-          <div class="event-message">
-            <div class="event-title">{{ msg.evenement?.titre }}</div>
-            <div class="event-date">
-              {{ msg.evenement?.dateDebut | date: 'dd/MM/yyyy HH:mm' }}
-              <span *ngIf="msg.evenement?.lieu">— {{ msg.evenement.lieu }}</span>
-            </div>
-            <div class="event-description">{{ msg.evenement?.description }}</div>
+          <div class="event-message-bubble">
             <img
               *ngIf="msg.evenement?.images?.length > 0"
               [src]="msg.evenement.images[0]"
               alt="Image de l'événement"
               class="event-image"
             />
+            <div class="event-title">{{ msg.evenement?.titre }}</div>
+            <div class="event-date">
+              {{ msg.evenement?.dateDebut | date: 'dd/MM/yyyy HH:mm' }}
+              <span *ngIf="msg.evenement?.lieu">— {{ msg.evenement.lieu }}</span>
+            </div>
+            <div class="event-description">{{ msg.evenement?.description }}</div>
             <button *ngIf="msg.type === 'EVENEMENT'" (click)="goToSharedEvent(msg.evenement?.id)">Voir l'événement</button>
             <div class="event-content">{{ msg.contenu }}</div>
           </div>
@@ -42,7 +55,16 @@
         </ng-template>
         <div class="time">{{ msg.dateEnvoi | date: 'shortTime' }}</div>
       </div>
-      <button *ngIf="isCurrentUser(msg.expediteurId)" (click)="deleteMessage(msg.id)" >Supprimer</button>
+      <button
+        *ngIf="isCurrentUser(msg.expediteurId)"
+        (click)="deleteMessage(msg.id)"
+        class="delete-btn"
+        aria-label="Supprimer"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18">
+          <path fill="currentColor" d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
+        </svg>
+      </button>
     </div>
   </div>
 
@@ -51,13 +73,25 @@
   </div>
 
   <div class="chat-footer">
-    <input
-      type="text"
-      placeholder="Tapez un message..."
-      [(ngModel)]="messageInput"
-      (keyup.enter)="envoyerMessage(messageInput)"
-    />
-    <button (click)="envoyerMessage(messageInput)">Envoyer</button>
+    <div class="form-and-send input-group">
+      <input
+        type="text"
+        placeholder="Tapez un message..."
+        [(ngModel)]="messageInput"
+        (keyup.enter)="envoyerMessage(messageInput)"
+      />
+      <button
+        class="send-btn"
+        (click)="envoyerMessage(messageInput)"
+        aria-label="Envoyer"
+        type="button"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
+          <path fill="currentColor" d="M3 20V14L11 12L3 10V4L22 12Z" />
+        </svg>
+      </button>
+    </div>
+
     <button
       *ngIf="preloadedType === 'EVENEMENT'"
       class="cancel-event-btn"

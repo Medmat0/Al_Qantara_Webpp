@@ -40,7 +40,9 @@ import {
   envoyerNewsletter,
   getAbonnesNewsletter,
   getHistoriqueNewsletters,
-  getAbonnementParUtilisateur
+  getAbonnementParUtilisateur,
+  getAbonnementParEmail,
+  desinscrireNewsletterParEmail
 } from "../../services/newsletter/newsletterService.js";
 
 /**
@@ -198,4 +200,71 @@ export const getHistoriqueController = async (req, res) => {
       message: error.message || "Erreur lors de la récupération de l'historique"
     });
   }
-}; 
+};
+
+/**
+ * Vérifier le statut d'abonnement d'un utilisateur par email
+ * @route GET /newsletter/statut-email/:email
+ */
+export const getStatutAbonnementParEmail = async (req, res) => {
+  try {
+    const { email } = req.params;
+
+    if (!email) {
+      return res.status(400).json({
+        message: "Email requis"
+      });
+    }
+
+    const abonnement = await getAbonnementParEmail(email);
+    
+    if (!abonnement) {
+      return res.status(200).json({
+        message: "Aucun abonnement trouvé pour cet email",
+        data: { abonne: false, statut: null }
+      });
+    }
+
+    res.status(200).json({
+      message: "Statut d'abonnement récupéré avec succès",
+      data: { 
+        abonne: abonnement.statut === 'ACTIF',
+        statut: abonnement.statut,
+        id: abonnement.id,
+        dateInscription: abonnement.dateInscription
+      }
+    });
+  } catch (error) {
+    console.error("Erreur lors de la récupération du statut:", error);
+    res.status(500).json({
+      message: error.message || "Erreur lors de la récupération du statut"
+    });
+  }
+};
+
+/**
+ * Se désinscrire de la newsletter par email
+ * @route DELETE /newsletter/desinscription-email/:email
+ */
+export const seDesinscrireNewsletterParEmail = async (req, res) => {
+  try {
+    const { email } = req.params;
+
+    if (!email) {
+      return res.status(400).json({
+        message: "Email requis"
+      });
+    }
+
+    await desinscrireNewsletterParEmail(email);
+    
+    res.status(200).json({
+      message: "Désinscription de la newsletter réussie"
+    });
+  } catch (error) {
+    console.error("Erreur lors de la désinscription:", error);
+    res.status(500).json({
+      message: error.message || "Erreur lors de la désinscription"
+    });
+  }
+};

@@ -84,6 +84,29 @@ const getAllUsersOnlineStatus = async () => {
   }
 };
 
+const getUserOnlineStatusService = async (userId) => {
+    try {
+        const user = await prisma.utilisateur.findUnique({
+        where: { id: userId },
+        select: {
+            id: true,
+            nom: true,
+            prenom: true,
+            statutEnLigne: true,
+            derniereActivite: true
+        }
+        });
+
+        if (!user) {
+        throw new Error(`Utilisateur avec ID ${userId} non trouvé`);
+        }
+
+        return user;
+    } catch (error) {
+        throw error;
+    }
+}
+
 /**
  * @desc    Nettoyer les utilisateurs inactifs (plus de 5 minutes sans activité)
  * @returns {Promise<number>} Nombre d'utilisateurs mis à jour
@@ -144,5 +167,6 @@ export {
   setUserInactive,
   getAllUsersOnlineStatus,
   cleanupInactiveUsers,
-  updateLastActivity
+  updateLastActivity,
+  getUserOnlineStatusService
 }; 

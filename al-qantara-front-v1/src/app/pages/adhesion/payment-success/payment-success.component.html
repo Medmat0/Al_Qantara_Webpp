@@ -1,0 +1,108 @@
+<div class="payment-container">
+  <div class="payment-card" [ngClass]="paymentType">
+    <!-- Icône de succès ou loader -->
+    <div class="success-icon">
+      <!-- Loader pour le traitement d'adhésion -->
+      <div *ngIf="paymentType === 'adhesion' && isProcessing" class="processing-loader">
+        <svg width="80" height="80" viewBox="0 0 50 50">
+          <circle cx="25" cy="25" r="20" fill="none" stroke="#3b82f6" stroke-width="4" stroke-linecap="round" stroke-dasharray="31.416" stroke-dashoffset="31.416">
+            <animate attributeName="stroke-array" dur="2s" values="0 31.416;15.708 15.708;0 31.416" repeatCount="indefinite"/>
+            <animate attributeName="stroke-dashoffset" dur="2s" values="0;-15.708;-31.416" repeatCount="indefinite"/>
+          </circle>
+        </svg>
+      </div>
+      
+      <!-- Icône d'erreur -->
+      <div *ngIf="paymentType === 'adhesion' && processingError && !isProcessing" class="error-icon">
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="12" fill="#ef4444"/>
+          <path d="M8 8l8 8M16 8l-8 8" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      
+      <!-- Icône de succès normale -->
+      <div *ngIf="!isProcessing && !processingError">
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="12" [attr.fill]="paymentType === 'don' ? '#f59e0b' : paymentType === 'adhesion' ? '#3b82f6' : '#10B981'"/>
+          <path d="M8 12l2 2 4-4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <h1 class="success-title" [ngClass]="{ 
+      'don': paymentType === 'don',
+      'adhesion': paymentType === 'adhesion',
+      'processing': isProcessing,
+      'error': processingError && !isProcessing
+    }">{{ getPaymentTitle() }}</h1>
+    <p class="success-message" [ngClass]="{ 'error': processingError && !isProcessing }">
+      {{ getPaymentMessage() }}
+    </p>
+
+    <!-- Informations du paiement -->
+    <div class="payment-info" *ngIf="paymentData">
+      <div class="payment-details">
+        <h3>Détails du paiement</h3>
+        <div class="detail-row">
+          <span class="label">{{ getPaymentTypeLabel() }} :</span>
+          <span class="value">{{ eventName || paymentData?.itemName }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">{{ paymentType === 'don' ? 'Donateur' : paymentType === 'adhesion' ? 'Nouveau membre' : 'Participant' }} :</span>
+          <span class="value">{{ payerName }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Montant :</span>
+          <span class="value amount">{{ amount }}€</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Message informatif -->
+    <div class="info-notice" *ngIf="paymentType === 'event'">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="10" stroke="#3B82F6" stroke-width="2"/>
+        <path d="M12 16v-4M12 8h.01" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Votre CODE QR sera disponible sur la page de l'événement</span>
+    </div>
+
+    <div class="info-notice" *ngIf="paymentType === 'adhesion' && !processingError">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="10" stroke="#3B82F6" stroke-width="2"/>
+        <path d="M12 16v-4M12 8h.01" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span *ngIf="isProcessing">Activation de votre statut membre en cours...</span>
+      <span *ngIf="!isProcessing && adhesionProcessed">Votre statut membre est maintenant activé dans votre profil</span>
+      <span *ngIf="!isProcessing && !adhesionProcessed">Votre statut membre sera activé dans votre profil</span>
+    </div>
+
+    <div class="info-notice" *ngIf="paymentType === 'don'">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="10" stroke="#f59e0b" stroke-width="2"/>
+        <path d="M12 16v-4M12 8h.01" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Votre don contribue directement à nos actions culturelles</span>
+    </div>
+
+    <div class="countdown-section" *ngIf="!isProcessing">
+      <p class="countdown-text">
+        {{ getRedirectMessage() }} <span class="countdown-number">{{ countdown }}</span> secondes
+      </p>
+      <button class="btn-redirect" [ngClass]="paymentType" (click)="redirectNow()" [disabled]="processingError && paymentType === 'adhesion'">
+        {{ getRedirectButtonText() }}
+      </button>
+    </div>
+
+    <!-- Message d'erreur pour l'adhésion -->
+    <div class="error-section" *ngIf="processingError && paymentType === 'adhesion' && !isProcessing">
+      <p class="error-help">
+        Votre paiement a été reçu mais il y a eu un problème lors du traitement de votre adhésion. 
+        Notre équipe a été notifiée et traitera votre demande manuellement.
+      </p>
+      <button class="btn-contact" (click)="redirectToContact()">
+        Contacter le support
+      </button>
+    </div>
+  </div>
+</div>
