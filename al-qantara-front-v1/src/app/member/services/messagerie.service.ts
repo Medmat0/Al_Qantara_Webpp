@@ -28,7 +28,6 @@ export class MessagerieService {
     );
   }
 
-
   sendMessage(message: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}`, message, { withCredentials: true }).pipe(
       tap((response) => {

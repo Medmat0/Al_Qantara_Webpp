@@ -28,6 +28,7 @@ export class ConversationsComponent implements OnInit, OnDestroy {
 
   showModal = false;
   users: any[] = [];
+  userStatusMap: { [userId: number]: string } = {};
 
 
 
@@ -43,8 +44,13 @@ export class ConversationsComponent implements OnInit, OnDestroy {
       next: (res) => {
         this.conversations = res.data;
         this.loading = false;
-        console.log('Conversations loaded:', this.conversations);
-        console.log('Structure des données reçues :', res.data);
+        this.messagerieService.getAllUsers().subscribe({
+          next: (usersRes) => {
+            usersRes.data.forEach((user: any) => {
+              this.userStatusMap[user.id] = user.statutEnLigne || 'HORS_LIGNE';
+            });
+          }
+        });
       },
       error: (err) => {
         this.error = err.message || 'Erreur lors du chargement des conversations';
@@ -52,6 +58,12 @@ export class ConversationsComponent implements OnInit, OnDestroy {
       }
     });
     this.registerSocketListener();
+
+    this.socketService.on('userStatusChanged', (data: any) => {
+      if (data && data.userId) {
+        this.userStatusMap[data.userId] = data.status;
+      }
+    });
   }
 
   openModal() {
@@ -121,6 +133,15 @@ export class ConversationsComponent implements OnInit, OnDestroy {
       }
     };
     this.socketService.on('nouveauMessage', this.socketListener);
+
+    this.socketService.on('userStatusChanged', (data: any) => {
+      if (data && data.userId) {
+        this.userStatusMap[data.userId] = data.status;
+        if (this.openedConversationUserId === data.userId) {
+          this.conversationSelected.emit(this.conversations.find(c => c.utilisateur.id === data.userId));
+        }
+      }
+    });
   }
 
   selectConversation(conv: any) {

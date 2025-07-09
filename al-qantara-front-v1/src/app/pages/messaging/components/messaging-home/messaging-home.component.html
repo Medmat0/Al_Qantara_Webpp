@@ -1,13 +1,22 @@
+<div class="messagerie-header">
+  <button class="menu-btn" (click)="showSidebar = true">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28">
+      <path fill="currentColor" d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z" />
+    </svg>
+  </button>
+  <h1 class="title">Menu</h1>
+</div>
 <div class="messagerie-layout">
   <app-conversations
     class="sidebar"
-    (conversationSelected)="selectedConversation = $event">
+    [class.visible]="showSidebar"
+    (conversationSelected)="onConversationSelected($event)"
+    #conversationsComp>
   </app-conversations>
   <app-conversation
     class="chat"
     [conversation]="selectedConversation"
-    (messageEnvoye)="rafraichirConversation()"
-  >
-
+    [userStatus]="selectedUserStatus"
+    (messageEnvoye)="rafraichirConversation()">
   </app-conversation>
 </div>
