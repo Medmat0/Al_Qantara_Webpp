@@ -2,38 +2,7 @@
  * Supprimer une newsletter (admin uniquement)
  * @route DELETE /newsletter/:newsletterId
  */
-export const supprimerNewsletter = async (req, res) => {
-  try {
-    const { newsletterId } = req.params;
-    if (!newsletterId) {
-      return res.status(400).json({ message: "ID newsletter requis" });
-    }
-    await supprimerNewsletterService(newsletterId);
-    res.status(200).json({ message: "Newsletter supprimée avec succès" });
-  } catch (error) {
-    console.error("Erreur lors de la suppression de la newsletter:", error);
-    res.status(500).json({ message: error.message || "Erreur lors de la suppression de la newsletter" });
-  }
-};
 
-/**
- * Changer le statut d'une newsletter (admin uniquement)
- * @route PATCH /newsletter/:newsletterId/statut
- */
-export const changerStatutNewsletter = async (req, res) => {
-  try {
-    const { newsletterId } = req.params;
-    const { statut } = req.body;
-    if (!newsletterId || !statut) {
-      return res.status(400).json({ message: "ID newsletter et statut requis" });
-    }
-    const updated = await changerStatutNewsletterService(newsletterId, statut);
-    res.status(200).json({ message: "Statut de la newsletter mis à jour", data: updated });
-  } catch (error) {
-    console.error("Erreur lors du changement de statut:", error);
-    res.status(500).json({ message: error.message || "Erreur lors du changement de statut" });
-  }
-};
 import {
   ajouterAbonnementNewsletter,
   desinscrireNewsletter,
@@ -42,7 +11,9 @@ import {
   getHistoriqueNewsletters,
   getAbonnementParUtilisateur,
   getAbonnementParEmail,
-  desinscrireNewsletterParEmail
+  desinscrireNewsletterParEmail,
+  supprimerNewsletterService,
+  changerStatutNewsletterService
 } from "../../services/newsletter/newsletterService.js";
 
 /**
@@ -266,5 +237,38 @@ export const seDesinscrireNewsletterParEmail = async (req, res) => {
     res.status(500).json({
       message: error.message || "Erreur lors de la désinscription"
     });
+  }
+};
+
+export const supprimerNewsletter = async (req, res) => {
+  try {
+    const { newsletterId } = req.params;
+    if (!newsletterId) {
+      return res.status(400).json({ message: "ID newsletter requis" });
+    }
+    await supprimerNewsletterService(newsletterId);
+    res.status(200).json({ message: "Newsletter supprimée avec succès" });
+  } catch (error) {
+    console.error("Erreur lors de la suppression de la newsletter:", error);
+    res.status(500).json({ message: error.message || "Erreur lors de la suppression de la newsletter" });
+  }
+};
+
+/**
+ * Changer le statut d'une newsletter (admin uniquement)
+ * @route PATCH /newsletter/:newsletterId/statut
+ */
+export const changerStatutNewsletter = async (req, res) => {
+  try {
+    const { newsletterId } = req.params;
+    const { statut } = req.body;
+    if (!newsletterId || !statut) {
+      return res.status(400).json({ message: "ID newsletter et statut requis" });
+    }
+    const updated = await changerStatutNewsletterService(newsletterId, statut);
+    res.status(200).json({ message: "Statut de la newsletter mis à jour", data: updated });
+  } catch (error) {
+    console.error("Erreur lors du changement de statut:", error);
+    res.status(500).json({ message: error.message || "Erreur lors du changement de statut" });
   }
 };
