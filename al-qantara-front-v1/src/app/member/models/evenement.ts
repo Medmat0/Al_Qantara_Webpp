@@ -24,6 +24,9 @@ export interface Evenement {
   participations?: ParticipationEvenement[];
   acces?: AccesEvenement[];
   isPayant?: boolean;
+  nombreLikes?: number;
+  nombreCommentaires?: number;
+  nombreRatings?: number;
 }
 
 

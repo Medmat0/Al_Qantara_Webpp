@@ -31,13 +31,19 @@
         ></iframe>
       </div>
 
-      <div class="places-section">
+      <div class="places-section" *ngIf="evenement.placesTotal && evenement.placesTotal > 0">
         <span><strong>Places disponibles :</strong> {{ evenement.placesRestantes }}/{{ evenement.placesTotal }}</span>
       </div>
 
       <div class="actions mb-2">
-        <div [ngClass]="{'like-container': true, 'liked': hasLikedEvenement}">
-          <button (click)="onLikeEvenement(evenement)" class="btn-like">❤️ {{ evenement.likes?.length || 0 }}</button>
+        <div [ngClass]="{'like-container': true, 'liked': userHasLiked}">
+          <button
+            (click)="toggleLike()"
+            [disabled]="likesLoading"
+            class="btn-like">
+            {{ userHasLiked ? '❤️' : '🤍' }} {{ nombreLikes }}
+            <span *ngIf="likesLoading" class="loading-spinner">⏳</span>
+          </button>
         </div>
         <div class="dropdown d-inline-block" (mouseleave)="showShareMenu = false">
           <button (click)="showShareMenu = !showShareMenu" class="btn-share"> Partager</button>

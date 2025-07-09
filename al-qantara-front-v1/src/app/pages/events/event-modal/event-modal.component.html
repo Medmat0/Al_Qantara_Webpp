@@ -23,7 +23,7 @@
         <p>{{ event.description }}</p>
       </div>
 
-      <div class="mb-2">
+      <div class="mb-2 lieu-section">
         <strong>Lieu</strong>
         <div>{{ event.lieu }}</div>
         <iframe
@@ -34,13 +34,19 @@
         ></iframe>
       </div>
 
-      <div class="mb-2">
+      <div class="places-section" *ngIf="event.placesTotal && event.placesTotal > 0">
         <span><strong>Places disponibles :</strong> {{ event.placesRestantes }}/{{ event.placesTotal }}</span>
       </div>
 
       <div class="actions mb-2">
-        <div [ngClass]="{'like-container': true, 'liked': hasLikedEvenement}">
-          <button (click)="like.emit()" class="btn-like">❤️ {{ event.likes?.length || 0 }}</button>
+        <div [ngClass]="{'like-container': true, 'liked': userHasLiked}">
+          <button
+            (click)="toggleLike()"
+            [disabled]="likesLoading"
+            class="btn-like">
+            {{ userHasLiked ? '❤️' : '🤍' }} {{ nombreLikes }}
+            <span *ngIf="likesLoading" class="loading-spinner">⏳</span>
+          </button>
         </div>
         <div class="dropdown d-inline-block" (mouseleave)="showShareMenu = false">
           <button (click)="showShareMenu = !showShareMenu" class="btn-share">📤 Partager</button>
@@ -51,26 +57,24 @@
             <li (click)="shareOnInstagram()"><span>📸 Instagram</span></li>
           </ul>
         </div>
-      </div>
 
-      <div class="mb-2">
-        <button
-          *ngIf="event.isPayant && event.placesRestantes > 0 && !isEventPassed()"
-          (click)="onPayWithHelloAsso()"
-          [disabled]="loading"
-          class="btn-pay">
-          {{ loading ? 'Paiement en cours...' : '💳 Acheter un billet' }}
-        </button>
-        <div *ngIf="errorPaymentMessage" class="error">{{ errorPaymentMessage }}</div>
-
-        <button
-          *ngIf="!event.isPayant && !isParticipating && event.placesRestantes > 0 && !isEventPassed()"
-          (click)="participate.emit()"
-          [disabled]="loading"
-          class="btn-participate">
-          {{ loading ? 'Participation en cours...' : '🎫 Participer à l\'événement' }}
-        </button>
-
+        <!-- Boutons de participation dans la section actions -->
+        <ng-container *ngIf="!isParticipating && event.placesRestantes > 0 && !isEventPassed()">
+          <button
+            *ngIf="event.isPayant"
+            (click)="onPayWithHelloAsso()"
+            [disabled]="loading"
+            class="btn-pay">
+            {{ loading ? 'Paiement en cours...' : '💳 Acheter un billet' }}
+          </button>
+          <button
+            *ngIf="!event.isPayant"
+            (click)="participate.emit()"
+            [disabled]="loading"
+            class="btn-participate">
+            {{ loading ? 'Participation en cours...' : '🎫 Participer à l\'événement' }}
+          </button>
+        </ng-container>
         <button
           *ngIf="isParticipating && !isEventPassed()"
           (click)="unsubscribe.emit()"
@@ -78,6 +82,10 @@
           class="btn-unsubscribe">
           {{ loading ? 'Désinscription en cours...' : '❌ Se désinscrire' }}
         </button>
+      </div>
+
+      <div class="mb-2">
+        <div *ngIf="errorPaymentMessage" class="error">{{ errorPaymentMessage }}</div>
 
         <!-- Message pour événement passé -->
         <div *ngIf="isEventPassed()" class="event-passed-message">

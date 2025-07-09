@@ -45,7 +45,6 @@ export class EventDescriptionComponent {
   users: any[] = []; // Liste des utilisateurs pour la modal de partage
   showUsersModal = false; // Contrôle l'affichage de la modal de partage
 
-
   // propriétés pour la gestion visuelle de la description
   loading = false;
   error = '';
@@ -55,6 +54,10 @@ export class EventDescriptionComponent {
   unsubscribeConfirmed: boolean = false;
   errorPaymentMessage = '';
   showPaymentModal = false;
+
+  nombreLikes: number = 0;
+  userHasLiked: boolean = false;
+  likesLoading: boolean = false;
 
   constructor(private route: ActivatedRoute, private router: Router, private sanitizer: DomSanitizer, private cdr: ChangeDetectorRef) {
     this.authService.authStatus$.subscribe((status) => {
@@ -80,6 +83,10 @@ export class EventDescriptionComponent {
               return;
             }
             this.evenement = response;
+
+            this.nombreLikes = this.evenement.nombreLikes || 0;
+            this.checkIfUserLiked();
+
             if (this.userId && Array.isArray(this.evenement.likes)) {
               this.hasLikedEvenement = this.evenement.likes.some((like: LikeEvenement) => like.utilisateurId === this.userId);
             } else {
@@ -256,53 +263,73 @@ export class EventDescriptionComponent {
     });
   }
 
-  onLikeEvenement(evenement: Evenement) {
+  /**
+   * Vérifier si l'utilisateur connecté a déjà liké cet événement
+   */
+  checkIfUserLiked() {
+    if (this.userId && this.evenement?.likes) {
+      this.userHasLiked = this.evenement.likes.some((like: any) => like.utilisateurId === this.userId);
+      // Synchroniser avec l'ancienne propriété
+      this.hasLikedEvenement = this.userHasLiked;
+    }
+  }
+
+  /**
+   * Toggle le like sur l'événement (nouvelle méthode utilisant le backend)
+   */
+  toggleLike() {
     if (!this.checkAuthentication()) return;
 
-    // Toujours garantir que c'est un tableau
-    if (!Array.isArray(evenement.likes)) {
-      evenement.likes = [];
-    }
+    if (this.likesLoading) return;
 
-    const userLikeIndex = evenement.likes.findIndex((like: LikeEvenement) => like.utilisateurId === this.userId);
+    this.likesLoading = true;
 
-    if (userLikeIndex === -1) {
-      // Ajoute un like localement
-      const fakeLike: LikeEvenement = {
-        id: evenement.likes.length + 1,
-        evenementId: evenement.id,
-        utilisateurId: this.userId,
-        dateLike: new Date().toString(),
-      };
-      evenement.likes = [...evenement.likes, fakeLike];
-      this.hasLikedEvenement = true;
-    } else {
-      // Retire le like localement
-      evenement.likes = evenement.likes.filter((like: LikeEvenement) => like.utilisateurId !== this.userId);
-      this.hasLikedEvenement = false;
-    }
+    this.evenementService.likeEvenement(this.evenement.id).subscribe({
+      next: (response) => {
+        console.log('Like toggled successfully:', response);
 
-    this.evenementService.likeEvenement(evenement.id).subscribe({
-      error: (err) => {
-        if (!Array.isArray(evenement.likes)) {
-          evenement.likes = [];
-        }
-        if (this.hasLikedEvenement) {
-          evenement.likes = evenement.likes.filter((like: LikeEvenement) => like.utilisateurId !== this.userId);
+        // Mettre à jour l'état local en fonction de l'action effectuée
+        if (this.userHasLiked) {
+          // L'utilisateur avait déjà liké, donc on retire le like
+          this.nombreLikes = Math.max(0, this.nombreLikes - 1);
+          this.userHasLiked = false;
           this.hasLikedEvenement = false;
+
+          // Retirer le like de la liste locale
+          if (this.evenement.likes) {
+            this.evenement.likes = this.evenement.likes.filter((like: any) => like.utilisateurId !== this.userId);
+          }
         } else {
-          const fakeLike: LikeEvenement = {
-            id: evenement.likes.length + 1,
-            evenementId: evenement.id,
-            utilisateurId: this.userId,
-            dateLike: new Date().toString(),
-          };
-          evenement.likes = [...evenement.likes, fakeLike];
+          // L'utilisateur n'avait pas liké, donc on ajoute le like
+          this.nombreLikes = this.nombreLikes + 1;
+          this.userHasLiked = true;
           this.hasLikedEvenement = true;
+
+          // Ajouter le like à la liste locale
+          if (!this.evenement.likes) {
+            this.evenement.likes = [];
+          }
+          this.evenement.likes.push({
+            id: Date.now(), // ID temporaire
+            utilisateurId: this.userId
+          });
         }
-        console.error('Erreur lors du like/delike', err);
+
+        // Mettre à jour le nombreLikes dans l'objet evenement
+        this.evenement.nombreLikes = this.nombreLikes;
+
+        this.likesLoading = false;
+      },
+      error: (error) => {
+        console.error('Erreur lors du toggle du like:', error);
+        this.likesLoading = false;
       }
     });
+  }
+
+  onLikeEvenement(evenement: Evenement) {
+    // Rediriger vers la nouvelle méthode
+    this.toggleLike();
   }
 
   onAddComment(evenement: Evenement, commentText: string) {
