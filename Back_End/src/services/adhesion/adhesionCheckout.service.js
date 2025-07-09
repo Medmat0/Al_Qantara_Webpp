@@ -3,7 +3,7 @@ import { getAccessToken } from '../evenements/helloAsso.service.js';
 
 const HELLOASSO_API_URL = process.env.HELLOASSO_API_URL;
 const HELLOASSO_ORGANIZATION_SLUG = process.env.HELLOASSO_ORGANIZATION_SLUG;
-const FRONTEND_URL = process.env.FRONTEND_URL || 'https://23a8-2a02-8428-8533-ea01-b80f-a38f-e50b-d6af.ngrok-free.app';
+const FRONTEND_URL = process.env.FRONT_URL || 'https://23a8-2a02-8428-8533-ea01-b80f-a38f-e50b-d6af.ngrok-free.app';
 
 /**
  * Crée une intention de paiement HelloAsso pour l'adhésion
