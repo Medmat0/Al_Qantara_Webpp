@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { sendEmailToUser } from '../utils/email.config.js';
+import { sendEmailToUser } from '../../utils/email.config.js';
 
 const prisma = new PrismaClient();
 

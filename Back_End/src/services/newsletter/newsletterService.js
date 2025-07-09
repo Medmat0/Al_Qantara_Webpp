@@ -42,32 +42,120 @@ export const ajouterAbonnementNewsletter = async (email) => {
       where: { email: email }
     });
 
+    let abonnement;
+    let isNewSubscription = false;
+
     if (abonnementExistant) {
       if (abonnementExistant.statut === 'DESINSCRIT') {
         // Réactiver l'abonnement existant
-        const abonnement = await prisma.newsletter.update({
+        abonnement = await prisma.newsletter.update({
           where: { email: email },
           data: { 
             statut: 'ACTIF',
             dateInscription: new Date() // Mettre à jour la date d'inscription
           }
         });
-        return abonnement;
+        isNewSubscription = true; // Considérer comme nouvelle inscription pour l'email
       } else {
         throw new Error('Cet email est déjà inscrit à la newsletter');
       }
+    } else {
+      // Créer un nouvel abonnement
+      const tokenDesinscription = crypto.randomBytes(32).toString('hex');
+      
+      abonnement = await prisma.newsletter.create({
+        data: {
+          email,
+          statut: 'ACTIF',
+          tokenDesinscription
+        }
+      });
+      isNewSubscription = true;
     }
 
-    // Créer un nouvel abonnement
-    const tokenDesinscription = crypto.randomBytes(32).toString('hex');
-    
-    const abonnement = await prisma.newsletter.create({
-      data: {
-        email,
-        statut: 'ACTIF',
-        tokenDesinscription
+    // Envoyer l'email de bienvenue si c'est une nouvelle inscription
+    if (isNewSubscription) {
+      const emailHtml = `
+        <div style="font-family: 'Cormorant Garamond', serif; max-width: 600px; margin: 0 auto; padding: 20px; background: linear-gradient(135deg, #9e2e2c 0%, #b8363f 100%); border-radius: 15px;">
+          <div style="background: white; padding: 40px; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
+            <div style="text-align: center; margin-bottom: 30px;">
+              <h1 style="color: #9e2e2c; font-size: 2.2rem; margin: 0; font-weight: 700;">Al Qantara</h1>
+              <p style="color: #666; font-size: 1.1rem; margin: 10px 0 0 0;">Association Culturelle</p>
+            </div>
+
+            <div style="text-align: center; margin-bottom: 30px;">
+              <h2 style="color: #2c3e50; font-size: 1.8rem; margin: 0;">Bienvenue dans notre newsletter !</h2>
+              <div style="width: 60px; height: 3px; background: linear-gradient(90deg, #9e2e2c, #b8363f); margin: 15px auto; border-radius: 2px;"></div>
+            </div>
+
+            <div style="margin: 30px 0;">
+              <p style="color: #555; font-size: 1.1rem; line-height: 1.6; margin-bottom: 20px;">
+                Merci de vous être abonné(e) à la newsletter d'<strong>Al Qantara</strong> ! 🎉
+              </p>
+              
+              <p style="color: #555; font-size: 1rem; line-height: 1.6; margin-bottom: 20px;">
+                Vous recevrez désormais régulièrement :
+              </p>
+
+              <ul style="color: #555; font-size: 1rem; line-height: 1.8; padding-left: 20px;">
+                <li>📅 Nos derniers événements culturels et éducatifs</li>
+                <li>🎨 Les actualités de notre association</li>
+                <li>🌟 Des contenus exclusifs et des invitations spéciales</li>
+                <li>📚 Des ressources culturelles et pédagogiques</li>
+              </ul>
+            </div>
+
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 30px 0; border-left: 4px solid #9e2e2c;">
+              <p style="color: #555; font-size: 0.95rem; margin: 0; line-height: 1.5;">
+                <strong>💡 Astuce :</strong> Ajoutez notre adresse email à vos contacts pour être sûr(e) de recevoir tous nos messages !
+              </p>
+            </div>
+
+            <div style="text-align: center; margin: 30px 0;">
+              <p style="color: #777; font-size: 0.9rem; margin-bottom: 20px;">
+                Suivez-nous également sur nos réseaux sociaux pour ne rien manquer !
+              </p>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee;">
+              <p style="color: #999; font-size: 0.85rem; margin: 0;">
+                Vous recevez cet email car vous vous êtes abonné(e) à notre newsletter.
+              </p>
+              <p style="color: #999; font-size: 0.85rem; margin: 5px 0 0 0;">
+                <a href="${process.env.FRONT_URL}/newsletter/desinscription/${abonnement.tokenDesinscription}" 
+                   style="color: #9e2e2c; text-decoration: none;">Se désabonner</a>
+              </p>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+              <p style="color: #666; font-size: 0.8rem; margin: 0;">© 2024 Al Qantara. Tous droits réservés.</p>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Envoyer l'email de bienvenue
+      try {
+        await sendEmailToUser({
+          from: process.env.MAILER_APP_EMAIL,
+          to: email,
+          subject: "🎉 Bienvenue dans la newsletter Al Qantara !",
+          html: emailHtml,
+          text: `
+Bienvenue dans la newsletter Al Qantara !
+
+Merci de vous être abonné(e) à notre newsletter ! Vous recevrez désormais régulièrement nos derniers événements, actualités, et contenus exclusifs.
+
+Pour vous désabonner : ${process.env.FRONT_URL}/newsletter/desinscription/${abonnement.tokenDesinscription}
+
+© 2024 Al Qantara. Tous droits réservés.
+          `.trim()
+        });
+      } catch (emailError) {
+        console.error('Erreur lors de l\'envoi de l\'email de bienvenue:', emailError);
+        // Ne pas faire échouer l'inscription même si l'email ne part pas
       }
-    });
+    }
 
     return abonnement;
   } catch (error) {
@@ -77,7 +165,6 @@ export const ajouterAbonnementNewsletter = async (email) => {
     throw error;
   }
 };
-
 /**
  * Se désinscrire de la newsletter par ID utilisateur
  */
