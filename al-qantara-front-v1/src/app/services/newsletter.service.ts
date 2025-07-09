@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import {API_URL} from '../utils/config';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class NewsletterService {
-  private apiUrl = 'http://localhost:3000'; // URL de base de l'API
+  private apiUrl = API_URL;
 
   constructor(private http: HttpClient) { }
 
