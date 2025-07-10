@@ -1,2 +1,2 @@
-export const API_URL = "https://defensive-chrissy-alqantaraasas-25adca48.koyeb.app" //"https://al-qantara-webpp.onrender.com"; // Base URL of the API
-export const CV_WEB_SERVICE_URL = "https://crooked-cristin-alqantara-76ea917d.koyeb.app"; // To change when hosted
+export const API_URL = "http://localhost:3000"; // Base URL of the API
+export const CV_WEB_SERVICE_URL = "http://localhost:8000"; // To change when hosted
