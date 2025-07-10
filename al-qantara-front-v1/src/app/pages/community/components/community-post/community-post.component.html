@@ -61,10 +61,16 @@
       <ul class="poll-options">
         <li
           *ngFor="let option of post.pollOptions"
-          class="poll-option">
+          class="poll-option"
+          [class.disabled]="isPollClosed()"
+          [attr.aria-disabled]="isPollClosed()"
+          [attr.tabindex]="isPollClosed() ? -1 : 0">
           {{ option.label }}
         </li>
       </ul>
+      <div *ngIf="isPollClosed()" class="poll-feedback poll-error" style="color: #d32f2f; background: #fff0f0;">
+        Le sondage est terminé, vous ne pouvez plus voter.
+      </div>
 
       <div class="poll-deadline">
         <span class="deadline-icon">⏰</span>

@@ -90,6 +90,16 @@ export class CommunityPostDescriptionComponent implements OnInit {
     this.router.navigate(['/communities/posts/research'], { queryParams: { tag } });
   }
 
+  isPollClosed(): boolean {
+    // Autorise le vote jusqu'à la fin de la date limite (inclus)
+    const now = new Date();
+    const deadline = new Date(this.post.pollDeadline);
+    // Compare uniquement la date (sans l'heure)
+    now.setHours(0, 0, 0, 0);
+    deadline.setHours(0, 0, 0, 0);
+    return now > deadline;
+  }
+
   organizeComments(comments: any[]): any[] {
     const commentMap: { [key: number]: any } = {};
     const rootComments: any[] = [];

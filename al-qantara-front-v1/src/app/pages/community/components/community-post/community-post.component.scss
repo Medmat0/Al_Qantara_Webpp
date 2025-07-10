@@ -433,6 +433,14 @@
   margin-right: 0.25rem;
 }
 
+.poll-option.disabled, .poll-option[aria-disabled="true"] {
+  pointer-events: none;
+  opacity: 0.6;
+  background: #f8f5f2;
+  color: #bfa6a6;
+  cursor: not-allowed;
+}
+
 @media (max-width: 480px) {
   .post-card {
     border-radius: 12px;

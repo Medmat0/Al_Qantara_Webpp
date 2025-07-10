@@ -374,13 +374,16 @@ $transition-transform: transform 0.15s ease-in-out;
 
   .poll-feedback {
     .poll-error {
-      color: $error-color;
-      font-size: $font-sm;
-      font-weight: $font-medium;
+      color: #b94a48;
+      font-weight: 600;
+      background: #fbeeea;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      border: 1px solid #f5c6cb;
       display: flex;
       align-items: center;
-      gap: $spacing-2;
-
+      gap: 0.5rem;
       &::before {
         content: "⚠️";
       }
