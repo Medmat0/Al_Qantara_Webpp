@@ -1,102 +1,212 @@
+$primary-color: #9e2e2c;
+$primary-dark: #7d1f1d;
+$secondary-color: #6d4a4a;
+$success-color: #10b981;
+$danger-color: #ef4444;
+$gray-50: #f9fafb;
+$gray-100: #f3f4f6;
+$gray-200: #e5e7eb;
+$gray-300: #d1d5db;
+$gray-400: #9ca3af;
+$gray-600: #4b5563;
+$gray-900: #111827;
+$border-radius: 12px;
+$shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 12px rgba(0, 0, 0, 0.10);
+$shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.15);
+
 .add-revue-container {
   display: flex;
   justify-content: center;
   align-items: center;
+  min-height: 80vh;
+  padding: 2rem;
 }
 
 .form-box {
-  background-color: #fff;
-  padding: 2.5rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  max-width: 600px;
   width: 100%;
-  max-width: 500px;
+  background: linear-gradient(135deg, #ffffff 0%, #fafbfc 100%);
+  border-radius: $border-radius;
+  box-shadow: $shadow-lg;
+  border: 1px solid $gray-200;
   font-family: 'Mulish', sans-serif;
-}
+  position: relative;
+  padding: 3rem 2.5rem;
 
-.form-box h2 {
-  font-size: 2rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-}
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, $primary-color, $secondary-color);
+    border-radius: $border-radius $border-radius 0 0;
+  }
 
-.form-box .description {
-  color: #777;
-  margin-bottom: 2rem;
-  font-size: 0.95rem;
-}
+  h2 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: $primary-color;
+    text-align: center;
+    margin-bottom: 0.5rem;
+    font-family: 'Cormorant Garamond', serif;
+  }
 
-.form-box form {
-  display: flex;
-  flex-direction: column;
-}
+  .description {
+    color: $gray-600;
+    margin-bottom: 2.5rem;
+    font-size: 1rem;
+    text-align: center;
+    line-height: 1.5;
+  }
 
-.form-box .form-group {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 1.5rem;
-}
+  form {
+    display: flex;
+    flex-direction: column;
+  }
 
-.form-box .form-group label {
-  font-weight: 500;
-  margin-bottom: 0.5rem;
-  color: #333;
-}
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2rem;
 
-.form-box .form-group input[type="text"],
-.form-box .form-group input[type="file"],
-.form-box .form-group select {
-  padding: 0.75rem 1rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 1rem;
-  transition: border-color 0.3s, box-shadow 0.3s;
-  margin-bottom: 10px;
-}
+    label {
+      display: block;
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+      color: $gray-900;
+      font-size: 1.05rem;
+      letter-spacing: 0.01em;
 
-.form-box .form-group input[type="text"]:focus,
-.form-box .form-group input[type="file"]:focus,
-.form-box .form-group select:focus {
-  outline: none;
-  border-color: #9e2e2c;
-  box-shadow: 0 0 0 2px rgba(158, 46, 44, 0.1);
-}
+      &::after {
+        content: "*";
+        color: $danger-color;
+        margin-left: 4px;
+      }
+    }
 
-.form-box button {
-  padding: 0.75rem;
-  background-color: #9e2e2c;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
+    input[type="text"],
+    input[type="file"],
+    select {
+      width: 100%;
+      padding: 1rem 1.25rem;
+      border: 2px solid $gray-300;
+      border-radius: 10px;
+      font-size: 1rem;
+      background: $gray-50;
+      color: $gray-900;
+      transition: all 0.3s ease;
+      font-family: inherit;
 
-.form-box button:hover {
-  background-color: #7d1f1d;
+      &:focus {
+        outline: none;
+        border-color: $primary-color;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(158, 46, 44, 0.1);
+        transform: translateY(-1px);
+      }
+
+      &::placeholder {
+        color: $gray-400;
+      }
+    }
+
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234b5563' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1.2em;
+      padding-right: 3rem;
+    }
+
+    input[type="file"] {
+      border: 2px dashed $gray-300;
+      cursor: pointer;
+      padding: 1.25rem;
+
+      &:hover {
+        border-color: $primary-color;
+        background: white;
+      }
+    }
+  }
+
+  button[type="submit"] {
+    width: 100%;
+    background: linear-gradient(135deg, $primary-color, $primary-dark);
+    color: white;
+    border: none;
+    padding: 1.25rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+    box-shadow: $shadow-md;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(158, 46, 44, 0.3);
+      background: linear-gradient(135deg, $primary-dark, #5d1714);
+    }
+
+    &:disabled {
+      background: $gray-400;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+  }
 }
 
 .invalid {
-  border: 2px solid #ff4444;
+  border-color: $danger-color !important;
+  background: #fef2f2 !important;
+
+  &:focus {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+  }
 }
 
 .form-error {
-  color: #ff4444;
-  font-size: 0.8em;
-  margin-top: -5px;
-  margin-bottom: 10px;
+  color: $danger-color;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  &::before {
+    content: "⚠";
+    font-size: 1rem;
+  }
 }
 
 .form-status {
-  margin-top: 1rem;
-  font-size: 0.9rem;
-}
+  margin-top: 1.5rem;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  text-align: center;
 
-.error {
-  color: #ff4444;
-}
+  &.error {
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
+    border: 1px solid #f87171;
+    color: #dc2626;
+    border-left: 4px solid $danger-color;
+  }
 
-.success {
-  color: #4caf50;
+  &.success {
+    background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+    color: #065f46;
+    border-left: 4px solid $success-color;
+    border: 1px solid #a7f3d0;
+  }
 }
