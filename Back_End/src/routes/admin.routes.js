@@ -9,7 +9,7 @@ const router = express.Router();
 router.get('/users', authMiddleware, isAdmin , getAllUsers);
 router.delete('/users/:id',authMiddleware,  isAdmin,deleteUser);
 router.patch('/users/:id/status',authMiddleware,  isAdmin,updateUserStatus);
-router.patch('/users/:id/promote',authMiddleware, isAdmin  , promoteUser);
+router.patch('/users/:id/promote',authMiddleware  , promoteUser);
 router.patch('/users/:id/demote',authMiddleware,  isAdmin,  demoteUser);
 
 export default router;

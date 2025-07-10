@@ -17,8 +17,184 @@
       placeholder="Rechercher un utilisateur...">
   </div>
 
-  <!-- Statistiques -->
-  <div class="stats-bar">
+  <!-- Statistiques détaillées -->
+  <div class="stats-section" *ngIf="stats">
+    <!-- Statistiques principales -->
+    <div class="main-stats">
+      <div class="stat-card primary">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M16 17V19H2V17C2 14.8 5.6 13 10 13S18 14.8 18 17H16M12.5 7.5A3.5 3.5 0 1 0 9 4A3.5 3.5 0 0 0 12.5 7.5M15.94 13A5.32 5.32 0 0 1 18 17H22V15C22 12.8 18.4 11 15.94 13M15 4A3.5 3.5 0 0 0 12.5 7.5A3.5 3.5 0 0 0 15 11A3.5 3.5 0 0 0 18.5 7.5A3.5 3.5 0 0 0 15 4Z" />
+          </svg>
+        </div>
+        <div class="stat-content">
+          <div class="stat-number">{{ stats.totalUsers }}</div>
+          <div class="stat-label">Utilisateurs total</div>
+          <div class="stat-trend">{{ getNewUsersTrend() }} ce mois</div>
+        </div>
+      </div>
+
+      <div class="stat-card success">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2A10 10 0 0 0 2 12A10 10 0 0 0 12 22A10 10 0 0 0 22 12A10 10 0 0 0 12 2M12 4A8 8 0 0 1 20 12A8 8 0 0 1 12 20A8 8 0 0 1 4 12A8 8 0 0 1 12 4M11 16.5L18 9.5L16.59 8.09L11 13.67L7.91 10.59L6.5 12L11 16.5Z" />
+          </svg>
+        </div>
+        <div class="stat-content">
+          <div class="stat-number">{{ stats.totalAdherents }}</div>
+          <div class="stat-label">Adhérents</div>
+          <div class="stat-trend">{{ getAdherentPercentage() }}% des utilisateurs</div>
+        </div>
+      </div>
+
+      <div class="stat-card warning">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2A10 10 0 0 0 2 12A10 10 0 0 0 12 22A10 10 0 0 0 22 12A10 10 0 0 0 12 2M17 18H7V16H17V18M15.25 14H8.75L7 12.25V11H17V12.25L15.25 14Z" />
+          </svg>
+        </div>
+        <div class="stat-content">
+          <div class="stat-number">{{ stats.totalDons }}</div>
+          <div class="stat-label">Dons reçus</div>
+          <div class="stat-trend">{{ formatCurrency(stats.averageDonAmount) }} moyenne</div>
+        </div>
+      </div>
+
+      <div class="stat-card revenue">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M7 15H9C9 16.08 10.37 17 12 17S15 16.08 15 15C15 13.9 13.96 13.5 11.76 12.97C9.64 12.44 7 11.78 7 9C7 7.21 8.47 5.69 10.5 5.18V3H13.5V5.18C15.53 5.69 17 7.21 17 9H15C15 7.92 13.63 7 12 7S9 7.92 9 9C9 10.1 10.04 10.5 12.24 11.03C14.36 11.56 17 12.22 17 15C17 16.79 15.53 18.31 13.5 18.82V21H10.5V18.82C8.47 18.31 7 16.79 7 15Z" />
+          </svg>
+        </div>
+        <div class="stat-content">
+          <div class="stat-number">{{ formatCurrency(getTotalRevenue()) }}</div>
+          <div class="stat-label">Revenus total</div>
+          <div class="stat-trend">{{ formatCurrency(getCurrentMonthRevenue()) }} ce mois</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bouton pour afficher plus de détails -->
+    <div class="stats-toggle">
+      <button class="toggle-btn" (click)="toggleStatsDetails()">
+        <span>{{ showStatsDetails ? 'Masquer' : 'Voir plus' }} de statistiques</span>
+        <svg class="toggle-icon" [class.rotated]="showStatsDetails" viewBox="0 0 24 24">
+          <path d="M7.41 8.58L12 13.17L16.59 8.58L18 10L12 16L6 10L7.41 8.58Z" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Statistiques détaillées -->
+    <div class="detailed-stats" *ngIf="showStatsDetails">
+      <div class="stats-row">
+        <div class="stat-group">
+          <h4>Répartition par rôle</h4>
+          <div class="role-stats">
+            <div class="role-stat">
+              <span class="role-label">Administrateurs</span>
+              <span class="role-count">{{ stats.adminCount }}</span>
+            </div>
+            <div class="role-stat">
+              <span class="role-label">Adhérents</span>
+              <span class="role-count">{{ stats.adherentCount }}</span>
+            </div>
+            <div class="role-stat">
+              <span class="role-label">Utilisateurs</span>
+              <span class="role-count">{{ stats.userCount }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-group">
+          <h4>Activité</h4>
+          <div class="activity-stats">
+            <div class="activity-stat">
+              <span class="activity-label">En ligne</span>
+              <span class="activity-count online">{{ stats.usersOnline }}</span>
+            </div>
+            <div class="activity-stat">
+              <span class="activity-label">Hors ligne</span>
+              <span class="activity-count offline">{{ stats.usersOffline }}</span>
+            </div>
+            <div class="activity-stat">
+              <span class="activity-label">Comptes actifs</span>
+              <span class="activity-count active">{{ stats.activeUsers }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-group">
+          <h4>Revenus</h4>
+          <div class="revenue-stats">
+            <div class="revenue-stat">
+              <span class="revenue-label">Adhésions</span>
+              <span class="revenue-amount">{{ formatCurrency(stats.totalRevenueAdhesions) }}</span>
+            </div>
+            <div class="revenue-stat">
+              <span class="revenue-label">Dons</span>
+              <span class="revenue-amount">{{ formatCurrency(stats.totalRevenueDons) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activités récentes -->
+      <div class="recent-activities">
+        <div class="activity-section">
+          <h4>Adhésions récentes</h4>
+          <div class="recent-list" *ngIf="stats.recentAdhesions.length > 0; else noRecentAdhesions">
+            <div class="recent-item" *ngFor="let adhesion of stats.recentAdhesions">
+              <div class="recent-user">
+                <div class="user-avatar small">
+                  {{ getInitials(adhesion.utilisateur.prenom, adhesion.utilisateur.nom) }}
+                </div>
+                <div class="user-info">
+                  <div class="user-name">{{ adhesion.utilisateur.prenom }} {{ adhesion.utilisateur.nom }}</div>
+                  <div class="user-email">{{ adhesion.utilisateur.email }}</div>
+                </div>
+              </div>
+              <div class="recent-details">
+                <div class="recent-amount">{{ formatCurrency(adhesion.montant) }}</div>
+                <div class="recent-date">{{ formatDate(adhesion.dateAdhesion) }}</div>
+              </div>
+            </div>
+          </div>
+          <ng-template #noRecentAdhesions>
+            <p class="no-data">Aucune adhésion récente</p>
+          </ng-template>
+        </div>
+
+        <div class="activity-section">
+          <h4>Dons récents</h4>
+          <div class="recent-list" *ngIf="stats.recentDons.length > 0; else noRecentDons">
+            <div class="recent-item" *ngFor="let don of stats.recentDons">
+              <div class="recent-user">
+                <div class="user-avatar small">
+                  {{ getInitials(don.utilisateur.prenom, don.utilisateur.nom) }}
+                </div>
+                <div class="user-info">
+                  <div class="user-name">{{ don.utilisateur.prenom }} {{ don.utilisateur.nom }}</div>
+                  <div class="user-email">{{ don.utilisateur.email }}</div>
+                </div>
+              </div>
+              <div class="recent-details">
+                <div class="recent-amount" [ngClass]="getDonAmountColor(don.montant)">
+                  {{ formatCurrency(don.montant) }}
+                </div>
+                <div class="recent-date">{{ formatDate(don.dateDon) }}</div>
+              </div>
+            </div>
+          </div>
+          <ng-template #noRecentDons>
+            <p class="no-data">Aucun don récent</p>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistiques simples (fallback si pas de stats détaillées) -->
+  <div class="stats-bar" *ngIf="!stats">
     <div class="stat-card">
       <div class="stat-number">{{ users.length }}</div>
       <div class="stat-label">Total utilisateurs</div>
@@ -68,10 +244,30 @@
           </div>
         </div>
         <div class="detail-item">
+          <div class="detail-label">Adhésion</div>
+          <div class="detail-value">
+            <span class="badge" [ngClass]="getAdhesionStatusBadge(user.statutAdhesion)">
+              {{ formatAdhesionStatus(user.statutAdhesion) }}
+            </span>
+          </div>
+        </div>
+        <div class="detail-item">
           <div class="detail-label">Date d'inscription</div>
           <div class="detail-value">{{ formatDate(user.dateInscription) }}</div>
         </div>
-       
+        <div class="detail-item" *ngIf="user.totalDons > 0">
+          <div class="detail-label">Dons totaux</div>
+          <div class="detail-value">
+            <span class="amount-badge" [ngClass]="getDonAmountColor(user.totalDons)">
+              {{ formatCurrency(user.totalDons) }}
+            </span>
+            <small>({{ user.nombreDons }} don{{ user.nombreDons > 1 ? 's' : '' }})</small>
+          </div>
+        </div>
+        <div class="detail-item" *ngIf="user.nombreParticipations > 0">
+          <div class="detail-label">Participations</div>
+          <div class="detail-value">{{ user.nombreParticipations }} événement{{ user.nombreParticipations > 1 ? 's' : '' }}</div>
+        </div>
       </div>
       
       <div class="user-actions">
