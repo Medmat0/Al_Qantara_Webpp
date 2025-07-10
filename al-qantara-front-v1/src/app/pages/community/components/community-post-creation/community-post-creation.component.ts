@@ -1,9 +1,9 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators, FormArray, ReactiveFormsModule, AbstractControl} from '@angular/forms';
-import {CommunityService} from '../../../../member/services/community.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {AuthService} from '../../../../member/services/auth.service';
-import {NgForOf, NgIf} from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, FormArray, ReactiveFormsModule, AbstractControl } from '@angular/forms';
+import { CommunityService } from '../../../../member/services/community.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from '../../../../member/services/auth.service';
+import { DatePipe, NgForOf, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-community-post-creation',
@@ -13,10 +13,11 @@ import {NgForOf, NgIf} from '@angular/common';
   imports: [
     ReactiveFormsModule,
     NgForOf,
-    NgIf
+    NgIf,
+    DatePipe
   ]
 })
-export class CommunityPostCreationComponent implements OnInit{
+export class CommunityPostCreationComponent implements OnInit {
   postForm: FormGroup;
   communityId!: number;
   isMember: boolean | null = false;
@@ -40,8 +41,8 @@ export class CommunityPostCreationComponent implements OnInit{
       pollDeadline: ['']
     });
   }
-  ngOnInit() {
 
+  ngOnInit() {
     this.route.paramMap.subscribe(params => {
       const id = params.get('communityId');
       if (id) {
@@ -60,12 +61,11 @@ export class CommunityPostCreationComponent implements OnInit{
         });
       }
     });
+
     this.postForm.get('pollOptions')?.setValidators([
       (control: AbstractControl) => {
-        // Si aucune option de sondage n'est renseignée, pas d'erreur
         const filledOptions = control.value?.filter((v: string) => v && v.trim() !== '');
         if (!filledOptions || filledOptions.length === 0) return null;
-        // Si une seule option renseignée, erreur
         if (filledOptions.length === 1) return { minOptions: true };
         return null;
       }
@@ -73,16 +73,20 @@ export class CommunityPostCreationComponent implements OnInit{
 
     this.postForm.get('pollDeadline')?.setValidators([
       (control: AbstractControl) => {
-        const pollOptionsArr = this.pollOptions.controls.map(opt => opt.value).filter((v: string) => v && v.trim() !== '');
+        const pollOptionsArr = this.pollOptions.controls
+          .map(opt => opt.value)
+          .filter((v: string) => v && v.trim() !== '');
+
         if (pollOptionsArr.length > 1) {
           if (!control.value) {
             return { requiredIfPoll: true };
           }
-          const today = new Date();
-          const selected = new Date(control.value);
-          // On compare seulement la date (pas l'heure)
-          today.setHours(0,0,0,0);
-          selected.setHours(0,0,0,0);
+
+          const [year, month, day] = control.value.split('-').map(Number);
+          const selected = new Date(year, month - 1, day);
+          selected.setHours(0, 0, 0, 0);
+
+          const today = this.today;
           if (selected <= today) {
             return { minDate: true };
           }
@@ -91,18 +95,31 @@ export class CommunityPostCreationComponent implements OnInit{
       }
     ]);
 
-    // Force update validity when tags or pollOptions change
     this.tags.valueChanges.subscribe(() => {
       this.tags.updateValueAndValidity({ onlySelf: true });
       this.postForm.updateValueAndValidity();
     });
+
     this.pollOptions.valueChanges.subscribe(() => {
       this.pollOptions.updateValueAndValidity({ onlySelf: true });
+      this.postForm.get('pollDeadline')?.updateValueAndValidity();
       this.postForm.updateValueAndValidity();
     });
   }
 
-  // Custom validator: au moins un tag non vide
+  get today(): Date {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
+
+  get todayPlusOne(): Date {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
+
   atLeastOneTag(formArray: AbstractControl) {
     const arr = (formArray as FormArray).controls;
     return arr.some(control => control.value && control.value.trim() !== '') ? null : { atLeastOneTag: true };
@@ -110,12 +127,10 @@ export class CommunityPostCreationComponent implements OnInit{
 
   checkAuthentication(): boolean {
     if (!this.isAuthenticated) {
-
-      if(confirm('Vous devez être connecté pour interagir avec cette communauté.')){
+      if (confirm('Vous devez être connecté pour interagir avec cette communauté.')) {
         this.router.navigate(['auth/login']);
       }
       return false;
-
     }
     this.checkMembership();
     return true;
@@ -128,7 +143,6 @@ export class CommunityPostCreationComponent implements OnInit{
         if (!isMember) {
           confirm('Vous devez être membre pour interagir avec cette communauté.');
           this.router.navigate(['/communities', this.communityId]);
-
         }
       },
       error: () => {
@@ -171,7 +185,6 @@ export class CommunityPostCreationComponent implements OnInit{
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       this.selectedFile = input.files[0];
-      // Générer un aperçu de l'image
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.imagePreview = e.target.result;
@@ -195,15 +208,12 @@ export class CommunityPostCreationComponent implements OnInit{
       pollDeadline: this.postForm.get('pollDeadline')?.value,
       img: this.selectedFile
     };
-    console.log('Form Data:', data);
 
     this.communityService.createPost(communityId, data).subscribe({
       next: (res: any) => {
-        console.log('Post created successfully:', res);
         this.router.navigate([`/communities/${communityId}`]);
       },
       error: (err: any) => {
-        console.error('Error creating post:', err);
         alert('Une erreur est survenue lors de la création du post. Veuillez réessayer.');
       }
     });

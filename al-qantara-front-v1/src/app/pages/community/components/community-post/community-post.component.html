@@ -1,18 +1,18 @@
-<article class="post-card"> 
+<article class="post-card">
   <header class="post-header">
     <div class="post-title-section">
       <h2 class="post-title">{{ post.titre }}</h2>
       <div class="post-meta">
         <div class="author-info">
-          <img 
-            *ngIf="post.communityLogo" 
-            [src]="post.communityLogo" 
+          <img
+            *ngIf="post.communityLogo"
+            [src]="post.communityLogo"
             [alt]="'Logo de ' + post.communityNom"
             class="community-avatar" />
           <div class="meta-text">
             <span class="community-name">{{ post.communityNom }}</span>
             <span class="author-details">
-              Par {{ post.auteurPrenom }} {{ post.auteurNom }}
+              Par {{ post.auteur.prenom }} {{ post.auteur.nom }}
             </span>
           </div>
         </div>
@@ -21,9 +21,9 @@
         </time>
       </div>
     </div>
-    
-    <button 
-      *ngIf="!isOnCommunityPage" 
+
+    <button
+      *ngIf="!isOnCommunityPage"
       [routerLink]="['/communities', post.communityId]"
       class="btn btn-outline community-link"
       (click)="$event.stopPropagation()">
@@ -33,9 +33,10 @@
   </header>
 
   <div class="post-tags" *ngIf="post.tags && post.tags.length > 0">
-    <span 
-      *ngFor="let tag of post.tags" 
-      class="tag">
+    <span
+      *ngFor="let tag of post.tags"
+      class="tag clickable"
+      (click)="goToPostResearchWithTag(tag); $event.stopPropagation();">
       #{{ tag }}
     </span>
   </div>
@@ -44,26 +45,33 @@
     <p class="post-text">{{ post.contenu }}</p>
 
     <div class="post-image" *ngIf="post.image">
-      <img 
-        [src]="post.image" 
+      <img
+        [src]="post.image"
         [alt]="'Image du post: ' + post.titre"
         loading="lazy" />
     </div>
 
     <div class="poll-section" *ngIf="post.isPoll">
       <div class="poll-header">
-        <span class="poll-icon">🗳️</span>
         <h3 class="poll-title">Sondage disponible</h3>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>eye-arrow-right</title><path d="M12 4.5C7 4.5 2.7 7.6 1 12C2.7 16.4 7 19.5 12 19.5H13.1C13 19.2 13 18.9 13 18.5C13 17.9 13.1 17.4 13.2 16.8C12.8 16.9 12.4 17 12 17C9.2 17 7 14.8 7 12S9.2 7 12 7 17 9.2 17 12C17 12.3 17 12.6 16.9 12.9C17.6 12.7 18.3 12.5 19 12.5C20.2 12.5 21.3 12.8 22.3 13.5C22.6 13 22.8 12.5 23 12C21.3 7.6 17 4.5 12 4.5M12 9C10.3 9 9 10.3 9 12S10.3 15 12 15 15 13.7 15 12 13.7 9 12 9M19 21V19H15V17H19V15L22 18L19 21" /></svg>
+        <h4>(Ouvrir les détails pour participer)</h4>
       </div>
-      
+
       <ul class="poll-options">
-        <li 
-          *ngFor="let option of post.pollOptions" 
-          class="poll-option">
+        <li
+          *ngFor="let option of post.pollOptions"
+          class="poll-option"
+          [class.disabled]="isPollClosed()"
+          [attr.aria-disabled]="isPollClosed()"
+          [attr.tabindex]="isPollClosed() ? -1 : 0">
           {{ option.label }}
         </li>
       </ul>
-      
+      <div *ngIf="isPollClosed()" class="poll-feedback poll-error" style="color: #d32f2f; background: #fff0f0;">
+        Le sondage est terminé, vous ne pouvez plus voter.
+      </div>
+
       <div class="poll-deadline">
         <span class="deadline-icon">⏰</span>
         <span>Date limite : {{ post.pollDeadline | date:'dd/MM/yyyy' }}</span>
@@ -73,25 +81,25 @@
 
   <footer class="post-actions">
     <div class="actions-left">
-      <button 
+      <button
         (click)="likeDislikePost($event)"
         class="btn btn-action like-btn"
         [class.liked]="isLiked">
         <span class="btn-icon">{{ isLiked ? '❤️' : '🤍' }}</span>
         <span class="like-count">{{ post.likes?.length || 0 }}</span>
       </button>
-      
+
       <button class="btn btn-action comment-btn">
         <span class="btn-icon">💬</span>
         <span>Commenter</span>
       </button>
-      
-      
+
+
     </div>
-    
+
     <div class="actions-right">
-      <button 
-        *ngIf="isModerator || userId === post.auteurId" 
+      <button
+        *ngIf="isModerator || userId === post.auteurId"
         (click)="deletePost($event)"
         class="btn btn-danger delete-btn">
         <span class="btn-icon">🗑️</span>
@@ -99,22 +107,4 @@
       </button>
     </div>
   </footer>
-
-  <!-- Comments Section -->
-  <section class="comments-section" *ngIf="post.commentaires && post.commentaires.length">
-    <h4 class="comments-title">Commentaires</h4>
-    <ng-container *ngFor="let comment of post.commentaires">
-      <app-comment
-        [comment]="comment"
-        [replyFormVisible]="replyFormVisible"
-        [replyContent]="replyContent"
-        [toggleReplyForm]="toggleReplyForm"
-        [addReply]="addReply"
-        [likeDislikeComment]="likeDislikeComment"
-        [deleteComment]="deleteComment"
-        [isModerator]="isModerator"
-        [userId]="userId"
-      ></app-comment>
-    </ng-container>
-  </section>
 </article>

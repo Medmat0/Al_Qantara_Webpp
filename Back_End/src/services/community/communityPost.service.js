@@ -431,6 +431,19 @@ const addVoteToPollService = async (req) => {
         throw err;
     }
 
+    // Vérifie la date limite du sondage
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    if (post.pollDeadline) {
+        const deadline = new Date(post.pollDeadline);
+        deadline.setHours(0, 0, 0, 0);
+        if (now > deadline) {
+            const err = new Error("Le vote est impossible, la date limite du sondage est dépassée.");
+            err.status = 400;
+            throw err;
+        }
+    }
+
     // Vérifie que l'utilisateur n'a pas déjà voté
     const hasVoted = post.pollOptions.some(option =>
         option.votes.some(vote => vote.utilisateurId === userId)

@@ -18,7 +18,12 @@
         </div>
 
     <div class="post-tags" *ngIf="post.tags?.length">
-        <span class="tag" *ngFor="let tag of post.tags">#{{ tag }}</span>
+      <span
+        class="tag clickable"
+        *ngFor="let tag of post.tags"
+        (click)="goToPostResearchWithTag(tag); $event.stopPropagation();">
+        #{{ tag }}
+      </span>
     </div>
 
     <div class="post-content">
@@ -38,20 +43,21 @@
             </div>
         </div>
         <div class="poll-options">
-            <button 
-                class="poll-option" 
-                *ngFor="let option of post.pollOptions; let i = index"
-                [disabled]="hasVoted"
-                (click)="votePollOption(i)"
-                [class.voted]="selectedOption === i">
-                <span class="option-label">{{ option.label }}</span>
-                <span class="vote-count">({{ option.votes?.length || 0 }} vote{{ option.votes?.length !== 1 ? 's' : '' }})</span>
-                <span class="voted-indicator" *ngIf="selectedOption === i">✓</span>
-            </button>
+          <button
+            class="poll-option"
+            *ngFor="let option of post.pollOptions; let i = index"
+            [disabled]="hasVoted || isPollClosed()"
+            (click)="votePollOption(i)"
+            [class.voted]="selectedOption === i">
+            <span class="option-label">{{ option.label }}</span>
+            <span class="vote-count">({{ option.votes?.length || 0 }} vote{{ option.votes?.length !== 1 ? 's' : '' }})</span>
+            <span class="voted-indicator" *ngIf="selectedOption === i">✓</span>
+          </button>
         </div>
         <div class="poll-feedback">
-            <div class="poll-error" *ngIf="voteError">{{ voteError }}</div>
-            <div class="poll-success" *ngIf="voteSuccess">✅ Merci pour votre vote !</div>
+          <div class="poll-error" *ngIf="isPollClosed()">Le sondage est terminé, vous ne pouvez plus voter.</div>
+          <div class="poll-error" *ngIf="voteError">{{ voteError }}</div>
+          <div class="poll-success" *ngIf="voteSuccess">✅ Merci pour votre vote !</div>
         </div>
     </div>
 
@@ -64,7 +70,7 @@
         </button>
         <button class="action-btn comment-btn" (click)="scrollToCommentForm()">
             <span class="action-icon">💬</span>
-            <span class="action-text">Commenter</span>
+            <span class="action-text">Commentaires</span>
             <span class="action-count">{{ totalComments }}</span>
         </button>
         <button class="action-btn delete-btn" *ngIf="canDelete" (click)="deletePost()">
