@@ -52,6 +52,7 @@ export class AddEvenementComponent {
 
   selectedImages: File[] = [];
   selectedVideo: File | null = null;
+  minEndDate: string = '';
 
   constructor() {
     this.searchSubject.pipe(
@@ -104,6 +105,20 @@ export class AddEvenementComponent {
     this.selectedVideo = null;
   }
 
+  onDateDebutChange(): void {
+    if (this.event.dateDebut) {
+      // Définir la date minimale pour la date de fin
+      this.minEndDate = this.event.dateDebut;
+
+      // Si la date de fin est antérieure à la nouvelle date de début, la réinitialiser
+      if (this.event.dateFin && this.event.dateFin < this.event.dateDebut) {
+        this.event.dateFin = '';
+      }
+    } else {
+      this.minEndDate = '';
+    }
+  }
+
   async onSubmit(form: NgForm) {
     Object.keys(this.formErrors).forEach(key => {
       this.formErrors[key as keyof typeof this.formErrors] = false;
@@ -123,8 +138,12 @@ export class AddEvenementComponent {
       hasError = true;
     }
 
-    if (hasError) {
-      return;
+    // Validation des dates
+    if (this.event.dateDebut && this.event.dateFin) {
+      if (new Date(this.event.dateFin) < new Date(this.event.dateDebut)) {
+        this.errorMessage = "La date de fin doit être postérieure à la date de début.";
+        return;
+      }
     }
 
     // Validate price if isPaid is checked
