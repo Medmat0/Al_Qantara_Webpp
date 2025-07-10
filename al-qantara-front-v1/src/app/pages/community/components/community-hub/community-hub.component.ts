@@ -58,35 +58,36 @@ export class CommunityHubComponent implements OnInit {
   }
 
   ngOnInit() {
-
-    this.authService.authStatus$.subscribe((status) => {
-      this.isAuthenticated = status;
-      console.log('Authentication status:', this.isAuthenticated);
-      if (status) {
-        const user = localStorage.getItem('utilisateur');
-        if (user) {
-          this.userId = JSON.parse(user).id;
-        }
-      } else {
-        this.userId = null;
-      }
-    });
-
     this.route.paramMap.subscribe(params => {
       const id = params.get('communityId');
       if (id) {
         this.communityId = +id;
         this.fetchCommunity();
         this.fetchPosts();
-        if (this.isAuthenticated) {
+      }
+    });
+
+    this.authService.authStatus$.subscribe((status) => {
+      this.isAuthenticated = status;
+      console.log('Authentication status:', this.isAuthenticated);
+
+      if (status) {
+        const user = localStorage.getItem('utilisateur');
+        if (user) {
+          this.userId = JSON.parse(user).id;
+        }
+
+        if (this.communityId) {
           this.checkMembership();
           this.communityService.isModerator(this.communityId).subscribe({
             next: (isMod) => this.isModerator = isMod,
             error: () => this.isModerator = false
           });
-        } else {
-          this.isMember = false;
         }
+      } else {
+        this.userId = null;
+        this.isMember = false;
+        this.isModerator = false;
       }
     });
   }
@@ -254,9 +255,11 @@ export class CommunityHubComponent implements OnInit {
 
     this.isSubmitting = true;
 
+    
     const tags = this.tags.value.filter((tag: string) => tag.trim() !== '');
     const pollOptions = this.pollOptions.value.filter((option: string) => option.trim() !== '');
     const type = pollOptions.length >= 2 ? 'POLL' : 'TEXT';
+
 
     const data = {
       titre: this.postForm.get('title')?.value,

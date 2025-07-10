@@ -5,6 +5,8 @@ import { Editor, NgxEditorModule, Toolbar } from 'ngx-editor';
 import { HttpClient } from '@angular/common/http';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { forkJoin } from 'rxjs';
+import { API_URL } from '../../../../utils/config';
+
 
 interface Article {
   id: number;
@@ -104,7 +106,7 @@ export class EditArticleComponent implements OnInit, OnDestroy, OnChanges {
     this.loading = true;
 
     // Récupérer les détails de l'article seulement
-    this.http.get<any>(`http://localhost:3000/articles/${this.articleId}`, { withCredentials: true })
+    this.http.get<any>(`${API_URL}/articles/${this.articleId}`, { withCredentials: true })
       .subscribe({
         next: (response) => {
           console.log('Réponse de l\'API articles:', response);
@@ -163,7 +165,7 @@ export class EditArticleComponent implements OnInit, OnDestroy, OnChanges {
   getRevuesTitres(): void {
     // Récupérer la liste des revues pour le sélecteur
     console.log('Début getRevuesTitres');
-    this.http.get<any>('http://localhost:3000/revues', { withCredentials: true })
+    this.http.get<any>(`${API_URL}/revues`, { withCredentials: true })
       .subscribe({
         next: (response) => {
           console.log('Réponse API revues:', response);
@@ -192,7 +194,7 @@ export class EditArticleComponent implements OnInit, OnDestroy, OnChanges {
 
   getCategoriesNoms(): void {
 
-    this.http.get<any>('http://localhost:3000/articles/categories/all', { withCredentials: true })
+    this.http.get<any>(`${API_URL}/articles/categories/all`, { withCredentials: true })
       .subscribe({
         next: (response) => {
           this.categories = response.categories;
@@ -222,7 +224,7 @@ export class EditArticleComponent implements OnInit, OnDestroy, OnChanges {
         categories: selectedIds
       };
 
-      this.http.put(`http://localhost:3000/articles/${this.articleId}`, updatedArticle, { withCredentials: true })
+      this.http.put(`${API_URL}/articles/${this.articleId}`, updatedArticle, { withCredentials: true })
         .subscribe({
           next: (_) => {
             this.successMessage = 'Article modifié avec succès.';
