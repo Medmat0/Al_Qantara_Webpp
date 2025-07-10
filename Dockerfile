@@ -9,4 +9,4 @@ RUN npx prisma db push
 
 EXPOSE 8000
 
-CMD ["node", "index.js"]
+CMD ["node", "Back_End/index.js"]
