@@ -1,42 +1,61 @@
-
-// Palette inspirée du manage-recruitment
-$primary-color: #7f1818;
+$primary-color: #9e2e2c;
+$primary-dark: #7d1f1d;
 $secondary-color: #6d4a4a;
 $success-color: #10b981;
 $danger-color: #ef4444;
+$gray-50: #f9fafb;
 $gray-100: #f3f4f6;
 $gray-200: #e5e7eb;
-$gray-400: #afa19c;
-$gray-600: #63544b;
-$gray-900: #271611;
+$gray-300: #d1d5db;
+$gray-400: #9ca3af;
+$gray-600: #4b5563;
+$gray-900: #111827;
+$border-radius: 12px;
+$shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 12px rgba(0, 0, 0, 0.10);
+$shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.15);
 
 .add-recruitment-container {
-  max-width: 700px;
-  margin: 2.5rem auto;
-  padding: 2.5rem 2rem 2rem 2rem;
-  background: #fff;
-  border-radius: 20px;
-  box-shadow: 0 4px 16px rgba(127, 24, 24, 0.08), 0 2px 8px rgba(109, 74, 74, 0.05);
-  animation: fadeIn 0.5s;
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 3rem 2.5rem;
+  background: linear-gradient(135deg, #ffffff 0%, #fafbfc 100%);
+  border-radius: $border-radius;
+  box-shadow: $shadow-lg;
+  border: 1px solid $gray-200;
+  font-family: 'Mulish', sans-serif;
+  position: relative;
+  animation: fadeIn 0.5s ease;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, $primary-color, $secondary-color);
+    border-radius: $border-radius $border-radius 0 0;
+  }
 
   h2 {
-    font-size: 2rem;
-    color: $primary-color;
-    margin-bottom: 2rem;
-    text-align: center;
+    font-size: 2.2rem;
     font-weight: 700;
-    letter-spacing: 0.01em;
+    color: $primary-color;
+    text-align: center;
+    margin-bottom: 0.5rem;
+    font-family: 'Cormorant Garamond', serif;
   }
 
   .form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
 
     label {
       display: block;
-      margin-bottom: 0.5rem;
-      color: $gray-900;
+      margin-bottom: 0.75rem;
       font-weight: 600;
-      font-size: 1rem;
+      color: $gray-900;
+      font-size: 1.05rem;
       letter-spacing: 0.01em;
 
       &::after {
@@ -54,98 +73,148 @@ $gray-900: #271611;
     input[type="date"],
     select {
       width: 100%;
-      padding: 0.75rem 1rem;
-      border: 1px solid $gray-200;
-      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      border: 2px solid $gray-300;
+      border-radius: 10px;
       font-size: 1rem;
-      background: $gray-100;
+      background: $gray-50;
       color: $gray-900;
-      transition: border 0.2s, box-shadow 0.2s;
+      transition: all 0.3s ease;
+      font-family: inherit;
 
       &:focus {
         outline: none;
         border-color: $primary-color;
-        box-shadow: 0 0 0 2px rgba(127, 24, 24, 0.08);
+        background: white;
+        box-shadow: 0 0 0 3px rgba(158, 46, 44, 0.1);
+        transform: translateY(-1px);
+      }
+
+      &::placeholder {
+        color: $gray-400;
       }
     }
 
     select {
       appearance: none;
-      background: $gray-100;
-      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234b5563' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
       background-repeat: no-repeat;
-      background-position: right 0.7rem center;
-      background-size: 1em;
-      height: 50px;
-      padding-right: 2.5rem;
+      background-position: right 1rem center;
+      background-size: 1.2em;
+      padding-right: 3rem;
     }
   }
 
   .editor {
-    border: 1px solid $gray-200;
-    border-radius: 12px;
+    border: 2px solid $gray-300;
+    border-radius: 10px;
     overflow: hidden;
-    margin-bottom: 1rem;
+    background: white;
+    transition: border-color 0.3s ease;
+
+    &:focus-within {
+      border-color: $primary-color;
+      box-shadow: 0 0 0 3px rgba(158, 46, 44, 0.1);
+    }
 
     ::ng-deep {
+      .NgxEditor {
+        min-height: 250px;
+        background: white;
+      }
+
       .NgxEditor__Content {
-        min-height: 180px;
-        padding: 1rem;
-        background: $gray-100;
+        min-height: 200px;
+        padding: 1.5rem;
+        background: white;
+        font-size: 1rem;
+        line-height: 1.6;
       }
 
       .NgxEditor__MenuBar {
         border-bottom: 1px solid $gray-200;
-        padding: 0.5rem;
-        background: #f9fafb;
+        padding: 1rem;
+        background: $gray-50;
+
+        .NgxEditor__MenuItem {
+          border: 1px solid $gray-300;
+          padding: 0.5rem;
+          margin: 0.25rem;
+          background: white;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+
+          &:hover {
+            background: $gray-100;
+            border-color: $gray-400;
+          }
+
+          &.NgxEditor__MenuItem--Active {
+            background: $primary-color;
+            color: white;
+            border-color: $primary-color;
+          }
+        }
       }
     }
   }
 
   .tags-input-container {
     input {
-      margin-bottom: 0.75rem;
+      margin-bottom: 1rem;
     }
 
     .tags-list {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.5rem;
-      min-height: 32px;
-      padding: 0.5rem;
-      border: 1px dashed $gray-200;
-      border-radius: 8px;
+      gap: 0.75rem;
+      min-height: 60px;
+      padding: 1rem;
+      border: 2px dashed $gray-300;
+      border-radius: 10px;
+      background: $gray-50;
+      transition: all 0.3s ease;
+
+      &:hover {
+        border-color: $gray-400;
+      }
 
       .tag {
         display: inline-flex;
         align-items: center;
-        background: $secondary-color;
-        color: #fff;
-        padding: 0.4rem 0.9rem;
-        border-radius: 20px;
+        background: linear-gradient(135deg, $primary-color, $secondary-color);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
         font-size: 0.95rem;
         font-weight: 500;
-        transition: background 0.2s;
+        transition: all 0.3s ease;
+        box-shadow: $shadow-sm;
 
         &:hover {
-          background: $primary-color;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(158, 46, 44, 0.2);
         }
 
         .remove-tag {
           background: none;
           border: none;
-          margin-left: 0.5rem;
+          margin-left: 0.75rem;
           cursor: pointer;
           font-size: 1.2rem;
-          color: $gray-400;
-          padding: 0 0.2rem;
+          color: rgba(255, 255, 255, 0.8);
+          padding: 0 0.25rem;
           display: flex;
           align-items: center;
           justify-content: center;
-          transition: color 0.2s;
+          transition: all 0.2s ease;
+          border-radius: 50%;
 
           &:hover {
-            color: $danger-color;
+            color: white;
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
           }
         }
       }
@@ -154,45 +223,52 @@ $gray-900: #271611;
 
   .submit-btn {
     width: 100%;
-    padding: 1.1rem;
-    background: linear-gradient(135deg, $primary-color, $secondary-color);
+    background: linear-gradient(135deg, $primary-color, $primary-dark);
     color: white;
     border: none;
-    border-radius: 12px;
+    padding: 1.25rem 2rem;
     font-size: 1.1rem;
     font-weight: 600;
+    border-radius: 10px;
     cursor: pointer;
-    transition: background 0.2s, box-shadow 0.2s;
-    box-shadow: 0 2px 8px rgba(127, 24, 24, 0.08);
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+    box-shadow: $shadow-md;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 
     &:hover:not(:disabled) {
-      background: linear-gradient(135deg, $secondary-color, $primary-color);
-      box-shadow: 0 4px 16px rgba(127, 24, 24, 0.12);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(158, 46, 44, 0.3);
+      background: linear-gradient(135deg, $primary-dark, #5d1714);
     }
 
     &:disabled {
       background: $gray-400;
       cursor: not-allowed;
-      opacity: 0.7;
+      transform: none;
+      box-shadow: none;
     }
   }
 }
 
-// Styles spécifiques pour l'éditeur NGX
 ::ng-deep {
   .NgxEditor__Wrapper {
     border: none !important;
   }
 
   .NgxEditor__Content {
-    background: $gray-100 !important;
+    background: white !important;
   }
 
   .NgxEditor__MenuItem {
-    padding: 0.3rem !important;
-
     &:hover {
-      background: $gray-200 !important;
+      background: $gray-100 !important;
     }
   }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
