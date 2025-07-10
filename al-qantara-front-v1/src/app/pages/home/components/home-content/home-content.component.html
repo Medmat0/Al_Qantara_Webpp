@@ -1,53 +1,202 @@
-<div class="home-img">
-  <img src="assets/morocco-4748687_1920.jpg" alt="Morocco main image" />
-  <div class="content-in_img">
-    <div class="glass-overlay">
-      <h2>Soyez acteur de la culture Marocaine</h2>
-      <h3>Al Qantara est une association dédiée à la promotion du patrimoine culturel marocain et au renforcement des liens entre la diaspora marocaine et le Maroc...</h3>
+<section class="hero-section">
+  <div class="hero-overlay">
+    <div class="hero-content">
+      <h1 class="hero-title">Al-Qantara</h1>
+      <p class="hero-subtitle">une association dédiée à la promotion du patrimoine culturel marocain et au renforcement des liens entre la diaspora marocaine et le Maroc</p>
+
     </div>
   </div>
-</div>
-<h1 class="title-introduction">Qui sommes nous ?</h1>
-<div class="right-image-container">
-  <div class="text-container">
-    <p>Chez Al Qantara, nous œuvrons à renforcer les liens entre le Maroc et sa diaspora, en mettant la culture au cœur de cette connexion. À travers nos actions, nous créons un pont entre les générations, les talents et les idées, pour faire rayonner la richesse culturelle marocaine au-delà des frontières.</p>
-  </div>
-  <div class="image-container">
-    <img src="assets/philipp-klausner-1.jpg" alt="image right container">
-  </div>
+</section>
+
+<div *ngIf="isLoading" class="loading-container">
+  <div class="spinner"></div>
+  <p>Chargement...</p>
 </div>
 
-<div class="left-image-container">
-  <div class="text-container">
-    <p>Al Qantara explore et partage la diversité des expressions culturelles marocaines, en créant des espaces de rencontre, de dialogue et de création</p>
-  </div>
-  <div class="image-container">
-    <img src="assets/raul-cacho-2.jpg" alt="image left container">
-  </div>
+<div *ngIf="!isLoading" class="main-content">
 
+  <section class="content-section articles-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Derniers Articles</h2>
+        <p class="section-subtitle">Découvrez nos dernières publications et actualités</p>
+        <a routerLink="/articles" class="view-all-link">Voir tous les articles →</a>
+      </div>
+    </div>
 
-</div>
+    <div *ngIf="articles.length > 1" class="carousel-container full-width-carousel" [class.few-articles]="shouldCenterArticles()">
+      <button class="carousel-btn carousel-btn-left" (click)="scrollCarousel('articles-carousel', 'left')">
+        ‹
+      </button>
 
-<div class="fonctionnalites-container">
-  <div class="fonctionnalite not-finished">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="50" height="50">
-      <title>party-popper</title>
-      <path d="M14.53 1.45L13.45 2.53L15.05 4.13C15.27 4.38 15.38 4.67 15.38 5S15.27 5.64 15.05 5.86L11.5 9.47L12.5 10.55L16.13 6.94C16.66 6.35 16.92 5.7 16.92 5C16.92 4.3 16.66 3.64 16.13 3.05L14.53 1.45M10.55 3.47L9.47 4.55L10.08 5.11C10.3 5.33 10.41 5.63 10.41 6S10.3 6.67 10.08 6.89L9.47 7.45L10.55 8.53L11.11 7.92C11.64 7.33 11.91 6.69 11.91 6C11.91 5.28 11.64 4.63 11.11 4.03L10.55 3.47M21 5.06C20.31 5.06 19.67 5.33 19.08 5.86L13.45 11.5L14.53 12.5L20.11 6.94C20.36 6.69 20.66 6.56 21 6.56S21.64 6.69 21.89 6.94L22.5 7.55L23.53 6.47L22.97 5.86C22.38 5.33 21.72 5.06 21 5.06M7 8L2 22L16 17L7 8M19 11.06C18.3 11.06 17.66 11.33 17.06 11.86L15.47 13.45L16.55 14.53L18.14 12.94C18.39 12.69 18.67 12.56 19 12.56C19.33 12.56 19.63 12.69 19.88 12.94L21.5 14.53L22.55 13.5L20.95 11.86C20.36 11.33 19.7 11.06 19 11.06Z" /></svg>
-    <h3>Événements(A venir...)</h3>
-    <p>Nous organisons des événements culturels, artistiques et éducatifs pour célébrer la richesse du patrimoine marocain et favoriser les échanges entre les membres de la diaspora.</p>
-  </div>
-  <div class="fonctionnalite done" routerLink="/revues">
+      <div id="articles-carousel" class="carousel">
+        <div *ngFor="let article of articles" class="article-card">
+          <div class="card-image">
+            <img [src]="getArticleImage(article)" [alt]="article.titre">
+            <div class="card-overlay">
+              <span *ngIf="article.categories && article.categories.length > 0" class="card-category">
+                {{ article.categories[0].nom }}
+              </span>
+            </div>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">{{ truncateText(article.titre, 60) }}</h3>
+            <p class="card-description">{{ truncateText(getArticleDescription(article), 120) }}</p>
+            <div class="card-meta">
+              <span class="card-date">{{ formatDate(article.dateSoumission) }}</span>
+              <a [routerLink]="['/articles', article.id]" class="card-link">Lire la suite</a>
+            </div>
+          </div>
+        </div>
+      </div>
 
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="50" height="50"><title>newspaper</title><path d="M20,11H4V8H20M20,15H13V13H20M20,19H13V17H20M11,19H4V13H11M20.33,4.67L18.67,3L17,4.67L15.33,3L13.67,4.67L12,3L10.33,4.67L8.67,3L7,4.67L5.33,3L3.67,4.67L2,3V19A2,2 0 0,0 4,21H20A2,2 0 0,0 22,19V3L20.33,4.67Z" /></svg>
-    <h3>Actualités(A venir...) et Revues</h3>
-    <p>Nous partageons des nouvelles et des informations sur la culture marocaine, les événements à venir et les initiatives de la diaspora pour rester connectés et informés.</p>
-  </div>
-  <div class="fonctionnalite not-finished">
+      <button class="carousel-btn carousel-btn-right" (click)="scrollCarousel('articles-carousel', 'right')">
+        ›
+      </button>
+    </div>
 
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="50" height="50"><title>airplane</title><path d="M20.56 3.91C21.15 4.5 21.15 5.45 20.56 6.03L16.67 9.92L18.79 19.11L17.38 20.53L13.5 13.1L9.6 17L9.96 19.47L8.89 20.53L7.13 17.35L3.94 15.58L5 14.5L7.5 14.87L11.37 11L3.94 7.09L5.36 5.68L14.55 7.8L18.44 3.91C19 3.33 20 3.33 20.56 3.91Z" /></svg>
-    <h3>Itinéraires(A venir...)</h3>
-    <p>Nous proposons des itinéraires culturels pour découvrir le Maroc sous un nouvel angle, en mettant en avant les trésors cachés et les traditions locales.</p>
+    <div *ngIf="articles.length === 1" class="container">
+      <div class="single-article">
+        <div class="article-card featured">
+          <div class="card-image">
+            <img [src]="getArticleImage(articles[0])" [alt]="articles[0].titre">
+            <div class="card-overlay">
+              <span *ngIf="articles[0].categories && articles[0].categories.length > 0" class="card-category">
+                {{ articles[0].categories[0].nom }}
+              </span>
+            </div>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">{{ articles[0].titre }}</h3>
+            <p class="card-description">{{ truncateText(getArticleDescription(articles[0]), 200) }}</p>
+            <div class="card-meta">
+              <span class="card-date">{{ formatDate(articles[0].dateSoumission) }}</span>
+              <a [routerLink]="['/articles', articles[0].id]" class="btn btn-primary">Lire l'article</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-  </div>
+    <div *ngIf="articles.length === 0" class="container">
+      <div class="empty-state">
+        <div class="empty-icon">📰</div>
+        <h3>Aucun article disponible</h3>
+        <p>Revenez bientôt pour découvrir nos dernières publications</p>
+      </div>
+    </div>
+  </section>
 
+  <section class="content-section events-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Événements à Venir</h2>
+        <p class="section-subtitle">Ne manquez pas nos prochains événements</p>
+        <a routerLink="/events" class="view-all-link">Voir tous les événements →</a>
+      </div>
+
+      <div *ngIf="upcomingEvents.length > 0" class="events-grid">
+        <div *ngFor="let event of upcomingEvents" class="event-card">
+          <div class="event-date">
+            <span class="day">{{ formatDate(event.dateDebut).split(' ')[0] }}</span>
+            <span class="month">{{ formatDate(event.dateDebut).split(' ')[1] }}</span>
+          </div>
+          <div class="event-content">
+            <h3 class="event-title">{{ truncateText(event.titre, 50) }}</h3>
+            <div class="event-meta">
+              <span class="event-location">{{ event.lieu }}</span>
+              <span class="event-type">{{ event.type }}</span>
+            </div>
+            <a [routerLink]="['/events', event.id]" class="event-link">En savoir plus</a>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="upcomingEvents.length === 0" class="empty-state">
+        <div class="empty-icon">📅</div>
+        <h3>Aucun événement programmé</h3>
+        <p>Restez connectés pour découvrir nos prochains événements</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section revues-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Dernières Revues</h2>
+        <p class="section-subtitle">Explorez nos publications spécialisées</p>
+        <a routerLink="/revues" class="view-all-link">Toutes les revues →</a>
+      </div>
+
+      <div *ngIf="latestRevues.length > 0" class="revues-carousel-container">
+        <button class="carousel-btn carousel-btn-left" (click)="scrollCarousel('revues-carousel', 'left')">
+          ‹
+        </button>
+
+        <div id="revues-carousel" class="carousel revues-carousel">
+          <div *ngFor="let revue of latestRevues" class="revue-card">
+            <div class="revue-cover">
+              <img [src]="getRevueImage(revue)" [alt]="revue.titre">
+              <div class="revue-overlay">
+                <span class="revue-badge">Nouvelle revue</span>
+              </div>
+            </div>
+            <div class="revue-content">
+              <h3 class="revue-title">{{ truncateText(revue.titre, 40) }}</h3>
+              <p class="revue-description">{{ truncateText(revue.description, 80) }}</p>
+              <div class="revue-meta">
+                <span class="revue-date">{{ formatRevueDate(revue) }}</span>
+                <a [routerLink]="['/revues', revue.id]" class="revue-link">Consulter</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="carousel-btn carousel-btn-right" (click)="scrollCarousel('revues-carousel', 'right')">
+          ›
+        </button>
+      </div>
+
+      <div *ngIf="latestRevues.length === 0" class="empty-state">
+        <div class="empty-icon">📚</div>
+        <h3>Aucune revue disponible</h3>
+        <p>Nos prochaines publications arriveront bientôt</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-content">
+        <h2 class="cta-title">Rejoignez Al-Qantara</h2>
+        <p class="cta-description">
+          Devenez membre de notre association et bénéficiez d'un réseau professionnel unique,
+          d'événements exclusifs et de ressources spécialisées.
+        </p>
+        <div class="cta-actions">
+          <a (click)="navigateAndScrollTop('/adhesion')" class="btn btn-primary btn-large" style="cursor: pointer;">Adhérer maintenant</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Footer Links -->
+  <section class="footer-links-section">
+    <div class="container">
+      <div class="footer-links-grid">
+
+        <div class="footer-link-card">
+          <h3>Nous Contacter</h3>
+          <p>Une question ? Besoin d'informations ? Notre équipe est à votre écoute</p>
+          <a (click)="navigateAndScrollTop('/contacts')" class="footer-link" style="cursor: pointer;">Contacter →</a>
+        </div>
+
+        <div class="footer-link-card">
+          <h3>Opportunités</h3>
+          <p>Découvrez les offres d'emploi et opportunités de collaboration</p>
+          <a (click)="navigateAndScrollTop('/recruitment')" class="footer-link" style="cursor: pointer;">Explorer →</a>
+        </div>
+      </div>
+    </div>
+  </section>
 </div>

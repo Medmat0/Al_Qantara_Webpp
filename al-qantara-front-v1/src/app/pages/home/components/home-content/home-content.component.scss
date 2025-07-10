@@ -1,389 +1,1282 @@
-//@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&display=swap');
+// Variables - Harmonisation avec la charte graphique Al-Qantara
+$primary-color: #835353;
+$primary-hover: #6b2e2e;
+$secondary-color: #d59c9c;
+$secondary-hover: #bfa6a6;
+$accent-color: #06b6d4;
+$accent-hover: #0891b2;
+$danger-color: #dc2626;
+$background-light: #ffffff;
+$background-card: #ffffff;
+$background-section: #f8f9fa;
+$text-primary: #1f2937;
+$text-secondary: #6b7280;
+$text-muted: #9ca3af;
+$border-color: #e5e7eb;
+$border-light: #f3f4f6;
+$border-hover: #cbd5e1;
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+$gradient-primary: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
 
-// Variables CSS pour un design cohérent
-:root {
-  --primary-color: #3a0706;
-  --secondary-color: #8b4513;
-  --accent-color: #d2691e;
-  --background-light: #fff9f5;
-  --background-white: #ffffff;
-  --text-primary: #2c1810;
-  --text-secondary: #6b4f3f;
-  --shadow-light: 0 4px 20px rgba(0, 0, 0, 0.08);
-  --shadow-medium: 0 8px 30px rgba(0, 0, 0, 0.12);
-  --shadow-heavy: 0 15px 40px rgba(0, 0, 0, 0.15);
-  --border-radius: 16px;
-  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --font-primary: "Cormorant Garamond", serif;
-  --font-secondary: "Mulish", sans-serif;
-}
 
-// Reset et styles de base
-* {
-  box-sizing: border-box;
-}
-
-// Container principal de l'image d'accueil
-.home-img {
-  position: relative;
-  width: 100%;
-  height: 100vh;
-  min-height: 600px;
-  overflow: hidden;
+// Mixins
+@mixin flex-center {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.home-img img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0.7;
-  filter: brightness(0.8) contrast(1.1);
-  transition: var(--transition);
+@mixin card-hover {
+  transition: all 0.3s ease;
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: $shadow-lg;
+  }
 }
 
-// Overlay avec effet glassmorphism moderne
-.glass-overlay {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: var(--border-radius);
-  padding: 3rem 2rem;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  box-shadow: var(--shadow-medium);
-  color: var(--text-primary);
-  max-width: 900px;
-  margin: 0 auto;
+// Section Hero
+.hero-section {
+  height: 70vh;
+  background: linear-gradient(135deg, rgba($primary-color, 0.9), rgba($primary-hover, 0.8)),
+              url('/assets/morocco-4748687_1920.jpg') center/cover;
   position: relative;
-  z-index: 2;
-  animation: fadeInUp 0.8s ease-out;
+  @include flex-center;
+  color: white;
+  text-align: center;
+
+  .hero-overlay {
+    width: 100%;
+    height: 100%;
+    @include flex-center;
+    padding: 2rem;
+  }
+
+  .hero-content {
+    max-width: 800px;
+
+    .hero-title {
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      font-family: 'Cormorant Garamond', serif;
+
+      @media (max-width: 768px) {
+        font-size: 2.5rem;
+      }
+    }
+
+    .hero-subtitle {
+      font-size: 1.5rem;
+      font-weight: 300;
+      margin-bottom: 1.5rem;
+      opacity: 0.9;
+      font-family: 'Mulish', sans-serif;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+  }
 }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
+// Loading
+.loading-container {
+  @include flex-center;
+  flex-direction: column;
+  height: 400px;
+
+  .spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid $border-color;
+    border-top: 4px solid $primary-color;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  p {
+    color: $text-secondary;
+    font-family: 'Mulish', sans-serif;
   }
 }
 
-// Contenu dans l'image
-.content-in_img {
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Layout - Conteneurs élargis
+.main-content {
+  padding-top: 0;
+  font-family: 'Mulish', sans-serif;
+  overflow-x: hidden; // Empêche le défilement horizontal
+}
+
+.container {
+  max-width: 1400px; // 1200px → 1400px (200px de plus !)
+  margin: 0 auto;
+  padding: 0 1.5rem;
+
+  @media (max-width: 768px) {
+    padding: 0 1rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0 0.75rem;
+  }
+}
+
+.content-section {
+  padding: 3rem 0; // 4rem → 3rem (plus de contenu visible)
+  overflow-x: hidden; // Empêche le défilement horizontal sur chaque section
+
+  &:nth-child(even) {
+    background-color: $background-section;
+  }
+
+  @media (max-width: 768px) {
+    padding: 2rem 0;
+  }
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 2.5rem; // 3rem → 2.5rem (moins d'espace perdu)
+
+  .section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: $primary-color;
+    margin-bottom: 1rem;
+    font-family: 'Cormorant Garamond', serif;
+
+    @media (max-width: 768px) {
+      font-size: 2rem;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 1.75rem;
+    }
+  }
+
+  .section-subtitle {
+    font-size: 1.2rem;
+    color: $text-secondary;
+    margin-bottom: 1.5rem;
+    font-family: 'Mulish', sans-serif;
+
+    @media (max-width: 768px) {
+      font-size: 1.1rem;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 1rem;
+    }
+  }
+
+  .view-all-link {
+    color: $accent-color;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+    font-family: 'Mulish', sans-serif;
+
+    &:hover {
+      color: $accent-hover;
+    }
+  }
+}
+
+// Boutons
+.btn {
+  display: inline-block;
+  padding: 0.75rem 2rem;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  text-align: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 2px solid transparent;
+  font-family: 'Mulish', sans-serif;
+
+  &.btn-primary {
+    background-color: $primary-color;
+    color: white;
+
+    &:hover {
+      background-color: $primary-hover;
+      transform: translateY(-2px);
+      box-shadow: $shadow-md;
+    }
+  }
+
+  &.btn-secondary {
+    background-color: transparent;
+    color: white;
+    border-color: white;
+
+    &:hover {
+      background-color: white;
+      color: $primary-color;
+    }
+  }
+
+  &.btn-outline {
+    background-color: transparent;
+    color: $primary-color;
+    border-color: $primary-color;
+
+    &:hover {
+      background-color: $primary-color;
+      color: white;
+    }
+  }
+
+  &.btn-large {
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+  }
+}
+
+// Carousels - Navigation optimisée
+.carousel-container {
+  position: relative;
+  padding: 0 40px; // Boutons repositionnés plus près des bords
+
+  @media (max-width: 768px) {
+    padding: 0 30px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0 25px;
+  }
+}
+
+// Carousel pleine largeur pour les articles
+.full-width-carousel {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  padding: 0 50px; // Boutons repositionnés plus près des bords
+  overflow-x: hidden; // Empêche le débordement horizontal
+
+  @media (max-width: 1200px) {
+    padding: 0 40px;
+  }
+
+  @media (max-width: 768px) {
+    padding: 0 30px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0 25px;
+  }
+
+  .carousel {
+    padding-left: 2rem;
+    padding-right: 2rem;
+    justify-content: center;
+    overflow-x: auto; // Garde le scroll interne du carousel
+    overflow-y: hidden; // Empêche le scroll vertical
+
+    @media (max-width: 768px) {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+
+    @media (max-width: 480px) {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+  }
+
+  // Masquer les boutons de navigation quand il y a peu d'articles
+  &.few-articles {
+    .carousel-btn {
+      display: none;
+    }
+
+    .carousel {
+      justify-content: center;
+      flex-wrap: wrap;
+      max-width: 1400px;
+      margin: 0 auto;
+      overflow-x: hidden; // Pas de scroll horizontal quand centré
+    }
+  }
+
+  .carousel-btn {
+    &.carousel-btn-left {
+      left: 10px; // Plus près des bords
+    }
+
+    &.carousel-btn-right {
+      right: 10px; // Plus près des bords
+    }
+
+    @media (max-width: 768px) {
+      &.carousel-btn-left {
+        left: 5px;
+      }
+
+      &.carousel-btn-right {
+        right: 5px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      &.carousel-btn-left {
+        left: 2px;
+      }
+
+      &.carousel-btn-right {
+        right: 2px;
+      }
+    }
+  }
+}
+
+.carousel {
+  display: flex;
+  gap: 1.5rem; // Gap carousel optimisé
+  overflow-x: auto;
+  overflow-y: hidden; // Empêche le scroll vertical
+  scroll-behavior: smooth;
+  padding: 1rem 0;
+  scrollbar-width: none; // Firefox
+  -ms-overflow-style: none; // IE
+
+  @media (max-width: 768px) {
+    gap: 1rem; // 1.5rem → 1rem
+    padding: 0.75rem 0;
+  }
+
+  @media (max-width: 480px) {
+    gap: 0.75rem; // 1rem → 0.75rem
+    padding: 0.5rem 0;
+  }
+
+  &::-webkit-scrollbar {
+    display: none; // Chrome, Safari, Edge
+  }
+}
+
+.carousel-btn {
   position: absolute;
   top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-family: var(--font-primary);
-  text-align: center;
-  padding: 2rem;
-  width: 100%;
-  max-width: 1200px;
-  z-index: 3;
+  transform: translateY(-50%);
+  background: $background-card;
+  border: 2px solid $border-color;
+  border-radius: 50%;
+  width: 50px; // Navigation carousel mobile optimisée
+  height: 50px;
+  @include flex-center;
+  box-shadow: $shadow-md;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 2;
+  font-size: 24px; // Taille pour les caractères Unicode
+  font-weight: bold;
+  color: $primary-color;
+
+  &:hover {
+    background-color: $primary-color;
+    color: white;
+    border-color: $primary-color;
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  &.carousel-btn-left {
+    left: 5px;
+  }
+
+  &.carousel-btn-right {
+    right: 5px;
+  }
+
+  @media (max-width: 768px) {
+    width: 40px; // 50px → 40px
+    height: 40px;
+    font-size: 20px;
+  }
+
+  @media (max-width: 480px) {
+    width: 35px; // 40px → 35px (navigation tactile)
+    height: 35px;
+    font-size: 18px;
+  }
 }
 
-.content-in_img h2 {
-  font-size: clamp(2.5rem, 5vw, 4rem);
-  margin-bottom: 1rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  line-height: 1.2;
-}
+// Cards Articles - Cards plus grandes
+.article-card {
+  flex: 0 0 320px; // 300px → 320px (cards plus grandes)
+  background: $background-card;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: $shadow-sm;
+  border: 1px solid $border-color;
+  @include card-hover;
 
-.content-in_img h3 {
-  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
-  font-weight: 400;
-  color: var(--text-secondary);
-  margin-bottom: 0;
-  line-height: 1.4;
-}
-
-// Conteneurs d'images et texte
-.image-container {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 2rem;
-}
-
-.image-container img {
-  width: 100%;
-  max-width: 500px;
-  height: auto;
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-light);
-  transition: var(--transition);
-  filter: brightness(1.05) contrast(1.05);
-}
-
-.image-container img:hover {
-  transform: scale(1.02);
-  box-shadow: var(--shadow-medium);
-}
-
-.text-container {
-  font-family: var(--font-secondary);
-  font-size: clamp(1rem, 2vw, 1.25rem);
-  color: var(--text-primary);
-  text-align: justify;
-  line-height: 1.7;
-  padding: 2rem;
-  background: var(--background-white);
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-light);
-  margin: 1rem;
-  transition: var(--transition);
-}
-
-.text-container:hover {
-  box-shadow: var(--shadow-medium);
-  transform: translateY(-2px);
-}
-
-.title-introduction {
-  font-family: var(--font-primary);
-  font-size: clamp(2rem, 4vw, 2.5rem);
-  color: var(--primary-color);
-  margin: 2rem 0 1rem 0;
-  text-align: center;
-  font-weight: 600;
-  position: relative;
-}
-
-.title-introduction::after {
-  content: '';
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 3px;
-  background: linear-gradient(90deg, var(--accent-color), var(--secondary-color));
-  border-radius: 2px;
-}
-
-// Conteneurs principaux
-.right-image-container,
-.left-image-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin: 4rem 5%;
-  gap: 3rem;
-  padding: 2rem;
-  background: var(--background-light);
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-light);
-  transition: var(--transition);
-}
-
-.right-image-container:hover,
-.left-image-container:hover {
-  box-shadow: var(--shadow-medium);
-  transform: translateY(-3px);
-}
-
-.left-image-container {
-  flex-direction: row-reverse;
-}
-
-// Section fonctionnalités
-.fonctionnalites-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
-  padding: 4rem 5%;
-  background: linear-gradient(135deg, var(--background-light) 0%, #fff5f0 100%);
-  margin: 2rem 0;
-}
-
-.fonctionnalite {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  font-family: var(--font-primary);
-  font-size: 1rem;
-  background: var(--background-white);
-  padding: 2.5rem 2rem;
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-light);
-  transition: var(--transition);
-  text-align: center;
-  min-height: 300px;
-  position: relative;
+  height: 100%; // Assure que toutes les cartes ont la même hauteur
+  border-radius: 8px;
   overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  @media (max-width: 1200px) {
+    flex: 0 0 300px;
+  }
+
+  @media (max-width: 768px) {
+    flex: 0 0 280px; // Tailles réduites progressivement
+  }
+
+  @media (max-width: 480px) {
+    flex: 0 0 260px;
+  }
+
+  &.featured {
+    max-width: 700px; // 600px → 700px (articles featured plus grands)
+    margin: 0 auto;
+    display: flex;
+    gap: 2rem;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      gap: 0;
+      max-width: 500px;
+    }
+
+    .card-image {
+      flex: 0 0 280px;
+
+      @media (max-width: 768px) {
+        flex: none;
+        height: 250px;
+      }
+    }
+
+    .card-content {
+      flex: 1;
+      padding: 2rem;
+
+      @media (max-width: 768px) {
+        padding: 1.5rem;
+      }
+    }
+  }
+
+  .card-image {
+    position: relative;
+    height: 220px;
+    overflow: hidden;
+
+    @media (max-width: 768px) {
+      height: 200px;
+    }
+
+    @media (max-width: 480px) {
+      height: 180px;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .card-overlay {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+
+      .card-category {
+        background: $accent-color;
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        font-family: 'Mulish', sans-serif;
+
+        @media (max-width: 480px) {
+          font-size: 0.7rem;
+          padding: 0.2rem 0.6rem;
+        }
+      }
+    }
+  }
+
+  .card-content {
+    padding: 1.5rem;
+
+    @media (max-width: 768px) {
+      padding: 1.25rem;
+    }
+
+    @media (max-width: 480px) {
+      padding: 1rem;
+    }
+
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: $text-primary;
+      margin-bottom: 0.75rem;
+      line-height: 1.4;
+      font-family: 'Mulish', sans-serif;
+
+      @media (max-width: 768px) {
+        font-size: 1.1rem;
+      }
+
+      @media (max-width: 480px) {
+        font-size: 1rem;
+      }
+    }
+
+    .card-description {
+      color: $text-secondary;
+      line-height: 1.5;
+      margin-bottom: 1rem;
+      font-family: 'Mulish', sans-serif;
+
+      @media (max-width: 480px) {
+        font-size: 0.9rem;
+      }
+    }
+
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto; // Pousse cette section vers le bas
+      padding-top: 8px;
+      border-top: 1px solid #eee;
+
+      @media (max-width: 480px) {
+        flex-direction: column; // Meta informations empilées
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+
+      .card-date {
+        font-size: 0.9rem;
+        color: $text-muted;
+        font-family: 'Mulish', sans-serif;
+
+        @media (max-width: 480px) {
+          font-size: 0.8rem;
+        }
+      }
+
+      .card-link {
+        color: $primary-color;
+        text-decoration: none;
+        font-weight: 600;
+        font-family: 'Mulish', sans-serif;
+
+        &:hover {
+          color: $primary-hover;
+          text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+
+  &:hover .card-image img {
+    transform: scale(1.05);
+  }
 }
 
-.fonctionnalite::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--accent-color), var(--secondary-color));
+// Events - Grid événements élargie
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); // 350px → 380px minimum
+  gap: 2rem;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr; // Colonnes multiples → colonne unique sur mobile
+    gap: 1rem;
+  }
 }
 
-.fonctionnalite:hover {
-  transform: translateY(-8px);
-  box-shadow: var(--shadow-heavy);
-}
+.event-card {
+  background: $background-card;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: $shadow-sm;
+  border: 1px solid $border-color;
+  @include card-hover;
+  display: flex;
+  gap: 1.5rem;
 
-.fonctionnalite h3 {
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: var(--primary-color);
-  margin: 1rem 0;
-}
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+    gap: 1.25rem;
+  }
 
-.fonctionnalite p {
-  color: var(--text-secondary);
-  line-height: 1.6;
-  margin: 0;
-}
-
-.fonctionnalite svg {
-  width: 60px;
-  height: 60px;
-  margin-bottom: 1rem;
-  transition: var(--transition);
-}
-
-.fonctionnalite:hover svg {
-  transform: scale(1.1);
-}
-
-.done {
-  cursor: pointer;
-}
-
-.not-finished {
-  cursor: not-allowed;
-  opacity: 0.7;
-}
-
-.not-finished:hover {
-  transform: none !important;
-  box-shadow: var(--shadow-light) !important;
-}
-
-// Responsive Design
-@media (max-width: 1024px) {
-  .right-image-container,
-  .left-image-container {
+  @media (max-width: 600px) {
     flex-direction: column;
     text-align: center;
-    gap: 2rem;
+    gap: 1rem;
   }
-  
-  .left-image-container {
+
+  @media (max-width: 480px) {
+    padding: 1.25rem;
+  }
+
+  .event-date {
+    flex: 0 0 80px;
+    text-align: center;
+    background: $gradient-primary;
+    color: white;
+    border-radius: 8px;
+    padding: 1rem 0.5rem;
+    height: fit-content;
+
+    @media (max-width: 600px) {
+      align-self: center;
+      flex: none;
+    }
+
+    @media (max-width: 480px) {
+      flex: 0 0 70px;
+      padding: 0.75rem 0.5rem;
+    }
+
+    .day {
+      display: block;
+      font-size: 1.5rem;
+      font-weight: 700;
+      font-family: 'Mulish', sans-serif;
+
+      @media (max-width: 480px) {
+        font-size: 1.3rem;
+      }
+    }
+
+    .month {
+      display: block;
+      font-size: 0.9rem;
+      opacity: 0.9;
+      font-family: 'Mulish', sans-serif;
+
+      @media (max-width: 480px) {
+        font-size: 0.8rem;
+      }
+    }
+  }
+
+  .event-content {
+    flex: 1;
+
+    .event-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: $text-primary;
+      margin-bottom: 0.75rem;
+      font-family: 'Mulish', sans-serif;
+
+      @media (max-width: 768px) {
+        font-size: 1.2rem;
+      }
+
+      @media (max-width: 480px) {
+        font-size: 1.1rem;
+      }
+    }
+
+    .event-description {
+      color: $text-secondary;
+      line-height: 1.5;
+      margin-bottom: 1rem;
+      font-family: 'Mulish', sans-serif;
+
+      @media (max-width: 480px) {
+        font-size: 0.9rem;
+      }
+    }
+
+    .event-meta {
+      margin-bottom: 1rem;
+
+      .event-location,
+      .event-type {
+        display: block;
+        font-size: 0.9rem;
+        color: $text-muted;
+        margin-bottom: 0.25rem;
+        font-family: 'Mulish', sans-serif;
+
+        @media (max-width: 480px) {
+          font-size: 0.8rem;
+        }
+      }
+    }
+
+    .event-link {
+      color: $primary-color;
+      text-decoration: none;
+      font-weight: 600;
+      font-family: 'Mulish', sans-serif;
+
+      &:hover {
+        color: $primary-hover;
+        text-decoration: underline;
+      }
+
+      @media (max-width: 480px) {
+        font-size: 0.9rem;
+      }
+    }
+  }
+}
+
+// Revues - Cards revues élargies
+.revues-carousel-container {
+  position: relative;
+  padding: 0 40px; // Boutons repositionnés plus près des bords
+
+  @media (max-width: 768px) {
+    padding: 0 30px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0 25px;
+  }
+}
+
+.revues-carousel {
+  gap: 1.5rem; // Gap carousel optimisé
+
+  @media (max-width: 768px) {
+    gap: 1rem;
+  }
+
+  @media (max-width: 480px) {
+    gap: 0.75rem;
+  }
+}
+
+.revue-card {
+  flex: 0 0 280px; // 250px → 280px (cards revues plus grandes)
+  background: $background-card;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: $shadow-sm;
+  border: 1px solid $border-color;
+  @include card-hover;
+
+  @media (max-width: 1200px) {
+    flex: 0 0 260px;
+  }
+
+  @media (max-width: 768px) {
+    flex: 0 0 240px; // Tailles réduites progressivement
+  }
+
+  @media (max-width: 480px) {
+    flex: 0 0 220px;
+  }
+
+  .revue-cover {
+    position: relative;
+    height: 340px;
+    overflow: hidden;
+
+    @media (max-width: 768px) {
+      height: 320px;
+    }
+
+    @media (max-width: 480px) {
+      height: 300px;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .revue-overlay {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+
+      .revue-badge {
+        background: $secondary-color;
+        color: $primary-color;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        font-family: 'Mulish', sans-serif;
+
+        @media (max-width: 480px) {
+          font-size: 0.6rem;
+          padding: 0.2rem 0.6rem;
+        }
+      }
+    }
+  }
+
+  .revue-content {
+    padding: 1.5rem;
+
+    @media (max-width: 768px) {
+      padding: 1.25rem;
+    }
+
+    @media (max-width: 480px) {
+      padding: 1rem;
+    }
+
+    .revue-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: $text-primary;
+      margin-bottom: 0.75rem;
+      line-height: 1.4;
+      font-family: 'Mulish', sans-serif;
+
+      @media (max-width: 768px) {
+        font-size: 1rem;
+      }
+
+      @media (max-width: 480px) {
+        font-size: 0.95rem;
+      }
+    }
+
+    .revue-description {
+      color: $text-secondary;
+      line-height: 1.5;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+      font-family: 'Mulish', sans-serif;
+
+      @media (max-width: 480px) {
+        font-size: 0.85rem;
+      }
+    }
+
+    .revue-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      @media (max-width: 480px) {
+        flex-direction: column; // Meta informations empilées
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+
+      .revue-date {
+        font-size: 0.8rem;
+        color: $text-muted;
+        font-family: 'Mulish', sans-serif;
+
+        @media (max-width: 480px) {
+          font-size: 0.75rem;
+        }
+      }
+
+      .revue-link {
+        color: $primary-color;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        font-family: 'Mulish', sans-serif;
+
+        &:hover {
+          color: $primary-hover;
+          text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+          font-size: 0.85rem;
+        }
+      }
+    }
+  }
+
+  &:hover .revue-cover img {
+    transform: scale(1.05);
+  }
+}
+
+// CTA Section
+.cta-section {
+  background: $gradient-primary;
+  color: white;
+  text-align: center;
+  padding: 3rem 2rem;
+
+  .cta-content {
+    max-width: 800px;
+    margin: 0 auto;
+
+    .cta-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      font-family: 'Cormorant Garamond', serif;
+    }
+
+    .cta-description {
+      font-size: 1.2rem;
+      line-height: 1.6;
+      margin-bottom: 2.5rem;
+      opacity: 0.9;
+      font-family: 'Mulish', sans-serif;
+    }
+
+    .cta-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      padding: 1rem 0; // Padding supplémentaire autour des boutons
+    }
+  }
+
+  @media (max-width: 768px) {
+    margin-bottom: 3rem; // Marge réduite sur tablette
+    padding: 3rem 1.5rem; // Padding réduit sur tablette
+  }
+
+  @media (max-width: 480px) {
+    margin-bottom: 2rem; // Marge réduite sur mobile
+    padding: 2.5rem 1rem; // Padding réduit sur mobile
+  }
+}
+
+// Footer Links
+.footer-links-section {
+  padding: 4rem 0;
+  background-color: $background-section;
+}
+
+.footer-links-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.footer-link-card {
+  background: $background-card;
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: $shadow-sm;
+  border: 1px solid $border-color;
+  @include card-hover;
+
+  .footer-link-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: $text-primary;
+    margin-bottom: 1rem;
+    font-family: 'Mulish', sans-serif;
+  }
+
+  p {
+    color: $text-secondary;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+    font-family: 'Mulish', sans-serif;
+  }
+
+  .footer-link {
+    color: $primary-color;
+    text-decoration: none;
+    font-weight: 600;
+    font-family: 'Mulish', sans-serif;
+
+    &:hover {
+      color: $primary-hover;
+      text-decoration: underline;
+    }
+  }
+}
+
+// Empty States
+.empty-state {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: $text-secondary;
+
+  .empty-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: $text-primary;
+    font-family: 'Mulish', sans-serif;
+  }
+
+  p {
+    font-family: 'Mulish', sans-serif;
+  }
+}
+
+// Single Article
+.single-article {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+// Styles pour le carousel des articles
+.article-card {
+  display: flex;
+  flex-direction: column;
+  height: 420px; // Hauteur fixe pour toutes les cartes
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  .card-image {
+    position: relative;
+    height: 200px; // Hauteur fixe pour l'image
+    overflow: hidden;
+    flex-shrink: 0; // Empêche l'image de rétrécir
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .card-overlay {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+
+      .card-category {
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .card-content {
+    padding: 16px;
+    display: flex;
     flex-direction: column;
+    height: 220px; // Hauteur fixe pour le contenu (420px - 200px image)
+    justify-content: space-between;
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      line-height: 1.4;
+      color: #333;
+      height: 44px; // Hauteur fixe pour le titre (2 lignes max)
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .card-description {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.5;
+      flex-grow: 1;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 4; // Maximum 4 lignes pour la description
+      -webkit-box-orient: vertical;
+      margin-bottom: 12px;
+    }
+
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 8px;
+      border-top: 1px solid #eee;
+      height: 32px; // Hauteur fixe pour la meta
+      flex-shrink: 0; // Empêche la meta de rétrécir
+
+      .card-date {
+        font-size: 12px;
+        color: #888;
+        font-weight: 500;
+      }
+
+      .card-link {
+        font-size: 14px;
+        color: #007bff;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+
+        &:hover {
+          color: #0056b3;
+          text-decoration: underline;
+        }
+      }
+    }
   }
-  
-  .fonctionnalites-container {
+}
+
+// Assurer que les cartes ont toutes la même largeur et hauteur dans le carousel
+.full-width-carousel .article-card {
+  min-width: 300px;
+  max-width: 300px;
+  height: 420px; // Hauteur fixe uniforme
+}
+
+// Version responsive pour mobile
+@media (max-width: 768px) {
+  .article-card {
+    height: 380px; // Hauteur réduite sur mobile
+
+    .card-content {
+      height: 180px; // Ajuster la hauteur du contenu
+      padding: 12px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      height: 40px;
+    }
+
+    .card-description {
+      font-size: 13px;
+      -webkit-line-clamp: 3; // Moins de lignes sur mobile
+    }
+  }
+
+  .full-width-carousel .article-card {
+    min-width: 280px;
+    max-width: 280px;
+    height: 380px;
+  }
+}
+
+@media (max-width: 480px) {
+  .article-card {
+    height: 360px; // Hauteur encore plus réduite sur petit mobile
+
+    .card-content {
+      height: 160px;
+      padding: 10px;
+    }
+
+    .card-title {
+      font-size: 14px;
+      height: 36px;
+    }
+
+    .card-description {
+      font-size: 12px;
+      -webkit-line-clamp: 2; // Encore moins de lignes
+    }
+  }
+
+  .full-width-carousel .article-card {
+    min-width: 260px;
+    max-width: 260px;
+    height: 360px;
+  }
+}
+
+// Responsive Design - Adaptations mobiles complètes
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1rem;
+  }
+
+  .hero-content .hero-actions {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .section-header .section-title {
+    font-size: 2rem;
+  }
+
+  .cta-content .cta-title {
+    font-size: 2rem;
+  }
+
+  .footer-links-grid {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
   }
 }
 
-@media (max-width: 768px) {
-  .home-img {
-    height: 70vh;
-    min-height: 500px;
-  }
-  
-  .glass-overlay {
-    padding: 2rem 1.5rem;
-    margin: 1rem;
-  }
-  
-  .content-in_img {
-    padding: 1rem;
-  }
-  
-  .right-image-container,
-  .left-image-container {
-    margin: 2rem 3%;
-    padding: 1.5rem;
-  }
-  
-  .fonctionnalites-container {
-    grid-template-columns: 1fr;
-    padding: 2rem 3%;
-    gap: 1.5rem;
-  }
-  
-  .fonctionnalite {
-    padding: 2rem 1.5rem;
-    min-height: 250px;
-  }
-  
-  .fonctionnalite svg {
-    width: 50px;
-    height: 50px;
-  }
-  
-  .text-container {
-    padding: 1.5rem;
-    margin: 0.5rem;
-  }
-  
-  .image-container {
-    padding: 1rem;
-  }
-  
-  .image-container img {
-    max-width: 100%;
-  }
-}
-
 @media (max-width: 480px) {
-  .home-img {
-    height: 60vh;
-    min-height: 400px;
+  .hero-section {
+    height: 60vh; // 70vh → 60vh (plus d'espace pour le contenu)
   }
-  
-  .glass-overlay {
-    padding: 1.5rem 1rem;
+
+  .footer-links-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
-  
-  .content-in_img h2 {
-    font-size: 1.8rem;
-  }
-  
-  .content-in_img h3 {
-    font-size: 1rem;
-  }
-  
-  .title-introduction {
-    font-size: 1.8rem;
-  }
-  
-  .text-container {
-    font-size: 0.9rem;
-    padding: 1rem;
-  }
-  
-  .fonctionnalite {
-    padding: 1.5rem 1rem;
-    min-height: 200px;
-  }
-  
-  .fonctionnalite h3 {
-    font-size: 1.1rem;
-  }
-  
-  .fonctionnalite p {
-    font-size: 0.9rem;
+
+  .footer-link-card {
+    padding: 1.5rem;
+
+    .footer-link-icon {
+      font-size: 2.5rem;
+    }
+
+    h3 {
+      font-size: 1.2rem;
+    }
+
+    p {
+      font-size: 0.9rem;
+    }
   }
 }
