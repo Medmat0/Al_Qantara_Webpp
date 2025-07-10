@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { API_URL } from '../../../../utils/config';
+
 
 @Component({
   selector: 'app-edit-profile',
@@ -44,7 +46,7 @@ export class EditProfileComponent implements OnInit {
     this.loading = true;
     this.errorMessage = '';
 
-    this.http.get<any>('http://localhost:3000/user/profile', { withCredentials: true })
+    this.http.get<any>(`${API_URL}/user/profile`, { withCredentials: true })
       .subscribe({
         next: (res) => {
           console.log('GET /user/profile response:', res);
@@ -117,7 +119,7 @@ export class EditProfileComponent implements OnInit {
 
   private updateProfile(): void {
     // Mise à jour du profil
-    this.http.put<any>('http://localhost:3000/user/profile', {
+    this.http.put<any>(`${API_URL}/user/profile`, {
       prenom: this.prenom.trim(),
       nom: this.nom.trim(),
       telephone: this.telephone.trim()
@@ -141,7 +143,7 @@ export class EditProfileComponent implements OnInit {
   }
 
   private updatePassword(): void {
-    this.http.put<any>('http://localhost:3000/user/password', {
+    this.http.put<any>(`${API_URL}/user/password`, {
       currentPassword: this.currentPassword,
       newPassword: this.newPassword
     }, { withCredentials: true }).subscribe({

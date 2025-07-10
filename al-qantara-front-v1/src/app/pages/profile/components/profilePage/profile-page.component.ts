@@ -3,6 +3,8 @@ import { RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { NewsletterService } from '../../../../services/newsletter.service';
+import { API_URL } from '../../../../utils/config';
+
 
 @Component({
   selector: 'app-profile-page',
@@ -35,7 +37,7 @@ export class ProfilePageComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    this.http.get<any>('http://localhost:3000/user/profile', { withCredentials: true })
+    this.http.get<any>(`${API_URL}/user/profile`, { withCredentials: true })
       .subscribe({
         next: (res) => {
           this.user = res.user;

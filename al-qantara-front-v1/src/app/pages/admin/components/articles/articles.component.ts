@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { EditArticleComponent } from '../edit-article/edit-article.component';
+import { API_URL } from '../../../../utils/config';
+
 
 interface Article {
   id: number;
@@ -72,7 +74,7 @@ export class ArticlesComponent implements OnInit {
     this.loading = true;
     this.error = '';
 
-    this.http.get<any>('http://localhost:3000/articles', { withCredentials: true }).subscribe({
+    this.http.get<any>(`${API_URL}/articles`, { withCredentials: true }).subscribe({
       next: (response) => {
         this.articles = response.articles || [];
         // Extraire la liste unique des catégories
@@ -99,7 +101,7 @@ export class ArticlesComponent implements OnInit {
     if (this.articleToDelete) {
       this.deletingArticleId = this.articleToDelete.id;
 
-      this.http.delete(`http://localhost:3000/articles/${this.articleToDelete.id}`, { withCredentials: true }).subscribe({
+      this.http.delete(`${API_URL}/articles/${this.articleToDelete.id}`, { withCredentials: true }).subscribe({
         next: () => {
           this.articles = this.articles.filter(a => a.id !== this.articleToDelete?.id);
           this.deletingArticleId = null;
@@ -188,7 +190,7 @@ export class ArticlesComponent implements OnInit {
     const pages: (number | string)[] = [];
     const totalPages = this.totalPages;
     const currentPage = this.currentPage;
-    
+
     if (totalPages <= 7) {
       // Si moins de 7 pages, montrer toutes les pages
       for (let i = 1; i <= totalPages; i++) {
@@ -197,29 +199,29 @@ export class ArticlesComponent implements OnInit {
     } else {
       // Toujours montrer la première page
       pages.push(1);
-      
+
       if (currentPage > 3) {
         pages.push('...');
       }
-      
+
       // Montrer les pages autour de la page courante
       const startPage = Math.max(2, currentPage - 1);
       const endPage = Math.min(totalPages - 1, currentPage + 1);
-      
+
       for (let i = startPage; i <= endPage; i++) {
         pages.push(i);
       }
-      
+
       if (currentPage < totalPages - 2) {
         pages.push('...');
       }
-      
+
       // Toujours montrer la dernière page
       if (totalPages > 1) {
         pages.push(totalPages);
       }
     }
-    
+
     return pages;
   }
 

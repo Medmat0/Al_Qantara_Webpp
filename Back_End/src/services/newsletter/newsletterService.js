@@ -1,3 +1,9 @@
+import { PrismaClient } from "@prisma/client";
+import { sendEmailToUser } from "../../utils/email.config.js";
+import crypto from "crypto";
+
+const prisma = new PrismaClient();
+
 /**
  * Supprimer une newsletter par son ID
  */
@@ -26,11 +32,6 @@ export const changerStatutNewsletterService = async (newsletterId, statut) => {
     throw new Error("Erreur lors de la mise à jour du statut de la newsletter");
   }
 };
-import { PrismaClient } from "@prisma/client";
-import { sendEmailToUser } from "../../utils/email.config.js";
-import crypto from "crypto";
-
-const prisma = new PrismaClient();
 
 /**
  * Ajouter un abonnement à la newsletter
