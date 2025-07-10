@@ -2,7 +2,7 @@ import { Component, OnDestroy, HostListener} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CommunityService } from '../../../../member/services/community.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute  } from '@angular/router';
 
 @Component({
   selector: 'app-community-post-research',
@@ -26,9 +26,20 @@ export class CommunityPostResearchComponent implements OnDestroy {
   private intervalId: any;
   private lastSearched = '';
 
-  constructor(private communityService: CommunityService, private router: Router) {
+  constructor(
+    private communityService: CommunityService,
+    private router: Router,
+    private route: ActivatedRoute
+    ) {
     this.startAutoSearch();
     window.addEventListener('scroll', this.onScroll, true);
+
+    this.route.queryParams.subscribe(params => {
+      if (params['tag']) {
+        this.tags = [params['tag']];
+        this.searchCommunityPost();
+      }
+    });
   }
 
   ngOnDestroy() {

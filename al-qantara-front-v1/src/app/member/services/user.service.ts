@@ -17,6 +17,26 @@ interface UsersResponse {
   message: string;
   users: UserData[];
   count: number;
+  stats?: {
+    totalUsers: number;
+    totalAdherents: number;
+    totalDons: number;
+    totalRevenueAdhesions: number;
+    totalRevenueDons: number;
+    activeUsers: number;
+    inactiveUsers: number;
+    newUsersThisMonth: number;
+    newAdherentsThisMonth: number;
+    averageDonAmount: number;
+    adminCount: number;
+    userCount: number;
+    adherentCount: number;
+    usersOnline: number;
+    usersOffline: number;
+    revenueByMonth: any;
+    recentAdhesions: any[];
+    recentDons: any[];
+  };
 }
 
 @Injectable({
@@ -29,7 +49,7 @@ export class UserService {
     console.log('UserService - API URL:', this.apiUrl);
   }
 
-  getUsers(): Observable<UserData[]> {
+  getUsers(): Observable<UsersResponse> {
     console.log('UserService - Calling getUsers()');
     return this.http.get<UsersResponse>(this.apiUrl, {
       withCredentials: true
@@ -40,10 +60,15 @@ export class UserService {
       map(response => {
         if (!response || !Array.isArray(response.users)) {
           console.error('UserService - Invalid response format:', response);
-          return [];
+          return {
+            message: 'Erreur',
+            users: [],
+            count: 0,
+            stats: undefined
+          };
         }
-        // On laisse la date ISO telle quelle
-        return response.users;
+        // Retourner la réponse complète avec les stats
+        return response;
       })
     );
   }

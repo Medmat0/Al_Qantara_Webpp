@@ -70,13 +70,11 @@ const participerEvenementService = async (evenementId, utilisateurId) => {
       throw new Error("Vous participez déjà à cet événement.");
     }
 
-    const qrCodeData = JSON.stringify({
-      e: parseInt(evenementId),
-      u: utilisateurId,
-      t: new Date().getTime()
-    });
+    // Génération de l'URL à encoder dans le QR code
+    const baseUrl = process.env.FRONT_URL;
+    const qrCodeUrl = `${baseUrl}/admin/events/${evenementId}/qr-participation/${utilisateurId}`;
 
-    const qrCodeBase64 = await QRCode.toDataURL(qrCodeData, {
+    const qrCodeBase64 = await QRCode.toDataURL(qrCodeUrl, {
       errorCorrectionLevel: 'L',
       margin: 1,
       width: 200

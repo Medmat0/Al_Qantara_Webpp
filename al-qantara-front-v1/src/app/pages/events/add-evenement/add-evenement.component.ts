@@ -23,6 +23,7 @@ export class AddEvenementComponent {
   showSuggestions = false;
   isSubmitting = false;
   errorMessage = '';
+  successMessage = '';
 
   event = {
     titre: '',
@@ -41,17 +42,22 @@ export class AddEvenementComponent {
     video: null as string | null
   };
 
+
   formErrors = {
     titre: false,
     description: false,
     dateDebut: false,
     dateFin: false,
     adresse: false,
+    rue: false,
+    codePostal: false,
+    ville: false,
     type: false
   };
 
   selectedImages: File[] = [];
   selectedVideo: File | null = null;
+  minEndDate: string = '';
 
   constructor() {
     this.searchSubject.pipe(
@@ -104,6 +110,20 @@ export class AddEvenementComponent {
     this.selectedVideo = null;
   }
 
+  onDateDebutChange(): void {
+    if (this.event.dateDebut) {
+      //date minimale
+      this.minEndDate = this.event.dateDebut;
+
+      // réinitialiser date fin si elle est antérieure à date début
+      if (this.event.dateFin && this.event.dateFin < this.event.dateDebut) {
+        this.event.dateFin = '';
+      }
+    } else {
+      this.minEndDate = '';
+    }
+  }
+
   async onSubmit(form: NgForm) {
     Object.keys(this.formErrors).forEach(key => {
       this.formErrors[key as keyof typeof this.formErrors] = false;
@@ -118,12 +138,32 @@ export class AddEvenementComponent {
       }
     });
 
-    if (!this.event.numero && !this.event.rue && !this.event.codePostal && !this.event.ville) {
-      this.formErrors.adresse = true;
+    // Validation individuelle des champs d'adresse requis
+    if (!this.event.rue) {
+      this.formErrors.rue = true;
       hasError = true;
     }
 
+    if (!this.event.codePostal) {
+      this.formErrors.codePostal = true;
+      hasError = true;
+    }
+
+    if (!this.event.ville) {
+      this.formErrors.ville = true;
+      hasError = true;
+    }
+
+    // Validation des dates
+    if (this.event.dateDebut && this.event.dateFin) {
+      if (new Date(this.event.dateFin) < new Date(this.event.dateDebut)) {
+        this.errorMessage = "La date de fin doit être postérieure à la date de début.";
+        return;
+      }
+    }
+
     if (hasError) {
+      this.errorMessage = "Veuillez remplir tous les champs requis.";
       return;
     }
 
@@ -168,8 +208,13 @@ export class AddEvenementComponent {
           console.log('URLs des images uploadées:', response.evenement.images);
           console.log('URL de la vidéo uploadée:', response.evenement.video);
           this.eventCreated.emit(response.evenement);
+          this.successMessage = 'Événement créé avec succès!'; // Set success message
           // Réinitialiser le formulaire
           this.resetForm(form);
+          // Masquer le message de succès après 5 secondes
+          setTimeout(() => {
+            this.successMessage = '';
+          }, 5000);
         }
       } catch (error) {
         console.error('Erreur lors de la création de l\'événement:', error);

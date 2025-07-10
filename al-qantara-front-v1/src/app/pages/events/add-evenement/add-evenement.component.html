@@ -1,13 +1,12 @@
 <form #eventForm="ngForm" (ngSubmit)="onSubmit(eventForm)" class="event-form">
-  <div *ngIf="errorMessage" class="error-alert">
-    {{ errorMessage }}
-  </div>
+
+
   <div class="form-group">
     <label for="titre">Nom de l'événement</label>
-    <input 
-      type="text" 
-      id="titre" 
-      name="titre" 
+    <input
+      type="text"
+      id="titre"
+      name="titre"
       [(ngModel)]="event.titre"
       required
       #titre="ngModel">
@@ -18,9 +17,9 @@
 
   <div class="form-group">
     <label for="description">Description de l'événement</label>
-    <textarea 
-      id="description" 
-      name="description" 
+    <textarea
+      id="description"
+      name="description"
       [(ngModel)]="event.description"
       required
       #description="ngModel"
@@ -33,11 +32,12 @@
   <div class="form-row">
     <div class="form-group">
       <label for="dateDebut">Date de début</label>
-      <input 
-        type="datetime-local" 
-        id="dateDebut" 
-        name="dateDebut" 
+      <input
+        type="datetime-local"
+        id="dateDebut"
+        name="dateDebut"
         [(ngModel)]="event.dateDebut"
+        (ngModelChange)="onDateDebutChange()"
         required
         #dateDebut="ngModel">
       <div class="error-message" *ngIf="formErrors.dateDebut">
@@ -47,33 +47,34 @@
 
     <div class="form-group">
       <label for="dateFin">Date de fin</label>
-      <input 
-        type="datetime-local" 
-        id="dateFin" 
-        name="dateFin" 
+      <input
+        type="datetime-local"
+        id="dateFin"
+        name="dateFin"
         [(ngModel)]="event.dateFin"
+        [min]="minEndDate"
         required
         #dateFin="ngModel">
       <div class="error-message" *ngIf="formErrors.dateFin">
         La date de fin est requise
       </div>
     </div>
-  </div>      
-  
+  </div>
+
   <div class="form-group">
     <label for="adresseSearch">Rechercher une adresse</label>
     <div class="address-search-container">
-      <input 
-        type="text" 
-        id="adresseSearch" 
+      <input
+        type="text"
+        id="adresseSearch"
         [ngModel]="addressSearchInput"
         (ngModelChange)="onAddressSearch($event)"
         name="adresseSearch"
         placeholder="Tapez une adresse "
         autocomplete="off">
-      
+
       <div class="address-suggestions" *ngIf="showSuggestions">
-        <div class="suggestion-item" 
+        <div class="suggestion-item"
              *ngFor="let suggestion of addressSuggestions"
              (click)="handleAddressSelect(suggestion)">
           <div class="suggestion-main">{{ addressService.formatSuggestion(suggestion) }}</div>
@@ -85,42 +86,52 @@
     <div class="address-fields">
       <div class="address-field">
         <label for="numero">Numéro</label>
-        <input 
-          type="text" 
-          id="numero" 
-          name="numero" 
+        <input
+          type="text"
+          id="numero"
+          name="numero"
           [(ngModel)]="event.numero"
-          required>
+          >
       </div>
-      
+
+
       <div class="address-field">
         <label for="rue">Rue</label>
-        <input 
-          type="text" 
-          id="rue" 
-          name="rue" 
+        <input
+          type="text"
+          id="rue"
+          name="rue"
           [(ngModel)]="event.rue"
           required>
+        <div class="error-message" *ngIf="formErrors.rue">
+          La rue est requise
+        </div>
       </div>
-      
+
       <div class="address-field">
         <label for="codePostal">Code Postal</label>
-        <input 
-          type="text" 
-          id="codePostal" 
-          name="codePostal" 
+        <input
+          type="text"
+          id="codePostal"
+          name="codePostal"
           [(ngModel)]="event.codePostal"
           required>
+        <div class="error-message" *ngIf="formErrors.codePostal">
+          Le code postal est requis
+        </div>
       </div>
-      
+
       <div class="address-field">
         <label for="ville">Ville</label>
-        <input 
-          type="text" 
-          id="ville" 
-          name="ville" 
+        <input
+          type="text"
+          id="ville"
+          name="ville"
           [(ngModel)]="event.ville"
           required>
+        <div class="error-message" *ngIf="formErrors.ville">
+          La ville est requise
+        </div>
       </div>
     </div>
   </div>
@@ -128,13 +139,13 @@
   <div class="form-group">
     <label>Type d'événement</label>
     <div class="type-buttons">
-      <button 
+      <button
         type="button"
         [class.active]="event.type === 'INTERNE'"
         (click)="event.type = 'INTERNE'">
         INTERNE
       </button>
-      <button 
+      <button
         type="button"
         [class.active]="event.type === 'EXTERNE'"
         (click)="event.type = 'EXTERNE'">
@@ -144,12 +155,12 @@
     <div class="error-message" *ngIf="formErrors.type">
       Le type d'événement est requis
     </div>
-  </div>      
-  
+  </div>
+
   <div class="form-group">
     <label for="images">Images</label>
     <div class="image-input-container">
-      <input 
+      <input
         type="file"
         id="images"
         name="images"
@@ -168,7 +179,7 @@
   <div class="form-group">
     <label for="video">Vidéo</label>
     <div class="file-input-container">
-      <input 
+      <input
         type="file"
         id="video"
         name="video"
@@ -183,18 +194,18 @@
     </div>
   </div>
 
-  <div class="form-group">        
+  <div class="form-group">
     <label for="placesTotal">Nombre de places</label>
     <input
-      type="number" 
-      id="placesTotal" 
-      name="placesTotal" 
+      type="number"
+      id="placesTotal"
+      name="placesTotal"
       [(ngModel)]="event.placesTotal"
       min="1">
-  </div>      
-  
+  </div>
+
   <div class="form-group">
-    <label>
+    <label for="isPaid">
       <input type="checkbox" [(ngModel)]="event.isPaid" name="isPaid" />
       Événement payant ?
     </label>
@@ -211,6 +222,14 @@
       step="0.01"
       required
     />
+  </div>
+
+  <div class="success-message" *ngIf="successMessage" style="background-color: #d4edda; color: #155724; padding: 10px; border-radius: 4px; margin-bottom: 15px;">
+    {{ successMessage }}
+  </div>
+
+  <div *ngIf="errorMessage" class="error-alert" style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 4px; margin-bottom: 15px;">
+    {{ errorMessage }}
   </div>
 
   <div class="form-actions">

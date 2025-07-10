@@ -4,6 +4,36 @@ import { FormsModule } from '@angular/forms';
 import { UserService, UserData } from '../../../../member/services/user.service';
 import { AuthService } from '../../../../member/services/auth.service';
 
+export interface UserStats {
+  totalUsers: number;
+  totalAdherents: number;
+  totalDons: number;
+  totalRevenueAdhesions: number;
+  totalRevenueDons: number;
+  activeUsers: number;
+  inactiveUsers: number;
+  newUsersThisMonth: number;
+  newAdherentsThisMonth: number;
+  averageDonAmount: number;
+  adminCount: number;
+  userCount: number;
+  adherentCount: number;
+  usersOnline: number;
+  usersOffline: number;
+  revenueByMonth: any;
+  recentAdhesions: any[];
+  recentDons: any[];
+}
+
+export interface EnhancedUserData extends UserData {
+  statutAdhesion: string;
+  totalDons: number;
+  nombreDons: number;
+  totalPaiementsEvenements: number;
+  nombreParticipations: number;
+  dernierDon: string | null;
+}
+
 @Component({
   selector: 'app-users',
   standalone: true,
@@ -12,15 +42,20 @@ import { AuthService } from '../../../../member/services/auth.service';
   styleUrls: ['./users.component.scss']
 })
 export class UsersComponent implements OnInit {
-  users: UserData[] = [];
-  filteredUsers: UserData[] = [];
+  users: EnhancedUserData[] = [];
+  filteredUsers: EnhancedUserData[] = [];
   searchTerm: string = '';
+  stats: UserStats | null = null;
   
   showModal = false;
   modalTitle = '';
   modalMessage = '';
   modalAction: (() => void) | null = null;
-  selectedUser: UserData | null = null;
+  selectedUser: EnhancedUserData | null = null;
+
+  // États d'affichage
+  loading = true;
+  showStatsDetails = false;
 
   constructor(
     private userService: UserService,
@@ -36,25 +71,46 @@ export class UsersComponent implements OnInit {
           this.loadUsers();
         } else {
           console.error('Not authenticated or not admin');
+          this.loading = false;
         }
       },
       error: (error) => {
         console.error('Auth check error:', error);
+        this.loading = false;
       }
     });
   }
 
   loadUsers() {
+    this.loading = true;
+    console.log('🔄 Loading users...');
+    
     this.userService.getUsers().subscribe({
-      next: (users) => {
-        console.log('Users response:', users);
-        this.users = users;
+      next: (response: any) => {
+        console.log('✅ Users response:', response);
+        console.log('📊 Users data:', response.users);
+        console.log('📈 Stats data:', response.stats);
+        
+        this.users = response.users || [];
+        this.stats = response.stats || null;
         this.filterUsers();
+        this.loading = false;
+        
+        console.log('🏁 Loading completed. Users count:', this.users.length);
       },
       error: (error) => {
-        console.error('Error loading users:', error);
+        console.error('❌ Error loading users:', error);
+        console.error('❌ Error details:', {
+          status: error.status,
+          statusText: error.statusText,
+          message: error.message,
+          url: error.url
+        });
+        
         this.users = [];
         this.filteredUsers = [];
+        this.stats = null;
+        this.loading = false;
       }
     });
   }
@@ -72,7 +128,11 @@ export class UsersComponent implements OnInit {
     );
   }
 
-  openDeleteModal(user: UserData) {
+  toggleStatsDetails() {
+    this.showStatsDetails = !this.showStatsDetails;
+  }
+
+  openDeleteModal(user: EnhancedUserData) {
     this.selectedUser = user;
     this.modalTitle = 'Confirmer la suppression';
     this.modalMessage = `Êtes-vous sûr de vouloir supprimer l'utilisateur ${user.prenom} ${user.nom} ?`;
@@ -80,7 +140,7 @@ export class UsersComponent implements OnInit {
     this.showModal = true;
   }
 
-  openPromoteModal(user: UserData) {
+  openPromoteModal(user: EnhancedUserData) {
     this.selectedUser = user;
     this.modalTitle = 'Confirmer la promotion';
     this.modalMessage = `Êtes-vous sûr de vouloir promouvoir ${user.prenom} ${user.nom} au rôle d'administrateur ?`;
@@ -88,7 +148,7 @@ export class UsersComponent implements OnInit {
     this.showModal = true;
   }
 
-  openDemoteModal(user: UserData) {
+  openDemoteModal(user: EnhancedUserData) {
     this.selectedUser = user;
     this.modalTitle = 'Confirmer la rétrogradation';
     this.modalMessage = `Êtes-vous sûr de vouloir rétrograder ${user.prenom} ${user.nom} au rôle d'utilisateur ?`;
@@ -96,7 +156,7 @@ export class UsersComponent implements OnInit {
     this.showModal = true;
   }
 
-  openStatusModal(user: UserData) {
+  openStatusModal(user: EnhancedUserData) {
     this.selectedUser = user;
     const action = user.statut === 'ACTIF' ? 'désactiver' : 'activer';
     this.modalTitle = `Confirmer le changement de statut`;
@@ -221,5 +281,86 @@ export class UsersComponent implements OnInit {
     
     // Pour l'instant, retourner une valeur par défaut
     return 'N/A';
+  }
+
+  /**
+   * Formate un montant en euros
+   */
+  formatCurrency(amount: number): string {
+    return new Intl.NumberFormat('fr-FR', {
+      style: 'currency',
+      currency: 'EUR'
+    }).format(amount);
+  }
+
+  /**
+   * Calcule le pourcentage d'adhérents
+   */
+  getAdherentPercentage(): number {
+    if (!this.stats || this.stats.totalUsers === 0) return 0;
+    return Math.round((this.stats.totalAdherents / this.stats.totalUsers) * 100);
+  }
+
+  /**
+   * Calcule le revenu total
+   */
+  getTotalRevenue(): number {
+    if (!this.stats) return 0;
+    return this.stats.totalRevenueAdhesions + this.stats.totalRevenueDons;
+  }
+
+  /**
+   * Obtient les revenus du mois en cours
+   */
+  getCurrentMonthRevenue(): number {
+    if (!this.stats || !this.stats.revenueByMonth) return 0;
+    const now = new Date();
+    const currentMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    return this.stats.revenueByMonth[currentMonthKey]?.total || 0;
+  }
+
+  /**
+   * Obtient le statut d'adhésion avec badge coloré
+   */
+  getAdhesionStatusBadge(statutAdhesion: string): string {
+    switch (statutAdhesion) {
+      case 'ACCEPTE': return 'adherent';
+      case 'EN_ATTENTE': return 'pending';
+      case 'REJETE': return 'rejected';
+      default: return 'none';
+    }
+  }
+
+  /**
+   * Formate le statut d'adhésion en français
+   */
+  formatAdhesionStatus(statutAdhesion: string): string {
+    switch (statutAdhesion) {
+      case 'ACCEPTE': return 'Adhérent';
+      case 'EN_ATTENTE': return 'En attente';
+      case 'REJETE': return 'Rejeté';
+      case 'NON_DEMANDE': return 'Non demandé';
+      default: return statutAdhesion;
+    }
+  }
+
+  /**
+   * Calcule la tendance des nouveaux utilisateurs
+   */
+  getNewUsersTrend(): string {
+    if (!this.stats) return '0%';
+    if (this.stats.totalUsers === 0) return '0%';
+    const percentage = (this.stats.newUsersThisMonth / this.stats.totalUsers) * 100;
+    return `+${percentage.toFixed(1)}%`;
+  }
+
+  /**
+   * Retourne la couleur selon le montant des dons
+   */
+  getDonAmountColor(amount: number): string {
+    if (amount >= 100) return 'high-donor';
+    if (amount >= 50) return 'medium-donor';
+    if (amount > 0) return 'low-donor';
+    return 'no-donor';
   }
 }
