@@ -86,6 +86,10 @@ export class CommunityPostDescriptionComponent implements OnInit {
     });
   }
 
+  goToPostResearchWithTag(tag: string) {
+    this.router.navigate(['/communities/posts/research'], { queryParams: { tag } });
+  }
+
   organizeComments(comments: any[]): any[] {
     const commentMap: { [key: number]: any } = {};
     const rootComments: any[] = [];

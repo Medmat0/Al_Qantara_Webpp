@@ -95,6 +95,10 @@ export class CommunityPostComponent implements OnInit {
     }
   }
 
+  goToPostResearchWithTag(tag: string) {
+    this.router.navigate(['/communities/posts/research'], { queryParams: { tag } });
+  }
+
   // --- Comment/reply logic for child CommentComponent ---
   toggleReplyForm(commentId: number) {
     this.replyFormVisible[commentId] = !this.replyFormVisible[commentId];

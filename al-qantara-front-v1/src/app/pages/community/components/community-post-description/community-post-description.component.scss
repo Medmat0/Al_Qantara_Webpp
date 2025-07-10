@@ -71,12 +71,12 @@ $transition-transform: transform 0.15s ease-in-out;
   cursor: pointer;
   transition: $transition-all;
   user-select: none;
-  
+
   &:focus-visible {
     outline: 2px solid $primary-color;
     outline-offset: 2px;
   }
-  
+
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -88,7 +88,7 @@ $transition-transform: transform 0.15s ease-in-out;
   @include button-base;
   background-color: $primary-color;
   color: $background-white;
-  
+
   &:hover:not(:disabled) {
     background-color: $primary-hover;
     transform: translateY(-1px);
@@ -100,7 +100,7 @@ $transition-transform: transform 0.15s ease-in-out;
   @include button-base;
   background-color: $success-color;
   color: $background-white;
-  
+
   &:hover:not(:disabled) {
     background-color: $success-hover;
     transform: translateY(-1px);
@@ -113,7 +113,7 @@ $transition-transform: transform 0.15s ease-in-out;
   background-color: transparent;
   color: $text-secondary;
   border-color: $border-gray-300;
-  
+
   &:hover:not(:disabled) {
     background-color: $background-gray-50;
     color: $text-primary;
@@ -127,7 +127,7 @@ $transition-transform: transform 0.15s ease-in-out;
   border-radius: $radius-xl;
   box-shadow: $shadow-sm;
   transition: $transition-all;
-  
+
   &:hover {
     box-shadow: $shadow-md;
   }
@@ -139,7 +139,7 @@ $transition-transform: transform 0.15s ease-in-out;
   max-width: 80rem;
   margin: $spacing-8 auto;
   padding: $spacing-8;
-  
+
   @media (max-width: 768px) {
     margin: $spacing-4;
     padding: $spacing-6;
@@ -152,7 +152,7 @@ $transition-transform: transform 0.15s ease-in-out;
   align-items: flex-start;
   gap: $spacing-4;
   margin-bottom: $spacing-6;
-  
+
   .community-logo {
     width: 3rem;
     height: 3rem;
@@ -162,7 +162,7 @@ $transition-transform: transform 0.15s ease-in-out;
     box-shadow: $shadow-sm;
     flex-shrink: 0;
   }
-  
+
   .post-header-content {
     flex: 1;
     min-width: 0;
@@ -175,7 +175,7 @@ $transition-transform: transform 0.15s ease-in-out;
   color: $text-primary;
   line-height: 1.3;
   margin: 0 0 $spacing-3 0;
-  
+
   @media (max-width: 768px) {
     font-size: $font-xl;
   }
@@ -188,12 +188,12 @@ $transition-transform: transform 0.15s ease-in-out;
   flex-wrap: wrap;
   font-size: $font-sm;
   color: $text-secondary;
-  
+
   .meta-separator {
     color: $text-muted;
     font-weight: $font-bold;
   }
-  
+
   .community-name {
     font-weight: $font-medium;
     color: $primary-color;
@@ -206,7 +206,7 @@ $transition-transform: transform 0.15s ease-in-out;
   flex-wrap: wrap;
   gap: $spacing-2;
   margin-bottom: $spacing-6;
-  
+
   .tag {
     background: $background-gray-100;
     color: $text-secondary;
@@ -215,7 +215,7 @@ $transition-transform: transform 0.15s ease-in-out;
     font-size: $font-xs;
     font-weight: $font-medium;
     transition: $transition-all;
-    
+
     &:hover {
       background: $border-gray-300;
       color: $text-primary;
@@ -229,10 +229,10 @@ $transition-transform: transform 0.15s ease-in-out;
   line-height: 1.7;
   color: $text-primary;
   margin-bottom: $spacing-6;
-  
+
   p {
     margin: 0 0 $spacing-4 0;
-    
+
     &:last-child {
       margin-bottom: 0;
     }
@@ -269,19 +269,19 @@ $transition-transform: transform 0.15s ease-in-out;
   border-radius: $radius-lg;
   padding: $spacing-6;
   margin-bottom: $spacing-6;
-  
+
   .poll-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: $spacing-5;
-    
+
     @media (max-width: 640px) {
       flex-direction: column;
       gap: $spacing-2;
     }
   }
-  
+
   .poll-title {
     font-size: $font-lg;
     font-weight: $font-semibold;
@@ -291,25 +291,25 @@ $transition-transform: transform 0.15s ease-in-out;
     align-items: center;
     gap: $spacing-2;
   }
-  
+
   .poll-deadline {
     font-size: $font-sm;
     color: $text-secondary;
     display: flex;
     align-items: center;
     gap: $spacing-1;
-    
+
     .deadline-label {
       font-weight: $font-medium;
     }
   }
-  
+
   .poll-options {
     display: flex;
     flex-direction: column;
     gap: $spacing-3;
     margin-bottom: $spacing-4;
-    
+
     @media (min-width: 640px) {
       flex-direction: row;
       flex-wrap: wrap;
@@ -324,36 +324,36 @@ $transition-transform: transform 0.15s ease-in-out;
     border-radius: $radius-md;
     min-width: 140px;
     position: relative;
-    
+
     @media (max-width: 640px) {
       min-width: 100%;
     }
-    
+
     &.voted {
       background: $success-color;
       border-color: $success-color;
-      
+
       &:hover:not(:disabled) {
         background: $success-hover;
       }
     }
-    
+
     &:disabled {
       background: $background-gray-100;
       color: $text-muted;
       border-color: $border-gray-200;
     }
-    
+
     .option-label {
       font-weight: $font-medium;
     }
-    
+
     .vote-count {
       font-size: $font-xs;
       opacity: 0.9;
       margin-left: $spacing-2;
     }
-    
+
     .voted-indicator {
       position: absolute;
       top: -$spacing-1;
@@ -371,7 +371,7 @@ $transition-transform: transform 0.15s ease-in-out;
       border: 2px solid $background-white;
     }
   }
-  
+
   .poll-feedback {
     .poll-error {
       color: $error-color;
@@ -380,12 +380,12 @@ $transition-transform: transform 0.15s ease-in-out;
       display: flex;
       align-items: center;
       gap: $spacing-2;
-      
+
       &::before {
         content: "⚠️";
       }
     }
-    
+
     .poll-success {
       color: $success-color;
       font-size: $font-sm;
@@ -404,35 +404,35 @@ $transition-transform: transform 0.15s ease-in-out;
   gap: $spacing-4;
   padding-top: $spacing-6;
   border-top: 1px solid $border-gray-200;
-  
+
   .action-btn {
     @include button-ghost;
-    
+
     .action-icon {
       font-size: $font-base;
     }
-    
+
     .action-count {
       font-weight: $font-semibold;
       color: $text-primary;
     }
   }
-  
+
   .like-btn {
     &.liked {
       background: rgba(239, 68, 68, 0.1);
       color: $error-color;
       border-color: rgba(239, 68, 68, 0.2);
-      
+
       &:hover:not(:disabled) {
         background: rgba(239, 68, 68, 0.15);
       }
     }
   }
-  
+
   .delete-btn {
     color: $error-color;
-    
+
     &:hover:not(:disabled) {
       background: rgba(239, 68, 68, 0.1);
       border-color: rgba(239, 68, 68, 0.2);
@@ -448,7 +448,7 @@ $transition-transform: transform 0.15s ease-in-out;
   gap: $spacing-3;
   padding: $spacing-6;
   color: $text-secondary;
-  
+
   .spinner {
     width: 1.5rem;
     height: 1.5rem;
@@ -476,7 +476,7 @@ $transition-transform: transform 0.15s ease-in-out;
   color: $error-color;
   font-size: $font-sm;
   font-weight: $font-medium;
-  
+
   .error-icon {
     font-size: $font-base;
   }
@@ -545,6 +545,12 @@ $transition-transform: transform 0.15s ease-in-out;
   }
 }
 
+.tag.clickable {
+  cursor: pointer;
+  color: #8B4A37;
+  text-decoration: underline;
+}
+
 .submit-btn {
   align-self: flex-end;
   background: linear-gradient(135deg, #835353 0%, #c9b37c 100%);
@@ -602,11 +608,11 @@ $transition-transform: transform 0.15s ease-in-out;
   box-shadow: 0 2px 8px rgba(201, 179, 124, 0.13);
   cursor: pointer;
   transition: background 0.2s, transform 0.2s;
-  
+
   .btn-icon {
     font-size: 1.2rem;
   }
-  
+
   &:hover {
     background: linear-gradient(135deg, #6b2e2e 0%, #bfa6a6 100%);
     transform: translateY(-2px);

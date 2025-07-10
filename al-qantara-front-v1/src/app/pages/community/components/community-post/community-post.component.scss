@@ -533,6 +533,11 @@
   ring-offset: 2px;
 }
 
+.tag.clickable {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 // Style pour les écrans haute résolution
 @media (min-resolution: 2dppx) {
   .post-card {
