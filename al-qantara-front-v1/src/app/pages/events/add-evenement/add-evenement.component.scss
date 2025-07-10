@@ -50,7 +50,7 @@ $shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.15);
     font-size: 1.05rem;
     letter-spacing: 0.01em;
 
-    &:not([for="isPaid"])::after {
+    &:not([for="isPaid"]):not([for="numero"]):not([for="adresseSearch"]):not([for="video"]):not([for="placesTotal"])::after {
       content: "*";
       color: $danger-color;
       margin-left: 4px;

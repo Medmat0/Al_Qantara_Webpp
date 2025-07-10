@@ -35,7 +35,7 @@ export class AddressService {
   }
 
   searchAddress(query: string): Observable<AddressSuggestion[]> {
-    if (query.length < 3) {
+    if (!query || query.length < 3) {
       return of([]);
     }
 
@@ -50,9 +50,9 @@ export class AddressService {
           addressdetails: '1',
           'accept-language': 'fr',
           featuretype: 'address',
-          'email': 'contact@alqantara.fr', 
-          dedupe: '1', 
-          'bounded': '1' 
+          'email': 'contact@alqantara.fr',
+          dedupe: '1',
+          'bounded': '1'
         }
       }
     ).pipe(
