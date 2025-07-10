@@ -1,75 +1,96 @@
 <div class="filters-bar">
-  <div class="search-bar">
-    <input
-      type="text"
-      placeholder="Rechercher un événement..."
-      [(ngModel)]="searchTerm"
-    />
+  <div class="search-section">
+    <div class="search-bar">
+      <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+      </svg>
+      <input
+        type="text"
+        placeholder="Rechercher un événement..."
+        [(ngModel)]="searchTerm"
+      />
+    </div>
   </div>
-  <div class="filters">
-    <label for="filter">Trier par :</label>
-    <select id="filter" [(ngModel)]="selectedFilter" (change)="onFilterChange(selectedFilter)">
-      <option value="none">Aucun</option>
-      <option value="most-recent">Plus récents</option>
-      <option value="most-old">Plus anciens</option>
-      <option value="most-popular">Plus populaires</option>
-    </select>
+
+  <div class="filters-section">
+    <div class="status-filters">
+      <button
+        class="filter-btn"
+        [class.active]="selectedStatusFilter === 'upcoming'"
+        (click)="onStatusFilterChange('upcoming')">
+        À venir
+      </button>
+      <button
+        class="filter-btn"
+        [class.active]="selectedStatusFilter === 'happening'"
+        (click)="onStatusFilterChange('happening')">
+        En cours
+      </button>
+      <button
+        class="filter-btn"
+        [class.active]="selectedStatusFilter === 'past'"
+        (click)="onStatusFilterChange('past')">
+        Passé
+      </button>
+    </div>
+
+    <div class="sort-section">
+      <label for="filter" class="filter-label">Trier par:</label>
+      <div class="select-wrapper">
+        <select id="filter" [(ngModel)]="selectedFilter" (change)="onFilterChange(selectedFilter)">
+          <option value="none">Aucun</option>
+          <option value="most-recent">Plus récents</option>
+          <option value="most-old">Plus anciens</option>
+          <option value="most-popular">Plus populaires</option>
+        </select>
+        <svg class="select-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M7 10l5 5 5-5z"/>
+        </svg>
+      </div>
+    </div>
   </div>
 </div>
 
-<h2>Événements en cours</h2>
-<div *ngIf="happeningNowEvenements.length > 0; else noHappening" class="event-listing event-listing-now">
-  <div
-    class="event-item-container"
-    *ngFor="let event of happeningNowEvenements"
-    (click)="openModal(event)">
-    <app-event-item [event]="event"></app-event-item>
-    <div class="event-now-badge">En cours</div>
+<div class="events-container">
+  <div *ngIf="displayedEvents.length > 0; else noEvents" class="event-listing">
+    <div
+      class="event-item-container"
+      *ngFor="let event of displayedEvents"
+      (click)="openModal(event)"
+      [class.payant-badge]="event.isPayant"
+      [attr.data-status]="getEventStatus(event)"
+    >
+      <app-event-item [event]="event"></app-event-item>
+      <div
+        *ngIf="selectedStatusFilter === 'happening'"
+        class="event-now-badge">
+        En cours
+      </div>
+    </div>
   </div>
-</div>
-<ng-template #noHappening>
-  <div class="no-events-message">Aucun événement en cours pour l'instant.</div>
-</ng-template>
 
-<h2>Événements à venir</h2>
-<div *ngIf="upcomingEvenements.length > 0; else noUpcoming" class="event-listing">
-  <div
-    class="event-item-container"
-    *ngFor="let event of upcomingEvenements"
-    (click)="openModal(event)"
-    [class.payant-badge]="event.isPayant"
-  >
-    <app-event-item [event]="event"></app-event-item>
-  </div>
+  <ng-template #noEvents>
+    <div class="no-events-message">
+      <ng-container [ngSwitch]="selectedStatusFilter">
+        <span *ngSwitchCase="'upcoming'">Il n'y a pas d'événements à venir pour l'instant.</span>
+        <span *ngSwitchCase="'happening'">Aucun événement en cours pour l'instant.</span>
+        <span *ngSwitchCase="'past'">Il n'y a pas d'événements passés pour l'instant.</span>
+      </ng-container>
+    </div>
+  </ng-template>
 </div>
-<ng-template #noUpcoming>
-  <div class="no-events-message">Il n'y a pas d'événements à venir pour l'instant.</div>
-</ng-template>
 
-<h2>Événements passés</h2>
-<div *ngIf="pastEvenements.length > 0; else noPast" class="event-listing event-listing-past">
-  <div
-    class="event-item-container"
-    *ngFor="let event of pastEvenements"
-    (click)="openModal(event)">
-    <app-event-item [event]="event"></app-event-item>
-  </div>
-</div>
-<ng-template #noPast>
-  <div class="no-events-message">Il n'y a pas d'événements passés pour l'instant.</div>
-</ng-template>
-
-<div class="pagination">
+<div class="pagination" *ngIf="totalPages > 1">
   <button
     [disabled]="currentPage === 1"
     (click)="changePage(currentPage - 1)">
-    Previous
+    Précédent
   </button>
-  <span>Page {{ currentPage }} of {{ totalPages }}</span>
+  <span>Page {{ currentPage }} sur {{ totalPages }}</span>
   <button
     [disabled]="currentPage === totalPages"
     (click)="changePage(currentPage + 1)">
-    Next
+    Suivant
   </button>
 </div>
 
