@@ -6,7 +6,7 @@ import { CommunityPostComponent } from '../community-post/community-post.compone
 import { CommunityMembersComponent } from '../community-members/community-members.component';
 import { CommunityPostResearchComponent } from '../community-post-research/community-post-research.component';
 import { AuthService } from '../../../../member/services/auth.service';
-import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 
 @Component({
   selector: 'app-community-hub',
@@ -58,36 +58,35 @@ export class CommunityHubComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    this.authService.authStatus$.subscribe((status) => {
+      this.isAuthenticated = status;
+      console.log('Authentication status:', this.isAuthenticated);
+      if (status) {
+        const user = localStorage.getItem('utilisateur');
+        if (user) {
+          this.userId = JSON.parse(user).id;
+        }
+      } else {
+        this.userId = null;
+      }
+    });
+
     this.route.paramMap.subscribe(params => {
       const id = params.get('communityId');
       if (id) {
         this.communityId = +id;
         this.fetchCommunity();
         this.fetchPosts();
-      }
-    });
-
-    this.authService.authStatus$.subscribe((status) => {
-      this.isAuthenticated = status;
-      console.log('Authentication status:', this.isAuthenticated);
-
-      if (status) {
-        const user = localStorage.getItem('utilisateur');
-        if (user) {
-          this.userId = JSON.parse(user).id;
-        }
-
-        if (this.communityId) {
+        if (this.isAuthenticated) {
           this.checkMembership();
           this.communityService.isModerator(this.communityId).subscribe({
             next: (isMod) => this.isModerator = isMod,
             error: () => this.isModerator = false
           });
+        } else {
+          this.isMember = false;
         }
-      } else {
-        this.userId = null;
-        this.isMember = false;
-        this.isModerator = false;
       }
     });
   }
@@ -95,13 +94,59 @@ export class CommunityHubComponent implements OnInit {
   // Initialisation du formulaire de création de post
   private initPostForm() {
     this.postForm = this.fb.group({
-      title: ['', [Validators.required, Validators.minLength(3)]],
-      description: ['', [Validators.required, Validators.minLength(10)]],
+      title: ['', [Validators.required]],
+      description: ['', [Validators.required]],
       type: ['TEXT', Validators.required],
-      tags: this.fb.array([this.fb.control('', Validators.required)]),
-      pollOptions: this.fb.array([]),
-      pollDeadline: [''] // Ajout du contrôle pour la date limite du sondage
+      tags: this.fb.array(
+        [this.fb.control('', Validators.required)],
+        { validators: [this.atLeastOneTagValidator] }
+      ),
+      pollOptions: this.fb.array([], [this.pollOptionsValidator]),
+      pollDeadline: ['']
     });
+
+    // Ajoute la validation de la date limite après l'init
+    this.postForm.get('pollDeadline')?.setValidators([
+      this.pollDeadlineValidator.bind(this)
+    ]);
+  }
+
+  // Validator pour pollOptions
+  private pollOptionsValidator(control: AbstractControl): ValidationErrors | null {
+    const options = (control.value || []).filter((opt: string) => opt && opt.trim() !== '');
+    if (options.length === 1) {
+      return { minOptions: true };
+    }
+    return null;
+  }
+
+  // Validator pour pollDeadline
+  private pollDeadlineValidator(control: AbstractControl): ValidationErrors | null {
+    const pollOptions = this.postForm?.get('pollOptions')?.value || [];
+    const hasPoll = pollOptions.filter((opt: string) => opt && opt.trim() !== '').length > 0;
+    const value = control.value;
+    if (hasPoll) {
+      if (!value) {
+        return { requiredIfPoll: true };
+      }
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      const selected = new Date(value);
+      if (selected <= today) {
+        return { minDate: true };
+      }
+    }
+    return null;
+  }
+
+  private atLeastOneTagValidator(control: AbstractControl): ValidationErrors | null {
+    const tags = (control.value || []).map((t: string) => t && t.trim());
+    const hasTag = tags.some((t: string) => !!t);
+    return hasTag ? null : { atLeastOneTag: true };
+  }
+
+  get tagsTouched(): boolean {
+    return this.tags.touched;
   }
 
   // Getters pour les FormArrays
@@ -136,14 +181,18 @@ export class CommunityHubComponent implements OnInit {
 
   // Gestion des options de sondage
   addPollOption() {
-    if (this.pollOptions.length < 6) { // Limite à 6 options
+    if (this.pollOptions.length < 6) {
       this.pollOptions.push(this.fb.control('', Validators.required));
+      this.postForm.get('pollDeadline')?.markAsTouched();
+      this.postForm.get('pollDeadline')?.updateValueAndValidity();
     }
   }
 
   removePollOption(index: number) {
     if (this.pollOptions.length > 1) {
       this.pollOptions.removeAt(index);
+      this.postForm.get('pollDeadline')?.markAsTouched();
+      this.postForm.get('pollDeadline')?.updateValueAndValidity();
     }
   }
 
@@ -205,28 +254,26 @@ export class CommunityHubComponent implements OnInit {
 
     this.isSubmitting = true;
 
-    // Préparer les données selon l'interface attendue par le service
     const tags = this.tags.value.filter((tag: string) => tag.trim() !== '');
-    const pollOptions = this.postForm.get('type')?.value === 'POLL'
-      ? this.pollOptions.value.filter((option: string) => option.trim() !== '')
-      : [];
+    const pollOptions = this.pollOptions.value.filter((option: string) => option.trim() !== '');
+    const type = pollOptions.length >= 2 ? 'POLL' : 'TEXT';
 
     const data = {
       titre: this.postForm.get('title')?.value,
       contenu: this.postForm.get('description')?.value,
       tags: tags,
-      pollOptions: pollOptions.length >= 2 ? pollOptions : [],
-      pollDeadline: this.postForm.get('pollDeadline')?.value || null,
-      img: this.selectedFile
+      pollOptions: type === 'POLL' ? pollOptions : [],
+      pollDeadline: type === 'POLL' ? (this.postForm.get('pollDeadline')?.value || null) : null,
+      img: this.selectedFile,
+      type: type
     };
 
-    // Envoyer la requête
     this.communityService.createPost(communityId, data).subscribe({
       next: (response) => {
         console.log('Post créé avec succès:', response);
         this.resetForm();
         this.showCreateForm = false;
-        this.fetchPosts(); // Recharger la liste des posts
+        this.fetchPosts();
         this.isSubmitting = false;
       },
       error: (error) => {
@@ -376,7 +423,7 @@ export class CommunityHubComponent implements OnInit {
     }
   }
 
-   goToPost(post: any) {
+  goToPost(post: any) {
     // Rediriger vers la page du post
     this.router.navigate([`/communities/${post.communityId}/posts/${post.id}`]);
     console.log('Aller au post:', post);
@@ -405,7 +452,7 @@ export class CommunityHubComponent implements OnInit {
       }
     });
   }
-    trackByPostId(index: number, post: any): any {
+  trackByPostId(index: number, post: any): any {
     return post.id;
   }
 
