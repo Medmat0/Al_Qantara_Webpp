@@ -23,36 +23,36 @@
               <i class="icon-title"></i>
               Titre de la newsletter
             </label>
-            <input 
-              id="titre" 
-              formControlName="titre" 
-              type="text" 
+            <input
+              id="titre"
+              formControlName="titre"
+              type="text"
               class="form-control"
-              placeholder="Saisissez le titre..." 
-              required 
+              placeholder="Saisissez le titre..."
+              required
             />
           </div>
         </div>
-        
+
         <div class="form-row">
           <div class="form-group">
             <label for="contenu" class="form-label">
               <i class="icon-content"></i>
-              Contenu (HTML autorisé)
+              Contenu
             </label>
             <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"></ngx-editor-menu>
             <ngx-editor
               [editor]="editor"
               formControlName="contenu"
-              [placeholder]="'Rédigez votre contenu HTML...'"
+              [placeholder]="'Rédigez votre mail...'"
               class="form-control form-textarea"
             ></ngx-editor>
           </div>
         </div>
-        
+
         <div class="form-actions">
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             class="btn btn-primary"
             [disabled]="newsletterForm.invalid || sending"
           >
@@ -61,7 +61,7 @@
             <span *ngIf="sending">Envoi en cours...</span>
           </button>
         </div>
-        
+
         <div *ngIf="sendSuccess" class="alert alert-success">
           <i class="icon-check"></i>
           {{ sendSuccess }}
@@ -85,7 +85,7 @@
         <p class="stat-label">Abonnés actifs</p>
       </div>
     </div>
-    
+
     <div class="stat-card">
       <div class="stat-icon stat-icon-sent">
         <i class="icon-mail"></i>
@@ -110,18 +110,18 @@
         <div class="spinner"></div>
         <p>Chargement des abonnés...</p>
       </div>
-      
+
       <div *ngIf="subscribersError" class="alert alert-error">
         <i class="icon-alert"></i>
         {{ subscribersError }}
       </div>
-      
+
       <div *ngIf="!loadingSubscribers && subscribers.length" class="table-container">
         <table class="data-table">
           <thead>
             <tr>
               <th>
-                <i class="icon-mail"></i>
+                <i class=""></i>
                 Email
               </th>
               <th>
@@ -166,7 +166,7 @@
           </tbody>
         </table>
       </div>
-      
+
       <div *ngIf="!loadingSubscribers && !subscribers.length" class="empty-state">
         <i class="icon-empty"></i>
         <h4>Aucun abonné</h4>
@@ -188,12 +188,12 @@
         <div class="spinner"></div>
         <p>Chargement de l'historique...</p>
       </div>
-      
+
       <div *ngIf="historyError" class="alert alert-error">
         <i class="icon-alert"></i>
         {{ historyError }}
       </div>
-      
+
       <div *ngIf="!loadingHistory && history.length" class="table-container">
         <table class="data-table">
           <thead>
@@ -239,7 +239,7 @@
           </div>
         </div>
       </div>
-      
+
       <div *ngIf="!loadingHistory && !history.length" class="empty-state">
         <i class="icon-empty"></i>
         <h4>Aucune newsletter envoyée</h4>
