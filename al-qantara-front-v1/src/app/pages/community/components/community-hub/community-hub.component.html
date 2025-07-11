@@ -198,7 +198,7 @@
           </div>
         </div>
 
-        <div class="posts-container">
+        <div class="posts-container" (scroll)="onScroll($event)">
           <div class="posts-list" *ngIf="posts.length > 0">
             <div
               *ngFor="let post of posts; trackBy: trackByPostId"
@@ -215,7 +215,7 @@
 
           <div class="empty-state" *ngIf="posts.length === 0">
             <div class="empty-illustration">
-              <div class="empty-icon">📝</div>
+              <div class="empty-icon"></div>
               <div class="empty-particles">
                 <span class="particle"></span>
                 <span class="particle"></span>
@@ -229,9 +229,14 @@
             <button
               (click)="toggleCreateForm()"
               class="btn btn-primary empty-action">
-              <span class="btn-icon">✍️</span>
+              <span class="btn-icon">✍</span>
               <span>Créer le premier post</span>
             </button>
+          </div>
+
+          <div class="loading-indicator" *ngIf="loadingPosts">
+            <div class="spinner"></div>
+            <span>Chargement des posts...</span>
           </div>
         </div>
       </div>
@@ -248,7 +253,7 @@
               class="community-logo">
           </div>
           <div class="default-logo" *ngIf="!community?.logo">
-            <span class="default-icon">🏠</span>
+            <span class="default-icon"></span>
             <div class="logo-ring"></div>
           </div>
         </div>
