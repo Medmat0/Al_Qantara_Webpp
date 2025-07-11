@@ -133,15 +133,12 @@ export class EventModalComponent implements OnChanges {
 
 
   shareOnLinkedIn() {
-    const url = encodeURIComponent(window.location.href);
+    const url = `/events/${this.event?.id}`;
+    navigator.clipboard.writeText(url);
     window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
     this.showShareMenu = false;
   }
 
-  shareOnInstagram() {
-    alert('Le partage direct sur Instagram n\'est pas supporté depuis le web.');
-    this.showShareMenu = false;
-  }
 
   formatDateTime(dateStr: string) {
     return new Date(dateStr).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' });

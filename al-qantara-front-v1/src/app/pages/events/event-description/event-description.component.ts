@@ -11,6 +11,8 @@ import {MessagerieService} from '../../../member/services/messagerie.service';
 import {UsersListComponent} from '../../messaging/components/users-list/users-list.component';
 import {PaymentModalComponent} from '../payment-modal/payment-modal.component';
 
+
+
 @Component({
   selector: 'app-event-description',
   imports: [
@@ -59,7 +61,11 @@ export class EventDescriptionComponent {
   userHasLiked: boolean = false;
   likesLoading: boolean = false;
 
-  constructor(private route: ActivatedRoute, private router: Router, private sanitizer: DomSanitizer, private cdr: ChangeDetectorRef) {
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private sanitizer: DomSanitizer,
+    private cdr: ChangeDetectorRef) {
     this.authService.authStatus$.subscribe((status) => {
       this.isAuthenticated = status;
       if (status) {
@@ -86,7 +92,6 @@ export class EventDescriptionComponent {
 
             this.nombreLikes = this.evenement.nombreLikes || 0;
             this.checkIfUserLiked();
-
             if (this.userId && Array.isArray(this.evenement.likes)) {
               this.hasLikedEvenement = this.evenement.likes.some((like: LikeEvenement) => like.utilisateurId === this.userId);
             } else {
@@ -148,11 +153,6 @@ export class EventDescriptionComponent {
   shareOnLinkedIn() {
     const url = encodeURIComponent(window.location.href);
     window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
-    this.showShareMenu = false;
-  }
-
-  shareOnInstagram() {
-    alert('Le partage direct sur Instagram n\'est pas supporté depuis le web.');
     this.showShareMenu = false;
   }
 
@@ -223,9 +223,6 @@ export class EventDescriptionComponent {
         this.loading = false;
       }
     });
-
-
-
 
   }
 
@@ -371,15 +368,6 @@ export class EventDescriptionComponent {
     const now = new Date();
     const eventEndDate = new Date(this.evenement.dateFin);
     return eventEndDate < now;
-  }
-
-  handleShare() {
-    /*
-    const subject = `Invitation à l'événement: ${this.evenement.titre}`;
-    const body = `Bonjour,\n\nJe vous invite à l'événement "${this.evenement.titre}" qui se déroulera le ${this.formatDateTime(this.evenement.dateDebut)} à ${this.evenement.lieu}.\n\nPour plus d'informations, visitez notre site web.\n\nCordialement`;
-    window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
-     */
   }
 
   get eventImage(): string {

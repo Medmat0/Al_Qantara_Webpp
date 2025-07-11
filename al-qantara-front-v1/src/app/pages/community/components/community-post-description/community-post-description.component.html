@@ -1,6 +1,6 @@
 <article class="post-container">
   <button class="back-to-hub-btn" (click)="goToCommunityHub()">
-    <span class="btn-icon">🏠</span>
+    <span class="btn-icon"></span>
     <span>Retour au hub</span>
   </button>
         <div class="post-header">
@@ -36,7 +36,7 @@
     <!-- Sondage -->
     <div class="poll-section" *ngIf="post.pollOptions?.length">
         <div class="poll-header">
-            <h3 class="poll-title">🗳️ Sondage disponible</h3>
+            <h3 class="poll-title">Sondage</h3>
             <div class="poll-deadline" *ngIf="post.pollDeadline">
                 <span class="deadline-label">Date limite :</span>
                 <time>{{ post.pollDeadline | date:'dd/MM/yyyy' }}</time>
@@ -69,12 +69,12 @@
             <span class="action-count">{{ post.likes?.length || 0 }}</span>
         </button>
         <button class="action-btn comment-btn" (click)="scrollToCommentForm()">
-            <span class="action-icon">💬</span>
+            <span class="action-icon"></span>
             <span class="action-text">Commentaires</span>
             <span class="action-count">{{ totalComments }}</span>
         </button>
         <button class="action-btn delete-btn" *ngIf="canDelete" (click)="deletePost()">
-            <span class="action-icon">🗑️</span>
+            <span class="action-icon"></span>
             <span class="action-text">Supprimer</span>
         </button>
     </div>

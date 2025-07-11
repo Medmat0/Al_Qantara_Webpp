@@ -31,6 +31,8 @@ export class CommunityHomeComponent implements OnInit {
   isAuthenticated: boolean = false;
 
   showResearchPopup = false; // Par défaut, le popup est fermé
+  showCommunityResearchPopup = false; // Par défaut, le popup de recherche communauté est fermé
+  showPostResearchPopup = false; // Par défaut, le popup de recherche post est fermé
 
   constructor(
     private communityService: CommunityService,
@@ -124,6 +126,30 @@ export class CommunityHomeComponent implements OnInit {
     this.showResearchPopup = false;
     
     // Restaurer le scroll
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+  }
+
+  openCommunityResearchPopup() {
+    this.showCommunityResearchPopup = true;
+    document.body.style.overflow = 'hidden';
+    document.body.style.paddingRight = '15px';
+  }
+
+  closeCommunityResearchPopup() {
+    this.showCommunityResearchPopup = false;
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+  }
+
+  openPostResearchPopup() {
+    this.showPostResearchPopup = true;
+    document.body.style.overflow = 'hidden';
+    document.body.style.paddingRight = '15px';
+  }
+
+  closePostResearchPopup() {
+    this.showPostResearchPopup = false;
     document.body.style.overflow = '';
     document.body.style.paddingRight = '';
   }

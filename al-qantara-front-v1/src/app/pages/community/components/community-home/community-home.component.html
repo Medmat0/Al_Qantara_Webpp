@@ -40,17 +40,23 @@
   <aside class="sidebar">
     <div class="sidebar-content">
       <div class="action-buttons">
-        <button 
-          class="btn btn-primary" 
-          (click)="openResearchPopup()">
-          <span class="btn-icon">🔍</span>
-          Rechercher un communauté
+        <button
+          class="btn btn-primary"
+          (click)="openCommunityResearchPopup()">
+          <span class="btn-icon"></span>
+          Rechercher une communauté
+        </button>
+        <button
+          class="btn btn-primary"
+          (click)="openPostResearchPopup()">
+          <span class="btn-icon"></span>
+          Rechercher un post
         </button>
 
-        <button 
-          class="btn btn-secondary" 
+        <button
+          class="btn btn-secondary"
           (click)="goToCreationForm()">
-          <span class="btn-icon">➕</span>
+          <span class="btn-icon"></span>
           Créer une communauté
         </button>
       </div>
@@ -64,9 +70,17 @@
 </div>
 
 <!-- Overlay et popup recherche communauté -->
-<div class="community-popup-overlay" *ngIf="showResearchPopup" (click)="closeResearchPopup()">
+<div class="community-popup-overlay" *ngIf="showCommunityResearchPopup" (click)="closeCommunityResearchPopup()">
   <div class="community-popup" (click)="$event.stopPropagation()">
-    <button class="close-popup" (click)="closeResearchPopup()">✖</button>
+    <button class="close-popup" (click)="closeCommunityResearchPopup()">✖</button>
     <app-community-research></app-community-research>
+  </div>
+</div>
+
+<!-- Overlay et popup recherche post -->
+<div class="community-popup-overlay" *ngIf="showPostResearchPopup" (click)="closePostResearchPopup()">
+  <div class="community-popup" (click)="$event.stopPropagation()">
+    <button class="close-popup" (click)="closePostResearchPopup()">✖</button>
+    <app-community-post-research></app-community-post-research>
   </div>
 </div>
