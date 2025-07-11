@@ -194,7 +194,7 @@
             Publications récentes
           </h2>
           <div class="posts-count" *ngIf="posts.length > 0">
-            {{ posts.length }} post{{ posts.length > 1 ? 's' : '' }}
+            {{ community?.nbrPosts }} post{{ community?.nbrPosts > 1 ? 's' : '' }}
           </div>
         </div>
 
@@ -305,7 +305,7 @@
         </h3>
         <div class="stats-grid">
           <div class="stat-item">
-            <div class="stat-number">{{ posts.length }}</div>
+            <div class="stat-number">{{ community?.nbrPosts }}</div>
             <div class="stat-label">Posts</div>
           </div>
 
