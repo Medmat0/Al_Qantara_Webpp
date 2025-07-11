@@ -8,22 +8,41 @@ import { checkAdhesionStatus, processAdhesionPayment } from '../../services/adhe
  */
 const createAdhesionCheckout = async (req, res) => {
   try {
+    console.log('🎯 createAdhesionCheckout - Début');
+    console.log('📋 Body de la requête:', req.body);
+    console.log('👤 Utilisateur connecté:', req.user);
+    
     const { utilisateurId } = req.body;
     const userId = req.user?.id || utilisateurId;
 
     if (!userId) {
+      console.log('❌ Aucun ID utilisateur trouvé');
       return res.status(400).json({
         message: 'ID utilisateur requis'
       });
     }
 
+    console.log('✅ ID utilisateur récupéré:', userId);
+
     // Validation des données du payer - Structure exacte HelloAsso
-    const payerData = {
-      email: req.user?.email || 'yassineelmatroor@gmail.com',
-      firstName: req.user?.prenom || "Yassine",
-      // Utilisation d'un nom de famille "valide" pour test HelloAsso
-      lastName: "Dupont"
-    };
+    let payerData;
+    
+    if (
+      (req.user?.prenom && req.user.prenom.toLowerCase() === "admin") ||
+      (req.user?.nom && req.user.nom.toLowerCase() === "admin")
+    ) {
+      payerData = {
+        email: req.user?.email || 'yassineelmatroor@gmail.com',
+        firstName: "Yassine",
+        lastName: "Dupont"
+      };
+    } else {
+      payerData = {
+        email: req.user?.email || 'yassineelmatroor@gmail.com',
+        firstName: req.user?.prenom || "Yassine",
+        lastName: req.user?.nom || "El Matroor"
+      };
+    }
 
     // Vérification que tous les champs sont présents et valides
     if (!payerData.email || !payerData.firstName || !payerData.lastName) {
@@ -58,10 +77,14 @@ const createAdhesionCheckout = async (req, res) => {
     console.log('Utilisateur connecté:', req.user);
     console.log('Données complètes adhésion:', adhesionData);
 
+    console.log('🚀 Appel à createAdhesionCheckoutIntent...');
     const checkoutResponse = await createAdhesionCheckoutIntent(adhesionData);
+    console.log('✅ Réponse HelloAsso reçue:', checkoutResponse);
+    
     res.json(checkoutResponse);
   } catch (error) {
-    console.error('Erreur lors de la création du checkout adhésion:', error);
+    console.error('❌ Erreur dans createAdhesionCheckout:', error);
+    console.error('❌ Stack trace:', error.stack);
     res.status(500).json({
       message: 'Erreur lors de la création du checkout adhésion',
       error: error.message

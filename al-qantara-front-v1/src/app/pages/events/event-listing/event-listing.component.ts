@@ -2,7 +2,7 @@ import {Component, inject, Input} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { EventItemComponent } from './event-item/event-item.component';
-import {NgForOf, NgIf} from '@angular/common';
+import {NgForOf, NgIf, NgSwitch, NgSwitchCase} from '@angular/common';
 import {EventModalComponent} from '../event-modal/event-modal.component';
 import {EvenementService} from '../../../member/services/evenement.service';
 import { Router } from '@angular/router';
@@ -18,6 +18,8 @@ import {MessagerieService} from '../../../member/services/messagerie.service';
     NgForOf,
     EventModalComponent,
     NgIf,
+    NgSwitch,
+    NgSwitchCase,
     FormsModule,
     UsersListComponent
 
@@ -37,6 +39,7 @@ export class EventListingComponent {
   // Search and filter properties
   searchTerm: string = '';
   selectedFilter: string = 'none';
+  selectedStatusFilter: string = 'upcoming'; // Par défaut : à venir
 
   // Pagination properties
   currentPage: number = 1;
@@ -292,10 +295,10 @@ export class EventListingComponent {
 
 
 
-  get filteredEvenements() {
+  get displayedEvents() {
     let filtered = this.events;
 
-    //search filter
+    // Filtre de recherche
     if (this.searchTerm.trim()) {
       const searchLower = this.searchTerm.toLowerCase();
       filtered = filtered.filter(event =>
@@ -305,7 +308,23 @@ export class EventListingComponent {
       );
     }
 
-    //sorting filter
+    // Filtre de statut
+    const now = this.now;
+    switch (this.selectedStatusFilter) {
+      case 'upcoming':
+        filtered = filtered.filter(event => new Date(event.dateDebut) > now);
+        break;
+      case 'happening':
+        filtered = filtered.filter(event =>
+          new Date(event.dateDebut) <= now && new Date(event.dateFin) >= now
+        );
+        break;
+      case 'past':
+        filtered = filtered.filter(event => new Date(event.dateFin) < now);
+        break;
+    }
+
+    // Filtre de tri
     switch (this.selectedFilter) {
       case 'most-recent':
         filtered = [...filtered].sort((a, b) =>
@@ -324,14 +343,40 @@ export class EventListingComponent {
         break;
     }
 
-    // Apply pagination
+    // Pagination
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     return filtered.slice(startIndex, startIndex + this.itemsPerPage);
   }
 
   get totalPages() {
-    const filteredCount = this.events.length;
-    return Math.ceil(filteredCount / this.itemsPerPage);
+    let filtered = this.events;
+
+    // Appliquer les mêmes filtres pour calculer le nombre total de pages
+    if (this.searchTerm.trim()) {
+      const searchLower = this.searchTerm.toLowerCase();
+      filtered = filtered.filter(event =>
+        event.titre.toLowerCase().includes(searchLower) ||
+        event.description.toLowerCase().includes(searchLower) ||
+        event.lieu.toLowerCase().includes(searchLower)
+      );
+    }
+
+    const now = this.now;
+    switch (this.selectedStatusFilter) {
+      case 'upcoming':
+        filtered = filtered.filter(event => new Date(event.dateDebut) > now);
+        break;
+      case 'happening':
+        filtered = filtered.filter(event =>
+          new Date(event.dateDebut) <= now && new Date(event.dateFin) >= now
+        );
+        break;
+      case 'past':
+        filtered = filtered.filter(event => new Date(event.dateFin) < now);
+        break;
+    }
+
+    return Math.ceil(filtered.length / this.itemsPerPage);
   }
 
   changePage(page: number): void {
@@ -345,22 +390,27 @@ export class EventListingComponent {
     this.currentPage = 1;
   }
 
+  onStatusFilterChange(statusFilter: string): void {
+    this.selectedStatusFilter = statusFilter;
+    this.currentPage = 1;
+  }
+
   get now(): Date {
     return new Date();
   }
 
-  get upcomingEvenements() {
-    return this.filteredEvenements.filter(event => new Date(event.dateDebut) > this.now);
-  }
+  getEventStatus(event: Evenement): string {
+    const now = this.now;
+    const eventStart = new Date(event.dateDebut);
+    const eventEnd = new Date(event.dateFin);
 
-  get happeningNowEvenements() {
-    return this.filteredEvenements.filter(event =>
-      new Date(event.dateDebut) <= this.now && new Date(event.dateFin) >= this.now
-    );
-  }
-
-  get pastEvenements() {
-    return this.filteredEvenements.filter(event => new Date(event.dateFin) < this.now);
+    if (eventStart > now) {
+      return 'upcoming';
+    } else if (eventStart <= now && eventEnd >= now) {
+      return 'happening';
+    } else {
+      return 'past';
+    }
   }
 
   openUsersModal() {

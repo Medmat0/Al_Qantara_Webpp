@@ -15,12 +15,9 @@
           placeholder="Rechercher une revue..."
           [(ngModel)]="searchTerm"
         />
-        <button type="button" class="search-btn">
-          <span>Rechercher</span>
-        </button>
       </div>
     </div>
-    
+
     <div class="filters-section">
       <label for="filter" class="filter-label">Trier par:</label>
       <div class="select-wrapper">
@@ -67,11 +64,11 @@
       </svg>
       <span>Précédent</span>
     </button>
-    
+
     <div class="page-info">
       <span class="page-numbers">{{ currentPage }} / {{ totalPages }}</span>
     </div>
-    
+
     <button
       class="pagination-btn"
       [disabled]="currentPage === totalPages"
