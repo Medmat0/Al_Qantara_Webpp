@@ -318,7 +318,7 @@
   <div class="community-popup-overlay" *ngIf="showPostSearchPopup" (click)="closePostSearchPopup()">
     <div class="community-popup" (click)="$event.stopPropagation()">
       <button class="close-popup" (click)="closePostSearchPopup()">✖</button>
-      <app-community-post-research></app-community-post-research>
+      <app-community-post-research [communityId]="communityId"></app-community-post-research>
     </div>
   </div>
 

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, HostListener} from '@angular/core';
+import { Component, OnDestroy, Input} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CommunityService } from '../../../../member/services/community.service';
@@ -16,6 +16,8 @@ export class CommunityPostResearchComponent implements OnDestroy {
   posts: any[] = [];
   tagInput: string = '';
   tags: string[] = [];
+
+  @Input() communityId?: number; // Optional input for community ID, if needed
 
   page = 1;
   limit = 3;
@@ -84,7 +86,6 @@ export class CommunityPostResearchComponent implements OnDestroy {
   loadMorePosts() {
     if (this.loading || !this.hasMore) return;
     this.loading = true;
-    const loaderStartTime = Date.now();
 
     this.communityService.getCommunityPostsByName(
       this.searchName.trim(),
@@ -93,18 +94,18 @@ export class CommunityPostResearchComponent implements OnDestroy {
       this.limit
     ).subscribe({
       next: (response) => {
-        const newPosts = response.posts || [];
+        let newPosts = response.posts || [];
+        if (this.communityId) {
+          newPosts = newPosts.filter((post: { communityId: number | undefined; }) => post.communityId === this.communityId);
+        }
         if (newPosts.length < this.limit) this.hasMore = false;
-
-        const elapsed = Date.now() - loaderStartTime;
+        const elapsed = Date.now() - Date.now();
         const minDuration = 250;
-
         const finish = () => {
           this.posts = [...this.posts, ...newPosts];
           this.page++;
           this.loading = false;
         };
-
         if (elapsed < minDuration) {
           setTimeout(finish, minDuration - elapsed);
         } else {
@@ -145,8 +146,13 @@ export class CommunityPostResearchComponent implements OnDestroy {
         const elapsed = Date.now() - this.loaderStartTime;
         const minDuration = 250;
         const finish = () => {
-          this.posts = response.posts || [];
-          this.hasMore = (response.posts && response.posts.length === this.limit);
+          let posts = response.posts || [];
+          // Filtrage par communauté si communityId fourni
+          if (this.communityId) {
+            posts = posts.filter((post: { communityId: number | undefined; }) => post.communityId === this.communityId);
+          }
+          this.posts = posts;
+          this.hasMore = (posts.length === this.limit);
           this.loading = false;
           this.error = this.posts.length === 0 ? 'Aucun post trouvé.' : null;
           this.page = 2;
