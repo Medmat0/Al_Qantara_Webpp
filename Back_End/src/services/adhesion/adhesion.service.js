@@ -48,14 +48,22 @@ const processAdhesionPayment = async (paymentData) => {
       });
     }
 
-    // Mettre à jour le statut de l'utilisateur
+    // Mettre à jour le statut de l'utilisateur (préserver le rôle ADMIN s'il existe)
+    const updateData = {
+      statut: 'ACTIF'
+    };
+
+    // Si l'utilisateur n'est pas déjà ADMIN, le promouvoir à ADHERENT
+    if (utilisateur.role !== 'ADMIN') {
+      updateData.role = 'ADHERENT';
+    }
+
     const utilisateurMisAJour = await prisma.utilisateur.update({
       where: { id: parseInt(utilisateurId) },
-      data: {
-        statut: 'ACTIF',
-        role: 'ADHERENT'
-      }
+      data: updateData
     });
+
+    console.log(`Adhésion activée pour ${utilisateur.role === 'ADMIN' ? 'admin' : 'utilisateur'}: ${utilisateur.prenom} ${utilisateur.nom}`);
 
     // Envoyer l'email de bienvenue
     await envoyerEmailBienvenue(utilisateur.email, utilisateur.prenom, utilisateur.nom);

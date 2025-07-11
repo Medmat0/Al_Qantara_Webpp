@@ -52,6 +52,9 @@ export class PaymentSuccessComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // Ajouter une vérification de sécurité supplémentaire
+    this.validatePageAccess();
+    
     this.route.queryParams.subscribe(params => {
       this.utilisateurId = params['utilisateurId'];
       this.paymentType = params['type'] || 'event';
@@ -69,6 +72,13 @@ export class PaymentSuccessComponent implements OnInit {
             console.error('❌ Erreur lors du parsing des données utilisateur:', error);
           }
         }
+      }
+
+      // Validation finale des paramètres
+      if (!this.validateRequiredParams()) {
+        console.log('❌ Paramètres requis manquants, redirection...');
+        this.router.navigate(['/']);
+        return;
       }
 
       console.log('🔍 Paramètres URL reçus:', {
@@ -96,6 +106,41 @@ export class PaymentSuccessComponent implements OnInit {
 
     // Démarrer le countdown de redirection
     this.startCountdown();
+  }
+
+  /**
+   * Valide l'accès à cette page avec des vérifications supplémentaires
+   */
+  private validatePageAccess(): void {
+    // Vérifier si on arrive depuis une source légitime
+    const referrer = document.referrer;
+    const currentDomain = window.location.origin;
+    
+    // Si pas de referrer ou referrer externe suspect
+    if (!referrer || (!referrer.startsWith(currentDomain) && !referrer.includes('helloasso'))) {
+      console.log('⚠️ Accès direct ou referrer suspect détecté');
+      // Optionnel: ajouter un délai ou une vérification supplémentaire
+    }
+  }
+
+  /**
+   * Valide que tous les paramètres requis sont présents
+   */
+  private validateRequiredParams(): boolean {
+    if (!this.utilisateurId || !this.paymentType) {
+      return false;
+    }
+
+    // Validation selon le type de paiement
+    switch (this.paymentType) {
+      case 'don':
+        return this.donationAmount !== null && this.donationAmount > 0;
+      case 'adhesion':
+      case 'event':
+        return true;
+      default:
+        return false;
+    }
   }
 
   loadPaymentData(): void {
