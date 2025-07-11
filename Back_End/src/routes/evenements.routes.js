@@ -17,7 +17,7 @@ import {
 import { participerEvenement, checkParticipation, checkQRCodeParticipation } from "../controllers/evenements/participationEvenement.js";
 import { desinscriptionEvenement } from "../controllers/evenements/desinscriptionEvenement.js";
 import { createCheckout } from "../controllers/evenements/checkoutController.js";
-import { demandeRemboursementController, listRemboursementDemandesController, updateRemboursementDemandeStatusController } from '../controllers/evenements/demandeRemboursementController.js';
+import { demandeRemboursementController, listRemboursementDemandesController, updateRemboursementDemandeStatusController, getRemboursementDemandesByEventController } from '../controllers/evenements/demandeRemboursementController.js';
 
 const router = express.Router();
 
@@ -63,6 +63,7 @@ router.post("/checkout",authMiddleware, createCheckout);
 
 // Remboursement
 router.post('/:id/demande-remboursement',authMiddleware ,demandeRemboursementController);
+router.get('/:id/remboursements',authMiddleware,isAdmin, getRemboursementDemandesByEventController);
 router.get('/admin/remboursements',authMiddleware,isAdmin, listRemboursementDemandesController);
 router.patch('/admin/remboursements/:id',authMiddleware,isAdmin, updateRemboursementDemandeStatusController);
 

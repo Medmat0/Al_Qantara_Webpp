@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { PaymentModalComponent } from '../payment-modal/payment-modal.component';
+import { RemboursementModalComponent } from '../remboursement-modal/remboursement-modal.component';
 import { AuthService } from '../../../member/services/auth.service';
 import { EvenementService } from '../../../member/services/evenement.service';
 import { Router } from '@angular/router';
@@ -18,8 +19,8 @@ import { Router } from '@angular/router';
     DatePipe,
     NgForOf,
     CommonModule,
-    PaymentModalComponent
-
+    PaymentModalComponent,
+    RemboursementModalComponent
   ],
   styleUrl: './event-modal.component.scss'
 })
@@ -51,6 +52,10 @@ export class EventModalComponent implements OnChanges {
   errorMessage = '';
   loadingPayment = false;
   errorPaymentMessage = '';
+
+  // Propriétés pour la demande de remboursement
+  showRemboursementModal = false;
+  canRequestRefund = false;
 
   //share
   showShareMenu = false;
@@ -116,6 +121,10 @@ export class EventModalComponent implements OnChanges {
 
     if (changes['isParticipating'] && !changes['isParticipating'].currentValue) {
       this.participation = null;
+    }
+
+    if (changes['unsubscribeConfirmed']) {
+      this.checkCanRequestRefund();
     }
   }
 
@@ -281,6 +290,41 @@ export class EventModalComponent implements OnChanges {
         this.likesLoading = false;
       }
     });
+  }
+
+  /**
+   * Vérifier si l'utilisateur peut demander un remboursement
+   */
+  checkCanRequestRefund(): void {
+    // L'utilisateur peut demander un remboursement si :
+    // 1. Il était inscrit à l'événement
+    // 2. L'événement était payant
+    // 3. Il s'est désinscrit récemment
+    this.canRequestRefund = this.unsubscribeConfirmed && this.event?.isPayant;
+  }
+
+  /**
+   * Ouvrir la modal de demande de remboursement
+   */
+  openRemboursementModal(): void {
+    if (!this.checkAuthentication()) return;
+    this.showRemboursementModal = true;
+  }
+
+  /**
+   * Fermer la modal de demande de remboursement
+   */
+  closeRemboursementModal(): void {
+    this.showRemboursementModal = false;
+  }
+
+  /**
+   * Gérer le succès de la demande de remboursement
+   */
+  onRemboursementSuccess(response: any): void {
+    console.log('✅ Demande de remboursement envoyée avec succès:', response);
+    alert('Votre demande de remboursement a été envoyée. Vous recevrez une réponse par email.');
+    this.canRequestRefund = false; // Masquer le bouton après demande
   }
 
 }

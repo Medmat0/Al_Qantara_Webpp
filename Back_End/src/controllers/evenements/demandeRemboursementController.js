@@ -1,10 +1,9 @@
-import { createRemboursementDemande, listRemboursementDemandes, updateRemboursementDemandeStatus } from '../../services/evenements/remboursement.service.js';
+import { createRemboursementDemande, listRemboursementDemandes, updateRemboursementDemandeStatus, getRemboursementDemandesByEvent } from '../../services/evenements/remboursement.service.js';
 
 export const demandeRemboursementController = async (req, res) => {
   try {
     const evenementId = parseInt(req.params.id);
-    const utilisateurId = 4;
-    //const utilisateurId = req.user.id; // À adapter selon ton auth
+    const utilisateurId = req.user.id; // À adapter selon ton auth
     const { raison, rib } = req.body;
     
     // Validation du RIB
@@ -43,4 +42,14 @@ export const updateRemboursementDemandeStatusController = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: 'Erreur lors de la mise à jour du statut', error: error.message });
   }
-}; 
+};
+
+export const getRemboursementDemandesByEventController = async (req, res) => {
+  try {
+    const evenementId = parseInt(req.params.id);
+    const demandes = await getRemboursementDemandesByEvent(evenementId);
+    res.json(demandes);
+  } catch (error) {
+    res.status(500).json({ message: 'Erreur lors de la récupération des demandes de remboursement pour cet événement', error: error.message });
+  }
+};

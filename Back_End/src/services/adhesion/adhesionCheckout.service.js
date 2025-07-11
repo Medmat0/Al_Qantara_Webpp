@@ -17,9 +17,13 @@ const createAdhesionCheckoutIntent = async (adhesionData) => {
     // Construction des URLs avec les paramètres (exactement comme pour les événements)
     const baseUrl = FRONTEND_URL;
     const utilisateurId = adhesionData.metadata.utilisateurId;
-    const backUrl = `${baseUrl}/adhesion?status=cancel&userId=${utilisateurId}`;
-    const errorUrl = `${baseUrl}/adhesion?status=error&userId=${utilisateurId}`;
-    const returnUrl = `${baseUrl}/adhesion/payment-success?userId=${utilisateurId}&type=adhesion`;
+    
+    // Générer un token de session unique pour sécuriser la redirection
+    const sessionToken = generateSecureToken(utilisateurId, 'adhesion');
+    
+    const backUrl = `${baseUrl}/adhesion/payment-cancel?userId=${utilisateurId}&type=adhesion`;
+    const errorUrl = `${baseUrl}/adhesion/payment-error?userId=${utilisateurId}&type=adhesion`;
+    const returnUrl = `${baseUrl}/adhesion/payment-success?userId=${utilisateurId}&type=adhesion&token=${sessionToken}`;
 
     console.log('URLs de redirection adhésion:', { 
       returnUrl: returnUrl.toString(),
@@ -84,9 +88,13 @@ const createDonationCheckoutIntent = async (donationData) => {
     const baseUrl = FRONTEND_URL;
     const utilisateurId = donationData.metadata.utilisateurId;
     const montant = donationData.metadata.montant;
-    const backUrl = `${baseUrl}/adhesion?status=cancel&userId=${utilisateurId}`;
-    const errorUrl = `${baseUrl}/adhesion?status=error&userId=${utilisateurId}`;
-    const returnUrl = `${baseUrl}/adhesion/payment-success?userId=${utilisateurId}&type=don&amount=${montant}`;
+    
+    // Générer un token de session unique pour sécuriser la redirection
+    const sessionToken = generateSecureToken(utilisateurId, 'don');
+    
+    const backUrl = `${baseUrl}/adhesion/payment-cancel?userId=${utilisateurId}&type=don&amount=${montant}`;
+    const errorUrl = `${baseUrl}/adhesion/payment-error?userId=${utilisateurId}&type=don&amount=${montant}`;
+    const returnUrl = `${baseUrl}/adhesion/payment-success?userId=${utilisateurId}&type=don&amount=${montant}&token=${sessionToken}`;
 
     console.log('URLs de redirection don:', { 
       returnUrl: returnUrl.toString(),
@@ -160,8 +168,22 @@ const getCheckoutIntentDetails = async (checkoutIntentId) => {
   }
 };
 
+/**
+ * Génère un token sécurisé pour la redirection
+ * @param {string} userId ID de l'utilisateur
+ * @param {string} type Type de paiement
+ * @returns {string} Token sécurisé
+ */
+const generateSecureToken = (userId, type) => {
+  const timestamp = Date.now();
+  const randomBytes = Math.random().toString(36).substring(2, 15);
+  const baseString = `${userId}-${type}-${timestamp}-${randomBytes}`;
+  return Buffer.from(baseString).toString('base64');
+};
+
 export {
   createAdhesionCheckoutIntent,
   createDonationCheckoutIntent,
-  getCheckoutIntentDetails
+  getCheckoutIntentDetails,
+  generateSecureToken
 };
