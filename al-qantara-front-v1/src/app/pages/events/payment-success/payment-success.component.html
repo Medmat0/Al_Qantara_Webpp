@@ -12,21 +12,44 @@
       Votre paiement a été traité avec succès. Vous recevrez un email de confirmation sous peu.
     </p>
 
+    <!-- État de traitement de la participation -->
+    <div class="processing-status" *ngIf="isProcessing">
+      <div class="loading-spinner"></div>
+      <p>Création de votre participation en cours...</p>
+    </div>
+
+    <!-- Message de confirmation de participation -->
+    <div class="participation-success" *ngIf="participationCreated && !isProcessing">
+      <div class="success-badge">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 12l2 2 4-4" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span *ngIf="!participationExists">Participation créée avec succès !</span>
+        <span *ngIf="participationExists">Votre participation était déjà confirmée</span>
+      </div>
+    </div>
+
+    <!-- Erreur de traitement -->
+    <div class="processing-error" *ngIf="processingError">
+      <div class="error-icon">⚠️</div>
+      <p>{{ processingError }}</p>
+    </div>
+
     <!-- Informations du paiement -->
-    <div class="payment-info" *ngIf="paymentData">
+    <div class="payment-info" *ngIf="eventData || paymentData">
       <div class="payment-details">
         <h3>Détails du paiement</h3>
         <div class="detail-row">
           <span class="label">Événement :</span>
-          <span class="value">{{ eventName || paymentData.itemName }}</span>
+          <span class="value">{{ eventData?.titre || eventName || paymentData?.itemName }}</span>
         </div>
-        <div class="detail-row">
+        <div class="detail-row" *ngIf="payerName">
           <span class="label">Participant :</span>
           <span class="value">{{ payerName }}</span>
         </div>
         <div class="detail-row">
           <span class="label">Montant :</span>
-          <span class="value amount">{{ amount }}€</span>
+          <span class="value amount">{{ eventData?.prix || amount || paymentData?.totalAmount }}€</span>
         </div>
       </div>
     </div>

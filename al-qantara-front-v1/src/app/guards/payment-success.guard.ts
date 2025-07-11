@@ -26,7 +26,6 @@ export class PaymentSuccessGuard implements CanActivate {
     return this.authService.checkAuthStatus().pipe(
       map(authResponse => {
         if (!authResponse.authenticated) {
-          console.log('❌ Utilisateur non authentifié');
           this.router.navigate(['/login']);
           return false;
         }
@@ -39,7 +38,6 @@ export class PaymentSuccessGuard implements CanActivate {
         console.log('🔍 Paramètres URL:', { type, userId });
 
         if (!type || !userId) {
-          console.log('❌ Paramètres manquants dans l\'URL');
           this.redirectToAppropriateLocation();
           return false;
         }
@@ -47,7 +45,6 @@ export class PaymentSuccessGuard implements CanActivate {
         // 3. Vérifier si l'utilisateur correspond
         const currentUser = authResponse.user;
         if (currentUser.id.toString() !== userId.toString()) {
-          console.log('❌ ID utilisateur ne correspond pas');
           this.redirectToAppropriateLocation();
           return false;
         }
@@ -56,7 +53,6 @@ export class PaymentSuccessGuard implements CanActivate {
         const paymentToken = sessionStorage.getItem('payment_session_token');
         
         if (!paymentToken || !this.adhesionService.validatePaymentSessionToken(paymentToken, userId, type)) {
-          console.log('❌ Token de session invalide ou manquant');
           this.redirectToAppropriateLocation();
           return false;
         }
@@ -64,11 +60,9 @@ export class PaymentSuccessGuard implements CanActivate {
         // 5. Nettoyer le token après utilisation (usage unique)
         this.adhesionService.clearPaymentSession();
         
-        console.log('✅ Accès autorisé à la page de succès');
         return true;
       }),
       catchError(error => {
-        console.error('❌ Erreur lors de la vérification:', error);
         this.redirectToAppropriateLocation();
         return of(false);
       })

@@ -110,6 +110,18 @@
         <div class="text-xs text-red-500 mt-2">
           Vous avez bien été désinscrit de l'événement.
         </div>
+        
+        <!-- Bouton de demande de remboursement pour événements payants -->
+        <div *ngIf="event?.isPayant && canRequestRefund" class="refund-request-section">
+          <button 
+            (click)="openRemboursementModal()" 
+            class="btn-refund">
+            💰 Demander un remboursement
+          </button>
+          <p class="refund-info">
+            Vous pouvez demander un remboursement pour cet événement payant.
+          </p>
+        </div>
       </div>
 
       <div class="mb-2">
@@ -137,6 +149,7 @@
     </ng-template>
   </div>
 
+  <!-- Modal de paiement -->
   <app-payment-modal
     *ngIf="showPaymentModal"
     [event]="event"
@@ -144,4 +157,12 @@
     [errorMessage]="errorMessage"
     (close)="closePaymentModal()"
   ></app-payment-modal>
+
+  <!-- Modal de demande de remboursement -->
+  <app-remboursement-modal
+    *ngIf="showRemboursementModal"
+    [event]="event"
+    (close)="closeRemboursementModal()"
+    (success)="onRemboursementSuccess($event)"
+  ></app-remboursement-modal>
 </div>

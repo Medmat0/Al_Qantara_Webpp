@@ -56,8 +56,11 @@
         </svg>
         <div *ngIf="deletingEventId === event.id" class="spinner"></div>
       </button>
-      <!-- Bouton remboursement -->
-      <button class="remboursement-btn" (click)="onShowRemboursements(event.id)">
+      <!-- Bouton remboursement - uniquement pour les événements payants -->
+      <button 
+        *ngIf="event.isPayant" 
+        class="remboursement-btn" 
+        (click)="onShowRemboursements(event.id)">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9e2e2c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="10"/>
           <path d="M8 12h4a2 2 0 1 1 0 4h-2a2 2 0 1 1 0-4h4"/>
@@ -70,7 +73,23 @@
     <div class="modal-content remboursement-modal-content">
       <div class="modal-header">
         <h3>Demandes de remboursement – {{ selectedEventTitle }}</h3>
-        <button class="close-btn" (click)="closeRemboursementsModal()">&times;</button>
+        <div class="header-actions">
+          <div class="export-buttons" *ngIf="!loadingRemboursements && remboursements.length > 0">
+            <button (click)="exportRemboursementsToPDF()" class="export-btn pdf-btn" title="Exporter en PDF">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+              </svg>
+              PDF
+            </button>
+            <button (click)="exportRemboursementsToCSV()" class="export-btn csv-btn" title="Exporter en CSV">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+              </svg>
+              CSV
+            </button>
+          </div>
+          <button class="close-btn" (click)="closeRemboursementsModal()">&times;</button>
+        </div>
       </div>
       <div class="modal-body">
         <div *ngIf="loadingRemboursements" class="loading-message">
@@ -83,6 +102,7 @@
                 <th>Nom</th>
                 <th>Email</th>
                 <th>Motif</th>
+                <th>RIB</th>
                 <th>Statut</th>
                 <th>Actions</th>
               </tr>
@@ -92,6 +112,27 @@
                 <td>{{ demande.utilisateur.nom }} {{ demande.utilisateur.prenom }}</td>
                 <td>{{ demande.utilisateur.email }}</td>
                 <td>{{ demande.raison || 'Non précisé' }}</td>
+                <td class="rib-cell">
+                  <div class="rib-container">
+                    <span class="rib-text" [class.masked]="!isRibVisible[demande.id]">
+                      {{ demande.rib || 'Non fourni' }}
+                    </span>
+                    <button 
+                      *ngIf="demande.rib" 
+                      class="rib-toggle-btn" 
+                      (click)="toggleRibVisibility(demande.id)"
+                      [title]="isRibVisible[demande.id] ? 'Masquer le RIB' : 'Afficher le RIB'">
+                      <svg *ngIf="!isRibVisible[demande.id]" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                      </svg>
+                      <svg *ngIf="isRibVisible[demande.id]" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                        <line x1="1" y1="1" x2="23" y2="23"/>
+                      </svg>
+                    </button>
+                  </div>
+                </td>
                 <td>
                   <span class="status-badge" [ngClass]="{
                     'en-attente': demande.status === 'en_attente',
@@ -133,9 +174,7 @@
           Aucune demande de remboursement pour cet événement.
         </div>
       </div>
-      <div class="modal-footer">
-        <button (click)="closeRemboursementsModal()" class="cancel-btn">Fermer</button>
-      </div>
+     
     </div>
   </div>
     </div>
