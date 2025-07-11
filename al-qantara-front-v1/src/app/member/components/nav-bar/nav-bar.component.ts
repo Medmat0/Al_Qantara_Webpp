@@ -68,6 +68,8 @@ export class NavBarComponent {
   }
 
   logout() {
+    this.isUserMenuOpen = false;
+    this.isMenuOpen = false;
     this.authService.logout().subscribe({
       next: () => {
         this.router.navigate(['']);
