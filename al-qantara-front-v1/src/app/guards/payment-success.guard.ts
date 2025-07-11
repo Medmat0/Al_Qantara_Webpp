@@ -20,7 +20,6 @@ export class PaymentSuccessGuard implements CanActivate {
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
     
-    console.log('🛡️ PaymentSuccessGuard - Validation de l\'accès');
     
     // 1. Vérifier l'authentification
     return this.authService.checkAuthStatus().pipe(
