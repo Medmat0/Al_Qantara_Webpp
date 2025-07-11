@@ -15,17 +15,16 @@ export class CommunityService {
         private router: Router,
     ) {}
 
-    getRandomPosts(): Observable<any[]> {
-        return this.http.get<any>(`${this.apiUrl}/randomPosts`).pipe(
-            tap((response) => {
-                console.log('Fetched random posts:', response);
-            }),
-            map((response) => response.posts?.posts ?? []),
-            catchError((error) => {
-                console.error('Error fetching random posts:', error);
-                return throwError(() => new Error('Error fetching random posts'));
-            })
-        );
+    getRandomPosts(page: number = 1, limit: number = 10): Observable<any> {
+      return this.http.get<any>(`${this.apiUrl}/randomPosts`, { params: { page, limit } }).pipe(
+        tap((response) => {
+          console.log('Fetched random posts:', response);
+        }),
+        catchError((error) => {
+          console.error('Error fetching random posts:', error);
+          return throwError(() => new Error('Error fetching random posts'));
+        })
+      );
     }
 
     getRandomCommunities(): Observable<any[]> {

@@ -24,7 +24,7 @@ import { CommunityResearchComponent } from '../community-research/community-rese
 })
 export class CommunityHomeComponent implements OnInit {
   posts: any[] = [];
-  loading = true;
+  loading = false;
   error: string | null = null;
   isModerator: boolean = false;
   userId: number | null = null;
@@ -33,6 +33,10 @@ export class CommunityHomeComponent implements OnInit {
   showResearchPopup = false; // Par défaut, le popup est fermé
   showCommunityResearchPopup = false; // Par défaut, le popup de recherche communauté est fermé
   showPostResearchPopup = false; // Par défaut, le popup de recherche post est fermé
+
+  page = 1;
+  limit = 5;
+  allLoaded = false;
 
   constructor(
     private communityService: CommunityService,
@@ -55,16 +59,36 @@ export class CommunityHomeComponent implements OnInit {
       }
     });
 
-    this.communityService.getRandomPosts().subscribe({
+    this.loadPosts();
+
+  }
+
+
+
+  loadPosts() {
+    if (this.loading || this.allLoaded) return;
+    this.loading = true;
+    this.communityService.getRandomPosts(this.page, this.limit).subscribe({
       next: (res) => {
-        this.posts = res || [];
+        const newPosts = res.posts?.posts ?? [];
+        this.posts = [...this.posts, ...newPosts];
+        this.allLoaded = newPosts.length < this.limit;
         this.loading = false;
+        this.page++;
       },
       error: (err) => {
         this.error = 'Erreur lors du chargement des posts';
         this.loading = false;
       }
     });
+  }
+
+  onScroll(event: any): void {
+    if (this.loading || this.allLoaded) return;
+    const element = event.target;
+    if (element.scrollTop + element.clientHeight >= element.scrollHeight - 100) {
+      this.loadPosts();
+    }
   }
 
   checkAuthentication(): boolean {
@@ -108,11 +132,11 @@ export class CommunityHomeComponent implements OnInit {
     console.log('POPUP CLICK - AVANT:', this.showResearchPopup);
     this.showResearchPopup = true;
     console.log('POPUP CLICK - APRÈS:', this.showResearchPopup);
-    
+
     // Empêcher le scroll de la page
     document.body.style.overflow = 'hidden';
     document.body.style.paddingRight = '15px'; // Compensate for scrollbar
-    
+
     // Force le reflow pour s'assurer que l'affichage est mis à jour
     setTimeout(() => {
       const overlay = document.querySelector('.community-popup-overlay');
@@ -124,7 +148,7 @@ export class CommunityHomeComponent implements OnInit {
 
   closeResearchPopup() {
     this.showResearchPopup = false;
-    
+
     // Restaurer le scroll
     document.body.style.overflow = '';
     document.body.style.paddingRight = '';

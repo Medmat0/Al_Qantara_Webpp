@@ -14,7 +14,7 @@
         <span>{{ error }}</span>
       </div>
 
-      <div class="posts-container" *ngIf="!loading && !error">
+      <div class="posts-container" *ngIf="!error" (scroll)="onScroll($event)">
         <ng-container *ngIf="posts.length > 0; else noPosts">
           <app-community-post
             *ngFor="let post of posts; trackBy: trackByPostId"
@@ -25,14 +25,17 @@
             class="post-item">
           </app-community-post>
         </ng-container>
-
         <ng-template #noPosts>
           <div class="empty-state">
-            <div class="empty-icon">📝</div>
+            <div class="empty-icon"></div>
             <h3>Aucun post à afficher</h3>
             <p>Soyez le premier à partager quelque chose avec la communauté !</p>
           </div>
         </ng-template>
+        <div class="loading-indicator" *ngIf="loading">
+          <div class="spinner"></div>
+          <span>Chargement des posts...</span>
+        </div>
       </div>
     </div>
   </div>
