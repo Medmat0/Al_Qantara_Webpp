@@ -80,7 +80,7 @@ export class AdminEvenementService {
   }
 
   updateRemboursementStatus(demandeId: number, status: 'accepte' | 'refuse'): Observable<any> {
-    return this.http.patch(`${API_URL}/remboursements/${demandeId}/status`, { status }, { withCredentials: true }).pipe(
+    return this.http.patch(`${this.apiUrl}/admin/remboursements/${demandeId}`, { status }, { withCredentials: true }).pipe(
       tap((response) => {
         console.log('Statut remboursement mis à jour:', response);
       }),
@@ -90,6 +90,36 @@ export class AdminEvenementService {
         return throwError(() => error);
       })
     );
+  }
+
+  /**
+   * Récupérer toutes les demandes de remboursement (Admin)
+   */
+  getAllRemboursements(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/admin/remboursements`, { withCredentials: true }).pipe(
+      tap((response) => {
+        console.log('Toutes les demandes de remboursement:', response);
+      }),
+      catchError((error) => {
+        this.errorMessage = error.error?.message || 'Erreur lors de la récupération des demandes de remboursement.';
+        console.error('Erreur getAllRemboursements:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  /**
+   * Accepter une demande de remboursement (Admin)
+   */
+  accepterRemboursement(demandeId: number): Observable<any> {
+    return this.updateRemboursementStatus(demandeId, 'accepte');
+  }
+
+  /**
+   * Refuser une demande de remboursement (Admin)
+   */
+  refuserRemboursement(demandeId: number): Observable<any> {
+    return this.updateRemboursementStatus(demandeId, 'refuse');
   }
 
   checkQRCodeParticipation(evenementId: number, userId:number): Observable<any> {

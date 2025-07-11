@@ -10,6 +10,7 @@ import { ChangeDetectorRef } from '@angular/core';
 import {MessagerieService} from '../../../member/services/messagerie.service';
 import {UsersListComponent} from '../../messaging/components/users-list/users-list.component';
 import {PaymentModalComponent} from '../payment-modal/payment-modal.component';
+import {RemboursementModalComponent} from '../remboursement-modal/remboursement-modal.component';
 
 @Component({
   selector: 'app-event-description',
@@ -20,7 +21,8 @@ import {PaymentModalComponent} from '../payment-modal/payment-modal.component';
     NgClass,
     DatePipe,
     UsersListComponent,
-    PaymentModalComponent
+    PaymentModalComponent,
+    RemboursementModalComponent
   ],
   templateUrl: './event-description.component.html',
   standalone: true,

@@ -78,6 +78,7 @@ export class EvenementsComponent {
   showRemboursementsModal = false;
   loadingRemboursements = false;
   actionLoadingId: number | null = null;
+  isRibVisible: { [key: number]: boolean } = {}; // Pour gérer la visibilité du RIB
 
   onShowRemboursements(eventId: number): void {
     const event = this.events.find((e: any) => e.id === eventId);
@@ -90,9 +91,14 @@ export class EvenementsComponent {
   loadRemboursements(eventId: number): void {
     this.loadingRemboursements = true;
     this.remboursements = [];
+    this.isRibVisible = {}; // Reset visibility state
     this.adminEvenementService.getRemboursementsByEvent(eventId).subscribe({
       next: (data: any[]) => {
         this.remboursements = data;
+        // Initialiser l'état de visibilité du RIB (masqué par défaut)
+        data.forEach(demande => {
+          this.isRibVisible[demande.id] = false;
+        });
         this.loadingRemboursements = false;
       },
       error: () => {
@@ -119,6 +125,7 @@ export class EvenementsComponent {
     this.showRemboursementsModal = false;
     this.remboursements = [];
     this.selectedEventTitle = '';
+    this.isRibVisible = {}; // Reset visibility state
   }
 
   async onDeleteEvent(event: Evenement): Promise<void> {
@@ -323,6 +330,98 @@ export class EvenementsComponent {
     URL.revokeObjectURL(url);
   }
 
+  exportRemboursementsToPDF(): void {
+    if (this.remboursements.length === 0) {
+      alert('Aucune demande de remboursement à exporter.');
+      return;
+    }
+
+    const doc = new jsPDF();
+    const fileName = `${this.sanitizeFileName(this.selectedEventTitle)}_remboursements.pdf`;
+
+    doc.setFontSize(18);
+    doc.setTextColor(158, 46, 44);
+    doc.text(`Demandes de remboursement`, 14, 22);
+
+    doc.setFontSize(14);
+    doc.setTextColor(0, 0, 0);
+    doc.text(`Événement: ${this.selectedEventTitle}`, 14, 35);
+
+    doc.setFontSize(10);
+    doc.text(`Nombre de demandes: ${this.remboursements.length}`, 14, 52);
+    
+    const tableData = this.remboursements.map(demande => [
+      `${demande.utilisateur.nom} ${demande.utilisateur.prenom}`,
+      demande.utilisateur.email,
+      demande.raison || 'Non précisé',
+      demande.rib || 'Non fourni', // Toujours exporter le RIB complet
+      this.getStatusLabel(demande.status),
+      new Date(demande.dateDemande).toLocaleDateString('fr-FR')
+    ]);
+
+    autoTable(doc, {
+      head: [['Nom', 'Email', 'Motif', 'RIB', 'Statut', 'Date demande']],
+      body: tableData,
+      startY: 60,
+      styles: {
+        fontSize: 8,
+        cellPadding: 2,
+      },
+      headStyles: {
+        fillColor: [158, 46, 44],
+        textColor: 255,
+        fontStyle: 'bold'
+      },
+      alternateRowStyles: {
+        fillColor: [248, 249, 250]
+      },
+      columnStyles: {
+        3: { cellWidth: 30 }, // RIB column
+        4: { cellWidth: 20 }, // Statut column
+        5: { cellWidth: 25 }  // Date column
+      },
+      margin: { top: 60, left: 14, right: 14 }
+    });
+    
+    doc.save(fileName);
+  }
+
+  exportRemboursementsToCSV(): void {
+    if (this.remboursements.length === 0) {
+      alert('Aucune demande de remboursement à exporter.');
+      return;
+    }
+
+    const fileName = `${this.sanitizeFileName(this.selectedEventTitle)}_remboursements.csv`;
+    const headers = ['Nom', 'Prénom', 'Email', 'Motif', 'RIB', 'Statut', 'Date demande'];
+    const csvData = this.remboursements.map(demande => [
+      demande.utilisateur.nom,
+      demande.utilisateur.prenom,
+      demande.utilisateur.email,
+      demande.raison || 'Non précisé',
+      demande.rib || 'Non fourni', // Toujours exporter le RIB complet
+      this.getStatusLabel(demande.status),
+      new Date(demande.dateDemande).toLocaleDateString('fr-FR')
+    ]);
+
+    const csvContent = [
+      headers.join(';'),
+      ...csvData.map(row => row.map(field => `"${field}"`).join(';'))
+    ].join('\n');
+
+    const BOM = '\uFEFF';
+    const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', fileName);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
   private sanitizeFileName(fileName: string): string {
     return fileName
       .replace(/[^a-zA-Z0-9àáâãäåæçèéêëìíîïñòóôõöøùúûüýÿ\s-_]/g, '')
@@ -341,5 +440,9 @@ export class EvenementsComponent {
       default:
         return status;
     }
+  }
+
+  toggleRibVisibility(demandeId: number): void {
+    this.isRibVisible[demandeId] = !this.isRibVisible[demandeId];
   }
 }
