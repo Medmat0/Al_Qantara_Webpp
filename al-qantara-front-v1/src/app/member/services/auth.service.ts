@@ -192,4 +192,18 @@ export class AuthService {
     };
   }
 
+  verifyEmail(token: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/verify/${token}`, {
+      withCredentials: true
+    }).pipe(
+      tap((response: any) => {
+        console.log('Email verification successful:', response);
+      }),
+      catchError((error) => {
+        console.error('Email verification failed', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
 }

@@ -45,7 +45,8 @@ const login = asyncHandler(async (req, res, next) => {
       },
     });
 
-    const verifyLink = `${BASE_URL}/auth/verify/${plainVerfiyToken}`; 
+    const verifyLink = `${BASE_URL}/auth/verify-email/${plainVerifyToken}`;
+
 
 
     // Envoi du mail de vérification

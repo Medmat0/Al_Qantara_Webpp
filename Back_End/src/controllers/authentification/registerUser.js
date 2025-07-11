@@ -49,8 +49,8 @@ const registerUser = asyncHandler(async (req, res) => {
     where: { email: user.email },
     data: { emailVerificationToken: hashedToken },
   });
-  // to change 
-  const verifyLink = `${BASE_URL}/auth/verify/${plainVerifyToken}`; 
+  // Lien de vérification qui pointe vers la page Angular
+  const verifyLink = `${BASE_URL}/auth/verify-email/${plainVerifyToken}`;
 
 
   const emailInfo = {

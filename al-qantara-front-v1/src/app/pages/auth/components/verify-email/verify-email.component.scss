@@ -1,0 +1,273 @@
+:host {
+  display: block;
+  height: 100vh;
+  overflow: hidden;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.main-container {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  background-color: #3a0706;
+  box-sizing: border-box;
+}
+
+.left-container,
+.right-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.left-container {
+  background-color: #f9f9f9;
+}
+
+.right-container {
+  background-color: #3a0706;
+}
+
+.right-container img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100vh;
+  object-fit: contain;
+  display: block;
+  border-radius: 12px;
+}
+
+.form-container {
+  font-family: "Mulish", sans-serif;
+  background: white;
+  padding: 3rem;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 550px;
+  box-sizing: border-box;
+}
+
+.verification-content {
+  text-align: center;
+}
+
+// États de vérification
+.loading-state,
+.success-state,
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+// Spinner de chargement
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #9e2e2c;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Icônes
+.success-icon,
+.error-icon {
+  margin-bottom: 1rem;
+  animation: fadeInScale 0.6s ease-out;
+}
+
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// Titres
+h3 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+  font-family: "Mulish", sans-serif;
+}
+
+// Messages
+p {
+  font-size: 1rem;
+  color: #666;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.success-message {
+  color: #22c55e;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.error-message {
+  color: #ef4444;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.redirect-info {
+  color: #888;
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+.help-text {
+  color: #666;
+  font-size: 0.95rem;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+// Boutons
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 2rem;
+  width: 100%;
+}
+
+.primary-button,
+.secondary-button {
+  padding: 0.875rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  font-family: "Mulish", sans-serif;
+  min-width: 200px;
+}
+
+.primary-button {
+  background-color: #9e2e2c;
+  color: white;
+}
+
+.primary-button:hover {
+  background-color: #7d1f1d;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(158, 46, 44, 0.3);
+}
+
+.secondary-button {
+  background-color: transparent;
+  color: #9e2e2c;
+  border: 2px solid #9e2e2c;
+}
+
+.secondary-button:hover {
+  background-color: #9e2e2c;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(158, 46, 44, 0.2);
+}
+
+// Animations d'entrée
+.loading-state,
+.success-state,
+.error-state {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .main-container {
+    flex-direction: column;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  .left-container {
+    min-height: 100vh;
+    padding: 20px 0;
+  }
+
+  .right-container {
+    display: none;
+  }
+
+  .form-container {
+    width: 90%;
+    max-width: none;
+    padding: 2rem;
+    margin: 20px auto;
+  }
+
+  .button-group {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .primary-button,
+  .secondary-button {
+    width: 100%;
+    min-width: unset;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-container {
+    width: 95%;
+    padding: 1.5rem;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+  }
+
+  p {
+    font-size: 0.9rem;
+  }
+
+  .success-icon svg,
+  .error-icon svg {
+    width: 48px;
+    height: 48px;
+  }
+}

@@ -29,6 +29,18 @@ export class AdminEvenementService {
     );
   }
 
+  editEvenement(id: number, eventData: any): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/${id}`, eventData, { withCredentials: true }).pipe(
+      tap((response) => {
+        console.log('Updated event:', response);
+      }),
+      catchError((error) => {
+        console.error('Error updating event:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
   updateEvenement(id: number, evenement: Evenement): Observable<any> {
     return this.http.put(`${this.apiUrl}/${id}`, evenement, { withCredentials: true }).pipe(
       tap((response) => {

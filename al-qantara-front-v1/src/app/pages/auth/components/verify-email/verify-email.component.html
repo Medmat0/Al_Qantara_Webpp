@@ -1,0 +1,63 @@
+<div class="main-container">
+  <div class="left-container">
+    <div class="form-container">
+      <div class="verification-content">
+        <div *ngIf="verificationStatus === 'loading'" class="loading-state">
+          <div class="spinner"></div>
+          <h3>Vérification en cours...</h3>
+          <p>Nous vérifions votre adresse email, veuillez patienter.</p>
+        </div>
+
+        <div *ngIf="verificationStatus === 'success'" class="success-state">
+          <div class="success-icon">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" fill="#22c55e"/>
+              <path d="M9 12l2 2 4-4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3>Email vérifié avec succès !</h3>
+          <p class="success-message">{{ message }}</p>
+          <p class="redirect-info">Vous allez être redirigé vers la page de connexion dans quelques secondes...</p>
+
+          <div class="button-group">
+            <button class="primary-button" (click)="goToLogin()">
+              Se connecter maintenant
+            </button>
+            <button class="secondary-button" (click)="goToHome()">
+              Retour à l'accueil
+            </button>
+          </div>
+        </div>
+
+        <div *ngIf="verificationStatus === 'error'" class="error-state">
+          <div class="error-icon">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" fill="#ef4444"/>
+              <path d="M15 9l-6 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M9 9l6 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3>Erreur de vérification</h3>
+          <p class="error-message">{{ message }}</p>
+          <p class="help-text">
+            Le lien de vérification peut avoir expiré ou être invalide.
+            Veuillez vous inscrire à nouveau si nécessaire.
+          </p>
+
+          <div class="button-group">
+            <button class="primary-button" routerLink="/auth/register">
+              S'inscrire à nouveau
+            </button>
+            <button class="secondary-button" (click)="goToHome()">
+              Retour à l'accueil
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="right-container">
+    <img src="assets/main-icon.jpg" alt="Al Qantara logo">
+  </div>
+</div>
