@@ -21,11 +21,13 @@ const createCheckoutIntent = async (paymentData) => {
     
     // Construction des URLs avec les paramètres
     const baseUrl = FRONTEND_URL;
-    const evenementId =  paymentData.metadata.evenementId // l'id de l'événement (ex: 7)
-    const utilisateurId =  paymentData.metadata.utilisateurId
-    const backUrl = `${baseUrl}/payment/cancel?evenementId=${evenementId}&utilisateurId=${utilisateurId}`;
-    const errorUrl = `${baseUrl}/payment/error?evenementId=${evenementId}&utilisateurId=${utilisateurId}`;
-    const returnUrl = `${baseUrl}/payment/success?evenementId=${evenementId}&utilisateurId=${utilisateurId}`;
+    const evenementId = paymentData.metadata.evenementId // l'id de l'événement (ex: 7)
+    const utilisateurId = paymentData.metadata.utilisateurId
+    const sessionToken = paymentData.metadata.sessionToken // Token de sécurité
+    
+    const backUrl = `${baseUrl}/events/payment/cancel?evenementId=${evenementId}&utilisateurId=${utilisateurId}`;
+    const errorUrl = `${baseUrl}/events/payment/error?evenementId=${evenementId}&utilisateurId=${utilisateurId}`;
+    const returnUrl = `${baseUrl}/events/payment/success?evenementId=${evenementId}&utilisateurId=${utilisateurId}&token=${sessionToken}`;
 /*    const backUrl = `https://www.youtube.com/`;
     const errorUrl = `https://angularscript.com/`;
     const returnUrl = `https://www.dreamjob.ma/guides/calendrier-jours-feries-maroc/`;*/
