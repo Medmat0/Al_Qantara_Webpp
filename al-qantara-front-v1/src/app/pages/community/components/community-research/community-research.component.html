@@ -13,11 +13,26 @@
     <span class="spinner"></span>
   </div>
   <div *ngIf="error" class="error">{{ error }}</div>
-  <div *ngIf="result.length > 0" class="community-result-list">
+  <div class="community-result-list"
+       *ngIf="result.length > 0"
+       style="max-height: 350px; overflow-y: auto;">
     <div *ngFor="let community of result" class="community-result" (click)="goToCommunityHub(community.id)" style="cursor:pointer">
       <div class="name">{{ community.nom }}</div>
       <div *ngIf="community.logo" class="logo"><img [src]="community.logo" alt="logo" /></div>
       <div class="desc">{{ community.description }}</div>
     </div>
+
+    <!-- loader pendant le scroll infini -->
+    <div *ngIf="loading" class="circular-loader center-loader">
+      <span class="spinner"></span>
+    </div>
+
+    <!-- message fin des résultats -->
+    <div *ngIf="allLoaded && !loading" style="text-align:center; color:#835353; margin:1rem 0;">
+      Fin des résultats
+    </div>
+
+    <!-- 👇 Ajoute ce div pour forcer un scroll même s'il y a peu de résultats -->
+    <div *ngIf="!allLoaded && result.length > 0" style="height: 100px;"></div>
   </div>
 </div>

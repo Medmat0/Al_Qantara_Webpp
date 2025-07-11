@@ -58,17 +58,17 @@ export class CommunityService {
         );
     }
 
-    getCommunityByName(name: string): Observable<any> {
-        return this.http.get<any>(`${this.apiUrl}/name`, { params: { name } }).pipe(
-            tap((response) => {
-                console.log('Fetched community by name:', response);
-            }),
-            catchError((error) => {
-                console.error('Error fetching community by name:', error);
-                return throwError(() => error);
-            })
-        );
-    }
+  getCommunityByName(name: string, page: number, limit: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/name`, { params: { name, page, limit } }).pipe(
+      tap((response) => {
+        console.log('Fetched community by name:', response);
+      }),
+      catchError((error) => {
+        console.error('Error fetching community by name:', error);
+        return throwError(() => error);
+      })
+    );
+  }
 
     getCommunityPostsByName(name?: string, tags?: string[], page: number = 1, limit: number = 10): Observable<any> {
       const params: any = {};
