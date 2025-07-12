@@ -76,7 +76,7 @@
 <div class="community-popup-overlay" *ngIf="showCommunityResearchPopup" (click)="closeCommunityResearchPopup()">
   <div class="community-popup" (click)="$event.stopPropagation()">
     <button class="close-popup" (click)="closeCommunityResearchPopup()">✖</button>
-    <app-community-research></app-community-research>
+    <app-community-research (communitySelected)="onCommunitySelected($event)"></app-community-research>
   </div>
 </div>
 

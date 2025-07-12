@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CommunityService } from '../../../../member/services/community.service';
 import { Router } from '@angular/router';
+import { Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-community-research',
@@ -22,6 +23,9 @@ export class CommunityResearchComponent implements OnDestroy {
   page = 1;
   limit = 5;
   allLoaded = false;
+
+  @Output() communitySelected = new EventEmitter<number>();
+
 
   constructor(private communityService: CommunityService, private router: Router) {
     this.startAutoSearch();
@@ -107,6 +111,8 @@ export class CommunityResearchComponent implements OnDestroy {
   };
 
   goToCommunityHub(communityId: number) {
+    this.communitySelected.emit(communityId);
+    console.log('Navigating to community hub:', communityId);
     this.router.navigate([`/communities/${communityId}`]);
   }
 }

@@ -95,6 +95,23 @@ export class CommunityHubComponent implements OnInit {
         }
       }
     });
+
+    this.route.queryParamMap.subscribe(params => {
+      const eventTitle = params.get('eventTitle');
+      const eventDescription = params.get('eventDescription');
+      const link = params.get('link') || '';
+      console.log('Event Title:', eventTitle);
+      console.log('Event Description:', eventDescription);
+      if (eventTitle && eventDescription) {
+        this.prefillPostFormWithEvent({
+          titre: eventTitle,
+          description: eventDescription,
+          link: link
+        });
+        this.showCreateForm = true;
+      }
+    });
+
   }
 
   // Initialisation du formulaire de création de post
@@ -114,6 +131,14 @@ export class CommunityHubComponent implements OnInit {
     this.postForm.get('pollDeadline')?.setValidators([
       this.pollDeadlineValidator.bind(this)
     ]);
+  }
+
+  prefillPostFormWithEvent(event: any) {
+    this.postForm.patchValue({
+      title: `Regardez cette event: ${event.titre}`,
+      description: "Bonjour je vous partage cet événement: " + event.titre
+        + "\nDescription: " +event.description + '\n\n' + "Lien: " + event.link +"\n\nVenez nombreux !",
+    });
   }
 
   private pollOptionsValidator(control: AbstractControl): ValidationErrors | null {

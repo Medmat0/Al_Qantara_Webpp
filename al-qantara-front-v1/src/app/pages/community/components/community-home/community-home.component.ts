@@ -109,8 +109,8 @@ export class CommunityHomeComponent implements OnInit {
     }
   }
 
-  onCommunitySelected(community: any) {
-    this.router.navigate([`/communities/${community.id}`]);
+  onCommunitySelected(communityId: number) {
+    this.router.navigate([`/communities/${communityId}`]);
   }
 
   goToPost(post: any) {

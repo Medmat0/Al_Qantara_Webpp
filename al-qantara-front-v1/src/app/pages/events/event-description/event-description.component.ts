@@ -10,6 +10,10 @@ import { ChangeDetectorRef } from '@angular/core';
 import {MessagerieService} from '../../../member/services/messagerie.service';
 import {UsersListComponent} from '../../messaging/components/users-list/users-list.component';
 import {PaymentModalComponent} from '../payment-modal/payment-modal.component';
+import {
+  CommunityPostResearchComponent
+} from '../../community/components/community-post-research/community-post-research.component';
+import {CommunityResearchComponent} from '../../community/components/community-research/community-research.component';
 
 
 
@@ -22,7 +26,9 @@ import {PaymentModalComponent} from '../payment-modal/payment-modal.component';
     NgClass,
     DatePipe,
     UsersListComponent,
-    PaymentModalComponent
+    PaymentModalComponent,
+    CommunityPostResearchComponent,
+    CommunityResearchComponent
   ],
   templateUrl: './event-description.component.html',
   standalone: true,
@@ -60,6 +66,9 @@ export class EventDescriptionComponent {
   nombreLikes: number = 0;
   userHasLiked: boolean = false;
   likesLoading: boolean = false;
+
+  showCommunityResearchPopup = false;
+  communityIDResearched: number | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -394,5 +403,36 @@ export class EventDescriptionComponent {
   closePaymentModal() {
     this.showPaymentModal = false;
   }
+
+  shareOnCommunity() {
+    if (!this.checkAuthentication()) return;
+
+    this.showCommunityResearchPopup = true;
+    document.body.style.overflow = 'hidden';
+    document.body.style.paddingRight = '17px'; // Pour éviter le décalage de la scrollbar
+  }
+
+  closeCommunityResearchPopup(communityID: number | null = null) {
+    this.showCommunityResearchPopup = false;
+    this.communityIDResearched = communityID;
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+  }
+
+  onCommunitySelected(communityId: number) {
+    this.closeCommunityResearchPopup(communityId);
+    console.log('Evenement:', this.evenement);
+    this.router.navigate(
+      ['/communities', communityId],
+      {
+        queryParams: {
+          eventTitle: this.evenement.titre,
+          eventDescription: this.evenement.description,
+          link: window.location.href,
+        }
+      }
+    );
+  }
+
 
 }

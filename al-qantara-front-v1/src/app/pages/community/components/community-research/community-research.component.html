@@ -16,7 +16,10 @@
   <div class="community-result-list"
        *ngIf="result.length > 0"
        style="max-height: 350px; overflow-y: auto;">
-    <div *ngFor="let community of result" class="community-result" (click)="goToCommunityHub(community.id)" style="cursor:pointer">
+    <div *ngFor="let community of result"
+         class="community-result"
+         (click)="communitySelected.emit(community.id)"
+         style="cursor:pointer">
       <div class="name">{{ community.nom }}</div>
       <div *ngIf="community.logo" class="logo"><img [src]="community.logo" alt="logo" /></div>
       <div class="desc">{{ community.description }}</div>
