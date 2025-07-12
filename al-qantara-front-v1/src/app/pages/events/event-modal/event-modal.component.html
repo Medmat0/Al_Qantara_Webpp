@@ -54,7 +54,7 @@
             <li (click)="copyLink()"><span>🔗 Copier le lien</span></li>
             <li (click)="shareByMessage()"><span>💬 Message</span></li>
             <li (click)="shareOnLinkedIn()"><span>in LinkedIn</span></li>
-            <li (click)="shareOnInstagram()"><span>📸 Instagram</span></li>
+            <li (click)="shareOnCommunity()"><span> Sur une Communauté</span></li>
           </ul>
         </div>
 
@@ -165,4 +165,12 @@
     (close)="closeRemboursementModal()"
     (success)="onRemboursementSuccess($event)"
   ></app-remboursement-modal>
+</div>
+
+<!-- Overlay et popup recherche communauté -->
+<div class="community-popup-overlay" *ngIf="showCommunityResearchPopup" (click)="closeCommunityResearchPopup()">
+  <div class="community-popup" (click)="$event.stopPropagation()">
+    <button class="close-popup" (click)="closeCommunityResearchPopup()">✖</button>
+    <app-community-research (communitySelected)="onCommunitySelected($event)"></app-community-research>
+  </div>
 </div>

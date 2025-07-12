@@ -15,17 +15,16 @@ export class CommunityService {
         private router: Router,
     ) {}
 
-    getRandomPosts(): Observable<any[]> {
-        return this.http.get<any>(`${this.apiUrl}/randomPosts`).pipe(
-            tap((response) => {
-                console.log('Fetched random posts:', response);
-            }),
-            map((response) => response.posts?.posts ?? []),
-            catchError((error) => {
-                console.error('Error fetching random posts:', error);
-                return throwError(() => new Error('Error fetching random posts'));
-            })
-        );
+    getRandomPosts(page: number = 1, limit: number = 10): Observable<any> {
+      return this.http.get<any>(`${this.apiUrl}/randomPosts`, { params: { page, limit } }).pipe(
+        tap((response) => {
+          console.log('Fetched random posts:', response);
+        }),
+        catchError((error) => {
+          console.error('Error fetching random posts:', error);
+          return throwError(() => new Error('Error fetching random posts'));
+        })
+      );
     }
 
     getRandomCommunities(): Observable<any[]> {
@@ -58,17 +57,17 @@ export class CommunityService {
         );
     }
 
-    getCommunityByName(name: string): Observable<any> {
-        return this.http.get<any>(`${this.apiUrl}/name`, { params: { name } }).pipe(
-            tap((response) => {
-                console.log('Fetched community by name:', response);
-            }),
-            catchError((error) => {
-                console.error('Error fetching community by name:', error);
-                return throwError(() => error);
-            })
-        );
-    }
+  getCommunityByName(name: string, page: number, limit: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/name`, { params: { name, page, limit } }).pipe(
+      tap((response) => {
+        console.log('Fetched community by name:', response);
+      }),
+      catchError((error) => {
+        console.error('Error fetching community by name:', error);
+        return throwError(() => error);
+      })
+    );
+  }
 
     getCommunityPostsByName(name?: string, tags?: string[], page: number = 1, limit: number = 10): Observable<any> {
       const params: any = {};

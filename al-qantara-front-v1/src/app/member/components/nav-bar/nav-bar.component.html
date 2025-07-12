@@ -47,6 +47,7 @@
 
             <ul>
               <li><a (click)="navigateToProfile()">Mon profil</a></li>
+              <li><a (click)="navigateToMessagerie()">Messagerie</a></li>
               <li *ngIf="userRole?.toLowerCase() === 'admin'"><a (click)="navigateTo('/admin')">Administrateur</a></li>
               <li><a class="logout-link" (click)="logout()">Déconnexion</a></li>
             </ul>

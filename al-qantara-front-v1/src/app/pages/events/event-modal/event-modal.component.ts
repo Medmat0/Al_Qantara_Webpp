@@ -8,6 +8,7 @@ import { RemboursementModalComponent } from '../remboursement-modal/remboursemen
 import { AuthService } from '../../../member/services/auth.service';
 import { EvenementService } from '../../../member/services/evenement.service';
 import { Router } from '@angular/router';
+import {CommunityResearchComponent} from '../../community/components/community-research/community-research.component';
 
 @Component({
   selector: 'app-event-modal',
@@ -20,6 +21,7 @@ import { Router } from '@angular/router';
     NgForOf,
     CommonModule,
     PaymentModalComponent,
+    CommunityResearchComponent
     RemboursementModalComponent
   ],
   styleUrl: './event-modal.component.scss'
@@ -69,6 +71,9 @@ export class EventModalComponent implements OnChanges {
   nombreLikes: number = 0;
   userHasLiked: boolean = false;
   likesLoading: boolean = false;
+
+  showCommunityResearchPopup = false;
+  communityIDResearched: number | null = null;
 
   constructor(private sanitizer: DomSanitizer) {
     if (this.event && !Array.isArray(this.event.comments)) {
@@ -140,17 +145,22 @@ export class EventModalComponent implements OnChanges {
     this.showShareMenu = false;
   }
 
+  shareOnCommunity() {
+    if (!this.checkAuthentication()) return;
+
+    this.showCommunityResearchPopup = true;
+    document.body.style.overflow = 'hidden';
+    document.body.style.paddingRight = '17px'; // Pour éviter le décalage de la scrollbar
+  }
+
 
   shareOnLinkedIn() {
-    const url = encodeURIComponent(window.location.href);
+    const url = `/events/${this.event?.id}`;
+    navigator.clipboard.writeText(url);
     window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
     this.showShareMenu = false;
   }
 
-  shareOnInstagram() {
-    alert('Le partage direct sur Instagram n\'est pas supporté depuis le web.');
-    this.showShareMenu = false;
-  }
 
   formatDateTime(dateStr: string) {
     return new Date(dateStr).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' });
@@ -292,6 +302,27 @@ export class EventModalComponent implements OnChanges {
     });
   }
 
+  closeCommunityResearchPopup(communityID: number | null = null) {
+    this.showCommunityResearchPopup = false;
+    this.communityIDResearched = communityID;
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+  }
+
+  onCommunitySelected(communityId: number) {
+    this.closeCommunityResearchPopup(communityId);
+    console.log('Evenement:', this.event);
+    this.router.navigate(
+      ['/communities', communityId],
+      {
+        queryParams: {
+          eventTitle: this.event.titre,
+          eventDescription: this.event.description,
+          link: window.location.href+"/"+ this.event.id,
+        }
+      }
+    );
+  }
   /**
    * Vérifier si l'utilisateur peut demander un remboursement
    */
@@ -325,6 +356,7 @@ export class EventModalComponent implements OnChanges {
     console.log('✅ Demande de remboursement envoyée avec succès:', response);
     alert('Votre demande de remboursement a été envoyée. Vous recevrez une réponse par email.');
     this.canRequestRefund = false; // Masquer le bouton après demande
+
   }
 
 }

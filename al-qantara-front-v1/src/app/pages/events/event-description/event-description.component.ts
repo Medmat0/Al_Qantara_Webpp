@@ -10,7 +10,10 @@ import { ChangeDetectorRef } from '@angular/core';
 import {MessagerieService} from '../../../member/services/messagerie.service';
 import {UsersListComponent} from '../../messaging/components/users-list/users-list.component';
 import {PaymentModalComponent} from '../payment-modal/payment-modal.component';
+import {CommunityPostResearchComponent} from '../../community/components/community-post-research/community-post-research.component';
+import {CommunityResearchComponent} from '../../community/components/community-research/community-research.component';
 import {RemboursementModalComponent} from '../remboursement-modal/remboursement-modal.component';
+
 
 @Component({
   selector: 'app-event-description',
@@ -22,6 +25,8 @@ import {RemboursementModalComponent} from '../remboursement-modal/remboursement-
     DatePipe,
     UsersListComponent,
     PaymentModalComponent,
+    CommunityPostResearchComponent,
+    CommunityResearchComponent
     RemboursementModalComponent
   ],
   templateUrl: './event-description.component.html',
@@ -61,7 +66,14 @@ export class EventDescriptionComponent {
   userHasLiked: boolean = false;
   likesLoading: boolean = false;
 
-  constructor(private route: ActivatedRoute, private router: Router, private sanitizer: DomSanitizer, private cdr: ChangeDetectorRef) {
+  showCommunityResearchPopup = false;
+  communityIDResearched: number | null = null;
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private sanitizer: DomSanitizer,
+    private cdr: ChangeDetectorRef) {
     this.authService.authStatus$.subscribe((status) => {
       this.isAuthenticated = status;
       if (status) {
@@ -88,7 +100,6 @@ export class EventDescriptionComponent {
 
             this.nombreLikes = this.evenement.nombreLikes || 0;
             this.checkIfUserLiked();
-
             if (this.userId && Array.isArray(this.evenement.likes)) {
               this.hasLikedEvenement = this.evenement.likes.some((like: LikeEvenement) => like.utilisateurId === this.userId);
             } else {
@@ -150,11 +161,6 @@ export class EventDescriptionComponent {
   shareOnLinkedIn() {
     const url = encodeURIComponent(window.location.href);
     window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
-    this.showShareMenu = false;
-  }
-
-  shareOnInstagram() {
-    alert('Le partage direct sur Instagram n\'est pas supporté depuis le web.');
     this.showShareMenu = false;
   }
 
@@ -225,9 +231,6 @@ export class EventDescriptionComponent {
         this.loading = false;
       }
     });
-
-
-
 
   }
 
@@ -375,15 +378,6 @@ export class EventDescriptionComponent {
     return eventEndDate < now;
   }
 
-  handleShare() {
-    /*
-    const subject = `Invitation à l'événement: ${this.evenement.titre}`;
-    const body = `Bonjour,\n\nJe vous invite à l'événement "${this.evenement.titre}" qui se déroulera le ${this.formatDateTime(this.evenement.dateDebut)} à ${this.evenement.lieu}.\n\nPour plus d'informations, visitez notre site web.\n\nCordialement`;
-    window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
-     */
-  }
-
   get eventImage(): string {
     if (Array.isArray(this.evenement?.images) && this.evenement.images.length > 0 && this.evenement.images[0]) {
       return this.evenement.images[0];
@@ -408,5 +402,36 @@ export class EventDescriptionComponent {
   closePaymentModal() {
     this.showPaymentModal = false;
   }
+
+  shareOnCommunity() {
+    if (!this.checkAuthentication()) return;
+
+    this.showCommunityResearchPopup = true;
+    document.body.style.overflow = 'hidden';
+    document.body.style.paddingRight = '17px'; // Pour éviter le décalage de la scrollbar
+  }
+
+  closeCommunityResearchPopup(communityID: number | null = null) {
+    this.showCommunityResearchPopup = false;
+    this.communityIDResearched = communityID;
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+  }
+
+  onCommunitySelected(communityId: number) {
+    this.closeCommunityResearchPopup(communityId);
+    console.log('Evenement:', this.evenement);
+    this.router.navigate(
+      ['/communities', communityId],
+      {
+        queryParams: {
+          eventTitle: this.evenement.titre,
+          eventDescription: this.evenement.description,
+          link: window.location.href,
+        }
+      }
+    );
+  }
+
 
 }
