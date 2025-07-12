@@ -133,16 +133,20 @@ $transition-transform: transform 0.15s ease-in-out;
   }
 }
 
-// Main container
 .post-container {
   @include card;
   max-width: 80rem;
   margin: $spacing-8 auto;
-  padding: $spacing-8;
+  padding: 0 $spacing-8 $spacing-8 $spacing-8; // plus de padding en haut
+
+  // Ajoute un sélecteur pour cibler tous les enfants sauf .rectangle-bar
+  > :not(.rectangle-bar) {
+    margin-top: $spacing-8;
+  }
 
   @media (max-width: 768px) {
     margin: $spacing-4;
-    padding: $spacing-6;
+    padding: 0 $spacing-6 $spacing-6 $spacing-6;
   }
 }
 
@@ -164,6 +168,7 @@ $transition-transform: transform 0.15s ease-in-out;
   }
 
   .post-header-content {
+    font-family: Mulish, sans-serif;
     flex: 1;
     min-width: 0;
   }
@@ -275,6 +280,7 @@ $transition-transform: transform 0.15s ease-in-out;
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: $spacing-5;
+    font-family: Mulish, sans-serif;
 
     @media (max-width: 640px) {
       flex-direction: column;
@@ -443,6 +449,16 @@ $transition-transform: transform 0.15s ease-in-out;
   }
 }
 
+.post-actions svg {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  min-height: 22px;
+  fill: #653023;
+  display: inline-block;
+  vertical-align: middle;
+}
+
 // Loading state
 .loading-spinner {
   display: flex;
@@ -499,6 +515,8 @@ $transition-transform: transform 0.15s ease-in-out;
 .comments-title {
   font-size: 1.5rem;
   font-weight: 700;
+  font-family: Mulish, sans-serif;
+  padding-left: 5px;
   color: #835353;
   margin-bottom: $spacing-6;
   letter-spacing: 0.5px;
@@ -507,7 +525,6 @@ $transition-transform: transform 0.15s ease-in-out;
   align-items: center;
   gap: 0.75rem;
   &::before {
-    content: "💬";
     font-size: 1.3rem;
     margin-right: 0.5rem;
   }
@@ -612,8 +629,21 @@ $transition-transform: transform 0.15s ease-in-out;
     font-size: 1.2rem;
   }
 
-  &:hover {
-    background: linear-gradient(135deg, #6b2e2e 0%, #bfa6a6 100%);
-    transform: translateY(-2px);
+}
+
+.rectangle-bar {
+  background: linear-gradient(135deg, #ea6666 0%, #a24b4b 100%);
+  color: white;
+  padding: 1.75rem .5rem;
+  border-radius: 16px 16px 0 0;
+  margin: 0 -2rem; // -$spacing-8 pour compenser le padding du parent
+  width: auto;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  @media (max-width: 768px) {
+    margin: 0 -1.5rem; // -$spacing-6 pour mobile
   }
 }

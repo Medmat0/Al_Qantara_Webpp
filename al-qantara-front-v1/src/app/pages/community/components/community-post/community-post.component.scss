@@ -443,6 +443,17 @@
   cursor: not-allowed;
 }
 
+.post-actions svg {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  min-height: 22px;
+  fill: #653023;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+
 @media (max-width: 480px) {
   .post-card {
     border-radius: 12px;
@@ -479,6 +490,7 @@
     flex-direction: column;
     gap: 0.75rem;
   }
+
 
   .actions-left {
     width: 100%;
