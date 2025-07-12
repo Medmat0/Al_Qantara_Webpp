@@ -5,6 +5,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { PaymentModalComponent } from '../payment-modal/payment-modal.component';
 import { RemboursementModalComponent } from '../remboursement-modal/remboursement-modal.component';
+import { RatingModalComponent } from '../rating-modal/rating-modal.component';
 import { AuthService } from '../../../member/services/auth.service';
 import { EvenementService } from '../../../member/services/evenement.service';
 import { Router } from '@angular/router';
@@ -24,6 +25,7 @@ import { AuthRequiredModalComponent } from '../../auth-required-modal/auth-requi
     PaymentModalComponent,
     CommunityResearchComponent,
     RemboursementModalComponent,
+    RatingModalComponent,
     AuthRequiredModalComponent
   ],
   styleUrl: './event-modal.component.scss'
@@ -79,6 +81,9 @@ export class EventModalComponent implements OnChanges {
 
   // Ajout de la propriété pour contrôler l'affichage du modal auth-required
   showAuthRequiredModal = false;
+
+  // Propriétés pour la notation
+  showRatingModal = false;
 
   constructor(private sanitizer: DomSanitizer) {
     if (this.event && !Array.isArray(this.event.comments)) {
@@ -366,26 +371,27 @@ export class EventModalComponent implements OnChanges {
   }
 
 
+  /**
+   * Ouvrir le modal de notation
+   */
   openRatingModal(): void {
     if (!this.checkAuthentication()) return;
+    this.showRatingModal = true;
+  }
 
-    const rating = {
-      noteOrganisateur: 0,
-      noteLieu: 0,
-      noteAmbiance: 0,
-      noteEvenement: 0,
-      commentaire: ''
-    };
+  /**
+   * Fermer le modal de notation
+   */
+  closeRatingModal(): void {
+    this.showRatingModal = false;
+  }
 
-    this.evenementService.rateEvenement(this.event.id, rating).subscribe({
-      next: (response) => {
-        console.log('Note ajoutée avec succès:', response);
-        alert('Votre note a été ajoutée avec succès !');
-      },
-      error: (error) => {
-        console.error('Erreur lors de la notation:', error);
-        alert('Une erreur est survenue lors de la notation. Veuillez réessayer.');
-      }
-    });
+  /**
+   * Gérer le succès de la notation
+   */
+  onRatingSubmitted(): void {
+    console.log('✅ Notation envoyée avec succès');
+    // Optionnel : rafraîchir les données de l'événement
+    // this.evenementService.getEvenementById(this.event.id).subscribe(...);
   }
 }
