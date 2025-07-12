@@ -64,7 +64,8 @@ const getCommunityByIdService = async (req) => {
             logo: true,
             description: true,
             dateCreation: true,
-            membres: { select: { id: true } }
+            membres: { select: { id: true } },
+            posts: { select: { id: true } }
         }
     });
 
@@ -80,7 +81,8 @@ const getCommunityByIdService = async (req) => {
         logo: community.logo,
         description: community.description,
         dateCreation: community.dateCreation,
-        nbrMembre: community.membres.length
+        nbrMembre: community.membres.length,
+        nbrPosts: community.posts.length
     };
 }
 

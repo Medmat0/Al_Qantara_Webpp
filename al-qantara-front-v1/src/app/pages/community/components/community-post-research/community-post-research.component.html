@@ -1,7 +1,7 @@
 <div class="community-research-root">
   <div class="community-container">
     <form (ngSubmit)="searchCommunityPost()" class="community-search-form">
-      <h2 class="search-title"><span class="icon">🔎</span> Recherche de posts</h2>
+      <h2 class="search-title"><span class="icon"></span> Recherche de posts</h2>
       <input type="text" [(ngModel)]="searchName" name="searchName" placeholder="Nom du post..." />
       <div class="tags-input">
         <input type="text" [(ngModel)]="tagInput" name="tagInput" placeholder="Ajouter un tag..." (keydown.enter)="addTag(); $event.preventDefault();" />

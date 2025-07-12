@@ -85,6 +85,11 @@ export class NavBarComponent {
     this.router.navigate(['/profile']);
   }
 
+  navigateToMessagerie(): void {
+    this.isUserMenuOpen = false;  // Ferme le menu
+    this.router.navigate(['/messaging']);
+  }
+
   navigateTo(path: string): void {
     this.isMenuOpen = false;
     this.router.navigate([path]);

@@ -14,7 +14,7 @@
         <span>{{ error }}</span>
       </div>
 
-      <div class="posts-container" *ngIf="!loading && !error">
+      <div class="posts-container" *ngIf="!error" (scroll)="onScroll($event)">
         <ng-container *ngIf="posts.length > 0; else noPosts">
           <app-community-post
             *ngFor="let post of posts; trackBy: trackByPostId"
@@ -25,14 +25,17 @@
             class="post-item">
           </app-community-post>
         </ng-container>
-
         <ng-template #noPosts>
           <div class="empty-state">
-            <div class="empty-icon">📝</div>
+            <div class="empty-icon"></div>
             <h3>Aucun post à afficher</h3>
             <p>Soyez le premier à partager quelque chose avec la communauté !</p>
           </div>
         </ng-template>
+        <div class="loading-indicator" *ngIf="loading">
+          <div class="spinner"></div>
+          <span>Chargement des posts...</span>
+        </div>
       </div>
     </div>
   </div>
@@ -40,17 +43,23 @@
   <aside class="sidebar">
     <div class="sidebar-content">
       <div class="action-buttons">
-        <button 
-          class="btn btn-primary" 
-          (click)="openResearchPopup()">
-          <span class="btn-icon">🔍</span>
-          Rechercher un communauté
+        <button
+          class="btn btn-primary"
+          (click)="openCommunityResearchPopup()">
+          <span class="btn-icon"></span>
+          Rechercher une communauté
+        </button>
+        <button
+          class="btn btn-primary"
+          (click)="openPostResearchPopup()">
+          <span class="btn-icon"></span>
+          Rechercher un post
         </button>
 
-        <button 
-          class="btn btn-secondary" 
+        <button
+          class="btn btn-secondary"
           (click)="goToCreationForm()">
-          <span class="btn-icon">➕</span>
+          <span class="btn-icon"></span>
           Créer une communauté
         </button>
       </div>
@@ -64,9 +73,17 @@
 </div>
 
 <!-- Overlay et popup recherche communauté -->
-<div class="community-popup-overlay" *ngIf="showResearchPopup" (click)="closeResearchPopup()">
+<div class="community-popup-overlay" *ngIf="showCommunityResearchPopup" (click)="closeCommunityResearchPopup()">
   <div class="community-popup" (click)="$event.stopPropagation()">
-    <button class="close-popup" (click)="closeResearchPopup()">✖</button>
-    <app-community-research></app-community-research>
+    <button class="close-popup" (click)="closeCommunityResearchPopup()">✖</button>
+    <app-community-research (communitySelected)="onCommunitySelected($event)"></app-community-research>
+  </div>
+</div>
+
+<!-- Overlay et popup recherche post -->
+<div class="community-popup-overlay" *ngIf="showPostResearchPopup" (click)="closePostResearchPopup()">
+  <div class="community-popup" (click)="$event.stopPropagation()">
+    <button class="close-popup" (click)="closePostResearchPopup()">✖</button>
+    <app-community-post-research></app-community-post-research>
   </div>
 </div>

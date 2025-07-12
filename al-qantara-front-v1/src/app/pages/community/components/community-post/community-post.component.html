@@ -27,7 +27,7 @@
       [routerLink]="['/communities', post.communityId]"
       class="btn btn-outline community-link"
       (click)="$event.stopPropagation()">
-      <span class="btn-icon">🏠</span>
+      <span class="btn-icon"></span>
       Voir la communauté
     </button>
   </header>
@@ -73,7 +73,7 @@
       </div>
 
       <div class="poll-deadline">
-        <span class="deadline-icon">⏰</span>
+        <span class="deadline-icon"></span>
         <span>Date limite : {{ post.pollDeadline | date:'dd/MM/yyyy' }}</span>
       </div>
     </div>
@@ -102,7 +102,7 @@
         *ngIf="isModerator || userId === post.auteurId"
         (click)="deletePost($event)"
         class="btn btn-danger delete-btn">
-        <span class="btn-icon">🗑️</span>
+        <span class="btn-icon"></span>
         <span>Supprimer</span>
       </button>
     </div>

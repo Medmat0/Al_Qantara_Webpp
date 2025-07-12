@@ -3,8 +3,9 @@
         <!-- Comment header -->
         <div class="comment-header">
             <div class="comment-author-info">
-                <img src="assets/default-avatar.jpg" alt="avatar" class="author-avatar">
-                <div class="author-details">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="author-avatar"><title>account</title><path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" /></svg>
+
+              <div class="author-details">
                     <span class="author-name">{{ comment.auteur?.prenom || 'Utilisateur' }} {{ comment.auteur?.nom || '' }}</span>
                     <time class="comment-date">{{ comment.dateCreation | date:'dd/MM/yyyy HH:mm' }}</time>
                 </div>
@@ -22,7 +23,7 @@
                             <span class="menu-icon">🗑️</span>
                             <span>Supprimer</span>
                         </button>
-                        
+
                     </div>
                 </div>
             </div>
@@ -32,10 +33,10 @@
                 <div class="comment-text" *ngIf="!isEditing">
                     <p>{{ comment.contenu }}</p>
                 </div>
-                
+
                 <!-- Edit form -->
                 <div class="edit-form" *ngIf="isEditing">
-                    <textarea 
+                    <textarea
                         class="edit-textarea"
                         [(ngModel)]="editedContent"
                         placeholder="Modifier votre commentaire..."
@@ -43,7 +44,7 @@
                     </textarea>
                     <div class="edit-actions">
                         <button class="btn btn-primary" (click)="saveEdit()">
-                            <span class="btn-icon">💾</span>
+                            <span class="btn-icon"></span>
                             <span>Enregistrer</span>
                         </button>
                         <button class="btn btn-secondary" (click)="cancelEdit()">
@@ -61,22 +62,22 @@
                     <span class="action-text">J'aime</span>
                     <span class="action-count">{{ comment.likes?.length || 0 }}</span>
                 </button>
-                
+
                 <button class="action-btn reply-btn" (click)="toggleReplyForm(comment.id)">
-                    <span class="action-icon">💬</span>
+                    <span class="action-icon"></span>
                     <span class="action-text">Répondre</span>
                 </button>
-                
-               
+
+
             </div>
 
             <!-- Reply form -->
             <div class="reply-form" *ngIf="replyFormVisible && replyFormVisible[comment.id]">
                 <div class="reply-form-header">
-                    <img [src]="" [alt]="currentUser.name" class="reply-avatar">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="reply-avatar"><title>account</title><path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" /></svg>
                     <span class="reply-to">Répondre à {{ comment.auteur.prenom }}</span>
                 </div>
-                <textarea 
+                <textarea
                     class="reply-textarea"
                     [(ngModel)]="replyContent[comment.id]"
                     placeholder="Écrivez votre réponse..."
@@ -102,7 +103,7 @@
                         <span class="replies-count">{{ comment.replies.length }} réponse{{ comment.replies.length !== 1 ? 's' : '' }}</span>
                     </button>
                 </div>
-                
+
                 <div class="replies-list" *ngIf="showReplies">
                     <app-comment
                         *ngFor="let reply of comment.replies"
