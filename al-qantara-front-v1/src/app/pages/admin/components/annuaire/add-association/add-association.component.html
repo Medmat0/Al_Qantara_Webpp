@@ -1,0 +1,450 @@
+<div class="add-association-container">
+  <!-- En-tête avec breadcrumb -->
+  <div class="header-section">
+    <div class="breadcrumb">
+      <button class="btn-back" (click)="goBack()">
+        <i class="fas fa-arrow-left"></i>
+        Retour à l'annuaire
+      </button>
+    </div>
+    <h1 class="page-title">Ajouter une nouvelle association</h1>
+    <p class="page-subtitle">Remplissez les informations ci-dessous pour ajouter une association à l'annuaire</p>
+  </div>
+
+  <!-- Messages de feedback -->
+  <div class="messages-container">
+    <div *ngIf="successMessage" class="alert alert-success">
+      <i class="fas fa-check-circle"></i>
+      {{ successMessage }}
+    </div>
+    <div *ngIf="errorMessage" class="alert alert-error">
+      <i class="fas fa-exclamation-circle"></i>
+      {{ errorMessage }}
+    </div>
+  </div>
+
+  <!-- Formulaire -->
+  <form #associationForm="ngForm" (ngSubmit)="onSubmit(associationForm)" class="association-form">
+    
+    <!-- Container pour les sections 1-4 en grid -->
+    <div class="sections-container">
+      <!-- Section 1: Informations générales -->
+      <div class="form-section">
+        <div class="section-header">
+          <div class="section-number">1</div>
+          <div class="section-content">
+            <h2 class="section-title">Informations générales</h2>
+            <p class="section-description">Nom, description et secteur d'activité de l'association</p>
+          </div>
+        </div>
+
+      <div class="section-body">
+        <div class="form-group">
+          <label for="nom" class="required">Nom de l'association</label>
+          <input 
+            type="text" 
+            id="nom"
+            name="nom"
+            [(ngModel)]="association.nom"
+            [class.error]="formErrors.nom"
+            class="form-control"
+            placeholder="Ex: Association des Marocains de Paris"
+            required>
+          <div *ngIf="formErrors.nom" class="error-message">
+            <i class="fas fa-exclamation-triangle"></i>
+            Le nom de l'association est requis
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="description" class="required">Description</label>
+          <textarea 
+            id="description"
+            name="description"
+            [(ngModel)]="association.description"
+            [class.error]="formErrors.description"
+            class="form-control textarea"
+            placeholder="Décrivez les activités, objectifs et missions de l'association..."
+            rows="4"
+            required></textarea>
+          <div *ngIf="formErrors.description" class="error-message">
+            <i class="fas fa-exclamation-triangle"></i>
+            La description est requise
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="secteur" class="required">Secteur d'activité</label>
+          <select 
+            id="secteur"
+            name="secteur"
+            [(ngModel)]="association.secteurActivite"
+            [class.error]="formErrors.secteurActivite"
+            class="form-control"
+            required>
+            <option value="">Sélectionnez un secteur d'activité</option>
+            <option *ngFor="let secteur of secteursActivite" [value]="secteur">
+              {{ secteur }}
+            </option>
+          </select>
+          <div *ngIf="formErrors.secteurActivite" class="error-message">
+            <i class="fas fa-exclamation-triangle"></i>
+            Le secteur d'activité est requis
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="logo-input">Logo de l'association</label>
+          <div class="logo-upload-container">
+            <!-- Zone d'aperçu du logo -->
+            <div class="logo-preview" *ngIf="logoPreviewUrl">
+              <img [src]="logoPreviewUrl" alt="Aperçu du logo" class="preview-image">
+              <button type="button" class="remove-logo-btn" (click)="removeLogo()" title="Supprimer le logo">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            
+            <!-- Zone de sélection/drop -->
+            <div class="file-upload-zone" [class.has-file]="logoPreviewUrl">
+              <input 
+                type="file" 
+                id="logo-input"
+                name="logo"
+                (change)="onLogoFileSelected($event)"
+                accept="image/*"
+                class="file-input">
+              
+              <label for="logo-input" class="file-upload-label">
+                <div class="upload-content">
+                  <i class="fas fa-cloud-upload-alt"></i>
+                  <div class="upload-text">
+                    <span class="main-text">Cliquez pour sélectionner un logo</span>
+                    <span class="sub-text">JPG, PNG ou GIF (max. 5MB)</span>
+                  </div>
+                </div>
+              </label>
+            </div>
+            
+            <!-- Info sur le fichier sélectionné -->
+            <div class="file-info" *ngIf="selectedLogoFile">
+              <i class="fas fa-file-image"></i>
+              <span class="file-name">{{ selectedLogoFile.name }}</span>
+              <span class="file-size">({{ (selectedLogoFile.size / 1024 / 1024).toFixed(2) }} MB)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Localisation -->
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-number">2</div>
+        <div class="section-content">
+          <h2 class="section-title">Localisation</h2>
+          <p class="section-description">Adresse et coordonnées géographiques</p>
+        </div>
+      </div>
+
+      <div class="section-body">
+        <div class="form-group">
+          <label for="adresse-search">Recherche d'adresse automatique</label>
+          <div class="address-search-container">
+            <input 
+              type="text" 
+              id="adresse-search"
+              [(ngModel)]="addressSearchInput"
+              (ngModelChange)="onAddressSearch($event)"
+              name="addressSearch"
+              class="form-control search-input"
+              placeholder="Commencez à taper l'adresse pour voir les suggestions..."
+              autocomplete="off">
+            <i class="fas fa-search search-icon"></i>
+            
+            <!-- Suggestions d'adresse -->
+            <div class="address-suggestions" *ngIf="showSuggestions && addressSuggestions.length > 0">
+              <div 
+                *ngFor="let suggestion of addressSuggestions"
+                class="address-suggestion"
+                (click)="handleAddressSelect(suggestion)">
+                <div class="suggestion-main">
+                  <i class="fas fa-map-marker-alt"></i>
+                  {{ addressService.formatSuggestion(suggestion) }}
+                </div>
+                <div class="suggestion-details">
+                  {{ suggestion.address.city || suggestion.address.town }}, 
+                  {{ suggestion.address.postcode }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="help-text">
+            <i class="fas fa-info-circle"></i>
+            Tapez l'adresse pour auto-compléter les champs ci-dessous
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="adresse">Adresse complète</label>
+            <input 
+              type="text" 
+              id="adresse"
+              name="adresse"
+              [(ngModel)]="association.adresse"
+              class="form-control"
+              placeholder="Numéro et nom de la rue">
+          </div>
+
+          <div class="form-group">
+            <label for="code-postal">Code postal</label>
+            <input 
+              type="text" 
+              id="code-postal"
+              name="codePostal"
+              [(ngModel)]="association.codePostal"
+              class="form-control"
+              placeholder="75001"
+              maxlength="5">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="ville" class="required">Ville</label>
+            <input 
+              type="text" 
+              id="ville"
+              name="ville"
+              [(ngModel)]="association.ville"
+              [class.error]="formErrors.ville"
+              class="form-control"
+              placeholder="Paris"
+              required>
+            <div *ngIf="formErrors.ville" class="error-message">
+              <i class="fas fa-exclamation-triangle"></i>
+              La ville est requise
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="region" class="required">Région</label>
+            <select 
+              id="region"
+              name="region"
+              [(ngModel)]="association.region"
+              [class.error]="formErrors.region"
+              class="form-control"
+              required>
+              <option value="">Sélectionnez une région</option>
+              <option *ngFor="let region of regionsFrancaises" [value]="region">
+                {{ region }}
+              </option>
+            </select>
+            <div *ngIf="formErrors.region" class="error-message">
+              <i class="fas fa-exclamation-triangle"></i>
+              La région est requise
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: Contact -->
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-number">3</div>
+        <div class="section-content">
+          <h2 class="section-title">Informations de contact</h2>
+          <p class="section-description">Moyens de contacter l'association</p>
+        </div>
+      </div>
+
+      <div class="section-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="telephone">Numéro de téléphone</label>
+            <input 
+              type="tel" 
+              id="telephone"
+              name="telephone"
+              [(ngModel)]="association.telephone"
+              class="form-control"
+              placeholder="01 23 45 67 89">
+          </div>
+
+          <div class="form-group">
+            <label for="email">Adresse email</label>
+            <input 
+              type="email" 
+              id="email"
+              name="email"
+              [(ngModel)]="association.email"
+              [class.error]="formErrors.email"
+              class="form-control"
+              placeholder="contact@association.fr">
+            <div *ngIf="formErrors.email" class="error-message">
+              <i class="fas fa-exclamation-triangle"></i>
+              Format d'email invalide
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="site-web">Site web</label>
+          <input 
+            type="url" 
+            id="site-web"
+            name="siteWeb"
+            [(ngModel)]="association.siteWeb"
+            class="form-control"
+            placeholder="https://www.association.fr">
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 4: Réseaux sociaux -->
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-number">4</div>
+        <div class="section-content">
+          <h2 class="section-title">Réseaux sociaux</h2>
+          <p class="section-description">Présence en ligne de l'association</p>
+        </div>
+      </div>
+
+      <div class="section-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="facebook">
+              <i class="fab fa-facebook social-icon facebook"></i>
+              Page Facebook
+            </label>
+            <input 
+              type="url" 
+              id="facebook"
+              name="facebook"
+              [(ngModel)]="association.facebook"
+              class="form-control"
+              placeholder="https://facebook.com/association">
+          </div>
+
+          <div class="form-group">
+            <label for="instagram">
+              <i class="fab fa-instagram social-icon instagram"></i>
+              Compte Instagram
+            </label>
+            <input 
+              type="url" 
+              id="instagram"
+              name="instagram"
+              [(ngModel)]="association.instagram"
+              class="form-control"
+              placeholder="https://instagram.com/association">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="twitter">
+              <i class="fab fa-twitter social-icon twitter"></i>
+              Compte Twitter
+            </label>
+            <input 
+              type="url" 
+              id="twitter"
+              name="twitter"
+              [(ngModel)]="association.twitter"
+              class="form-control"
+              placeholder="https://twitter.com/association">
+          </div>
+
+          <div class="form-group">
+            <label for="linkedin">
+              <i class="fab fa-linkedin social-icon linkedin"></i>
+              Page LinkedIn
+            </label>
+            <input 
+              type="url" 
+              id="linkedin"
+              name="linkedin"
+              [(ngModel)]="association.linkedin"
+              class="form-control"
+              placeholder="https://linkedin.com/company/association">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </div> <!-- Fin du sections-container -->
+
+    <!-- Section 5: Informations légales (pleine largeur) -->
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-number">5</div>
+        <div class="section-content">
+          <h2 class="section-title">Informations légales</h2>
+          <p class="section-description">Données administratives et légales (optionnel)</p>
+        </div>
+      </div>
+
+      <div class="section-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="rna">Numéro RNA</label>
+            <input 
+              type="text" 
+              id="rna"
+              name="numeroRNA"
+              [(ngModel)]="association.numeroRNA"
+              class="form-control"
+              placeholder="W123456789"
+              maxlength="10">
+            <div class="help-text">
+              <i class="fas fa-info-circle"></i>
+              Numéro du Répertoire National des Associations
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="siret">Numéro SIRET</label>
+            <input 
+              type="text" 
+              id="siret"
+              name="numeroSIRET"
+              [(ngModel)]="association.numeroSIRET"
+              class="form-control"
+              placeholder="12345678912345"
+              maxlength="14">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="date-creation">Date de création</label>
+          <input 
+            type="date" 
+            id="date-creation"
+            name="dateCreation"
+            [(ngModel)]="dateCreationString"
+            class="form-control">
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions du formulaire -->
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" (click)="goBack()">
+        <i class="fas fa-times"></i>
+        Annuler
+      </button>
+      <button 
+        type="submit" 
+        class="btn btn-primary"
+        [disabled]="isSubmitting">
+        <i *ngIf="isSubmitting" class="fas fa-spinner fa-spin"></i>
+        <i *ngIf="!isSubmitting" class="fas fa-save"></i>
+        {{ isSubmitting ? 'Création en cours...' : 'Créer l\'association' }}
+      </button>
+    </div>
+  </form>
+</div>

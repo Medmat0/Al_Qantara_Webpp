@@ -20,6 +20,8 @@ export default [
       { path: 'events/:id/qr-participation/:utilisateurId', loadComponent: () => import('./components/check-qr-code/check-qr-code.component').then(m => m.CheckQrCodeComponent)},
       { path: 'recruitments', loadComponent: () => import('./components/manage-recruitment/manage-recruitment.component').then(m => m.ManageRecruitmentComponent) },
       { path: 'recruitments/add', loadComponent: () => import('./components/add-recruitment/add-recruitment.component').then(m => m.AddRecruitmentComponent) },
+      { path: 'annuaire', loadComponent: () => import('./components/annuaire/admin-annuaire.component').then(m => m.AdminAnnuaireComponent) },
+      { path: 'annuaire/add', loadComponent: () => import('./components/annuaire/add-association/add-association.component').then(m => m.AddAssociationComponent) },
       { path: '', redirectTo: 'users', pathMatch: 'full' },
       {path: 'newsletter', loadComponent: () => import('./components/newsletter/admin-newsletter.component').then(m => m.AdminNewsletterComponent) },
     ]
