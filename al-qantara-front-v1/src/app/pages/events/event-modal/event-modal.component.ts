@@ -8,7 +8,8 @@ import { RemboursementModalComponent } from '../remboursement-modal/remboursemen
 import { AuthService } from '../../../member/services/auth.service';
 import { EvenementService } from '../../../member/services/evenement.service';
 import { Router } from '@angular/router';
-import {CommunityResearchComponent} from '../../community/components/community-research/community-research.component';
+import { CommunityResearchComponent } from '../../community/components/community-research/community-research.component';
+import { AuthRequiredModalComponent } from '../../auth-required-modal/auth-required-modal.component';
 
 @Component({
   selector: 'app-event-modal',
@@ -22,7 +23,8 @@ import {CommunityResearchComponent} from '../../community/components/community-r
     CommonModule,
     PaymentModalComponent,
     CommunityResearchComponent,
-    RemboursementModalComponent
+    RemboursementModalComponent,
+    AuthRequiredModalComponent
   ],
   styleUrl: './event-modal.component.scss'
 })
@@ -74,6 +76,9 @@ export class EventModalComponent implements OnChanges {
 
   showCommunityResearchPopup = false;
   communityIDResearched: number | null = null;
+
+  // Ajout de la propriété pour contrôler l'affichage du modal auth-required
+  showAuthRequiredModal = false;
 
   constructor(private sanitizer: DomSanitizer) {
     if (this.event && !Array.isArray(this.event.comments)) {
@@ -177,8 +182,7 @@ export class EventModalComponent implements OnChanges {
 
   checkAuthentication(): boolean {
     if (!this.isAuthenticated) {
-      confirm('Vous devez être connecté pour interagir avec cet événement');
-      this.router.navigate(['auth/login']);
+      this.showAuthRequiredModal = true;
       return false;
     }
     return true;
@@ -210,6 +214,9 @@ export class EventModalComponent implements OnChanges {
   }
 
   onPayWithHelloAsso() {
+    // Vérifier l'authentification avant de procéder à l'achat
+    if (!this.checkAuthentication()) return;
+
     this.errorPaymentMessage = '';
     const utilisateur = JSON.parse(localStorage.getItem('utilisateur') || '{}');
     if (

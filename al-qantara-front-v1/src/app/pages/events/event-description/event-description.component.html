@@ -150,6 +150,11 @@
       (close)="closePaymentModal()"
     ></app-payment-modal>
 
+    <app-auth-required-modal
+      *ngIf="showAuthRequiredModal"
+      (close)="showAuthRequiredModal = false"
+    ></app-auth-required-modal>
+
 </div>
 
 <!-- Overlay et popup recherche communauté -->

@@ -53,12 +53,12 @@
           <span class="user-email">{{ utilisateur.email }}</span>
           <span class="user-name">{{ utilisateur.prenom }} {{ utilisateur.nom }}</span>
         </div>
-        
+
         <!-- Bouton d'abonnement si pas encore abonné -->
-        <button 
+        <button
           *ngIf="!isAlreadySubscribed && !checkingSubscription"
-          class="newsletter-btn" 
-          (click)="sAbonnerNewsletter()" 
+          class="newsletter-btn"
+          (click)="sAbonnerNewsletter()"
           [disabled]="isSubscribing"
           [class.loading]="isSubscribing">
           <i *ngIf="!isSubscribing" class="fas fa-bell"></i>
@@ -84,8 +84,7 @@
       <!-- Si l'utilisateur n'est pas connecté -->
       <div *ngIf="!isConnected" class="newsletter-login">
         <p class="login-message">Connectez-vous pour vous abonner à notre newsletter</p>
-        <button class="login-btn" (click)="redirectToLogin()">>
-          <i class="fas fa-sign-in-alt"></i>
+        <button class="login-btn" (click)="redirectToLogin()">
           Se connecter
         </button>
       </div>

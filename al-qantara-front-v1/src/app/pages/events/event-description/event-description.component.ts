@@ -13,6 +13,7 @@ import {PaymentModalComponent} from '../payment-modal/payment-modal.component';
 import {CommunityPostResearchComponent} from '../../community/components/community-post-research/community-post-research.component';
 import {CommunityResearchComponent} from '../../community/components/community-research/community-research.component';
 import {RemboursementModalComponent} from '../remboursement-modal/remboursement-modal.component';
+import {AuthRequiredModalComponent} from '../../auth-required-modal/auth-required-modal.component';
 
 
 @Component({
@@ -27,7 +28,8 @@ import {RemboursementModalComponent} from '../remboursement-modal/remboursement-
     PaymentModalComponent,
     CommunityPostResearchComponent,
     CommunityResearchComponent,
-    RemboursementModalComponent
+    RemboursementModalComponent,
+    AuthRequiredModalComponent
   ],
   templateUrl: './event-description.component.html',
   standalone: true,
@@ -68,6 +70,9 @@ export class EventDescriptionComponent {
 
   showCommunityResearchPopup = false;
   communityIDResearched: number | null = null;
+
+  // Propriété pour contrôler l'affichage du modal auth-required
+  showAuthRequiredModal = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -198,8 +203,7 @@ export class EventDescriptionComponent {
 
   checkAuthentication(): boolean {
     if (!this.isAuthenticated) {
-      confirm('Vous devez être connecté pour interagir avec cet événement');
-      this.router.navigate(['auth/login']);
+      this.showAuthRequiredModal = true;
       return false;
     }
     return true;
@@ -386,6 +390,9 @@ export class EventDescriptionComponent {
   }
 
   onPayWithHelloAsso() {
+    // Vérifier l'authentification avant de procéder à l'achat
+    if (!this.checkAuthentication()) return;
+
     this.errorPaymentMessage = '';
     const utilisateur = JSON.parse(localStorage.getItem('utilisateur') || '{}');
     if (
