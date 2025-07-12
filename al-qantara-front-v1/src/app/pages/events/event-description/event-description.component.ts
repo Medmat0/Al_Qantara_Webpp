@@ -26,7 +26,7 @@ import {RemboursementModalComponent} from '../remboursement-modal/remboursement-
     UsersListComponent,
     PaymentModalComponent,
     CommunityPostResearchComponent,
-    CommunityResearchComponent
+    CommunityResearchComponent,
     RemboursementModalComponent
   ],
   templateUrl: './event-description.component.html',

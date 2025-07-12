@@ -21,7 +21,7 @@ import {CommunityResearchComponent} from '../../community/components/community-r
     NgForOf,
     CommonModule,
     PaymentModalComponent,
-    CommunityResearchComponent
+    CommunityResearchComponent,
     RemboursementModalComponent
   ],
   styleUrl: './event-modal.component.scss'
