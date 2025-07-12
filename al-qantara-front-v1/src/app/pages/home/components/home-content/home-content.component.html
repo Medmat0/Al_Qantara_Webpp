@@ -146,7 +146,7 @@
               <p class="revue-description">{{ truncateText(revue.description, 80) }}</p>
               <div class="revue-meta">
                 <span class="revue-date">{{ formatRevueDate(revue) }}</span>
-                <a [routerLink]="['/revues', revue.id]" class="revue-link">Consulter</a>
+                <a [routerLink]="['/revues/revue-description', revue.id]" class="revue-link">Consulter</a>
               </div>
             </div>
           </div>
