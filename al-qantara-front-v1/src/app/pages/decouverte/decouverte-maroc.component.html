@@ -1,0 +1,87 @@
+
+<div class="decouverte-container">
+  <!-- Carte principale qui occupe presque tout l'écran -->
+  <div class="map-main">
+    <iframe
+      width="100%"
+      height="100%"
+      [src]="getMapUrl(selectedGuide) | safeUrl"
+      style="border: none;">
+    </iframe>
+    
+    <!-- Overlay avec info sur la ville sélectionnée -->
+    <div class="map-overlay" *ngIf="selectedGuide">
+      <div class="overlay-content">
+        <h3>{{ selectedGuide.nom }}</h3>
+        <p class="region">{{ selectedGuide.region }}</p>
+        <p class="description">{{ selectedGuide.description }}</p>
+        
+        <!-- Photos de la ville -->
+        <div class="photos-gallery" *ngIf="selectedGuide.images">
+          <img 
+            *ngFor="let image of selectedGuide.images" 
+            [src]="image" 
+            [alt]="selectedGuide.nom"
+            class="gallery-photo"
+            (click)="openPhotoModal(image)">
+        </div>
+        
+        <!-- Points d'intérêt -->
+        <div class="points-interet">
+          <h4><i class="fas fa-map-marker-alt"></i> Points d'intérêt</h4>
+          <ul>
+            <li *ngFor="let poi of selectedGuide.pointsInteret">{{ poi }}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu de sélection à droite -->
+  <div class="sidebar-menu">
+    <div class="menu-header">
+      <h2><i class="fas fa-compass"></i> Découverte du Maroc</h2>
+      <p>Sélectionnez une ville pour explorer</p>
+    </div>
+    
+    <div class="cities-list">
+      <div 
+        *ngFor="let guide of guides" 
+        class="city-item"
+        [class.active]="selectedGuide?.id === guide.id"
+        (click)="selectGuide(guide)">
+        
+        <div class="city-image">
+          <img [src]="guide.image" [alt]="guide.nom">
+        </div>
+        
+        <div class="city-info">
+          <h3>{{ guide.nom }}</h3>
+          <p class="region">{{ guide.region }}</p>
+          <p class="preview">{{ guide.description | slice:0:80 }}...</p>
+          
+          <div class="city-stats">
+            <span class="stat">
+              <i class="fas fa-map-marker-alt"></i>
+              {{ guide.pointsInteret.length }} sites
+            </span>
+          </div>
+        </div>
+        
+        <div class="city-arrow">
+          <i class="fas fa-chevron-right"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal pour afficher les photos en grand -->
+<div class="photo-modal" *ngIf="selectedPhoto" (click)="closePhotoModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="closePhotoModal()">
+      <i class="fas fa-times"></i>
+    </button>
+    <img [src]="selectedPhoto" [alt]="selectedGuide?.nom">
+  </div>
+</div>
