@@ -32,6 +32,6 @@ export class CommunityPropositionsComponent implements OnInit {
   }
 
   selectCommunity(community: any) {
-    this.communitySelected.emit(community);
+    this.communitySelected.emit(community.id);
   }
 }

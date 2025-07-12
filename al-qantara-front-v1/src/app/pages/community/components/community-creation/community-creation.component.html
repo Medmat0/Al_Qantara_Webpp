@@ -1,7 +1,7 @@
 <div class="community-settings-container">
   <div class="community-card">
     <div class="community-image">
-      <img *ngIf="logoFile" [src]="logoPreview" alt="Logo sélectionné" />
+      <img *ngIf="logoFile" [src]="logoPreview" alt="Logo sélectionné"/>
       <span *ngIf="!logoFile">Aucun logo sélectionné</span>
     </div>
 
@@ -20,7 +20,7 @@
         </div>
         <div class="form-group">
           <label for="logo">Logo (fichier)</label>
-          <input id="logo" type="file" (change)="onLogoSelected($event)" required />
+          <input id="logo" type="file" (change)="onLogoSelected($event)" required accept="image/png"/>
           <div *ngIf="form.get('logo')?.invalid && form.get('logo')?.touched">Logo requis</div>
         </div>
         <div class="actions">

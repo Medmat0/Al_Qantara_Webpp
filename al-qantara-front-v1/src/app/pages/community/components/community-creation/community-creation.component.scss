@@ -79,12 +79,9 @@
       transition: background 0.3s ease;
 
       &.update {
-        background-color: #007bff;
+        background: linear-gradient(135deg, #e15555 0%, #cb4740 100%);
         color: #fff;
 
-        &:hover {
-          background-color: #0069d9;
-        }
       }
 
       &.delete {
