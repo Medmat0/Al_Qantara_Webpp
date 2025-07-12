@@ -10,11 +10,9 @@ import { ChangeDetectorRef } from '@angular/core';
 import {MessagerieService} from '../../../member/services/messagerie.service';
 import {UsersListComponent} from '../../messaging/components/users-list/users-list.component';
 import {PaymentModalComponent} from '../payment-modal/payment-modal.component';
-import {
-  CommunityPostResearchComponent
-} from '../../community/components/community-post-research/community-post-research.component';
+import {CommunityPostResearchComponent} from '../../community/components/community-post-research/community-post-research.component';
 import {CommunityResearchComponent} from '../../community/components/community-research/community-research.component';
-
+import {RemboursementModalComponent} from '../remboursement-modal/remboursement-modal.component';
 
 
 @Component({
@@ -29,6 +27,7 @@ import {CommunityResearchComponent} from '../../community/components/community-r
     PaymentModalComponent,
     CommunityPostResearchComponent,
     CommunityResearchComponent
+    RemboursementModalComponent
   ],
   templateUrl: './event-description.component.html',
   standalone: true,

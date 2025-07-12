@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../../member/services/auth.service';
 import { CommonModule } from '@angular/common';
 import { PaymentService } from '../../../member/services/payment.service';
+import { EvenementPaymentService } from '../../../services/evenement-payment.service';
 
 @Component({
   selector: 'app-payment-modal',
@@ -21,7 +22,12 @@ export class PaymentModalComponent {
   @Input() errorMessage: string = '';
   @Output() close = new EventEmitter<void>();
 
-  constructor(private http: HttpClient, private authService: AuthService, private paymentService: PaymentService) {}
+  constructor(
+    private http: HttpClient, 
+    private authService: AuthService, 
+    private paymentService: PaymentService,
+    private evenementPaymentService: EvenementPaymentService
+  ) {}
 
   onClose(): void {
     this.close.emit();
@@ -30,7 +36,12 @@ export class PaymentModalComponent {
   async onPay(): Promise<void> {
     this.errorMessage = '';
     this.loading = true;
+    
     try {
+      // Générer un token de sécurité avant d'initier le paiement
+      console.log('🔐 Génération du token de sécurité pour le paiement événement');
+      const sessionToken = this.evenementPaymentService.initiateSecurePayment();
+      
       const utilisateur = JSON.parse(localStorage.getItem('utilisateur') || '{}');
       if (!utilisateur || !utilisateur.nom || !utilisateur.prenom || !utilisateur.email || !utilisateur.id) {
         this.errorMessage = 'Impossible de récupérer les informations utilisateur.';
@@ -48,6 +59,7 @@ export class PaymentModalComponent {
         this.loading = false;
         return;
       }
+      
       const body = {
         totalAmount: this.event?.prix,
         initialAmount: this.event?.prix,
@@ -60,12 +72,21 @@ export class PaymentModalComponent {
         metadata: {
           evenementId: this.event?.id,
           utilisateurId: utilisateur.id,
-          type: 'EVENT_PARTICIPATION'
+          type: 'EVENT_PARTICIPATION',
+          sessionToken: sessionToken // Ajouter le token de sécurité
         }
       };
+      
+      console.log('💳 Initiation du paiement événement avec token:', { 
+        eventId: this.event?.id, 
+        userId: utilisateur.id,
+        token: sessionToken
+      });
+      
       this.paymentService.createCheckout(body).subscribe({
         next: (res: any) => {
           if (res && res.redirectUrl) {
+            console.log('✅ URL de paiement générée, redirection...');
             window.open(res.redirectUrl, '_blank');
           } else {
             this.errorMessage = 'Erreur lors de la génération du lien de paiement.';
@@ -73,16 +94,19 @@ export class PaymentModalComponent {
           }
         },
         error: (err) => {
+          console.error('❌ Erreur lors de la création du paiement événement:', err);
           this.errorMessage = err?.error?.message || 'Erreur lors de la création du paiement.';
-          console.error(this.errorMessage);
+          // Nettoyer le token en cas d'erreur
+          this.evenementPaymentService.clearSessionToken();
         },
         complete: () => {
           this.loading = false;
         }
       });
     } catch (err: any) {
+      console.error('❌ Exception lors du paiement événement:', err);
       this.errorMessage = err?.error?.message || 'Erreur lors de la création du paiement.';
-      console.error(this.errorMessage);
+      this.evenementPaymentService.clearSessionToken();
       this.loading = false;
     }
   }

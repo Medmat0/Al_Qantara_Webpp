@@ -58,6 +58,7 @@ model Utilisateur {
   membresbannis Community[] @relation("CommunityBannished")
 
   dons Don[]
+  remboursementDemandes RemboursementDemande[]
 }
 
 model Association {
@@ -116,6 +117,7 @@ model Evenement {
   helloAssoId     String?                  @db.VarChar(255)
   paiements       PaiementEvenement[]
   messages        Message[]
+  remboursementDemandes RemboursementDemande[]
 }
 
 enum TypeEvenement {
@@ -393,13 +395,15 @@ enum TypePieceJointe {
 }
 
 model RemboursementDemande {
-  id            Int      @id @default(autoincrement())
+  id            Int         @id @default(autoincrement())
   utilisateurId Int
   evenementId   Int
-  status        String // "en_attente", "accepte", "refuse", "rembourse"
-  dateDemande   DateTime @default(now())
+  status        String      // "en_attente", "accepte", "refuse", "rembourse"
+  dateDemande   DateTime    @default(now())
   raison        String?
-  rib           String?  @db.VarChar(255)
+  rib           String?     @db.VarChar(255)
+  utilisateur   Utilisateur @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+  evenement     Evenement   @relation(fields: [evenementId], references: [id], onDelete: Cascade)
 }
 
 model Community {
