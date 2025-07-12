@@ -95,3 +95,9 @@
     </form>
   </div>
 </div>
+
+<!-- Modal d'authentification -->
+<app-auth-required-modal
+  *ngIf="showAuthModal"
+  (close)="onAuthModalClose()">
+</app-auth-required-modal>

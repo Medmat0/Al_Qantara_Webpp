@@ -7,11 +7,12 @@ import { CommunityMembersComponent } from '../community-members/community-member
 import { CommunityPostResearchComponent } from '../community-post-research/community-post-research.component';
 import { AuthService } from '../../../../member/services/auth.service';
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
+import { AuthRequiredModalComponent } from '../../../auth-required-modal/auth-required-modal.component';
 
 @Component({
   selector: 'app-community-hub',
   standalone: true,
-  imports: [CommonModule, CommunityPostComponent, CommunityMembersComponent, CommunityPostResearchComponent, ReactiveFormsModule],
+  imports: [CommonModule, CommunityPostComponent, CommunityMembersComponent, CommunityPostResearchComponent, ReactiveFormsModule, AuthRequiredModalComponent],
   templateUrl: './community-hub.component.html',
   styleUrl: './community-hub.component.scss'
 })
@@ -29,6 +30,7 @@ export class CommunityHubComponent implements OnInit {
   showMembersPopup = false;
   showPostSearchPopup = false;
   showCreateForm = false;
+  showAuthModal = false; // Modal d'authentification
 
   // Formulaire de création de post
   postForm!: FormGroup;
@@ -355,12 +357,14 @@ export class CommunityHubComponent implements OnInit {
 
   checkAuthentication(): boolean {
     if (!this.isAuthenticated) {
-      if(confirm('Vous devez être connecté pour interagir avec cette communauté.')){
-        this.router.navigate(['auth/login']);
-      }
+      this.showAuthModal = true;
       return false;
     }
     return true;
+  }
+
+  onAuthModalClose() {
+    this.showAuthModal = false;
   }
 
   fetchCommunity() {

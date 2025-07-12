@@ -328,4 +328,9 @@
       <app-community-members [communityId]="communityId"></app-community-members>
     </div>
   </div>
+
+  <app-auth-required-modal
+    *ngIf="showAuthModal"
+    (close)="onAuthModalClose()">
+  </app-auth-required-modal>
 </div>
