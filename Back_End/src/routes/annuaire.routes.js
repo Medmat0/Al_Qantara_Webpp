@@ -12,6 +12,7 @@ import {
   getRegions
 } from '../controllers/annuaire/associationController.js';
 import { authMiddleware , isAdmin } from "../middleware/auth.middleware.js";
+import { uploadlogoAssociations } from "../middleware/storage.middleware.js";
 
 // Routes publiques (annuaire)
 router.get('/associations', getAssociationsPubliques);
@@ -30,6 +31,7 @@ router.get('/admin/associations',
 router.post('/admin/associations', 
   authMiddleware,
   isAdmin,
+  uploadlogoAssociations.single('logo'),
   creerAssociation
 );
 

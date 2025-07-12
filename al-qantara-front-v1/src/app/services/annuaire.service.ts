@@ -123,10 +123,36 @@ export class AnnuaireService {
   /**
    * Créer une nouvelle association (admin)
    */
-  creerAssociation(association: Partial<Association>): Observable<{ message: string; association: Association }> {
+  creerAssociation(association: Partial<Association>, logo?: File): Observable<{ message: string; association: Association }> {
+    const formData = new FormData();
+    
+    // Ajouter tous les champs de l'association (sauf logo qui est géré séparément)
+    Object.keys(association).forEach(key => {
+      if (key !== 'logo') { // Exclure le champ logo car c'est le fichier qui compte
+        const value = association[key as keyof Association];
+        if (value !== undefined && value !== null && value !== '') {
+          if (value instanceof Date) {
+            formData.append(key, value.toISOString());
+          } else {
+            formData.append(key, value.toString());
+          }
+        }
+      }
+    });
+
+    // Ajouter le logo s'il existe
+    if (logo) {
+      formData.append('logo', logo);
+    }
+
+    console.log('FormData contents:');
+    for (let pair of formData.entries()) {
+      console.log(pair[0] + ': ' + pair[1]);
+    }
+
     return this.http.post<{ message: string; association: Association }>(
       `${this.apiUrl}/admin/associations`,
-      association,
+      formData,
       { withCredentials: true }
     );
   }

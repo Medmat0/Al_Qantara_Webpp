@@ -235,15 +235,21 @@ export class AddAssociationComponent implements OnInit {
     this.clearMessages();
 
     try {
-      // Upload du logo si un fichier est sélectionné
-      if (this.selectedLogoFile) {
-        const logoUrl = await this.uploadLogo();
-        if (logoUrl) {
-          this.association.logo = logoUrl;
+      // Nettoyer les données de l'association en retirant les champs vides
+      const cleanedAssociation: any = {};
+      
+      Object.keys(this.association).forEach(key => {
+        const value = this.association[key as keyof Association];
+        if (value !== undefined && value !== null && value !== '') {
+          cleanedAssociation[key] = value;
         }
-      }
+      });
 
-      const response = await this.annuaireService.creerAssociation(this.association).toPromise();
+      console.log('Association data to send:', cleanedAssociation);
+      console.log('Logo file:', this.selectedLogoFile);
+
+      // Utiliser la même méthode que community : passer le fichier directement
+      const response = await this.annuaireService.creerAssociation(cleanedAssociation, this.selectedLogoFile || undefined).toPromise();
       this.successMessage = response?.message || 'Association créée avec succès!';
       
       // Rediriger vers la liste après 2 secondes
@@ -276,15 +282,14 @@ export class AddAssociationComponent implements OnInit {
     if (input.files && input.files[0]) {
       const file = input.files[0];
       
-      // Vérifier le type de fichier
+      // Validation simple
       if (!file.type.startsWith('image/')) {
-        this.errorMessage = 'Veuillez sélectionner un fichier image valide.';
+        this.errorMessage = 'Veuillez sélectionner un fichier image valide';
         return;
       }
 
-      // Vérifier la taille (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        this.errorMessage = 'Le fichier est trop volumineux. Taille maximum : 5MB.';
+      if (file.size > 5 * 1024 * 1024) { // 5MB max
+        this.errorMessage = 'Le fichier est trop volumineux (max 5MB)';
         return;
       }
 
@@ -309,28 +314,6 @@ export class AddAssociationComponent implements OnInit {
     const fileInput = document.getElementById('logo-input') as HTMLInputElement;
     if (fileInput) {
       fileInput.value = '';
-    }
-  }
-
-  private async uploadLogo(): Promise<string | null> {
-    if (!this.selectedLogoFile) {
-      return null;
-    }
-
-    try {
-      // Simuler l'upload - à remplacer par l'appel API réel
-      const formData = new FormData();
-      formData.append('logo', this.selectedLogoFile);
-      
-      // Pour l'instant, on retourne une URL simulée
-      // Dans un vrai projet, vous feriez :
-      // const response = await this.uploadService.uploadFile(formData).toPromise();
-      // return response.url;
-      
-      return URL.createObjectURL(this.selectedLogoFile);
-    } catch (error) {
-      console.error('Erreur lors de l\'upload du logo:', error);
-      return null;
     }
   }
 }

@@ -1,15 +1,28 @@
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
-class AssociationService {
 
+class AssociationService {
   // Créer une nouvelle association (par admin)
-  async creerAssociation(associationData) {
+  async creerAssociation(req) {
     try {
-      const association = await prisma.association.create({
-        data: associationData
+      // Construire dynamiquement l'objet data sans undefined/null
+      const data = {};
+      Object.keys(req.body).forEach(key => {
+        if (req.body[key] !== undefined && req.body[key] !== null && req.body[key] !== '') {
+          // Pour la date, convertir en Date
+          if (key === 'dateCreation') {
+            data[key] = new Date(req.body[key]);
+          } else {
+            data[key] = req.body[key];
+          }
+        }
       });
-      
+      // Ajouter le logo si présent
+      if (req.file) {
+        data.logo = req.file.path;
+      }
+      const association = await prisma.association.create({ data });
       return association;
     } catch (error) {
       console.error('Erreur lors de la création de l\'association:', error);
@@ -62,8 +75,14 @@ class AssociationService {
         prisma.association.count({ where })
       ]);
 
+      // Nettoyer les logos invalides (temporairement désactivé)
+      // const cleanedAssociations = associations.map(association => ({
+      //   ...association,
+      //   logo: this.cleanLogoUrl(association.logo)
+      // }));
+
       return {
-        associations,
+        associations: associations, // Retour direct sans nettoyage
         pagination: {
           page: parseInt(page),
           limite: parseInt(limite),
@@ -111,8 +130,14 @@ class AssociationService {
         prisma.association.count()
       ]);
 
+      // Nettoyer les logos invalides pour l'admin aussi (temporairement désactivé)
+      // const cleanedAssociations = associations.map(association => ({
+      //   ...association,
+      //   logo: this.cleanLogoUrl(association.logo)
+      // }));
+
       return {
-        associations,
+        associations: associations, // Retour direct sans nettoyage
         pagination: {
           page: parseInt(page),
           limite: parseInt(limite),
@@ -168,23 +193,14 @@ class AssociationService {
           where: { 
             region: { not: null }
           },
-          _count: true,
-          orderBy: { _count: 'desc' }
-        }),
-        prisma.association.groupBy({
-          by: ['secteurActivite'],
-          where: { 
-            statut: 'VALIDEE',
-            secteurActivite: { not: null }
-          },
+          _count: true
         }),
         prisma.association.groupBy({
           by: ['secteurActivite'],
           where: { 
             secteurActivite: { not: null }
           },
-          _count: true,
-          orderBy: { _count: { secteurActivite: 'desc' } }
+          _count: true
         })
       ]);
 
@@ -233,6 +249,26 @@ class AssociationService {
       console.error('Erreur lors de la récupération des régions:', error);
       throw new Error('Erreur lors de la récupération des régions');
     }
+  }
+
+  // Méthode utilitaire pour nettoyer les URLs de logos invalides
+  cleanLogoUrl(logoUrl) {
+    if (!logoUrl || 
+        logoUrl.trim() === '' || 
+        logoUrl === 'null' || 
+        logoUrl === 'undefined') {
+      return null;
+    }
+    
+    // Pour les URLs blob, on les garde pour l'instant mais on pourrait les traiter différemment
+    // En production, il faudrait un système d'upload proper
+    if (logoUrl.startsWith('blob:')) {
+      console.warn('URL blob détectée pour un logo, cela ne fonctionnera pas correctement:', logoUrl);
+      // Pour l'instant, on retourne null pour les blobs car ils ne marchent pas
+      return null;
+    }
+    
+    return logoUrl;
   }
 }
 
