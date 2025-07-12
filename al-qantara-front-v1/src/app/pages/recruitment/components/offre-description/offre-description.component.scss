@@ -24,7 +24,6 @@ $shadow-lg: 0 10px 15px -3px rgb(107 28 28 / 0.10), 0 4px 6px -4px rgb(107 28 28
   border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
-// ...existing code...
 .offre-detail-container {
   min-height: 100vh;
   background: linear-gradient(135deg, $primary-color 0%, $background 100%);
@@ -428,6 +427,7 @@ $shadow-lg: 0 10px 15px -3px rgb(107 28 28 / 0.10), 0 4px 6px -4px rgb(107 28 28
     .form-container {
       max-width: 1200px;
       margin: 0 auto;
+      width: 100%;
     }
   }
 }
@@ -531,6 +531,27 @@ $shadow-lg: 0 10px 15px -3px rgb(107 28 28 / 0.10), 0 4px 6px -4px rgb(107 28 28
           font-size: 0.8rem;
           padding: 0.4rem 0.8rem;
         }
+      }
+    }
+
+    .form-section {
+      padding: 1.5rem 0.5rem;
+
+      .form-container {
+        padding: 0 0.5rem;
+      }
+    }
+  }
+}
+
+// Règles supplémentaires pour très petits écrans
+@media (max-width: 320px) {
+  .offre-detail-container {
+    .form-section {
+      padding: 1rem 0.25rem;
+
+      .form-container {
+        padding: 0 0.25rem;
       }
     }
   }

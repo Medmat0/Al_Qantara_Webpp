@@ -217,6 +217,19 @@ button[type="submit"]:hover {
   .exp-comp-container > div {
     min-width: 0;
   }
+
+  .cv-upload-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .autofill-btn {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    text-align: center;
+  }
 }
 
 @media (max-width: 480px) {
@@ -227,8 +240,22 @@ button[type="submit"]:hover {
   label {
     font-size: 0.98rem;
   }
-}
 
+  .cv-upload-container {
+    gap: 0.75rem;
+  }
+
+  .autofill-btn {
+    padding: 0.8rem 1rem;
+    font-size: 0.9rem;
+    border-radius: 12px;
+  }
+
+  input[type="file"] {
+    font-size: 0.9rem;
+    padding: 0.6rem;
+  }
+}
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -394,8 +421,8 @@ button[type="submit"]:hover {
 
 // Responsive
 @media (max-width: 768px) {
-  form {
-    padding: 1.5rem 0.5rem;
+  .candidature-form-card.section-card {
+    padding: 1.5rem;
     border-radius: 15px;
   }
   .exp-comp-container {
@@ -405,18 +432,45 @@ button[type="submit"]:hover {
   .exp-comp-container > div {
     min-width: 0;
   }
+
+  .cv-upload-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .autofill-btn {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    text-align: center;
+  }
 }
 
 @media (max-width: 480px) {
-  form {
-    padding: 1rem 0.2rem;
+  .candidature-form-card.section-card {
+    padding: 1rem;
     border-radius: 10px;
   }
   label {
     font-size: 0.98rem;
   }
-}
 
+  .cv-upload-container {
+    gap: 0.75rem;
+  }
+
+  .autofill-btn {
+    padding: 0.8rem 1rem;
+    font-size: 0.9rem;
+    border-radius: 12px;
+  }
+
+  input[type="file"] {
+    font-size: 0.9rem;
+    padding: 0.6rem;
+  }
+}
 @keyframes fadeInUp {
   from {
     opacity: 0;
