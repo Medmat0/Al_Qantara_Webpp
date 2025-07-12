@@ -34,7 +34,7 @@
         ></iframe>
       </div>
 
-      <div class="places-section" *ngIf="event.placesTotal && event.placesTotal > 0">
+      <div class="places-section" *ngIf="event.placesTotal && event.placesTotal > 0 && !isEventPassed()">
         <span><strong>Places disponibles :</strong> {{ event.placesRestantes }}/{{ event.placesTotal }}</span>
       </div>
 
@@ -101,7 +101,7 @@
         </div>
       </div>
 
-      <div *ngIf="isParticipating && participation" class="mb-2">
+      <div *ngIf="isParticipating && participation && !isEventPassed()" class="mb-2">
         <div class="confirmed-green-box">
           <strong>Votre participation est confirmée !</strong>
           <div>
