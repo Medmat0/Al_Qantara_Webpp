@@ -132,6 +132,28 @@ export class EvenementService {  private readonly apiUrl = `${API_URL}/evenement
     );
   }
 
+  rateEvenement(evenementId: number, rating: {
+    noteOrganisateur: number;
+    noteLieu: number;
+    noteAmbiance: number;
+    noteEvenement: number;
+    commentaire: string;
+  }): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/${evenementId}/rate`,
+      rating,
+      { withCredentials: true }
+    ).pipe(
+      tap((response) => {
+        console.log('Rated event:', response);
+      }),
+      catchError((error) => {
+        console.error('Error rating event:', error);
+        return throwError(() => new Error('Error rating event'));
+      })
+    );
+  }
+
   deleteEvenementComment(evenementId: number, commentId: number): Observable<any> {
     return this.http.delete(
       `${this.apiUrl}/${evenementId}/comment/${commentId}`,

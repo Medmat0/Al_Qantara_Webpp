@@ -363,7 +363,29 @@ export class EventModalComponent implements OnChanges {
     console.log('✅ Demande de remboursement envoyée avec succès:', response);
     alert('Votre demande de remboursement a été envoyée. Vous recevrez une réponse par email.');
     this.canRequestRefund = false; // Masquer le bouton après demande
-
   }
 
+
+  openRatingModal(): void {
+    if (!this.checkAuthentication()) return;
+
+    const rating = {
+      noteOrganisateur: 0,
+      noteLieu: 0,
+      noteAmbiance: 0,
+      noteEvenement: 0,
+      commentaire: ''
+    };
+
+    this.evenementService.rateEvenement(this.event.id, rating).subscribe({
+      next: (response) => {
+        console.log('Note ajoutée avec succès:', response);
+        alert('Votre note a été ajoutée avec succès !');
+      },
+      error: (error) => {
+        console.error('Erreur lors de la notation:', error);
+        alert('Une erreur est survenue lors de la notation. Veuillez réessayer.');
+      }
+    });
+  }
 }
