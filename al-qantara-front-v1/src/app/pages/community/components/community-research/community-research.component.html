@@ -22,7 +22,7 @@
          style="cursor:pointer">
       <div class="name">{{ community.nom }}</div>
       <div *ngIf="community.logo" class="logo"><img [src]="community.logo" alt="logo" /></div>
-      <div class="desc">{{ community.description }}</div>
+      <div class="desc">{{ community.description?.slice(0, 20) }}{{ community.description?.length > 20 ? '...' : '' }}</div>
     </div>
 
     <!-- loader pendant le scroll infini -->
