@@ -13,7 +13,7 @@ $text-secondary: #835353; // bordeaux
 $text-muted: #bfa6a6; // beige rosé
 $text-light: #fbeee6; // beige très clair
 
-$background-white: #fff8f3;
+$background-white: #f6f2f2;
 $background-gray-50: #fbeee6;
 $background-gray-100: #f8f5f2;
 $background-blue-50: #fbeee6;
@@ -556,7 +556,7 @@ $transition-transform: transform 0.15s ease-in-out;
 
 .submit-btn {
   align-self: flex-end;
-  background: linear-gradient(135deg, #835353 0%, #c9b37c 100%);
+  background: linear-gradient(135deg, #e15555 0%, #cb4740 100%);
   color: #fff;
   border: none;
   border-radius: $radius-md;
@@ -566,10 +566,6 @@ $transition-transform: transform 0.15s ease-in-out;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(201, 179, 124, 0.13);
   transition: background 0.2s, transform 0.2s;
-  &:hover:not(:disabled) {
-    background: linear-gradient(135deg, #6b2e2e 0%, #bfa6a6 100%);
-    transform: translateY(-2px);
-  }
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
@@ -599,7 +595,7 @@ $transition-transform: transform 0.15s ease-in-out;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: linear-gradient(135deg, #835353 0%, #c9b37c 100%);
+  background: linear-gradient(135deg, #e15555 0%, #cb4740 100%);
   color: #fff;
   border: none;
   border-radius: $radius-lg;
