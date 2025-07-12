@@ -188,8 +188,10 @@
 .post-image {
   margin: 1.5rem 0;
   border-radius: 12px;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  display: flex;
 
   img {
     width: 60%;
