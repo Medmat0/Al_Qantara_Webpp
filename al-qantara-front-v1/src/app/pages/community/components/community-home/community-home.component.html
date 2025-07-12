@@ -87,3 +87,10 @@
     <app-community-post-research></app-community-post-research>
   </div>
 </div>
+
+<!-- Modal d'authentification -->
+<app-auth-required-modal
+  *ngIf="showAuthModal"
+  (close)="onAuthModalClose()">
+</app-auth-required-modal>
+

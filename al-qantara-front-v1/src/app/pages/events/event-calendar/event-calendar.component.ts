@@ -167,7 +167,6 @@ export class EventCalendarComponent implements OnInit {
         this.isParticipating = true;
         this.participation = res.participation;
         this.loading = false;
-        alert('Participation confirmée !');
       },
       error: (err: any) => {
         this.error = err.message;
@@ -187,7 +186,6 @@ export class EventCalendarComponent implements OnInit {
         this.participation = null;
         this.unsubscribeConfirmed = true;
         this.loading = false;
-        alert('Désinscription confirmée !');
       },
       error: (err: any) => {
         this.error = err.message;

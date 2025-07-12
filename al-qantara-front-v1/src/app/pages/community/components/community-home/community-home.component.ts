@@ -7,6 +7,8 @@ import { Router, RouterModule } from '@angular/router';
 import {AuthService} from '../../../../member/services/auth.service';
 import { CommunityPostResearchComponent } from '../community-post-research/community-post-research.component';
 import { CommunityResearchComponent } from '../community-research/community-research.component';
+import { AuthRequiredModalComponent } from '../../../auth-required-modal/auth-required-modal.component';
+
 
 @Component({
   selector: 'app-community-home',
@@ -17,7 +19,8 @@ import { CommunityResearchComponent } from '../community-research/community-rese
     CommunityPropositionsComponent,
     RouterModule,
     CommunityPostResearchComponent,
-    CommunityResearchComponent
+    CommunityResearchComponent,
+    AuthRequiredModalComponent
   ],
   templateUrl: './community-home.component.html',
   styleUrl: './community-home.component.scss'
@@ -33,6 +36,7 @@ export class CommunityHomeComponent implements OnInit {
   showResearchPopup = false; // Par défaut, le popup est fermé
   showCommunityResearchPopup = false; // Par défaut, le popup de recherche communauté est fermé
   showPostResearchPopup = false; // Par défaut, le popup de recherche post est fermé
+  showAuthModal = false; // Modal d'authentification
 
   page = 1;
   limit = 5;
@@ -93,14 +97,14 @@ export class CommunityHomeComponent implements OnInit {
 
   checkAuthentication(): boolean {
     if (!this.isAuthenticated) {
-
-      if(confirm('Vous devez être connecté pour créer une communauté.')){
-        this.router.navigate(['auth/login']);
-      }
+      this.showAuthModal = true;
       return false;
-
     }
     return true;
+  }
+
+  onAuthModalClose() {
+    this.showAuthModal = false;
   }
 
   onPostEvent(event: any) {
