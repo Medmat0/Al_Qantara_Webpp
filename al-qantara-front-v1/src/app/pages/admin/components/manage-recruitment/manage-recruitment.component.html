@@ -135,8 +135,6 @@
     </div>
   </ng-template>
 
-
-
   <!-- Modals -->
   <app-edit-recruitment
     *ngIf="selectedOfferId"
@@ -150,4 +148,15 @@
     [isVisible]="showApplicantsModal"
     (close)="closeApplicantsModal()">
   </app-applicant-list>
+
+  <div class="modal" *ngIf="showDeleteModal">
+    <div class="modal-content">
+      <h3>Confirmation de suppression</h3>
+      <p>Êtes-vous sûr de vouloir supprimer l'offre "{{ offerToDelete?.titre }}" ?</p>
+      <div class="modal-actions">
+        <button (click)="confirmDeleteOffer()" class="confirm-btn">Confirmer</button>
+        <button (click)="closeDeleteModal()" class="cancel-btn">Annuler</button>
+      </div>
+    </div>
+  </div>
 </div>
