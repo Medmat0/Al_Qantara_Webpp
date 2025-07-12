@@ -1,0 +1,101 @@
+<div class="modal-backdrop" (click)="close.emit()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="close.emit()">×</button>
+
+    <h2>Noter l'événement</h2>
+
+    <div *ngIf="error" class="alert alert-danger mb-3">{{ error }}</div>
+
+    <form (ngSubmit)="submitRating()" class="rating-form">
+      <!-- Note Organisateur -->
+      <div class="rating-group">
+        <label class="rating-label">Note Organisateur </label>
+        <div class="stars-container">
+          <button
+            type="button"
+            *ngFor="let star of getStars(5); let i = index"
+            class="star-btn"
+            [class.active]="i < rating.noteOrganisateur"
+            (click)="setRating('noteOrganisateur', i + 1)">
+            ★
+          </button>
+        </div>
+      </div>
+
+      <!-- Note Lieu -->
+      <div class="rating-group">
+        <label class="rating-label">Note Lieu </label>
+        <div class="stars-container">
+          <button
+            type="button"
+            *ngFor="let star of getStars(5); let i = index"
+            class="star-btn"
+            [class.active]="i < rating.noteLieu"
+            (click)="setRating('noteLieu', i + 1)">
+            ★
+          </button>
+        </div>
+      </div>
+
+      <!-- Note Ambiance -->
+      <div class="rating-group">
+        <label class="rating-label">Note Ambiance </label>
+        <div class="stars-container">
+          <button
+            type="button"
+            *ngFor="let star of getStars(5); let i = index"
+            class="star-btn"
+            [class.active]="i < rating.noteAmbiance"
+            (click)="setRating('noteAmbiance', i + 1)">
+            ★
+          </button>
+        </div>
+      </div>
+
+      <!-- Note Événement -->
+      <div class="rating-group">
+        <label class="rating-label">Note Événement </label>
+        <div class="stars-container">
+          <button
+            type="button"
+            *ngFor="let star of getStars(5); let i = index"
+            class="star-btn"
+            [class.active]="i < rating.noteEvenement"
+            (click)="setRating('noteEvenement', i + 1)">
+            ★
+          </button>
+        </div>
+      </div>
+
+      <!-- Commentaire -->
+      <div class="rating-group">
+        <label class="rating-label">Commentaire</label>
+        <textarea
+          [(ngModel)]="rating.commentaire"
+          name="commentaire"
+          placeholder="Partagez votre expérience..."
+          class="comment-textarea"
+          rows="4">
+        </textarea>
+      </div>
+
+      <!-- Buttons -->
+      <div class="modal-actions">
+        <button
+          type="button"
+          class="btn btn-cancel"
+          (click)="cancel()"
+          [disabled]="isSubmitting">
+          Annuler
+        </button>
+        <button
+          type="submit"
+          class="btn btn-submit"
+          [disabled]="isSubmitting">
+          <span *ngIf="isSubmitting" class="loading-spinner">⏳</span>
+          {{ isSubmitting ? 'Envoi...' : 'Envoyer' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
