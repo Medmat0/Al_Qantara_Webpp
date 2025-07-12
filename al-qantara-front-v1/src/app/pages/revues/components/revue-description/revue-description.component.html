@@ -1,19 +1,45 @@
 <div class="revue-item">
+  <div class="hero-section">
+    <div class="hero-content">
+      <div class="revue-badge">
+        <span class="badge-text">Revue Al-Qantara</span>
+      </div>
 
-    <img [src]="getPreviewUrl(revue.fichier)" alt="Image de la revue" class="revue-image">
-    <div class="revue-details">
-      <h1>Titre: {{ revue.titre }}</h1>
-      <h3>Date: {{ revue.mois }} {{revue.annee}}</h3>
-      <h2>Résumé</h2>
-      <p>
-          {{ revue.description }}
-      </p>
-      <button (click)="downloadFile()" type="button">
-        Voir en PDF
-      </button>
+
+
+      <div class="revue-meta">
+        <div class="meta-item">
+          <svg class="meta-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+          </svg>
+          <span>{{ revue.mois }} {{ revue.annee }}</span>
+        </div>
+      </div>
     </div>
+  </div>
 
-
-
-
+  <div class="main-content">
+    <div class="content-center">
+      <div class="preview-card-large">
+        <div class="card-header">
+          <h1 class="revue-title">{{ revue.titre }}</h1>
+          <p class="preview-subtitle">{{ revue.description }}</p>
+        </div>
+        <div class="revue-preview">
+          <div class="image-container">
+            <img [src]="getPreviewUrl(revue.fichier)" alt="Aperçu de la revue {{ revue.titre }}" class="revue-image">
+            <div class="image-overlay">
+              <button (click)="downloadFile()" type="button" class="download-button">
+                <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                </svg>
+                Voir la revue
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
