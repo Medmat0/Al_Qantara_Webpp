@@ -5,19 +5,8 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { EditArticleComponent } from '../edit-article/edit-article.component';
 import { API_URL } from '../../../../utils/config';
+import { Article } from '../../../../member/models/article';
 
-
-interface Article {
-  id: number;
-  titre: string;
-  contenu: string;
-  auteur: string;
-  datePublication: string;
-  revueId: number;
-  categories: any[];
-  createdAt: string;
-  updatedAt: string;
-}
 
 @Component({
   selector: 'app-articles',
@@ -156,12 +145,12 @@ export class ArticlesComponent implements OnInit {
     switch (this.selectedFilter) {
       case 'most-recent':
         filtered = [...filtered].sort((a, b) =>
-          new Date(b.datePublication).getTime() - new Date(a.datePublication).getTime()
+          new Date(b.dateSoumission).getTime() - new Date(a.dateSoumission).getTime()
         );
         break;
       case 'most-old':
         filtered = [...filtered].sort((a, b) =>
-          new Date(a.datePublication).getTime() - new Date(b.datePublication).getTime()
+          new Date(a.dateSoumission).getTime() - new Date(b.dateSoumission).getTime()
         );
         break;
     }
