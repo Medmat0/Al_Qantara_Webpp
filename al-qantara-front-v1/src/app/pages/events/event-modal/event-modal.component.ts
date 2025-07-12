@@ -7,6 +7,7 @@ import { PaymentModalComponent } from '../payment-modal/payment-modal.component'
 import { AuthService } from '../../../member/services/auth.service';
 import { EvenementService } from '../../../member/services/evenement.service';
 import { Router } from '@angular/router';
+import {CommunityResearchComponent} from '../../community/components/community-research/community-research.component';
 
 @Component({
   selector: 'app-event-modal',
@@ -18,7 +19,8 @@ import { Router } from '@angular/router';
     DatePipe,
     NgForOf,
     CommonModule,
-    PaymentModalComponent
+    PaymentModalComponent,
+    CommunityResearchComponent
 
   ],
   styleUrl: './event-modal.component.scss'
@@ -64,6 +66,9 @@ export class EventModalComponent implements OnChanges {
   nombreLikes: number = 0;
   userHasLiked: boolean = false;
   likesLoading: boolean = false;
+
+  showCommunityResearchPopup = false;
+  communityIDResearched: number | null = null;
 
   constructor(private sanitizer: DomSanitizer) {
     if (this.event && !Array.isArray(this.event.comments)) {
@@ -129,6 +134,14 @@ export class EventModalComponent implements OnChanges {
   shareByMessage() {
     this.shareByMessageEvent.emit(this.event);
     this.showShareMenu = false;
+  }
+
+  shareOnCommunity() {
+    if (!this.checkAuthentication()) return;
+
+    this.showCommunityResearchPopup = true;
+    document.body.style.overflow = 'hidden';
+    document.body.style.paddingRight = '17px'; // Pour éviter le décalage de la scrollbar
   }
 
 
@@ -278,6 +291,28 @@ export class EventModalComponent implements OnChanges {
         this.likesLoading = false;
       }
     });
+  }
+
+  closeCommunityResearchPopup(communityID: number | null = null) {
+    this.showCommunityResearchPopup = false;
+    this.communityIDResearched = communityID;
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+  }
+
+  onCommunitySelected(communityId: number) {
+    this.closeCommunityResearchPopup(communityId);
+    console.log('Evenement:', this.event);
+    this.router.navigate(
+      ['/communities', communityId],
+      {
+        queryParams: {
+          eventTitle: this.event.titre,
+          eventDescription: this.event.description,
+          link: window.location.href+"/"+ this.event.id,
+        }
+      }
+    );
   }
 
 }
