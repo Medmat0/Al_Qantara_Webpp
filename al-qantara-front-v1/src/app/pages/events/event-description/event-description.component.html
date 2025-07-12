@@ -46,7 +46,7 @@
           </button>
         </div>
         <div class="dropdown d-inline-block" (mouseleave)="showShareMenu = false">
-          <button (click)="showShareMenu = !showShareMenu" class="btn-share"> Partager</button>
+          <button (click)="showShareMenu = !showShareMenu" class="btn-share">Partager</button>
           <ul *ngIf="showShareMenu" class="share-menu">
             <li (click)="copyLink()"><span>Copier le lien</span></li>
             <li (click)="shareByMessage()"><span>Message</span></li>
@@ -78,6 +78,14 @@
           [disabled]="loading"
           class="btn-unsubscribe">
           {{ loading ? 'Désinscription en cours...' : '❌ Se désinscrire' }}
+        </button>
+
+        <button
+          *ngIf="isEventPassed() && (isParticipating || !evenement.placesTotal)"
+          (click)="openRatingModal()"
+          [disabled]="loading"
+          class="btn-participate">
+          Noter l'événement
         </button>
       </div>
 

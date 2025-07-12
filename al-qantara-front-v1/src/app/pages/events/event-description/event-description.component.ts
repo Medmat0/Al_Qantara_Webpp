@@ -441,4 +441,27 @@ export class EventDescriptionComponent {
   }
 
 
+  openRatingModal(): void {
+    if (!this.checkAuthentication()) return;
+    const rating = {
+      noteOrganisateur: 4,
+      noteLieu: 4,
+      noteAmbiance: 4,
+      noteEvenement: 4,
+      commentaire: 'Événement noté depuis la description'
+    };
+
+    // Appel du service pour noter l'événement
+    this.evenementService.rateEvenement(this.evenement.id, rating).subscribe({
+      next: (response) => {
+        console.log('✅ Note ajoutée avec succès:', response);
+        alert('Votre note a été ajoutée avec succès !');
+      },
+      error: (error) => {
+        console.error('❌ Erreur lors de la notation:', error);
+        alert('Une erreur est survenue lors de la notation. Veuillez réessayer.');
+      }
+    });
+  }
+
 }
