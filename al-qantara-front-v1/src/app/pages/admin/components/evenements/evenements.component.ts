@@ -21,6 +21,32 @@ interface Participant {
   photoProfil?: string;
 }
 
+interface Rating {
+  id: number;
+  noteOrganisateur: number;
+  noteLieu: number;
+  noteAmbiance: number;
+  noteEvenement: number;
+  commentaire: string;
+  dateRating: string;
+  utilisateur: {
+    id: number;
+    nom: string;
+    prenom: string;
+  };
+}
+
+interface EventRatings {
+  ratings: Rating[];
+  moyennes: {
+    noteOrganisateur: number;
+    noteLieu: number;
+    noteAmbiance: number;
+    noteEvenement: number;
+  };
+  nombreRatings: number;
+}
+
 @Component({
   selector: 'app-evenements-admin',
   standalone: true,
@@ -58,6 +84,11 @@ export class EvenementsComponent {
   // Propriétés pour le modal d'édition
   showEditModal = false;
   eventToEdit: Evenement | null = null;
+
+  showRatingsModal = false;
+  eventRatings: EventRatings | null = null;
+  loadingRatings = false;
+  selectedEventForRatings: Evenement | null = null;
 
   ngOnInit() {
     this.loadEvents();
@@ -508,5 +539,61 @@ export class EvenementsComponent {
 
   toggleRibVisibility(demandeId: number): void {
     this.isRibVisible[demandeId] = !this.isRibVisible[demandeId];
+  }
+
+  // Méthodes pour le modal des statistiques des ratings
+  onShowRatings(eventId: number): void {
+    const event = this.events.find(e => e.id === eventId);
+    if (!event) return;
+
+    this.selectedEventForRatings = event;
+    this.showRatingsModal = true;
+    this.loadEventRatings(eventId);
+  }
+
+  loadEventRatings(eventId: number): void {
+    this.loadingRatings = true;
+    this.eventRatings = null;
+
+    this.evenementService.getEvenementById(eventId).subscribe({
+      next: (response) => {
+        if (response) {
+          this.eventRatings = {
+            ratings: response.ratings || [],
+            moyennes: response.moyennes || {
+              noteOrganisateur: 0,
+              noteLieu: 0,
+              noteAmbiance: 0,
+              noteEvenement: 0
+            },
+            nombreRatings: response.nombreRatings || 0
+          };
+        }
+        this.loadingRatings = false;
+      },
+      error: (error) => {
+        console.error('Erreur lors de la récupération des ratings:', error);
+        this.loadingRatings = false;
+      }
+    });
+  }
+
+  closeRatingsModal(): void {
+    this.showRatingsModal = false;
+    this.selectedEventForRatings = null;
+    this.eventRatings = null;
+  }
+
+  // Méthode utilitaire pour générer un tableau d'étoiles
+  getStars(rating: number): boolean[] {
+    return Array(5).fill(false).map((_, i) => i < rating);
+  }
+
+  // Méthode pour obtenir la couleur de la note
+  getRatingColor(rating: number): string {
+    if (rating >= 4) return '#10B981'; // Vert
+    if (rating >= 3) return '#F59E0B'; // Orange
+    if (rating >= 2) return '#EF4444'; // Rouge
+    return '#6B7280'; // Gris
   }
 }

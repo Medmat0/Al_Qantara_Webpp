@@ -86,7 +86,9 @@
         class="event-item-container"
         *ngFor="let event of filteredEvents"
         [class.payant-badge]="event.isPayant"
+        [class.past-event-clickable]="getEventStatus(event) === 'past'"
         [attr.data-status]="getEventStatus(event)"
+        (click)="getEventStatus(event) === 'past' ? onShowRatings(event.id) : null"
       >
         <app-event-item
           [event]="event"
@@ -101,11 +103,17 @@
           En cours
         </div>
 
+        <div
+          *ngIf="getEventStatus(event) === 'past'"
+          class="ratings-badge">
+          voir les Avis
+        </div>
+
         <!-- Groupe de boutons d'actions -->
         <div class="event-actions">
           <button
             class="action-btn edit-btn"
-            (click)="onEditEvent(event)"
+            (click)="onEditEvent(event); $event.stopPropagation()"
             title="Modifier l'événement"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -114,7 +122,7 @@
           </button>
           <button
             class="action-btn delete-btn"
-            (click)="onDeleteEvent(event)"
+            (click)="onDeleteEvent(event); $event.stopPropagation()"
             [class.loading]="deletingEventId === event.id"
             [disabled]="deletingEventId === event.id"
             title="Supprimer l'événement"
@@ -131,7 +139,7 @@
         <button
           *ngIf="event.isPayant"
           class="remboursement-btn"
-          (click)="onShowRemboursements(event.id)">
+          (click)="onShowRemboursements(event.id); $event.stopPropagation()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9e2e2c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"/>
             <path d="M8 12h4a2 2 0 1 1 0 4h-2a2 2 0 1 1 0-4h4"/>
@@ -371,6 +379,192 @@
           (eventUpdated)="onEventUpdated($event)"
           (cancel)="onEditCancel()">
         </app-edit-evenement>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal des statistiques des ratings -->
+  <div class="modal ratings-modal" *ngIf="showRatingsModal">
+    <div class="modal-content ratings-modal-content">
+      <div class="modal-header">
+        <h3>Statistiques des ratings - {{ selectedEventForRatings?.titre }}</h3>
+        <button class="close-btn" (click)="closeRatingsModal()">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Loading state -->
+        <div *ngIf="loadingRatings" class="loading-message">
+          <div class="spinner"></div>
+          Chargement des ratings...
+        </div>
+
+        <!-- Content -->
+        <div *ngIf="!loadingRatings && eventRatings" class="ratings-content">
+          <!-- Résumé des notes moyennes -->
+          <div class="ratings-summary">
+            <h4>Notes moyennes</h4>
+            <div class="average-ratings">
+              <div class="rating-item">
+                <div class="rating-label">Organisateur</div>
+                <div class="rating-value">
+                  <div class="stars">
+                    <span
+                      *ngFor="let star of getStars(eventRatings.moyennes.noteOrganisateur); let i = index"
+                      class="star"
+                      [class.filled]="star">
+                      ★
+                    </span>
+                  </div>
+                  <span class="rating-number" [style.color]="getRatingColor(eventRatings.moyennes.noteOrganisateur)">
+                    {{ eventRatings.moyennes.noteOrganisateur.toFixed(1) }}/5
+                  </span>
+                </div>
+              </div>
+
+              <div class="rating-item">
+                <div class="rating-label">Lieu</div>
+                <div class="rating-value">
+                  <div class="stars">
+                    <span
+                      *ngFor="let star of getStars(eventRatings.moyennes.noteLieu); let i = index"
+                      class="star"
+                      [class.filled]="star">
+                      ★
+                    </span>
+                  </div>
+                  <span class="rating-number" [style.color]="getRatingColor(eventRatings.moyennes.noteLieu)">
+                    {{ eventRatings.moyennes.noteLieu.toFixed(1) }}/5
+                  </span>
+                </div>
+              </div>
+
+              <div class="rating-item">
+                <div class="rating-label">Ambiance</div>
+                <div class="rating-value">
+                  <div class="stars">
+                    <span
+                      *ngFor="let star of getStars(eventRatings.moyennes.noteAmbiance); let i = index"
+                      class="star"
+                      [class.filled]="star">
+                      ★
+                    </span>
+                  </div>
+                  <span class="rating-number" [style.color]="getRatingColor(eventRatings.moyennes.noteAmbiance)">
+                    {{ eventRatings.moyennes.noteAmbiance.toFixed(1) }}/5
+                  </span>
+                </div>
+              </div>
+
+              <div class="rating-item">
+                <div class="rating-label">Événement</div>
+                <div class="rating-value">
+                  <div class="stars">
+                    <span
+                      *ngFor="let star of getStars(eventRatings.moyennes.noteEvenement); let i = index"
+                      class="star"
+                      [class.filled]="star">
+                      ★
+                    </span>
+                  </div>
+                  <span class="rating-number" [style.color]="getRatingColor(eventRatings.moyennes.noteEvenement)">
+                    {{ eventRatings.moyennes.noteEvenement.toFixed(1) }}/5
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="total-ratings">
+              <strong>{{ eventRatings.nombreRatings }}</strong> évaluation(s) au total
+            </div>
+          </div>
+
+          <!-- Séparateur -->
+          <div class="separator"></div>
+
+          <!-- Liste des ratings individuels -->
+          <div class="individual-ratings">
+            <h4>Évaluations individuelles</h4>
+            <div *ngIf="eventRatings.ratings.length === 0" class="no-ratings-message">
+              Aucune évaluation pour cet événement.
+            </div>
+
+            <div *ngFor="let rating of eventRatings.ratings" class="rating-card">
+              <div class="rating-header">
+                <div class="user-info">
+                  <div class="user-name">{{ rating.utilisateur.prenom }} {{ rating.utilisateur.nom }}</div>
+                  <div class="rating-date">{{ rating.dateRating | date:'short':'fr' }}</div>
+                </div>
+              </div>
+
+              <div class="rating-details">
+                <div class="rating-row">
+                  <span class="label">Organisateur:</span>
+                  <div class="rating-stars">
+                    <span
+                      *ngFor="let star of getStars(rating.noteOrganisateur); let i = index"
+                      class="star small"
+                      [class.filled]="star">
+                      ★
+                    </span>
+                    <span class="rating-number-small">{{ rating.noteOrganisateur }}/5</span>
+                  </div>
+                </div>
+
+                <div class="rating-row">
+                  <span class="label">Lieu:</span>
+                  <div class="rating-stars">
+                    <span
+                      *ngFor="let star of getStars(rating.noteLieu); let i = index"
+                      class="star small"
+                      [class.filled]="star">
+                      ★
+                    </span>
+                    <span class="rating-number-small">{{ rating.noteLieu }}/5</span>
+                  </div>
+                </div>
+
+                <div class="rating-row">
+                  <span class="label">Ambiance:</span>
+                  <div class="rating-stars">
+                    <span
+                      *ngFor="let star of getStars(rating.noteAmbiance); let i = index"
+                      class="star small"
+                      [class.filled]="star">
+                      ★
+                    </span>
+                    <span class="rating-number-small">{{ rating.noteAmbiance }}/5</span>
+                  </div>
+                </div>
+
+                <div class="rating-row">
+                  <span class="label">Événement:</span>
+                  <div class="rating-stars">
+                    <span
+                      *ngFor="let star of getStars(rating.noteEvenement); let i = index"
+                      class="star small"
+                      [class.filled]="star">
+                      ★
+                    </span>
+                    <span class="rating-number-small">{{ rating.noteEvenement }}/5</span>
+                  </div>
+                </div>
+
+                <div *ngIf="rating.commentaire" class="rating-comment">
+                  <span class="label">Commentaire:</span>
+                  <p class="comment-text">{{ rating.commentaire }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- No ratings -->
+        <div *ngIf="!loadingRatings && (!eventRatings || eventRatings.nombreRatings === 0)" class="no-ratings-message">
+          Aucune évaluation disponible pour cet événement.
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button (click)="closeRatingsModal()" class="cancel-btn">Fermer</button>
       </div>
     </div>
   </div>

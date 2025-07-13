@@ -36,6 +36,12 @@ $admin-border-hover: #cbd5e1;
 $admin-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 $admin-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 
+// Couleurs pour les ratings
+$rating-excellent: #10B981;
+$rating-good: #F59E0B;
+$rating-poor: #EF4444;
+$rating-default: #6B7280;
+
 // Mixins
 @mixin flex-center {
   display: flex;
@@ -1293,4 +1299,500 @@ $admin-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0
     opacity: 1;
     transform: scale(1);
   }
+}
+
+// Styles pour les événements passés cliquables
+.past-event-clickable {
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px); // Même effet que .event-item-container:hover
+    box-shadow: 0 0px 1px rgba(158, 46, 44, 0.15); // Plus subtil
+  }
+
+  &:active {
+    transform: translateY(-1px);
+  }
+}
+
+// Badge pour les ratings sur les événements passés
+.ratings-badge {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background: linear-gradient(135deg, $rating-good 0%, darken($rating-good, 10%) 100%);
+  color: white;
+  padding: 0.5rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 5;
+  animation: pulse 2s infinite;
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+// Styles pour le modal des ratings
+.ratings-modal {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+  backdrop-filter: blur(2px);
+
+  .ratings-modal-content {
+    max-width: 900px;
+    width: 90vw;
+    max-height: 90vh;
+    padding: 0;
+    overflow: hidden;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(158, 46, 44, 0.25);
+    border: 2px solid rgba(158, 46, 44, 0.1);
+    background: white;
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 2.5rem;
+    border-bottom: 1px solid #e8ecef;
+    background: linear-gradient(135deg, #9e2e2c 0%, #7c2323 100%);
+    color: white;
+
+    h3 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: white;
+      font-family: 'Cormorant Garamond', serif;
+    }
+
+    .close-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: white;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.4);
+        transform: scale(1.05);
+      }
+    }
+  }
+
+  .modal-body {
+    padding: 2rem 2.5rem;
+    max-height: 70vh;
+    overflow-y: auto;
+    background: #fafbfc;
+
+    /* Styles de la scrollbar */
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f1f3f4;
+      border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #9e2e2c;
+      border-radius: 4px;
+
+      &:hover {
+        background: #7c2323;
+      }
+    }
+  }
+
+  .modal-footer {
+    padding: 1.5rem 2.5rem;
+    border-top: 1px solid #e8ecef;
+    background: white;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+
+    .cancel-btn {
+      background: linear-gradient(135deg, #9e2e2c 0%, #7c2323 100%);
+      color: white;
+      border: none;
+      padding: 0.875rem 2rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Mulish', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 15px rgba(158, 46, 44, 0.3);
+
+      &:hover {
+        background: linear-gradient(135deg, #7c2323 0%, #5a1a1a 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(158, 46, 44, 0.4);
+      }
+
+      &:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 10px rgba(158, 46, 44, 0.3);
+      }
+    }
+  }
+}
+
+// Contenu du modal des ratings
+.ratings-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+// Résumé des notes moyennes
+.ratings-summary {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e8ecef;
+
+  h4 {
+    margin: 0 0 1.5rem 0;
+    color: $admin-text-primary;
+    font-size: 1.25rem;
+    font-weight: 600;
+    font-family: 'Cormorant Garamond', serif;
+  }
+
+  .average-ratings {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .rating-item {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .rating-label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: $admin-text-secondary;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .rating-value {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .stars {
+      display: flex;
+      gap: 0.25rem;
+    }
+
+    .star {
+      font-size: 1.25rem;
+      color: #e9ecef;
+      transition: color 0.2s ease;
+
+      &.filled {
+        color: #ffc107;
+      }
+    }
+
+    .rating-number {
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: 'Mulish', sans-serif;
+    }
+  }
+
+  .total-ratings {
+    text-align: center;
+    padding: 1rem;
+    background: linear-gradient(135deg, #9e2e2c 0%, #7c2323 100%);
+    color: white;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: 'Mulish', sans-serif;
+  }
+}
+
+// Séparateur
+.separator {
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e9ecef, transparent);
+  margin: 1rem 0;
+}
+
+// Évaluations individuelles
+.individual-ratings {
+  h4 {
+    margin: 0 0 1.5rem 0;
+    color: $admin-text-primary;
+    font-size: 1.25rem;
+    font-weight: 600;
+    font-family: 'Cormorant Garamond', serif;
+  }
+
+  .no-ratings-message {
+    text-align: center;
+    padding: 2rem;
+    color: #6c757d;
+    font-family: 'Mulish', sans-serif;
+    font-size: 1.1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px dashed #dee2e6;
+  }
+}
+
+// Carte de rating individuel
+.rating-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e9ecef;
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+  }
+
+  .rating-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+
+      .user-name {
+        font-weight: 600;
+        color: $admin-text-primary;
+        font-size: 1rem;
+        font-family: 'Mulish', sans-serif;
+      }
+
+      .rating-date {
+        font-size: 0.8rem;
+        color: $admin-text-muted;
+        font-family: 'Mulish', sans-serif;
+      }
+    }
+  }
+
+  .rating-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    .rating-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #f1f3f4;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .label {
+        font-weight: 500;
+        color: $admin-text-secondary;
+        font-size: 0.875rem;
+        min-width: 100px;
+      }
+
+      .rating-stars {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        .star {
+          font-size: 1rem;
+          color: #e9ecef;
+          transition: color 0.2s ease;
+
+          &.filled {
+            color: #ffc107;
+          }
+
+          &.small {
+            font-size: 0.875rem;
+          }
+        }
+
+        .rating-number-small {
+          font-size: 0.8rem;
+          font-weight: 600;
+          color: $admin-text-secondary;
+          margin-left: 0.25rem;
+        }
+      }
+    }
+
+    .rating-comment {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #f1f3f4;
+
+      .label {
+        font-weight: 500;
+        color: $admin-text-secondary;
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
+        display: block;
+      }
+
+      .comment-text {
+        background: #f8f9fa;
+        padding: 0.875rem;
+        border-radius: 8px;
+        border: 1px solid #e9ecef;
+        font-style: italic;
+        color: $admin-text-primary;
+        line-height: 1.5;
+        margin: 0;
+        font-family: 'Mulish', sans-serif;
+      }
+    }
+  }
+}
+
+// Loading state pour les ratings
+.ratings-modal .loading-message {
+  text-align: center;
+  padding: 3rem;
+  color: #6c757d;
+  font-family: 'Mulish', sans-serif;
+  font-size: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #9e2e2c;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+}
+
+// Responsive design pour les ratings
+@media (max-width: 768px) {
+  .ratings-modal {
+    .ratings-modal-content {
+      width: 95vw;
+      max-height: 95vh;
+    }
+
+    .modal-header {
+      padding: 1.5rem;
+
+      h3 {
+        font-size: 1.25rem;
+      }
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    .modal-footer {
+      padding: 1rem 1.5rem;
+    }
+  }
+
+  .ratings-summary {
+    .average-ratings {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+  }
+
+  .rating-card {
+    padding: 1rem;
+
+    .rating-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .rating-details {
+      .rating-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+      }
+    }
+  }
+}
+
+// Animation pour le modal
+.ratings-modal {
+  animation: adminFadeIn 0.3s ease-in-out;
+}
+
+// Message quand pas de ratings
+.no-ratings-message {
+  text-align: center;
+  padding: 3rem;
+  color: #6c757d;
+  font-family: 'Mulish', sans-serif;
+  font-size: 1.1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px dashed #dee2e6;
 }
