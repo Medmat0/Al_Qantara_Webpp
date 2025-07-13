@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AnnuaireService, Association, StatistiquesAnnuaire } from '../../../../services/annuaire.service';
+import { DetailAnnuaireComponent } from '../detail-annuaire/detail-annuaire.component';
 
 @Component({
   selector: 'app-public-annuaire',
   templateUrl: './public-annuaire.component.html',
   styleUrls: ['./public-annuaire.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink]
+  imports: [CommonModule, FormsModule, RouterLink, DetailAnnuaireComponent]
 })
 export class PublicAnnuaireComponent implements OnInit {
   private annuaireService = inject(AnnuaireService);
@@ -21,6 +22,10 @@ export class PublicAnnuaireComponent implements OnInit {
   secteurs: string[] = [];
   regions: string[] = [];
   isLoading = false;
+
+  // Modal state
+  selectedAssociation: Association | null = null;
+  showModal = false;
 
   // Filtres
   searchTerm = '';
@@ -222,8 +227,25 @@ export class PublicAnnuaireComponent implements OnInit {
 
   // --- Actions ---
   viewDetails(association: Association): void {
-    // Navigation vers la page de détail (à implémenter)
-    console.log('Voir détails de:', association);
+    // Récupérer les détails complets via l'API
+    this.annuaireService.getAssociation(association.id).subscribe({
+      next: (detailsAssociation) => {
+        console.log('🔍 Détails récupérés via API:', detailsAssociation);
+        this.selectedAssociation = detailsAssociation;
+        this.showModal = true;
+      },
+      error: (error) => {
+        console.error('Erreur lors de la récupération des détails:', error);
+        // Fallback : utiliser les données existantes
+        this.selectedAssociation = association;
+        this.showModal = true;
+      }
+    });
+  }
+
+  onCloseModal(): void {
+    this.showModal = false;
+    this.selectedAssociation = null;
   }
 
   visitWebsite(url: string): void {

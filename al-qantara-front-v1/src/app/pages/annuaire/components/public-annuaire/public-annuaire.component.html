@@ -407,3 +407,10 @@
     </div>
   </div>
 </div>
+
+<!-- Modal de détails -->
+<app-detail-annuaire
+  [association]="selectedAssociation"
+  [isVisible]="showModal"
+  (closeModalEvent)="onCloseModal()"
+></app-detail-annuaire>
