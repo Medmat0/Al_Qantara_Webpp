@@ -39,9 +39,10 @@ export class EvenementsComponent {
   deletingEventId: number | null = null;
 
   currentPage = 1;
-  itemsPerPage = 8;
+  itemsPerPage = 9;
 
   selectedFilter = 'none';
+  selectedStatusFilter = 'all'; // Nouveau filtre de statut
 
   showModal = false;
   modalTitle = '';
@@ -128,6 +129,27 @@ export class EvenementsComponent {
     this.isRibVisible = {}; // Reset visibility state
   }
 
+  // Nouvelle méthode pour gérer les changements de filtre de statut
+  onStatusFilterChange(status: string): void {
+    this.selectedStatusFilter = status;
+    this.currentPage = 1; // Reset à la première page
+  }
+
+  // Méthode pour déterminer le statut d'un événement
+  getEventStatus(event: Evenement): string {
+    const now = new Date();
+    const startDate = new Date(event.dateDebut);
+    const endDate = new Date(event.dateFin);
+
+    if (now < startDate) {
+      return 'upcoming';
+    } else if (now >= startDate && now <= endDate) {
+      return 'happening';
+    } else {
+      return 'past';
+    }
+  }
+
   onEditEvent(event: Evenement): void {
     // Pour l'instant, on peut rediriger vers une page d'édition ou ouvrir un modal
     // Exemple de redirection vers une page d'édition :
@@ -198,19 +220,34 @@ export class EvenementsComponent {
       });
     }
 
+    // Appliquer le filtre de statut
+    if (this.selectedStatusFilter !== 'all') {
+      filtered = filtered.filter(event => this.getEventStatus(event) === this.selectedStatusFilter);
+    }
+
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     return filtered.slice(startIndex, startIndex + this.itemsPerPage);
   }
 
   get totalPages(): number {
-    const filteredCount = this.events.filter(event => {
-      if (!this.searchTerm) return true;
+    let filtered = this.events;
+
+    // Appliquer le filtre de recherche
+    if (this.searchTerm) {
       const searchLower = this.searchTerm.toLowerCase();
-      return event.titre.toLowerCase().includes(searchLower) ||
-             event.description.toLowerCase().includes(searchLower) ||
-             event.lieu.toLowerCase().includes(searchLower);
-    }).length;
-    return Math.ceil(filteredCount / this.itemsPerPage);
+      filtered = filtered.filter(event =>
+        event.titre.toLowerCase().includes(searchLower) ||
+        event.description.toLowerCase().includes(searchLower) ||
+        event.lieu.toLowerCase().includes(searchLower)
+      );
+    }
+
+    // Appliquer le filtre de statut
+    if (this.selectedStatusFilter !== 'all') {
+      filtered = filtered.filter(event => this.getEventStatus(event) === this.selectedStatusFilter);
+    }
+
+    return Math.ceil(filtered.length / this.itemsPerPage);
   }
 
   changePage(page: number): void {

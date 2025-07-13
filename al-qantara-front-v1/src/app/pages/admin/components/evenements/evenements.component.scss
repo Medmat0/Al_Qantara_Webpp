@@ -19,6 +19,23 @@ $border-radius: 0.75rem;
 $border-radius-sm: 0.5rem;
 $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
+// Variables adaptées du design event-listing
+$admin-primary-color: #9e2e2c;
+$admin-primary-hover: #7c2323;
+$admin-secondary-color: #d59c9c;
+$admin-secondary-hover: #bfa6a6;
+$admin-accent-color: #06b6d4;
+$admin-background-light: #ffffff;
+$admin-background-card: #ffffff;
+$admin-text-primary: #1f2937;
+$admin-text-secondary: #6b7280;
+$admin-text-muted: #9ca3af;
+$admin-border-color: #e5e7eb;
+$admin-border-light: #f3f4f6;
+$admin-border-hover: #cbd5e1;
+$admin-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$admin-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
 // Mixins
 @mixin flex-center {
   display: flex;
@@ -46,6 +63,38 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
   &:disabled {
     opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// Mixins pour la cohérence
+@mixin admin-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin admin-button-base {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba($admin-primary-color, 0.1);
+  }
+
+  &:disabled {
+    opacity: 0.5;
     cursor: not-allowed;
   }
 }
@@ -273,95 +322,246 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .filters-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  background: $admin-background-card;
+  border-radius: 1rem;
+  padding: 1.5rem;
   margin-bottom: 2rem;
-  gap: 1rem;
-  background: white;
-  padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: $admin-shadow-md;
+  border: 1px solid $admin-border-light;
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+}
+
+// Section de recherche
+.search-section {
+  margin-bottom: 1.5rem;
+
+  @media (max-width: 768px) {
+    margin-bottom: 1rem;
+  }
 }
 
 .search-bar {
-  flex: 1;
-  max-width: 400px;
-}
-
-.search-bar input {
+  position: relative;
+  max-width: 500px;
   width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 0.95rem;
-  transition: border-color 0.3s ease;
 
-  &:focus {
-    outline: none;
-    border-color: #9e2e2c;
-  }
-}
-
-.filters {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-
-  label {
-    font-size: 0.95rem;
-    color: #444;
+  .search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.25rem;
+    height: 1.25rem;
+    fill: $admin-text-muted;
+    z-index: 2;
   }
 
-  select {
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 0.95rem;
-    min-width: 200px;
-    transition: border-color 0.3s ease;
+  input {
+    width: 100%;
+    padding: 0.875rem 1rem 0.875rem 3rem;
+    border: 2px solid $admin-border-color;
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    background: $admin-background-light;
+    color: $admin-text-primary;
+    transition: all 0.2s ease-in-out;
+
+    &::placeholder {
+      color: $admin-text-muted;
+    }
 
     &:focus {
       outline: none;
-      border-color: #9e2e2c;
+      border-color: $admin-primary-color;
+      box-shadow: 0 0 0 3px rgba($admin-primary-color, 0.1);
+    }
+
+    &:hover {
+      border-color: $admin-border-hover;
     }
   }
 }
 
+// Section des filtres
+.filters-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+// Filtres de statut (boutons)
+.status-filters {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+
+  .filter-btn {
+    @include admin-button-base;
+    background: $admin-background-light;
+    color: $admin-text-secondary;
+    border: 2px solid $admin-border-color;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    border-radius: 0.5rem;
+    white-space: nowrap;
+
+    &:hover {
+      background: $admin-border-light;
+      border-color: $admin-border-hover;
+      color: $admin-text-primary;
+    }
+
+    &.active {
+      background: $admin-primary-color;
+      color: white;
+      border-color: $admin-primary-color;
+      box-shadow: $admin-shadow-sm;
+
+      &:hover {
+        background: $admin-primary-hover;
+        border-color: $admin-primary-hover;
+        color: white;
+      }
+    }
+
+    @media (max-width: 640px) {
+      flex: 1;
+      min-width: 0;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+    }
+  }
+}
+
+// Section de tri
+.sort-section {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}
+
+.filter-label {
+  font-weight: 500;
+  color: $admin-text-primary;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+.select-wrapper {
+  position: relative;
+  min-width: 200px;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+
+  select {
+    width: 100%;
+    padding: 0.625rem 2.5rem 0.625rem 1rem;
+    border: 2px solid $admin-border-color;
+    border-radius: 0.5rem;
+    background: $admin-background-light;
+    color: $admin-text-primary;
+    font-size: 0.875rem;
+    cursor: pointer;
+    appearance: none;
+    transition: all 0.2s ease-in-out;
+
+    &:focus {
+      outline: none;
+      border-color: $admin-primary-color;
+      box-shadow: 0 0 0 3px rgba($admin-primary-color, 0.1);
+    }
+
+    &:hover {
+      border-color: $admin-border-hover;
+    }
+  }
+
+  .select-arrow {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.25rem;
+    height: 1.25rem;
+    fill: $admin-text-muted;
+    pointer-events: none;
+    transition: all 0.2s ease-in-out;
+  }
+
+  &:hover .select-arrow {
+    fill: $admin-text-secondary;
+  }
+}
+
+// Container des événements
+.events-container {
+  min-height: 400px;
+}
+
+// Styles pour la liste des événements (ajout de la grille)
 .event-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 2rem;
   margin-bottom: 2rem;
+  animation: adminFadeIn 0.3s ease-in-out;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
 }
 
 .event-item-container {
   position: relative;
+  transition: transform 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
 }
 
-// Styles pour les boutons d'actions des événements (similaire aux articles)
+// Styles pour les boutons d'actions des événements (correction)
 .event-actions {
   position: absolute;
   top: 10px;
-
   right: 10px;
   display: flex;
   gap: 0.5rem;
-  z-index: 2;
+  z-index: 10;
 
   .action-btn {
     @include button-base;
     width: 3rem;
     height: 3rem;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.9);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.8);
 
     svg {
       width: 1.25rem;
       height: 1.25rem;
-      stroke-width: 2;
+      stroke-width: 2.5;
     }
 
     &.edit-btn {
@@ -404,41 +604,6 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   animation: spin 1s linear infinite;
 }
 
-// --- Ancien style pour le bouton delete (à supprimer) ---
-.delete-btn {
-  // Supprimer l'ancien style standalone
-  // position: absolute;
-  // top: 10px;
-  // right: 10px;
-  // background: rgba(255, 255, 255, 0.9);
-  // border: none;
-  // border-radius: 50%;
-  // width: 36px;
-  // height: 36px;
-  // display: flex;
-  // align-items: center;
-  // justify-content: center;
-  // cursor: pointer;
-  // box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  // color: #dc3545;
-  // transition: all 0.2s ease;
-  // z-index: 2;
-
-  // &:not(:disabled):hover {
-  //   background: #dc3545;
-  //   color: white;
-  //   transform: scale(1.05);
-  // }
-
-  // svg {
-  //   fill: currentColor;
-  // }
-
-  // &.deleting {
-  //   cursor: not-allowed;
-  //   opacity: 0.7;
-  // }
-}
 .spinner {
   width: 20px;
   height: 20px;
@@ -449,9 +614,8 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .pagination {
@@ -916,247 +1080,6 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-@media (max-width: 768px) {
-  .evenements-main-container {
-    padding: 1rem;
-  }
-
-  .filters-bar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .search-bar {
-    max-width: none;
-  }
-
-  .event-list {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
-  .remboursement-modal {
-    .remboursement-modal-content {
-      width: 95vw;
-      max-height: 90vh;
-      border-radius: 12px;
-    }
-
-    .modal-header {
-      padding: 1.5rem;
-
-      h3 {
-        font-size: 1.25rem;
-      }
-
-      .close-btn {
-        width: 36px;
-        height: 36px;
-        font-size: 1.25rem;
-      }
-    }
-
-    .modal-body {
-      padding: 1.5rem;
-    }
-
-    .modal-footer {
-      padding: 1.5rem;
-    }
-
-    .remboursements-table {
-      font-size: 0.85rem;
-
-      th,
-      td {
-        padding: 0.75rem 0.5rem;
-      }
-
-      td:nth-child(4) { // Cellule RIB sur mobile
-        .rib-container {
-          flex-direction: column;
-          gap: 0.25rem;
-          align-items: flex-start;
-
-          .rib-toggle-btn {
-            align-self: flex-end;
-            width: 24px;
-            height: 24px;
-
-            svg {
-              width: 12px;
-              height: 12px;
-            }
-          }
-
-          .rib-text {
-            font-size: 0.75rem;
-            word-break: break-all;
-            width: 100%;
-
-            &.masked {
-              font-size: 0.7rem;
-            }
-          }
-        }
-      }
-
-      .action-buttons {
-        flex-direction: column;
-        gap: 0.25rem;
-
-        .action-btn {
-          font-size: 0.75rem;
-          padding: 0.3rem 0.6rem;
-
-          &.accept-btn,
-          &.reject-btn {
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-          }
-        }
-      }
-    }
-
-    .cancel-btn {
-      padding: 0.75rem 1.5rem;
-      font-size: 0.9rem;
-    }
-  }
-
-  .participants-modal {
-    .participants-modal-content {
-      width: 95vw;
-      max-height: 90vh;
-      border-radius: 12px;
-    }
-
-    .modal-header {
-      padding: 1.5rem;
-
-      h3 {
-        font-size: 1.25rem;
-      }
-
-      .header-actions {
-        flex-direction: column;
-        gap: 0.75rem;
-        align-items: flex-end;
-      }
-
-      .export-buttons {
-        order: 2;
-
-        .export-btn {
-          padding: 0.4rem 0.6rem;
-          font-size: 0.8rem;
-
-          svg {
-            width: 12px;
-            height: 12px;
-          }
-        }
-      }
-
-      .close-btn {
-        order: 1;
-        width: 36px;
-        height: 36px;
-        font-size: 1.25rem;
-      }
-    }
-
-    .modal-body {
-      padding: 1.5rem;
-    }
-
-    .modal-footer {
-      padding: 1.5rem;
-    }
-
-    .participants-table {
-      font-size: 0.85rem;
-
-      th,
-      td {
-        padding: 0.75rem 0.5rem;
-      }
-    }
-
-    .cancel-btn {
-      padding: 0.75rem 1.5rem;
-      font-size: 0.9rem;
-    }
-  }
-}
-
-// --- Styles spécifiques pour le RIB et les exports ---
-.rib-cell {
-  font-family: 'Courier New', monospace;
-  font-size: 0.85rem;
-  max-width: 200px;
-  word-break: break-all;
-  color: #495057;
-
-  .rib-container {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    position: relative;
-
-    .rib-text {
-      flex: 1;
-      transition: all 0.3s ease;
-
-      &.masked {
-        filter: blur(4px);
-        -webkit-filter: blur(4px);
-        user-select: none;
-        color: #888;
-        background: linear-gradient(90deg, #f0f0f0 0%, #e0e0e0 50%, #f0f0f0 100%);
-        background-size: 200% 100%;
-        animation: shimmer 2s infinite;
-        padding: 2px 4px;
-        border-radius: 4px;
-      }
-    }
-
-    .rib-toggle-btn {
-      background: transparent;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      padding: 4px;
-      cursor: pointer;
-      color: #666;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 28px;
-      height: 28px;
-
-      &:hover {
-        background: #f8f9fa;
-        border-color: #9e2e2c;
-        color: #9e2e2c;
-        transform: scale(1.05);
-      }
-
-      &:active {
-        transform: scale(0.95);
-      }
-
-      svg {
-        transition: all 0.2s ease;
-      }
-    }
-  }
-}
-
 @keyframes shimmer {
   0% {
     background-position: -200% 0;
@@ -1165,3 +1088,40 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     background-position: 200% 0;
   }
 }
+
+// --- Ancien style pour le bouton delete (à supprimer) ---
+.delete-btn {
+  // Supprimer l'ancien style standalone
+  // position: absolute;
+  // top: 10px;
+  // right: 10px;
+  // background: rgba(255, 255, 255, 0.9);
+  // border: none;
+  // border-radius: 50%;
+  // width: 36px;
+  // height: 36px;
+  // display: flex;
+  // align-items: center;
+  // justify-content: center;
+  // cursor: pointer;
+  // box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  // color: #dc3545;
+  // transition: all 0.2s ease;
+  // z-index: 2;
+
+  // &:not(:disabled):hover {
+  //   background: #dc3545;
+  //   color: white;
+  //   transform: scale(1.05);
+  // }
+
+  // svg {
+  //   fill: currentColor;
+  // }
+
+  // &.deleting {
+  //   cursor: not-allowed;
+  //   opacity: 0.7;
+  // }
+}
+
