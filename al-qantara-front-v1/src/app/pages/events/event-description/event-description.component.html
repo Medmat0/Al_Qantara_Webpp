@@ -81,7 +81,7 @@
         </button>
 
         <button
-          *ngIf="isEventPassed() && (isParticipating || !evenement.placesTotal)"
+          *ngIf="isEventPassed() && (isParticipating || !evenement.placesTotal) && !userHasRated"
           (click)="openRatingModal()"
           [disabled]="loading"
           class="btn-participate">
@@ -157,6 +157,15 @@
       [errorMessage]="errorPaymentMessage"
       (close)="closePaymentModal()"
     ></app-payment-modal>
+
+    <!-- Modal de notation -->
+    <app-rating-modal
+      *ngIf="showRatingModal"
+      [eventId]="evenement?.id"
+      [eventTitle]="evenement?.titre"
+      (close)="closeRatingModal()"
+      (ratingSubmitted)="onRatingSubmitted()"
+    ></app-rating-modal>
 
     <app-auth-required-modal
       *ngIf="showAuthRequiredModal"
