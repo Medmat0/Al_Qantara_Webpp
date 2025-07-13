@@ -1,0 +1,307 @@
+<!-- Modal overlay -->
+<div class="modal-overlay" *ngIf="isVisible" (click)="closeModal()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+
+    <!-- Header du modal -->
+    <div class="modal-header">
+      <button class="close-btn" (click)="closeModal()" title="Fermer">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <!-- Contenu du modal -->
+    <div class="modal-body" *ngIf="association">
+
+      <!-- Section principale avec logo et infos de base -->
+      <div class="main-section">
+        <div class="logo-section">
+          <div class="logo-container">
+            <img
+              [src]="getAssociationLogo(association)"
+              [alt]="association.nom || 'Logo association'"
+              class="association-logo"
+              (error)="onImageError($event)"
+            >
+          </div>
+        </div>
+
+        <div class="info-section">
+          <h1 class="association-title">{{ association.nom }}</h1>
+
+          <div class="quick-stats" *ngIf="association.dateCreation">
+            <div class="stat-item">
+              <i class="fas fa-calendar-alt"></i>
+              <span>Membre depuis {{ formatDate(association.dateCreation) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section des informations détaillées -->
+      <div class="details-section">
+
+        <!-- Description -->
+        <div class="detail-card" *ngIf="association.description">
+          <div class="card-header">
+            <h3 class="card-title">
+              <i class="fas fa-info-circle"></i>
+              Description
+            </h3>
+          </div>
+          <div class="card-body">
+            <p class="description-text">{{ association.description }}</p>
+          </div>
+        </div>
+
+        <!-- Informations de contact -->
+        <div class="detail-card">
+          <div class="card-header">
+            <h3 class="card-title">
+              <i class="fas fa-address-card"></i>
+              Informations de contact
+            </h3>
+          </div>
+          <div class="card-body">
+            <div class="contact-grid">
+
+              <div class="contact-item" *ngIf="association.email">
+                <div class="contact-icon">
+                  <i class="fas fa-envelope"></i>
+                </div>
+                <div class="contact-info">
+                  <div class="contact-label">Email</div>
+                  <div class="contact-value">
+                    <a [href]="'mailto:' + association.email" class="contact-link">
+                      {{ association.email }}
+                    </a>
+                  </div>
+                </div>
+                <button class="contact-action" (click)="copyToClipboard(association.email)" title="Copier l'email">
+                  <i class="fas fa-copy"></i>
+                </button>
+              </div>
+
+              <div class="contact-item" *ngIf="association.telephone">
+                <div class="contact-icon">
+                  <i class="fas fa-phone"></i>
+                </div>
+                <div class="contact-info">
+                  <div class="contact-label">Téléphone</div>
+                  <div class="contact-value">
+                    <a [href]="'tel:' + association.telephone" class="contact-link">
+                      {{ association.telephone }}
+                    </a>
+                  </div>
+                </div>
+                <button class="contact-action" (click)="copyToClipboard(association.telephone)" title="Copier le téléphone">
+                  <i class="fas fa-copy"></i>
+                </button>
+              </div>
+
+
+              <div class="contact-item" *ngIf="association.adresse || association.codePostal || association.ville">
+                <div class="contact-icon">
+                  <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div class="contact-info">
+                  <div class="contact-label">Adresse</div>
+                  <div class="contact-value">
+                    {{ getFormattedAddress(association) }}
+                  </div>
+                </div>
+                <button class="contact-action" (click)="copyToClipboard(getFormattedAddress(association))" title="Copier l'adresse">
+                  <i class="fas fa-copy"></i>
+                </button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Réseaux sociaux et web -->
+        <div class="detail-card" *ngIf="hasSocialLinks(association)">
+          <div class="card-header">
+            <h3 class="card-title">
+              <i class="fas fa-share-alt"></i>
+              Présence en ligne
+            </h3>
+          </div>
+          <div class="card-body">
+            <div class="social-grid">
+
+              <a
+                *ngIf="association.siteWeb"
+                [href]="formatWebsiteUrl(association.siteWeb)"
+                target="_blank"
+                class="social-item website"
+              >
+                <div class="social-icon">
+                  <i class="fas fa-globe"></i>
+                </div>
+                <div class="social-info">
+                  <div class="social-label">Site web</div>
+                  <div class="social-value">{{ association.siteWeb }}</div>
+                </div>
+                <div class="social-arrow">
+                  <i class="fas fa-external-link-alt"></i>
+                </div>
+              </a>
+
+              <a
+                *ngIf="association.facebook"
+                [href]="association.facebook"
+                target="_blank"
+                class="social-item facebook"
+              >
+                <div class="social-icon">
+                  <i class="fab fa-facebook-f"></i>
+                </div>
+                <div class="social-info">
+                  <div class="social-label">Facebook</div>
+                  <div class="social-value">Page Facebook</div>
+                </div>
+                <div class="social-arrow">
+                  <i class="fas fa-external-link-alt"></i>
+                </div>
+              </a>
+
+              <a
+                *ngIf="association.instagram"
+                [href]="association.instagram"
+                target="_blank"
+                class="social-item instagram"
+              >
+                <div class="social-icon">
+                  <i class="fab fa-instagram"></i>
+                </div>
+                <div class="social-info">
+                  <div class="social-label">Instagram</div>
+                  <div class="social-value">Profil Instagram</div>
+                </div>
+                <div class="social-arrow">
+                  <i class="fas fa-external-link-alt"></i>
+                </div>
+              </a>
+
+              <a
+                *ngIf="association.linkedin"
+                [href]="association.linkedin"
+                target="_blank"
+                class="social-item linkedin"
+              >
+                <div class="social-icon">
+                  <i class="fab fa-linkedin-in"></i>
+                </div>
+                <div class="social-info">
+                  <div class="social-label">LinkedIn</div>
+                  <div class="social-value">Page LinkedIn</div>
+                </div>
+                <div class="social-arrow">
+                  <i class="fas fa-external-link-alt"></i>
+                </div>
+              </a>
+
+              <a
+                *ngIf="association.twitter"
+                [href]="association.twitter"
+                target="_blank"
+                class="social-item twitter"
+              >
+                <div class="social-icon">
+                  <i class="fab fa-twitter"></i>
+                </div>
+                <div class="social-info">
+                  <div class="social-label">Twitter</div>
+                  <div class="social-value">Profil Twitter</div>
+                </div>
+                <div class="social-arrow">
+                  <i class="fas fa-external-link-alt"></i>
+                </div>
+              </a>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Informations additionnelles -->
+        <div class="detail-card">
+          <div class="card-header">
+            <h3 class="card-title">
+              <i class="fas fa-info-circle"></i>
+              Informations complémentaires
+            </h3>
+          </div>
+          <div class="card-body">
+            <div class="info-grid">
+
+              <div class="info-item">
+                <div class="info-label">Secteur d'activité</div>
+                <div class="info-value">
+                  <span class="secteur-badge" [class]="getSecteurClass(association.secteurActivite)">
+                    {{ association.secteurActivite || 'Non spécifié' }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="info-item" *ngIf="association.region">
+                <div class="info-label">Région</div>
+                <div class="info-value">{{ association.region }}</div>
+              </div>
+
+              <div class="info-item" *ngIf="association.ville">
+                <div class="info-label">Ville</div>
+                <div class="info-value">{{ association.ville }}</div>
+              </div>
+
+              <div class="info-item" *ngIf="association.codePostal">
+                <div class="info-label">Code postal</div>
+                <div class="info-value">{{ association.codePostal }}</div>
+              </div>
+
+              <div class="info-item" *ngIf="association.numeroRNA">
+                <div class="info-label">Numéro RNA</div>
+                <div class="info-value">{{ association.numeroRNA }}</div>
+              </div>
+
+              <div class="info-item" *ngIf="association.numeroSIRET">
+                <div class="info-label">Numéro SIRET</div>
+                <div class="info-value">{{ association.numeroSIRET }}</div>
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Actions du modal -->
+      <div class="modal-actions">
+        <button class="action-btn secondary" (click)="closeModal()">
+          <i class="fas fa-times"></i>
+          Fermer
+        </button>
+        <button class="action-btn primary" (click)="contactAssociation()" *ngIf="association.email">
+          <i class="fas fa-envelope"></i>
+          Contacter
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Loading state -->
+    <div class="modal-loading" *ngIf="!association">
+      <div class="loading-spinner">
+        <div class="spinner"></div>
+        <p>Chargement des détails...</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Toast notification -->
+<div class="toast-notification" [class.show]="showToast">
+  <i class="fas fa-check-circle"></i>
+  <span>{{ toastMessage }}</span>
+</div>
