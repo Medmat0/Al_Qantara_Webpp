@@ -1,3 +1,55 @@
+// Variables
+$primary-color: #9e2e2c;
+$primary-light: #b84a47;
+$primary-dark: #7a2320;
+$secondary-color: #f8f9fa;
+$text-primary: #2c3e50;
+$text-secondary: #6c757d;
+$text-muted: #adb5bd;
+$border-color: #e9ecef;
+$success-color: #28a745;
+$danger-color: #dc3545;
+$warning-color: #ffc107;
+$info-color: #17a2b8;
+$white: #ffffff;
+$shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+$shadow-md: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+$shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+$border-radius: 0.75rem;
+$border-radius-sm: 0.5rem;
+$transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+// Mixins
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin button-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: $border-radius-sm;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: $transition;
+  outline: none;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
 // --- Bouton remboursement ---
 .remboursement-btn {
   margin-top: 0.5rem;
@@ -56,7 +108,7 @@
   border-collapse: collapse;
   margin: 0;
   background: white;
-  
+
   th {
     padding: 1.25rem 1rem;
     text-align: left;
@@ -74,7 +126,7 @@
     &:first-child { border-top-left-radius: 12px; }
     &:last-child { border-top-right-radius: 12px; }
   }
-  
+
   td {
     padding: 1rem;
     font-size: 0.95rem;
@@ -83,7 +135,7 @@
     font-family: 'Mulish', sans-serif;
     transition: all 0.2s ease;
   }
-  
+
   tbody tr {
     transition: all 0.2s ease;
     &:hover {
@@ -108,19 +160,19 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   font-family: 'Mulish', sans-serif;
-  
+
   &.en-attente {
     background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
     color: #856404;
     border: 1px solid #ffc107;
   }
-  
+
   &.accepte {
     background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
     color: #155724;
     border: 1px solid #28a745;
   }
-  
+
   &.refuse {
     background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
     color: #721c24;
@@ -146,30 +198,30 @@
   font-family: 'Mulish', sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.3px;
-  
+
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
     transform: none !important;
   }
-  
+
   &.accept-btn {
     background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
     color: white;
     box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
-    
+
     &:hover:not(:disabled) {
       background: linear-gradient(135deg, #218838 0%, #1e7e34 100%);
       transform: translateY(-1px);
       box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
     }
   }
-  
+
   &.reject-btn {
     background: linear-gradient(135deg, #dc3545 0%, #e74c3c 100%);
     color: white;
     box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
-    
+
     &:hover:not(:disabled) {
       background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
       transform: translateY(-1px);
@@ -192,7 +244,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  
+
   &::before {
     content: "";
     width: 16px;
@@ -287,40 +339,106 @@
   position: relative;
 }
 
-.delete-btn {
+// Styles pour les boutons d'actions des événements (similaire aux articles)
+.event-actions {
   position: absolute;
   top: 10px;
+
   right: 10px;
-  background: rgba(255, 255, 255, 0.9);
-  border: none;
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  color: #dc3545;
-  transition: all 0.2s ease;
+  gap: 0.5rem;
   z-index: 2;
 
-  &:not(:disabled):hover {
-    background: #dc3545;
-    color: white;
-    transform: scale(1.05);
-  }
+  .action-btn {
+    @include button-base;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
 
-  svg {
-    fill: currentColor;
-  }
+    svg {
+      width: 1.25rem;
+      height: 1.25rem;
+      stroke-width: 2;
+    }
 
-  &.deleting {
-    cursor: not-allowed;
-    opacity: 0.7;
+    &.edit-btn {
+      background: linear-gradient(135deg, $info-color 0%, darken($info-color, 10%) 100%);
+      color: $white;
+
+      &:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0.5rem 1rem rgba($info-color, 0.3);
+      }
+    }
+
+    &.delete-btn {
+      background: linear-gradient(135deg, $danger-color 0%, darken($danger-color, 10%) 100%);
+      color: $white;
+
+      &:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0.5rem 1rem rgba($danger-color, 0.3);
+      }
+
+      &.loading {
+        opacity: 0.7;
+        cursor: not-allowed;
+
+        &:hover {
+          transform: none;
+        }
+      }
+    }
   }
 }
 
+.button-spinner {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid rgba($white, 0.3);
+  border-top: 2px solid $white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+// --- Ancien style pour le bouton delete (à supprimer) ---
+.delete-btn {
+  // Supprimer l'ancien style standalone
+  // position: absolute;
+  // top: 10px;
+  // right: 10px;
+  // background: rgba(255, 255, 255, 0.9);
+  // border: none;
+  // border-radius: 50%;
+  // width: 36px;
+  // height: 36px;
+  // display: flex;
+  // align-items: center;
+  // justify-content: center;
+  // cursor: pointer;
+  // box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  // color: #dc3545;
+  // transition: all 0.2s ease;
+  // z-index: 2;
+
+  // &:not(:disabled):hover {
+  //   background: #dc3545;
+  //   color: white;
+  //   transform: scale(1.05);
+  // }
+
+  // svg {
+  //   fill: currentColor;
+  // }
+
+  // &.deleting {
+  //   cursor: not-allowed;
+  //   opacity: 0.7;
+  // }
+}
 .spinner {
   width: 20px;
   height: 20px;
@@ -468,7 +586,7 @@
   // Overlay transparent pour voir la page en arrière-plan
   background-color: rgba(0, 0, 0, 0.1) !important; // Très léger au lieu de noir
   backdrop-filter: blur(1px); // Léger flou pour garder le focus sur le modal
-  
+
   .remboursement-modal-content {
     max-width: 1000px;
     width: 90vw;
@@ -488,7 +606,7 @@
     border-bottom: 1px solid #e8ecef;
     background: linear-gradient(135deg, #9e2e2c 0%, #7c2323 100%);
     color: white;
-    
+
     h3 {
       margin: 0;
       font-size: 1.5rem;
@@ -497,16 +615,16 @@
       font-family: 'Cormorant Garamond', serif;
       flex: 1;
     }
-    
+
     .header-actions {
       display: flex;
       align-items: center;
       gap: 1rem;
-      
+
       .export-buttons {
         display: flex;
         gap: 0.5rem;
-        
+
         .export-btn {
           background: rgba(255, 255, 255, 0.15);
           border: 1px solid rgba(255, 255, 255, 0.3);
@@ -521,31 +639,31 @@
           align-items: center;
           gap: 0.5rem;
           font-family: 'Mulish', sans-serif;
-          
+
           &:hover {
             background: rgba(255, 255, 255, 0.25);
             border-color: rgba(255, 255, 255, 0.5);
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
           }
-          
+
           &.pdf-btn:hover {
             background: rgba(220, 53, 69, 0.2);
             border-color: rgba(220, 53, 69, 0.4);
           }
-          
+
           &.csv-btn:hover {
             background: rgba(40, 167, 69, 0.2);
             border-color: rgba(40, 167, 69, 0.4);
           }
-          
+
           svg {
             width: 14px;
             height: 14px;
           }
         }
       }
-      
+
       .close-btn {
         background: rgba(255, 255, 255, 0.1);
         border: 2px solid rgba(255, 255, 255, 0.2);
@@ -568,17 +686,17 @@
       }
     }
   }
-  
+
   .remboursements-table {
     th:nth-child(4) { // Colonne RIB
       width: 220px;
       min-width: 200px;
     }
-    
+
     td:nth-child(4) { // Cellule RIB
       background-color: #f8f9fa;
       padding: 0.75rem;
-      
+
       .rib-container {
         .rib-text {
           font-family: 'Courier New', monospace;
@@ -586,7 +704,7 @@
           word-break: break-all;
           color: #495057;
           line-height: 1.4;
-          
+
           &.masked {
             font-size: 0.8rem;
             letter-spacing: 1px;
@@ -603,7 +721,7 @@
   // Overlay transparent pour voir la page en arrière-plan
   background-color: rgba(0, 0, 0, 0.1) !important; // Très léger au lieu de noir
   backdrop-filter: blur(2px); // Léger flou pour garder le focus sur le modal
-  
+
   .participants-modal-content {
     max-width: 1000px;
     width: 90vw;
@@ -741,7 +859,7 @@
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
-    
+
     .cancel-btn {
       background: linear-gradient(135deg, #9e2e2c 0%, #7c2323 100%);
       color: white;
@@ -775,11 +893,11 @@
       width: 220px;
       min-width: 200px;
     }
-    
+
     td:nth-child(4) { // Cellule RIB
       background-color: #f8f9fa;
       padding: 0.75rem;
-      
+
       .rib-container {
         .rib-text {
           font-family: 'Courier New', monospace;
@@ -787,7 +905,7 @@
           word-break: break-all;
           color: #495057;
           line-height: 1.4;
-          
+
           &.masked {
             font-size: 0.8rem;
             letter-spacing: 1px;
@@ -858,29 +976,29 @@
       td {
         padding: 0.75rem 0.5rem;
       }
-      
+
       td:nth-child(4) { // Cellule RIB sur mobile
         .rib-container {
           flex-direction: column;
           gap: 0.25rem;
           align-items: flex-start;
-          
+
           .rib-toggle-btn {
             align-self: flex-end;
             width: 24px;
             height: 24px;
-            
+
             svg {
               width: 12px;
               height: 12px;
             }
           }
-          
+
           .rib-text {
             font-size: 0.75rem;
             word-break: break-all;
             width: 100%;
-            
+
             &.masked {
               font-size: 0.7rem;
             }
@@ -895,7 +1013,7 @@
         .action-btn {
           font-size: 0.75rem;
           padding: 0.3rem 0.6rem;
-          
+
           &.accept-btn,
           &.reject-btn {
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
@@ -983,17 +1101,17 @@
   max-width: 200px;
   word-break: break-all;
   color: #495057;
-  
+
   .rib-container {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     position: relative;
-    
+
     .rib-text {
       flex: 1;
       transition: all 0.3s ease;
-      
+
       &.masked {
         filter: blur(4px);
         -webkit-filter: blur(4px);
@@ -1006,7 +1124,7 @@
         border-radius: 4px;
       }
     }
-    
+
     .rib-toggle-btn {
       background: transparent;
       border: 1px solid #ddd;
@@ -1020,18 +1138,18 @@
       justify-content: center;
       width: 28px;
       height: 28px;
-      
+
       &:hover {
         background: #f8f9fa;
         border-color: #9e2e2c;
         color: #9e2e2c;
         transform: scale(1.05);
       }
-      
+
       &:active {
         transform: scale(0.95);
       }
-      
+
       svg {
         transition: all 0.2s ease;
       }

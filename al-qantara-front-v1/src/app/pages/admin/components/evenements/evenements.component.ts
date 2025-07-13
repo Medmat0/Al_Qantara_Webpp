@@ -1,5 +1,5 @@
 // --- Gestion des remboursements ---
- 
+
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -39,7 +39,7 @@ export class EvenementsComponent {
   deletingEventId: number | null = null;
 
   currentPage = 1;
-  itemsPerPage = 6;
+  itemsPerPage = 8;
 
   selectedFilter = 'none';
 
@@ -126,6 +126,15 @@ export class EvenementsComponent {
     this.remboursements = [];
     this.selectedEventTitle = '';
     this.isRibVisible = {}; // Reset visibility state
+  }
+
+  onEditEvent(event: Evenement): void {
+    // Pour l'instant, on peut rediriger vers une page d'édition ou ouvrir un modal
+    // Exemple de redirection vers une page d'édition :
+    this.router.navigate(['/admin/evenements/edit', event.id]);
+
+    // Ou si vous préférez afficher une alerte temporaire :
+    // alert(`Édition de l'événement: ${event.titre}`);
   }
 
   async onDeleteEvent(event: Evenement): Promise<void> {
@@ -349,7 +358,7 @@ export class EvenementsComponent {
 
     doc.setFontSize(10);
     doc.text(`Nombre de demandes: ${this.remboursements.length}`, 14, 52);
-    
+
     const tableData = this.remboursements.map(demande => [
       `${demande.utilisateur.nom} ${demande.utilisateur.prenom}`,
       demande.utilisateur.email,
@@ -382,7 +391,7 @@ export class EvenementsComponent {
       },
       margin: { top: 60, left: 14, right: 14 }
     });
-    
+
     doc.save(fileName);
   }
 

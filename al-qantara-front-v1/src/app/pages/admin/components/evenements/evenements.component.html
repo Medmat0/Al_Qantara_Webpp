@@ -43,23 +43,37 @@
         [isAdminContext]="true"
         (showParticipants)="onShowParticipants($event)">
       </app-event-item>
-      <button
-        class="delete-btn"
-        (click)="onDeleteEvent(event)"
-        [class.deleting]="deletingEventId === event.id"
-        [disabled]="deletingEventId === event.id"
-        aria-label="Supprimer l'événement"
-      >
-        <svg *ngIf="deletingEventId !== event.id" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="20px" width="20px">
-          <title>delete</title>
-          <path d="M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M8,9H16V19H8V9M15.5,4L14.5,3H9.5L8.5,4H5V6H19V4H15.5Z" />
-        </svg>
-        <div *ngIf="deletingEventId === event.id" class="spinner"></div>
-      </button>
+
+      <!-- Groupe de boutons d'actions -->
+      <div class="event-actions">
+        <button
+          class="action-btn edit-btn"
+          (click)="onEditEvent(event)"
+          title="Modifier l'événement"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+          </svg>
+        </button>
+        <button
+          class="action-btn delete-btn"
+          (click)="onDeleteEvent(event)"
+          [class.loading]="deletingEventId === event.id"
+          [disabled]="deletingEventId === event.id"
+          title="Supprimer l'événement"
+        >
+          <svg *ngIf="deletingEventId !== event.id" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <polyline points="3,6 5,6 21,6"></polyline>
+            <path d="M19,6V20a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6M8,6V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2V6"></path>
+          </svg>
+          <div *ngIf="deletingEventId === event.id" class="button-spinner"></div>
+        </button>
+      </div>
+
       <!-- Bouton remboursement - uniquement pour les événements payants -->
-      <button 
-        *ngIf="event.isPayant" 
-        class="remboursement-btn" 
+      <button
+        *ngIf="event.isPayant"
+        class="remboursement-btn"
         (click)="onShowRemboursements(event.id)">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9e2e2c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="10"/>
@@ -117,9 +131,9 @@
                     <span class="rib-text" [class.masked]="!isRibVisible[demande.id]">
                       {{ demande.rib || 'Non fourni' }}
                     </span>
-                    <button 
-                      *ngIf="demande.rib" 
-                      class="rib-toggle-btn" 
+                    <button
+                      *ngIf="demande.rib"
+                      class="rib-toggle-btn"
                       (click)="toggleRibVisibility(demande.id)"
                       [title]="isRibVisible[demande.id] ? 'Masquer le RIB' : 'Afficher le RIB'">
                       <svg *ngIf="!isRibVisible[demande.id]" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -144,16 +158,16 @@
                 </td>
                 <td>
                   <div class="action-buttons" *ngIf="demande.status === 'en_attente'">
-                    <button 
-                      (click)="updateRemboursementStatus(demande.id, 'accepte')" 
-                      class="action-btn accept-btn" 
+                    <button
+                      (click)="updateRemboursementStatus(demande.id, 'accepte')"
+                      class="action-btn accept-btn"
                       [disabled]="actionLoadingId === demande.id"
                       title="Accepter la demande">
                       ✓ Accepter
                     </button>
-                    <button 
-                      (click)="updateRemboursementStatus(demande.id, 'refuse')" 
-                      class="action-btn reject-btn" 
+                    <button
+                      (click)="updateRemboursementStatus(demande.id, 'refuse')"
+                      class="action-btn reject-btn"
                       [disabled]="actionLoadingId === demande.id"
                       title="Refuser la demande">
                       ✗ Refuser
@@ -174,7 +188,7 @@
           Aucune demande de remboursement pour cet événement.
         </div>
       </div>
-     
+
     </div>
   </div>
     </div>
