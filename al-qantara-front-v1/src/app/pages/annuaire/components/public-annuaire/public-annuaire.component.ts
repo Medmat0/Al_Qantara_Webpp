@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AnnuaireService, Association, StatistiquesAnnuaire } from '../../../../services/annuaire.service';
+import { DetailAnnuaireComponent } from '../detail-annuaire/detail-annuaire.component';
 
 @Component({
   selector: 'app-public-annuaire',
   templateUrl: './public-annuaire.component.html',
   styleUrls: ['./public-annuaire.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink]
+  imports: [CommonModule, FormsModule, RouterLink, DetailAnnuaireComponent]
 })
 export class PublicAnnuaireComponent implements OnInit {
   private annuaireService = inject(AnnuaireService);
@@ -21,17 +22,21 @@ export class PublicAnnuaireComponent implements OnInit {
   secteurs: string[] = [];
   regions: string[] = [];
   isLoading = false;
-  
+
+  // Modal state
+  selectedAssociation: Association | null = null;
+  showModal = false;
+
   // Filtres
   searchTerm = '';
   selectedSecteur = '';
   selectedRegion = '';
-  
+
   // Pagination
   currentPage = 1;
   totalPages = 1;
   itemsPerPage = 12;
-  
+
   // UI
   viewMode: 'grid' | 'list' = 'grid';
   Math = Math;
@@ -55,7 +60,7 @@ export class PublicAnnuaireComponent implements OnInit {
       this.statistiques = stats || null;
       this.secteurs = secteurs || [];
       this.regions = regions || [];
-      
+
       this.applyFilters();
     } catch (error) {
       console.error('Erreur lors du chargement des données:', error);
@@ -168,6 +173,18 @@ export class PublicAnnuaireComponent implements OnInit {
     return 'secteur-' + secteur.toLowerCase().replace(/[^a-z0-9]/g, '-');
   }
 
+  formatWebsiteUrl(url: string | undefined): string {
+    if (!url || url.trim() === '') return '';
+
+    const trimmedUrl = url.trim();
+
+    if (trimmedUrl.startsWith('http://') || trimmedUrl.startsWith('https://')) {
+      return trimmedUrl;
+    }
+
+    return `http://${trimmedUrl}`;
+  }
+
   hasSocialLinks(association: Association): boolean {
     return !!(association.siteWeb || association.facebook || association.instagram || association.linkedin);
   }
@@ -184,8 +201,8 @@ export class PublicAnnuaireComponent implements OnInit {
 
   getAssociationLogo(association: Association): string {
     // Vérifier si le logo existe et n'est pas une URL blob invalide
-    if (association.logo && 
-        association.logo.trim() !== '' && 
+    if (association.logo &&
+        association.logo.trim() !== '' &&
         !association.logo.startsWith('blob:') &&
         association.logo !== 'null' &&
         association.logo !== 'undefined') {
@@ -210,8 +227,25 @@ export class PublicAnnuaireComponent implements OnInit {
 
   // --- Actions ---
   viewDetails(association: Association): void {
-    // Navigation vers la page de détail (à implémenter)
-    console.log('Voir détails de:', association);
+    // Récupérer les détails complets via l'API
+    this.annuaireService.getAssociation(association.id).subscribe({
+      next: (detailsAssociation) => {
+        console.log('🔍 Détails récupérés via API:', detailsAssociation);
+        this.selectedAssociation = detailsAssociation;
+        this.showModal = true;
+      },
+      error: (error) => {
+        console.error('Erreur lors de la récupération des détails:', error);
+        // Fallback : utiliser les données existantes
+        this.selectedAssociation = association;
+        this.showModal = true;
+      }
+    });
+  }
+
+  onCloseModal(): void {
+    this.showModal = false;
+    this.selectedAssociation = null;
   }
 
   visitWebsite(url: string): void {
