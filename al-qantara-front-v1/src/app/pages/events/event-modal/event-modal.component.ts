@@ -84,6 +84,7 @@ export class EventModalComponent implements OnChanges {
 
   // Propriétés pour la notation
   showRatingModal = false;
+  userHasRated = false;
 
   constructor(private sanitizer: DomSanitizer) {
     if (this.event && !Array.isArray(this.event.comments)) {
@@ -117,6 +118,7 @@ export class EventModalComponent implements OnChanges {
             // Initialiser les données des likes depuis le backend
             this.nombreLikes = this.event.nombreLikes || 0;
             this.checkIfUserLiked();
+            this.checkIfUserHasRated();
           }
         },
         error: (error) => {
@@ -264,6 +266,20 @@ export class EventModalComponent implements OnChanges {
   }
 
   /**
+   * Vérifier si l'utilisateur connecté a déjà noté cet événement
+   */
+  checkIfUserHasRated() {
+    if (this.userId && this.event?.ratings) {
+      this.userHasRated = this.event.ratings.some((rating: any) => rating.utilisateur.id === this.userId);
+      console.log('Vérification notation utilisateur:', {
+        userId: this.userId,
+        ratings: this.event.ratings,
+        userHasRated: this.userHasRated
+      });
+    }
+  }
+
+  /**
    * Toggle le like sur l'événement
    */
   toggleLike() {
@@ -391,7 +407,6 @@ export class EventModalComponent implements OnChanges {
    */
   onRatingSubmitted(): void {
     console.log('✅ Notation envoyée avec succès');
-    // Optionnel : rafraîchir les données de l'événement
-    // this.evenementService.getEvenementById(this.event.id).subscribe(...);
+
   }
 }

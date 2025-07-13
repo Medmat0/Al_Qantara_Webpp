@@ -84,7 +84,7 @@
         </button>
 
         <button
-          *ngIf="isEventPassed() && (isParticipating || !event.placesTotal)"
+          *ngIf="isEventPassed() && (isParticipating || !event.placesTotal) && !userHasRated"
           (click)="openRatingModal()"
           [disabled]="loading"
           class="btn-participate">
