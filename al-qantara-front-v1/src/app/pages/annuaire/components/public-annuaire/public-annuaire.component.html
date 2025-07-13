@@ -11,7 +11,7 @@
           Découvrez les associations marocaines en France
         </p>
         <p class="hero-description">
-          Explorez notre réseau d'associations qui œuvrent pour renforcer les liens culturels, 
+          Explorez notre réseau d'associations qui œuvrent pour renforcer les liens culturels,
           sociaux et économiques entre le Maroc et la France.
         </p>
       </div>
@@ -95,7 +95,7 @@
         Rechercher une association
       </h2>
       <div class="view-controls">
-        <button 
+        <button
           class="view-btn"
           [class.active]="viewMode === 'grid'"
           (click)="viewMode = 'grid'"
@@ -103,7 +103,7 @@
         >
           <i class="fas fa-th"></i>
         </button>
-        <button 
+        <button
           class="view-btn"
           [class.active]="viewMode === 'list'"
           (click)="viewMode = 'list'"
@@ -119,15 +119,15 @@
       <div class="search-container">
         <div class="search-input-wrapper">
           <i class="fas fa-search"></i>
-          <input 
-            type="text" 
+          <input
+            type="text"
             placeholder="Rechercher par nom, description ou ville..."
             class="search-input"
             [(ngModel)]="searchTerm"
             (input)="onSearch()"
           >
-          <button 
-            *ngIf="searchTerm" 
+          <button
+            *ngIf="searchTerm"
             class="clear-search"
             (click)="clearSearch()"
             title="Effacer la recherche"
@@ -136,20 +136,20 @@
           </button>
         </div>
       </div>
-      
+
       <!-- Filtres par secteur -->
       <div class="filter-group">
         <label class="filter-label">Secteur d'activité :</label>
         <div class="filter-buttons">
-          <button 
+          <button
             class="filter-btn"
             [class.active]="selectedSecteur === ''"
             (click)="filterBySecteur('')">
             <i class="fas fa-th"></i>
             Tous les secteurs
           </button>
-          <button 
-            *ngFor="let secteur of uniqueSecteurs" 
+          <button
+            *ngFor="let secteur of uniqueSecteurs"
             class="filter-btn"
             [class.active]="selectedSecteur === secteur"
             (click)="filterBySecteur(secteur)">
@@ -163,15 +163,15 @@
       <div class="filter-group">
         <label class="filter-label">Région :</label>
         <div class="filter-buttons">
-          <button 
+          <button
             class="filter-btn"
             [class.active]="selectedRegion === ''"
             (click)="filterByRegion('')">
             <i class="fas fa-map"></i>
             Toutes les régions
           </button>
-          <button 
-            *ngFor="let region of uniqueRegions" 
+          <button
+            *ngFor="let region of uniqueRegions"
             class="filter-btn"
             [class.active]="selectedRegion === region"
             (click)="filterByRegion(region)">
@@ -204,19 +204,19 @@
 
   <!-- Grille/Liste des associations -->
   <div *ngIf="!isLoading" class="associations-container">
-    <div *ngIf="associationsPage && associationsPage.length > 0; else emptyState" 
-         class="associations-grid" 
+    <div *ngIf="associationsPage && associationsPage.length > 0; else emptyState"
+         class="associations-grid"
          [class.list-view]="viewMode === 'list'">
-      <div 
-        *ngFor="let association of associationsPage; trackBy: trackByAssociation; let i = index" 
+      <div
+        *ngFor="let association of associationsPage; trackBy: trackByAssociation; let i = index"
         class="association-card"
         [style.animation-delay]="(i * 0.1) + 's'"
       >
         <!-- Header de la carte avec logo et badge -->
         <div class="card-header">
           <div class="logo-container">
-            <img 
-              [src]="getAssociationLogo(association)" 
+            <img
+              [src]="getAssociationLogo(association)"
               [alt]="association.nom || 'Logo association'"
               class="association-logo"
               (error)="onImageError($event)"
@@ -224,7 +224,7 @@
               style="opacity: 0; transition: opacity 0.3s ease;"
             >
           </div>
-          
+
           <div class="header-info">
             <div class="header-badges">
               <span class="secteur-badge" [class]="getSecteurClass(association.secteurActivite)">
@@ -240,7 +240,7 @@
             <h3 class="association-name" [title]="association.nom">
               {{ association.nom }}
             </h3>
-            
+
             <p class="association-description" *ngIf="association.description" [title]="association.description">
               {{ association.description | slice:0:150 }}
               <span *ngIf="association.description && association.description.length > 150">...</span>
@@ -255,12 +255,12 @@
                 {{ association.ville }}{{ association.ville && association.region ? ', ' : '' }}{{ association.region }}
               </span>
             </div>
-            
+
             <div class="contact-item" *ngIf="association.email">
               <i class="fas fa-envelope"></i>
               <span class="contact-text" [title]="association.email">{{ association.email }}</span>
             </div>
-            
+
             <div class="contact-item" *ngIf="association.telephone">
               <i class="fas fa-phone"></i>
               <span class="contact-text">{{ association.telephone }}</span>
@@ -270,43 +270,43 @@
           <!-- Réseaux sociaux -->
           <div class="social-section" *ngIf="hasSocialLinks(association)">
             <div class="social-links">
-              <a 
-                *ngIf="association.siteWeb" 
-                [href]="association.siteWeb" 
-                target="_blank" 
+              <a
+                *ngIf="association.siteWeb"
+                [href]="formatWebsiteUrl(association.siteWeb)"
+                target="_blank"
                 class="social-link website"
                 title="Site web"
               >
                 <i class="fas fa-globe"></i>
                 <span>Site web</span>
               </a>
-              
-              <a 
-                *ngIf="association.facebook" 
-                [href]="association.facebook" 
-                target="_blank" 
+
+              <a
+                *ngIf="association.facebook"
+                [href]="association.facebook"
+                target="_blank"
                 class="social-link facebook"
                 title="Facebook"
               >
                 <i class="fab fa-facebook-f"></i>
                 <span>Facebook</span>
               </a>
-              
-              <a 
-                *ngIf="association.instagram" 
-                [href]="association.instagram" 
-                target="_blank" 
+
+              <a
+                *ngIf="association.instagram"
+                [href]="association.instagram"
+                target="_blank"
                 class="social-link instagram"
                 title="Instagram"
               >
                 <i class="fab fa-instagram"></i>
                 <span>Instagram</span>
               </a>
-              
-              <a 
-                *ngIf="association.linkedin" 
-                [href]="association.linkedin" 
-                target="_blank" 
+
+              <a
+                *ngIf="association.linkedin"
+                [href]="association.linkedin"
+                target="_blank"
                 class="social-link linkedin"
                 title="LinkedIn"
               >
@@ -319,7 +319,7 @@
 
         <!-- Actions publiques -->
         <div class="card-actions">
-          <button 
+          <button
             class="action-btn primary"
             (click)="viewDetails(association)"
             title="Voir les détails"
@@ -327,16 +327,7 @@
             <i class="fas fa-eye"></i>
             <span>Détails</span>
           </button>
-          
-          <button 
-            *ngIf="association.siteWeb"
-            class="action-btn secondary"
-            (click)="visitWebsite(association.siteWeb)"
-            title="Visiter le site web"
-          >
-            <i class="fas fa-external-link-alt"></i>
-            <span>Site web</span>
-          </button>
+
         </div>
 
         <!-- Footer avec date de création -->
@@ -359,8 +350,8 @@
           {{ searchTerm || selectedSecteur || selectedRegion ? 'Aucun résultat trouvé' : 'Aucune association disponible' }}
         </h3>
         <p class="empty-message">
-          {{ searchTerm || selectedSecteur || selectedRegion 
-            ? 'Essayez de modifier vos critères de recherche pour trouver des associations.' 
+          {{ searchTerm || selectedSecteur || selectedRegion
+            ? 'Essayez de modifier vos critères de recherche pour trouver des associations.'
             : 'Il n\'y a actuellement aucune association dans notre annuaire.' }}
         </p>
         <div class="empty-actions" *ngIf="searchTerm || selectedSecteur || selectedRegion">
@@ -376,13 +367,13 @@
     <div class="pagination-section" *ngIf="totalPages > 1">
       <div class="pagination-info">
         <span class="results-count">
-          Affichage {{ (currentPage - 1) * itemsPerPage + 1 }}-{{ Math.min(currentPage * itemsPerPage, filteredAssociations.length) }} 
+          Affichage {{ (currentPage - 1) * itemsPerPage + 1 }}-{{ Math.min(currentPage * itemsPerPage, filteredAssociations.length) }}
           sur {{ filteredAssociations.length }} associations
         </span>
       </div>
-      
+
       <div class="pagination-controls">
-        <button 
+        <button
           class="pagination-btn prev"
           [disabled]="currentPage === 1"
           (click)="goToPage(currentPage - 1)"
@@ -390,10 +381,10 @@
         >
           <i class="fas fa-chevron-left"></i>
         </button>
-        
+
         <div class="page-numbers">
-          <button 
-            *ngFor="let page of getVisiblePages()" 
+          <button
+            *ngFor="let page of getVisiblePages()"
             class="page-btn"
             [class.active]="currentPage === page"
             [class.ellipsis]="page === '...'"
@@ -403,8 +394,8 @@
             {{ page }}
           </button>
         </div>
-        
-        <button 
+
+        <button
           class="pagination-btn next"
           [disabled]="currentPage === totalPages"
           (click)="goToPage(currentPage + 1)"

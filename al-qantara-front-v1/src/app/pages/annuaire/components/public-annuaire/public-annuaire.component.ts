@@ -21,17 +21,17 @@ export class PublicAnnuaireComponent implements OnInit {
   secteurs: string[] = [];
   regions: string[] = [];
   isLoading = false;
-  
+
   // Filtres
   searchTerm = '';
   selectedSecteur = '';
   selectedRegion = '';
-  
+
   // Pagination
   currentPage = 1;
   totalPages = 1;
   itemsPerPage = 12;
-  
+
   // UI
   viewMode: 'grid' | 'list' = 'grid';
   Math = Math;
@@ -55,7 +55,7 @@ export class PublicAnnuaireComponent implements OnInit {
       this.statistiques = stats || null;
       this.secteurs = secteurs || [];
       this.regions = regions || [];
-      
+
       this.applyFilters();
     } catch (error) {
       console.error('Erreur lors du chargement des données:', error);
@@ -168,6 +168,18 @@ export class PublicAnnuaireComponent implements OnInit {
     return 'secteur-' + secteur.toLowerCase().replace(/[^a-z0-9]/g, '-');
   }
 
+  formatWebsiteUrl(url: string | undefined): string {
+    if (!url || url.trim() === '') return '';
+
+    const trimmedUrl = url.trim();
+
+    if (trimmedUrl.startsWith('http://') || trimmedUrl.startsWith('https://')) {
+      return trimmedUrl;
+    }
+
+    return `http://${trimmedUrl}`;
+  }
+
   hasSocialLinks(association: Association): boolean {
     return !!(association.siteWeb || association.facebook || association.instagram || association.linkedin);
   }
@@ -184,8 +196,8 @@ export class PublicAnnuaireComponent implements OnInit {
 
   getAssociationLogo(association: Association): string {
     // Vérifier si le logo existe et n'est pas une URL blob invalide
-    if (association.logo && 
-        association.logo.trim() !== '' && 
+    if (association.logo &&
+        association.logo.trim() !== '' &&
         !association.logo.startsWith('blob:') &&
         association.logo !== 'null' &&
         association.logo !== 'undefined') {
