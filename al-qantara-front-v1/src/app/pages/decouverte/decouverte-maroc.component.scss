@@ -96,6 +96,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  justify-content: space-between;
+  flex-wrap: wrap;
 }
 
 .points-interet h4 i {
@@ -117,6 +119,136 @@
 
 .points-interet li:last-child {
   border-bottom: none;
+}
+
+/* Styles pour l'itinéraire */
+.route-info {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white;
+  padding: 12px 16px;
+  border-radius: 12px;
+  margin: 12px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.route-steps {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0;
+}
+
+.route-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+.route-step:hover {
+  background: #f8fafc;
+  border-radius: 8px;
+  padding-left: 8px;
+  margin-left: -8px;
+  margin-right: -8px;
+}
+
+.route-step:last-child {
+  border-bottom: none;
+}
+
+.step-number {
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.step-content {
+  flex: 1;
+}
+
+.step-content h5 {
+  margin: 0 0 4px 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.coordinates {
+  color: #64748b;
+  font-size: 0.75rem;
+  font-family: 'Courier New', monospace;
+}
+
+.route-actions {
+  margin-top: 16px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.btn-route {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-route:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+}
+
+.btn-route:active {
+  transform: translateY(0);
+}
+
+.btn-route-external {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn-route-external:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.25);
+}
+
+.btn-route-external:active {
+  transform: translateY(0);
 }
 
 /* Sidebar Menu */
@@ -302,26 +434,117 @@
   transform: scale(1.1);
 }
 
-/* Scrollbar styling */
-.cities-list::-webkit-scrollbar,
-.map-overlay::-webkit-scrollbar {
-  width: 6px;
+/* Overlay des markers sur la carte */
+.map-markers-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
 }
 
-.cities-list::-webkit-scrollbar-track,
-.map-overlay::-webkit-scrollbar-track {
-  background: #f1f5f9;
+.map-marker {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  pointer-events: auto;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-.cities-list::-webkit-scrollbar-thumb,
-.map-overlay::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 3px;
+.map-marker:hover {
+  transform: translate(-50%, -100%) scale(1.1);
+  z-index: 20;
 }
 
-.cities-list::-webkit-scrollbar-thumb:hover,
-.map-overlay::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+.marker-pin {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  width: 28px;
+  height: 28px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  position: relative;
+  margin: 0 auto;
+  box-shadow: 0 3px 8px rgba(239, 68, 68, 0.5);
+  border: 2px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.marker-number {
+  color: white;
+  font-weight: 700;
+  font-size: 0.75rem;
+  transform: rotate(45deg);
+  line-height: 1;
+}
+
+.marker-label {
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-top: 4px;
+  white-space: nowrap;
+  text-align: center;
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.map-marker:hover .marker-label {
+  opacity: 1;
+}
+
+/* Styles pour le mode debug */
+.debug-marker {
+  border: 2px dashed #ff0000 !important;
+  background: rgba(255, 0, 0, 0.1) !important;
+  border-radius: 50% !important;
+  width: 60px !important;
+  height: 60px !important;
+}
+
+.debug-marker .marker-label {
+  opacity: 1 !important;
+  background: rgba(255, 0, 0, 0.9) !important;
+  max-width: 200px;
+  font-size: 0.7rem;
+}
+
+.debug-coords {
+  display: block;
+  color: #ffcccc;
+  font-size: 0.6rem;
+  margin-top: 2px;
+}
+
+.debug-toggle {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  z-index: 100;
+  transition: all 0.3s ease;
+}
+
+.debug-toggle:hover {
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.debug-toggle.active {
+  background: #ff4444;
+  animation: pulse 1.5s infinite;
 }
 
 /* Responsive */
