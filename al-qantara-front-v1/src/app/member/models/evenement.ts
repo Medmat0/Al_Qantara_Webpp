@@ -3,6 +3,7 @@ export type TypeEvenement = 'INTERNE' | 'EXTERNE';
 export type StatutParticipation = 'EN_ATTENTE' | 'CONFIRME' | 'ANNULE';
 
 export interface Evenement {
+  prix: number;
   id: number;
   titre: string;
   description: string;

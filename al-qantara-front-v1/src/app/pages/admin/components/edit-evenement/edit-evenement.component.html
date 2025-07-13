@@ -1,0 +1,262 @@
+<form #eventForm="ngForm" (ngSubmit)="onSubmit(eventForm)" class="event-form">
+  <div class="form-group">
+    <label for="titre">Nom de l'événement</label>
+    <input
+      type="text"
+      id="titre"
+      name="titre"
+      [(ngModel)]="event.titre"
+      required
+      #titre="ngModel">
+    <div class="error-message" *ngIf="formErrors.titre">
+      Le nom de l'événement est requis
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="description">Description de l'événement</label>
+    <textarea
+      id="description"
+      name="description"
+      [(ngModel)]="event.description"
+      required
+      #description="ngModel"
+      rows="4"></textarea>
+    <div class="error-message" *ngIf="formErrors.description">
+      La description est requise
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="dateDebut">Date de début</label>
+      <input
+        type="datetime-local"
+        id="dateDebut"
+        name="dateDebut"
+        [(ngModel)]="event.dateDebut"
+        (ngModelChange)="onDateDebutChange()"
+        required
+        #dateDebut="ngModel">
+      <div class="error-message" *ngIf="formErrors.dateDebut">
+        La date de début est requise
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="dateFin">Date de fin</label>
+      <input
+        type="datetime-local"
+        id="dateFin"
+        name="dateFin"
+        [(ngModel)]="event.dateFin"
+        [min]="minEndDate"
+        required
+        #dateFin="ngModel">
+      <div class="error-message" *ngIf="formErrors.dateFin">
+        <span *ngIf="event.dateFin && event.dateDebut && !isEndDateAfterStartDate()">
+          La date de fin doit être après la date de début
+        </span>
+        <span *ngIf="!event.dateFin">
+          La date de fin est requise
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="adresseSearch">Rechercher une adresse</label>
+    <div class="address-search-container">
+      <input
+        type="text"
+        id="adresseSearch"
+        [ngModel]="addressSearchInput"
+        (ngModelChange)="onAddressSearch($event)"
+        name="adresseSearch"
+        placeholder="Tapez une adresse"
+        autocomplete="off">
+
+      <div class="address-suggestions" *ngIf="showSuggestions">
+        <div class="suggestion-item"
+             *ngFor="let suggestion of addressSuggestions"
+             (click)="handleAddressSelect(suggestion)">
+          <div class="suggestion-main">{{ addressService.formatSuggestion(suggestion) }}</div>
+          <div class="suggestion-details">{{ suggestion.display_name }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Message d'erreur pour l'adresse -->
+    <div class="error-message" *ngIf="formErrors.adresse">
+      Une adresse est requise (utilisez la recherche d'adresse ou remplissez au moins la rue et la ville)
+    </div>
+
+    <div class="address-fields">
+      <div class="address-field">
+        <label for="numero">Numéro</label>
+        <input
+          type="text"
+          id="numero"
+          name="numero"
+          [(ngModel)]="event.numero">
+      </div>
+
+      <div class="address-field">
+        <label for="rue">Rue</label>
+        <input
+          type="text"
+          id="rue"
+          name="rue"
+          [(ngModel)]="event.rue"
+          required>
+        <div class="error-message" *ngIf="formErrors.rue">
+          La rue est requise
+        </div>
+      </div>
+
+      <div class="address-field">
+        <label for="codePostal">Code Postal</label>
+        <input
+          type="text"
+          id="codePostal"
+          name="codePostal"
+          [(ngModel)]="event.codePostal"
+          required>
+        <div class="error-message" *ngIf="formErrors.codePostal">
+          Le code postal est requis
+        </div>
+      </div>
+
+      <div class="address-field">
+        <label for="ville">Ville</label>
+        <input
+          type="text"
+          id="ville"
+          name="ville"
+          [(ngModel)]="event.ville"
+          required>
+        <div class="error-message" *ngIf="formErrors.ville">
+          La ville est requise
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Type d'événement</label>
+    <div class="type-buttons">
+      <button
+        type="button"
+        [class.active]="event.type === 'INTERNE'"
+        (click)="event.type = 'INTERNE'">
+        INTERNE
+      </button>
+      <button
+        type="button"
+        [class.active]="event.type === 'EXTERNE'"
+        (click)="event.type = 'EXTERNE'">
+        EXTERNE
+      </button>
+    </div>
+    <div class="error-message" *ngIf="formErrors.type">
+      Le type d'événement est requis
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="images">Images</label>
+    <div class="image-input-container">
+      <input
+        type="file"
+        id="images"
+        name="images"
+        accept="image/*"
+        multiple
+        (change)="onImagesSelected($event)">
+    </div>
+    <div class="selected-files" *ngIf="selectedImages.length > 0">
+      <div class="file-item" *ngFor="let image of selectedImages; let i = index">
+        <span class="file-name">{{ image.name }}</span>
+        <button type="button" class="remove-file" (click)="removeImage(i)">×</button>
+      </div>
+    </div>
+    <div class="existing-images" *ngIf="event.images && event.images.length > 0">
+      <p>Images actuelles :</p>
+      <div class="image-preview" *ngFor="let imageUrl of event.images; let i = index">
+        <img [src]="imageUrl" alt="Image événement" style="width: 100px; height: 100px; object-fit: cover; border-radius: 4px;">
+        <button type="button" class="remove-existing-image" (click)="removeExistingImage(i)">×</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="video">Vidéo</label>
+    <div class="file-input-container">
+      <input
+        type="file"
+        id="video"
+        name="video"
+        accept="video/*"
+        (change)="onVideoSelected($event)">
+    </div>
+    <div class="selected-files" *ngIf="selectedVideo">
+      <div class="file-item">
+        <span class="file-name">{{ selectedVideo.name }}</span>
+        <button type="button" class="remove-file" (click)="removeVideo()">×</button>
+      </div>
+    </div>
+    <div class="existing-video" *ngIf="event.video && !selectedVideo">
+      <p>Vidéo actuelle : <a [href]="event.video" target="_blank">Voir la vidéo</a></p>
+      <button type="button" class="remove-existing-video" (click)="removeExistingVideo()">Supprimer la vidéo</button>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="placesTotal">Nombre de places</label>
+    <input
+      type="number"
+      id="placesTotal"
+      name="placesTotal"
+      [(ngModel)]="event.placesTotal"
+      min="1">
+  </div>
+
+  <div class="form-group">
+    <label for="isPaid">
+      <input type="checkbox" [(ngModel)]="event.isPaid" name="isPaid" (change)="onPaidChange()" />
+      Événement payant ?
+    </label>
+  </div>
+
+  <div class="form-group price-group" [class.visible]="event.isPaid">
+    <label for="price">Prix (€)</label>
+    <input
+      type="number"
+      id="price"
+      name="price"
+      [(ngModel)]="event.price"
+      min="0"
+      step="0.01"
+      [required]="event.isPaid">
+    <div class="error-message" *ngIf="formErrors.price && event.isPaid">
+      Le prix est requis pour un événement payant
+    </div>
+  </div>
+
+  <div class="success-message" *ngIf="successMessage" style="background-color: #d4edda; color: #155724; padding: 10px; border-radius: 4px; margin-bottom: 15px;">
+    {{ successMessage }}
+  </div>
+
+  <div *ngIf="errorMessage" class="error-alert" style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 4px; margin-bottom: 15px;">
+    {{ errorMessage }}
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="submit-button" [disabled]="isSubmitting">
+      {{ isSubmitting ? 'Modification en cours...' : 'Modifier l\'événement' }}
+    </button>
+    <button type="button" class="cancel-button" (click)="onCancel()">
+      Annuler
+    </button>
+  </div>
+</form>

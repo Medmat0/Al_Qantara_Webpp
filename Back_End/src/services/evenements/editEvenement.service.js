@@ -1,4 +1,3 @@
-
 import { PrismaClient } from "@prisma/client";
 import { geocodeAddress } from "./geocodeAddress.service.js";
 import { sendEmailToUser } from "../../utils/email.config.js";
@@ -43,7 +42,7 @@ const editEvenementService = async (evenementId, eventData, userId) => {
         images: eventData.images ?? existing.images,
         video: eventData.video ?? existing.video,
         isPayant: eventData.estPayant ?? existing.isPayant,
-        prix: eventData.estPayant ? parseFloat(eventData.price) : existing.prix
+        prix: eventData.price !== undefined ? parseFloat(eventData.price) : existing.prix
       }
     });
 

@@ -34,7 +34,7 @@
         ></iframe>
       </div>
 
-      <div class="places-section" *ngIf="event.placesTotal && event.placesTotal > 0">
+      <div class="places-section" *ngIf="event.placesTotal && event.placesTotal > 0 && !isEventPassed()">
         <span><strong>Places disponibles :</strong> {{ event.placesRestantes }}/{{ event.placesTotal }}</span>
       </div>
 
@@ -49,7 +49,7 @@
           </button>
         </div>
         <div class="dropdown d-inline-block" (mouseleave)="showShareMenu = false">
-          <button (click)="showShareMenu = !showShareMenu" class="btn-share">📤 Partager</button>
+          <button (click)="showShareMenu = !showShareMenu" class="btn-share">Partager</button>
           <ul *ngIf="showShareMenu" class="share-menu">
             <li (click)="copyLink()"><span>🔗 Copier le lien</span></li>
             <li (click)="shareByMessage()"><span>💬 Message</span></li>
@@ -65,14 +65,14 @@
             (click)="onPayWithHelloAsso()"
             [disabled]="loading"
             class="btn-pay">
-            {{ loading ? 'Paiement en cours...' : '💳 Acheter un billet' }}
+            {{ loading ? 'Paiement en cours...' : 'Acheter un billet' }}
           </button>
           <button
             *ngIf="!event.isPayant"
             (click)="participate.emit()"
             [disabled]="loading"
             class="btn-participate">
-            {{ loading ? 'Participation en cours...' : '🎫 Participer à l\'événement' }}
+            {{ loading ? 'Participation en cours...' : 'Participer à l\'événement' }}
           </button>
         </ng-container>
         <button
@@ -81,6 +81,14 @@
           [disabled]="loading"
           class="btn-unsubscribe">
           {{ loading ? 'Désinscription en cours...' : '❌ Se désinscrire' }}
+        </button>
+
+        <button
+          *ngIf="isEventPassed() && (isParticipating || !event.placesTotal) && !userHasRated"
+          (click)="openRatingModal()"
+          [disabled]="loading"
+          class="btn-participate">
+          Noter l'événement
         </button>
       </div>
 
@@ -93,7 +101,7 @@
         </div>
       </div>
 
-      <div *ngIf="isParticipating && participation" class="mb-2">
+      <div *ngIf="isParticipating && participation && !isEventPassed()" class="mb-2">
         <div class="confirmed-green-box">
           <strong>Votre participation est confirmée !</strong>
           <div>
@@ -165,6 +173,14 @@
     (close)="closeRemboursementModal()"
     (success)="onRemboursementSuccess($event)"
   ></app-remboursement-modal>
+
+  <app-rating-modal
+    *ngIf="showRatingModal"
+    [eventId]="event?.id"
+    [eventTitle]="event?.titre"
+    (close)="closeRatingModal()"
+    (ratingSubmitted)="onRatingSubmitted()"
+  ></app-rating-modal>
 
   <app-auth-required-modal
     *ngIf="showAuthRequiredModal"

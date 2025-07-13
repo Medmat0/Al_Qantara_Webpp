@@ -5,6 +5,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { PaymentModalComponent } from '../payment-modal/payment-modal.component';
 import { RemboursementModalComponent } from '../remboursement-modal/remboursement-modal.component';
+import { RatingModalComponent } from '../rating-modal/rating-modal.component';
 import { AuthService } from '../../../member/services/auth.service';
 import { EvenementService } from '../../../member/services/evenement.service';
 import { Router } from '@angular/router';
@@ -24,6 +25,7 @@ import { AuthRequiredModalComponent } from '../../auth-required-modal/auth-requi
     PaymentModalComponent,
     CommunityResearchComponent,
     RemboursementModalComponent,
+    RatingModalComponent,
     AuthRequiredModalComponent
   ],
   styleUrl: './event-modal.component.scss'
@@ -80,6 +82,10 @@ export class EventModalComponent implements OnChanges {
   // Ajout de la propriété pour contrôler l'affichage du modal auth-required
   showAuthRequiredModal = false;
 
+  // Propriétés pour la notation
+  showRatingModal = false;
+  userHasRated = false;
+
   constructor(private sanitizer: DomSanitizer) {
     if (this.event && !Array.isArray(this.event.comments)) {
       this.event.comments = [];
@@ -112,6 +118,7 @@ export class EventModalComponent implements OnChanges {
             // Initialiser les données des likes depuis le backend
             this.nombreLikes = this.event.nombreLikes || 0;
             this.checkIfUserLiked();
+            this.checkIfUserHasRated();
           }
         },
         error: (error) => {
@@ -259,6 +266,20 @@ export class EventModalComponent implements OnChanges {
   }
 
   /**
+   * Vérifier si l'utilisateur connecté a déjà noté cet événement
+   */
+  checkIfUserHasRated() {
+    if (this.userId && this.event?.ratings) {
+      this.userHasRated = this.event.ratings.some((rating: any) => rating.utilisateur.id === this.userId);
+      console.log('Vérification notation utilisateur:', {
+        userId: this.userId,
+        ratings: this.event.ratings,
+        userHasRated: this.userHasRated
+      });
+    }
+  }
+
+  /**
    * Toggle le like sur l'événement
    */
   toggleLike() {
@@ -363,7 +384,29 @@ export class EventModalComponent implements OnChanges {
     console.log('✅ Demande de remboursement envoyée avec succès:', response);
     alert('Votre demande de remboursement a été envoyée. Vous recevrez une réponse par email.');
     this.canRequestRefund = false; // Masquer le bouton après demande
-
   }
 
+
+  /**
+   * Ouvrir le modal de notation
+   */
+  openRatingModal(): void {
+    if (!this.checkAuthentication()) return;
+    this.showRatingModal = true;
+  }
+
+  /**
+   * Fermer le modal de notation
+   */
+  closeRatingModal(): void {
+    this.showRatingModal = false;
+  }
+
+  /**
+   * Gérer le succès de la notation
+   */
+  onRatingSubmitted(): void {
+    console.log('✅ Notation envoyée avec succès');
+
+  }
 }

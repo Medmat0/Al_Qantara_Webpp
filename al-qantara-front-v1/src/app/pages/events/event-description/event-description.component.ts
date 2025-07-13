@@ -13,6 +13,7 @@ import {PaymentModalComponent} from '../payment-modal/payment-modal.component';
 import {CommunityPostResearchComponent} from '../../community/components/community-post-research/community-post-research.component';
 import {CommunityResearchComponent} from '../../community/components/community-research/community-research.component';
 import {RemboursementModalComponent} from '../remboursement-modal/remboursement-modal.component';
+import {RatingModalComponent} from '../rating-modal/rating-modal.component';
 import {AuthRequiredModalComponent} from '../../auth-required-modal/auth-required-modal.component';
 
 
@@ -29,6 +30,7 @@ import {AuthRequiredModalComponent} from '../../auth-required-modal/auth-require
     CommunityPostResearchComponent,
     CommunityResearchComponent,
     RemboursementModalComponent,
+    RatingModalComponent,
     AuthRequiredModalComponent
   ],
   templateUrl: './event-description.component.html',
@@ -74,6 +76,10 @@ export class EventDescriptionComponent {
   // Propriété pour contrôler l'affichage du modal auth-required
   showAuthRequiredModal = false;
 
+  // Propriétés pour le modal de notation
+  showRatingModal = false;
+  userHasRated = false;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -105,6 +111,7 @@ export class EventDescriptionComponent {
 
             this.nombreLikes = this.evenement.nombreLikes || 0;
             this.checkIfUserLiked();
+            this.checkIfUserHasRated();
             if (this.userId && Array.isArray(this.evenement.likes)) {
               this.hasLikedEvenement = this.evenement.likes.some((like: LikeEvenement) => like.utilisateurId === this.userId);
             } else {
@@ -284,6 +291,20 @@ export class EventDescriptionComponent {
   }
 
   /**
+   * Vérifier si l'utilisateur connecté a déjà noté cet événement
+   */
+  checkIfUserHasRated() {
+    if (this.userId && this.evenement?.ratings) {
+      this.userHasRated = this.evenement.ratings.some((rating: any) => rating.utilisateur.id === this.userId);
+      console.log('Vérification notation utilisateur:', {
+        userId: this.userId,
+        ratings: this.evenement.ratings,
+        userHasRated: this.userHasRated
+      });
+    }
+  }
+
+  /**
    * Toggle le like sur l'événement (nouvelle méthode utilisant le backend)
    */
   toggleLike() {
@@ -440,5 +461,29 @@ export class EventDescriptionComponent {
     );
   }
 
+
+  /**
+   * Ouvrir le modal de notation
+   */
+  openRatingModal(): void {
+    if (!this.checkAuthentication()) return;
+    this.showRatingModal = true;
+  }
+
+  /**
+   * Fermer le modal de notation
+   */
+  closeRatingModal(): void {
+    this.showRatingModal = false;
+  }
+
+  /**
+   * Gérer le succès de la notation
+   */
+  onRatingSubmitted(): void {
+    console.log('✅ Notation envoyée avec succès');
+    // Optionnel : rafraîchir les données de l'événement
+    // this.evenementService.getEvenementById(this.evenementId).subscribe(...);
+  }
 
 }
