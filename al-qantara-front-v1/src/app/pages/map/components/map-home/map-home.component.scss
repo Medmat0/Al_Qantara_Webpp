@@ -1,0 +1,57 @@
+.map-layout {
+  display: flex;
+  flex-direction: row;
+  height: 100vh; // Prend toute la hauteur de la fenêtre
+}
+
+.map-container {
+  position: relative;
+  flex: 1 1 0;
+  height: 100vh;
+  min-width: 0;
+  display: flex;
+  align-items: stretch;
+}
+
+.map-iframe {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  border: none;
+  z-index: 1;
+}
+
+.map-buttons {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  z-index: 2;
+  display: flex;
+  gap: 12px;
+}
+
+.map-buttons button {
+  background: #fff;
+  color: #653023;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px; // arrondi complet
+  font-weight: 600;
+  font-size: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  outline: none;
+  height: 48px; // fixe la hauteur pour accentuer l'effet
+  min-width: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spot-marker {
+  pointer-events: auto;
+  user-select: none;
+}
