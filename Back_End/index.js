@@ -21,6 +21,7 @@ import bodyParser from "body-parser";
 import helmet from "helmet";
 import communityRoutes from "./src/routes/community.routes.js";
 import socketAuthMiddleware from "./src/middleware/socketAuth.middleware.js";
+import guidesRoutes from "./src/routes/guides.routes.js";
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -161,6 +162,7 @@ app.use("/newsletter", newsletterRoutes);
 app.use("/adhesion", adhesionRoutes);
 app.use("/communities", communityRoutes);
 app.use("/annuaire", annuaireRoutes);
+app.use("/api/guides", guidesRoutes);
 
 // Démarrer le serveur avec Socket.IO
 httpServer.listen(PORT, () => {

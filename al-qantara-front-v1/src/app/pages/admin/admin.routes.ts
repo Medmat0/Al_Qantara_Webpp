@@ -22,6 +22,9 @@ export default [
       { path: 'recruitments/add', loadComponent: () => import('./components/add-recruitment/add-recruitment.component').then(m => m.AddRecruitmentComponent) },
       { path: 'annuaire', loadComponent: () => import('./components/annuaire/admin-annuaire.component').then(m => m.AdminAnnuaireComponent) },
       { path: 'annuaire/add', loadComponent: () => import('./components/annuaire/add-association/add-association.component').then(m => m.AddAssociationComponent) },
+      { path: 'guides/add', loadComponent: () => import('./components/guide-form/guide-form.component').then(m => m.GuideFormComponent) },
+      { path: 'guides/edit/:id', loadComponent: () => import('./components/guide-form/guide-form.component').then(m => m.GuideFormComponent) },
+      { path: 'guides', loadComponent: () => import('./components/admin-guides/admin-guides.component').then(m => m.AdminGuidesComponent) },
       { path: '', redirectTo: 'users', pathMatch: 'full' },
       {path: 'newsletter', loadComponent: () => import('./components/newsletter/admin-newsletter.component').then(m => m.AdminNewsletterComponent) },
     ]

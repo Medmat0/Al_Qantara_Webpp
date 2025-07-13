@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -48,6 +47,7 @@ model Utilisateur {
   CommunityPostCommentaire CommunityPostCommentaire[]
 
   CommunityPost CommunityPost[]
+  guides        Guide[]
 
   moderateurCommunity Community[] @relation("CommunityModerateurs")
 
@@ -526,4 +526,63 @@ model Don {
   helloAssoId   String?        @db.VarChar(255)
   message       String?        @db.Text
   utilisateur   Utilisateur    @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+}
+
+// Modèles pour les guides touristiques
+model Guide {
+  id              Int               @id @default(autoincrement())
+  nom             String            @db.VarChar(255)
+  region          String            @db.VarChar(255)
+  description     String            @db.Text
+  image           String            @db.VarChar(500) // Photo principale de la ville
+  images          String[]          @db.VarChar(500) // Galerie de photos
+  latitude        Float
+  longitude       Float
+  actif           Boolean           @default(true)
+  dateCreation    DateTime          @default(now())
+  dateModification DateTime         @updatedAt
+  creePar         Int
+  createur        Utilisateur       @relation(fields: [creePar], references: [id])
+  pointsInteret   PointInteret[]
+
+  @@map("guides")
+}
+
+model PointInteret {
+  id              Int      @id @default(autoincrement())
+  nom             String   @db.VarChar(255)
+  description     String?  @db.Text
+  adresse         String   @db.VarChar(500)
+  latitude        Float
+  longitude       Float
+  images          String[] @db.VarChar(500) // Photos du point d'intérêt
+  horairesOuverture String? @db.VarChar(500)
+  tarifs          String?  @db.Text
+  telephone       String?  @db.VarChar(20)
+  siteWeb         String?  @db.VarChar(255)
+  email           String?  @db.VarChar(255)
+  typePoint       TypePointInteret
+  ordre           Int      @default(1) // Ordre dans l'itinéraire
+  actif           Boolean  @default(true)
+  dateCreation    DateTime @default(now())
+  dateModification DateTime @updatedAt
+  guideId         Int
+  guide           Guide    @relation(fields: [guideId], references: [id], onDelete: Cascade)
+
+  @@map("points_interet")
+}
+
+enum TypePointInteret {
+  MONUMENT
+  MUSEE
+  RESTAURANT
+  HOTEL
+  PLAGE
+  PARC
+  MARCHE
+  MOSQUEE
+  JARDIN
+  KASBAH
+  MEDINA
+  AUTRE
 }

@@ -1,0 +1,144 @@
+<div class="admin-guides-container">
+  <!-- Authentication check -->
+  <div *ngIf="!isAuthenticated" class="auth-warning">
+    <div class="alert alert-warning">
+      <i class="fas fa-exclamation-triangle"></i>
+      Vous devez être connecté en tant qu'administrateur pour accéder à cette page.
+    </div>
+  </div>
+
+  <div *ngIf="isAuthenticated">
+    <div class="header">
+      <div class="header-content">
+        <h1>Gestion des Guides</h1>
+        <p class="welcome-text" *ngIf="currentUser">
+          Connecté en tant que : <strong>{{ currentUser.prenom }} {{ currentUser.nom }}</strong>
+        </p>
+      </div>
+      <button class="btn btn-primary" [routerLink]="['add']">
+        <i class="fas fa-plus"></i> Ajouter un Guide
+      </button>
+    </div>
+
+    <div class="filters">
+      <!-- Error message -->
+      <div class="error-alert" *ngIf="errorMessage" style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 4px; margin-bottom: 15px;">
+        <i class="fas fa-exclamation-triangle"></i> {{ errorMessage }}
+      </div>
+      
+      <div class="filter-group">
+        <label for="statusFilter">Statut :</label>
+        <select id="statusFilter" [(ngModel)]="filters.actif" (change)="loadGuides()">
+          <option value="all">Tous</option>
+          <option [value]="true">Actifs</option>
+          <option [value]="false">Inactifs</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <label for="limitFilter">Par page :</label>
+        <select id="limitFilter" [(ngModel)]="filters.limit" (change)="loadGuides()">
+          <option [value]="5">5</option>
+          <option [value]="10">10</option>
+          <option [value]="20">20</option>
+          <option [value]="50">50</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="guides-list" *ngIf="!loading">
+    <div class="guide-card" *ngFor="let guide of guides">
+      <div class="guide-image">
+        <img [src]="guide.image || '/assets/default-guide.jpg'" [alt]="guide.nom">
+        <div class="status-badge" [class.active]="guide.actif" [class.inactive]="!guide.actif">
+          {{ guide.actif ? 'Actif' : 'Inactif' }}
+        </div>
+      </div>
+      
+      <div class="guide-content">
+        <h3>{{ guide.nom }}</h3>
+        <p class="region">{{ guide.region }}</p>
+        <p class="description">{{ guide.description | slice:0:150 }}{{ guide.description.length > 150 ? '...' : '' }}</p>
+        
+        <div class="guide-stats">
+          <span class="stat">
+            <i class="fas fa-map-marker-alt"></i>
+            {{ guide._count?.pointsInteret || 0 }} points d'intérêt
+          </span>
+          <span class="stat">
+            <i class="fas fa-user"></i>
+            {{ guide.createur.prenom }} {{ guide.createur.nom }}
+          </span>
+          <span class="stat">
+            <i class="fas fa-calendar"></i>
+            {{ formatDate(guide.dateCreation) }}
+          </span>
+        </div>
+      </div>
+      
+      <div class="guide-actions">
+        <button class="btn btn-sm btn-outline" [routerLink]="['edit', guide.id]">
+          <i class="fas fa-edit"></i> Modifier
+        </button>
+        <button class="btn btn-sm btn-danger" (click)="confirmDelete(guide)">
+          <i class="fas fa-trash"></i> Supprimer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="loading" *ngIf="loading">
+    <p>Chargement des guides...</p>
+  </div>
+
+  <div class="empty-state" *ngIf="!loading && guides.length === 0">
+    <i class="fas fa-map"></i>
+    <h3>Aucun guide trouvé</h3>
+    <p>Commencez par créer votre premier guide de voyage</p>
+    <button class="btn btn-primary" [routerLink]="['add']">
+      Créer un guide
+    </button>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination" *ngIf="pagination && pagination.pages > 1">
+    <button 
+      class="btn btn-sm" 
+      [disabled]="pagination.page <= 1"
+      (click)="changePage(pagination.page - 1)">
+      <i class="fas fa-chevron-left"></i> Précédent
+    </button>
+    
+    <span class="page-info">
+      Page {{ pagination.page }} sur {{ pagination.pages }}
+      ({{ pagination.total }} guides au total)
+    </span>
+    
+    <button 
+      class="btn btn-sm" 
+      [disabled]="pagination.page >= pagination.pages"
+      (click)="changePage(pagination.page + 1)">
+      Suivant <i class="fas fa-chevron-right"></i>
+    </button>
+  </div>
+  </div> <!-- Close authenticated section -->
+</div>
+
+<!-- Modal de confirmation de suppression -->
+<div class="modal-overlay" *ngIf="guideToDelete" (click)="cancelDelete()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Confirmer la suppression</h3>
+    </div>
+    <div class="modal-body">
+      <p>Êtes-vous sûr de vouloir supprimer le guide <strong>{{ guideToDelete.nom }}</strong> ?</p>
+      <p class="warning">Cette action est irréversible et supprimera également tous les points d'intérêt associés.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="cancelDelete()">Annuler</button>
+      <button class="btn btn-danger" (click)="deleteGuide()" [disabled]="deleting">
+        {{ deleting ? 'Suppression...' : 'Supprimer' }}
+      </button>
+    </div>
+  </div>
+</div>
