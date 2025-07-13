@@ -89,49 +89,29 @@ export class EditEvenementComponent implements OnInit {
         description: this.eventData.description,
         dateDebut: this.formatDateForInput(dateDebut),
         dateFin: this.formatDateForInput(dateFin),
-        numero: '', // Sera extrait du lieu
-        rue: '', // Sera extrait du lieu
-        codePostal: '', // Sera extrait du lieu
-        ville: '', // Sera extrait du lieu
+        numero: '',
+        rue: '',
+        codePostal: '',
+        ville: '',
         isPaid: this.eventData.isPayant || false,
-        price: 0, // Sera défini selon isPayant
+        price: this.eventData.prix || 0,
         type: this.eventData.type || '',
         placesTotal: this.eventData.placesTotal || null,
         images: this.eventData.images || [],
         video: this.eventData.video || null
       };
 
-      // Extraire les informations d'adresse depuis le lieu
-      this.extractAddressFromLieu();
+      if (this.eventData.lieu) {
+        this.addressSearchInput = this.eventData.lieu;
+      }
 
-      // Sauvegarder les données originales APRÈS l'extraction de l'adresse
       this.originalEventData = {
         ...this.event,
-        // Sauvegarder aussi l'adresse originale
         originalLieu: this.eventData.lieu
       };
 
       // Définir la date minimum pour la date de fin
       this.updateMinEndDate();
-    }
-  }
-
-  private extractAddressFromLieu() {
-    if (this.eventData?.lieu) {
-      const lieu = this.eventData.lieu;
-      // Essayer de parser l'adresse complète
-      const parts = lieu.split(',').map(p => p.trim());
-
-      if (parts.length >= 2) {
-        this.event.ville = parts[parts.length - 1];
-        this.event.codePostal = parts[parts.length - 2];
-
-        if (parts.length >= 3) {
-          this.event.rue = parts.slice(0, -2).join(', ');
-        }
-      } else {
-        this.event.rue = lieu;
-      }
     }
   }
 
@@ -200,6 +180,18 @@ export class EditEvenementComponent implements OnInit {
     }
   }
 
+  // Méthode pour vérifier si la date de fin est après la date de début
+  isEndDateAfterStartDate(): boolean {
+    if (!this.event.dateDebut || !this.event.dateFin) {
+      return true; // Si une des dates est manquante, on ne considère pas cela comme une erreur de comparaison
+    }
+
+    const debut = new Date(this.event.dateDebut);
+    const fin = new Date(this.event.dateFin);
+
+    return fin > debut;
+  }
+
   onSubmit(_form: NgForm) {
     this.resetErrors();
     this.errorMessage = '';
@@ -233,9 +225,9 @@ export class EditEvenementComponent implements OnInit {
       changedData.dateFin = new Date(this.event.dateFin).toISOString();
     }
 
-    // Comparer adresse
-    const currentAddress = this.buildFullAddress();
-    const originalAddress = this.buildOriginalAddress();
+    // Comparer adresse - utiliser l'adresse du champ de recherche ou l'adresse construite
+    const currentAddress = this.addressSearchInput || this.buildFullAddress();
+    const originalAddress = this.originalEventData.originalLieu || '';
     if (currentAddress !== originalAddress) {
       changedData.adresse = currentAddress;
     }
@@ -250,16 +242,19 @@ export class EditEvenementComponent implements OnInit {
       changedData.placesTotal = this.event.placesTotal;
     }
 
-    // Comparer statut payant
     if (this.event.isPaid !== this.originalEventData.isPaid) {
       changedData.estPayant = this.event.isPaid;
+
+      if (this.event.isPaid) {
+        changedData.price = this.event.price;
+      }
     }
 
-    // Comparer prix (seulement si l'événement est payant)
-    if (this.event.isPaid && this.event.price !== this.originalEventData.price) {
-      changedData.price = this.event.price;
+    if (this.event.isPaid || this.originalEventData.isPaid) {
+      if (this.event.price !== this.originalEventData.price) {
+        changedData.price = this.event.price;
+      }
     }
-
     // Comparer images
     if (JSON.stringify(this.event.images) !== JSON.stringify(this.originalEventData.images)) {
       changedData.images = this.event.images;
@@ -322,12 +317,15 @@ export class EditEvenementComponent implements OnInit {
   private validateForm(): boolean {
     let isValid = true;
 
-    if (!this.event.titre.trim()) {
+    // Réinitialiser les erreurs
+    this.resetErrors();
+
+    if (!this.event.titre || !this.event.titre.trim()) {
       this.formErrors.titre = true;
       isValid = false;
     }
 
-    if (!this.event.description.trim()) {
+    if (!this.event.description || !this.event.description.trim()) {
       this.formErrors.description = true;
       isValid = false;
     }
@@ -340,9 +338,22 @@ export class EditEvenementComponent implements OnInit {
     if (!this.event.dateFin) {
       this.formErrors.dateFin = true;
       isValid = false;
+    } else if (this.event.dateDebut && this.event.dateFin) {
+      // Vérifier que la date de fin est après la date de début
+      const debut = new Date(this.event.dateDebut);
+      const fin = new Date(this.event.dateFin);
+
+      if (fin <= debut) {
+        this.formErrors.dateFin = true;
+        isValid = false;
+      }
     }
 
-    if (!this.event.rue.trim() || !this.event.ville.trim()) {
+    // Valider l'adresse - utiliser le champ de recherche ou les champs séparés
+    const hasAddressSearch = this.addressSearchInput && this.addressSearchInput.trim().length > 0;
+    const hasAddressFields = this.event.rue && this.event.rue.trim() && this.event.ville && this.event.ville.trim();
+
+    if (!hasAddressSearch && !hasAddressFields) {
       this.formErrors.adresse = true;
       isValid = false;
     }
@@ -355,17 +366,6 @@ export class EditEvenementComponent implements OnInit {
     if (this.event.isPaid && (!this.event.price || this.event.price <= 0)) {
       this.formErrors.price = true;
       isValid = false;
-    }
-
-    // Vérifier que la date de fin est après la date de début
-    if (this.event.dateDebut && this.event.dateFin) {
-      const debut = new Date(this.event.dateDebut);
-      const fin = new Date(this.event.dateFin);
-
-      if (fin <= debut) {
-        this.formErrors.dateFin = true;
-        isValid = false;
-      }
     }
 
     return isValid;

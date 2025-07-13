@@ -54,7 +54,12 @@
         required
         #dateFin="ngModel">
       <div class="error-message" *ngIf="formErrors.dateFin">
-        La date de fin est requise
+        <span *ngIf="event.dateFin && event.dateDebut && !isEndDateAfterStartDate()">
+          La date de fin doit être après la date de début
+        </span>
+        <span *ngIf="!event.dateFin">
+          La date de fin est requise
+        </span>
       </div>
     </div>
   </div>
@@ -79,6 +84,11 @@
           <div class="suggestion-details">{{ suggestion.display_name }}</div>
         </div>
       </div>
+    </div>
+
+    <!-- Message d'erreur pour l'adresse -->
+    <div class="error-message" *ngIf="formErrors.adresse">
+      Une adresse est requise (utilisez la recherche d'adresse ou remplissez au moins la rue et la ville)
     </div>
 
     <div class="address-fields">
