@@ -1162,27 +1162,135 @@ $admin-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0
   }
 }
 
-// Animation pour le loading
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
 
-// Responsive design pour le tableau participants
-@media (max-width: 768px) {
-  .participants-table-container {
-    border-radius: 8px;
+.edit-event-modal {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+  backdrop-filter: blur(2px);
+
+  .edit-event-modal-content {
+    max-width: 900px;
+    width: 90vw;
+    max-height: 90vh;
+    padding: 0;
+    overflow: hidden;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(158, 46, 44, 0.25);
+    border: 2px solid rgba(158, 46, 44, 0.1);
+    background: white;
   }
 
-  .participants-table {
-    th, td {
-      padding: 0.75rem 0.5rem;
-      font-size: 0.875rem;
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 2.5rem;
+    border-bottom: 1px solid #e8ecef;
+    background: linear-gradient(135deg, #9e2e2c 0%, #7c2323 100%);
+    color: white;
+
+    h3 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: white;
+      font-family: 'Cormorant Garamond', serif;
     }
 
-    th {
-      &:first-child { border-top-left-radius: 8px; }
-      &:last-child { border-top-right-radius: 8px; }
+    .close-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: white;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.4);
+        transform: scale(1.05);
+      }
     }
+  }
+
+  .modal-body {
+    padding: 2rem 2.5rem;
+    max-height: 70vh;
+    overflow-y: auto;
+    background: #fafbfc;
+
+    /* Styles de la scrollbar */
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f1f3f4;
+      border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #9e2e2c;
+      border-radius: 4px;
+
+      &:hover {
+        background: #7c2323;
+      }
+    }
+
+    app-edit-evenement {
+      display: block;
+      width: 100%;
+
+      .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid #e8ecef;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .edit-event-modal {
+    .edit-event-modal-content {
+      width: 95vw;
+      max-height: 95vh;
+    }
+
+    .modal-header {
+      padding: 1.5rem;
+
+      h3 {
+        font-size: 1.25rem;
+      }
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+  }
+}
+
+.edit-event-modal {
+  animation: adminFadeIn 0.3s ease-in-out;
+}
+
+@keyframes adminFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }

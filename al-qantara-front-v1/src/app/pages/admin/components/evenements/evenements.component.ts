@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { EventItemComponent } from '../../../events/event-listing/event-item/event-item.component';
+import { EditEvenementComponent } from '../edit-evenement/edit-evenement.component';
 import { Evenement } from '../../../../member/models/evenement';
 import { AdminEvenementService } from '../../../../admin/services/admin-evenement.service';
 import { EvenementService } from '../../../../member/services/evenement.service';
@@ -23,7 +24,7 @@ interface Participant {
 @Component({
   selector: 'app-evenements-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, EventItemComponent],
+  imports: [CommonModule, FormsModule, EventItemComponent, EditEvenementComponent],
   templateUrl: './evenements.component.html',
   styleUrls: ['./evenements.component.scss']
 })
@@ -53,6 +54,10 @@ export class EvenementsComponent {
   participants: Participant[] = [];
   loadingParticipants = false;
   selectedEventTitle = '';
+
+  // Propriétés pour le modal d'édition
+  showEditModal = false;
+  eventToEdit: Evenement | null = null;
 
   ngOnInit() {
     this.loadEvents();
@@ -151,12 +156,25 @@ export class EvenementsComponent {
   }
 
   onEditEvent(event: Evenement): void {
-    // Pour l'instant, on peut rediriger vers une page d'édition ou ouvrir un modal
-    // Exemple de redirection vers une page d'édition :
-    this.router.navigate(['/admin/evenements/edit', event.id]);
+    this.eventToEdit = { ...event };
+    this.showEditModal = true;
+  }
 
-    // Ou si vous préférez afficher une alerte temporaire :
-    // alert(`Édition de l'événement: ${event.titre}`);
+  closeEditModal(): void {
+    this.showEditModal = false;
+    this.eventToEdit = null;
+  }
+
+  onEventUpdated(updatedEvent: any): void {
+    const index = this.events.findIndex(e => e.id === updatedEvent.id);
+    if (index !== -1) {
+      this.events[index] = { ...this.events[index], ...updatedEvent };
+    }
+    this.closeEditModal();
+  }
+
+  onEditCancel(): void {
+    this.closeEditModal();
   }
 
   async onDeleteEvent(event: Evenement): Promise<void> {

@@ -358,4 +358,20 @@
       </div>
     </div>
   </div>
+  <div class="modal edit-event-modal" *ngIf="showEditModal">
+    <div class="modal-content edit-event-modal-content">
+      <div class="modal-header">
+        <h3>Modifier l'événement</h3>
+        <button class="close-btn" (click)="closeEditModal()">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <app-edit-evenement
+          [eventData]="eventToEdit"
+          (eventUpdated)="onEventUpdated($event)"
+          (cancel)="onEditCancel()">
+        </app-edit-evenement>
+      </div>
+    </div>
+  </div>
 </div>
