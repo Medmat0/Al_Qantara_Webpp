@@ -54,7 +54,6 @@ const registerUser = asyncHandler(async (req, res) => {
 
 
   const emailInfo = {
-    from: "Mailer Company",
     to: email,
     subject: "Vérification de votre email",
     text: "Veuillez vérifier votre email",
