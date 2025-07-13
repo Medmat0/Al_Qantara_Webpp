@@ -78,12 +78,12 @@ $transition-slow: all 0.3s ease-in-out;
   transition: $transition-all;
   user-select: none;
   white-space: nowrap;
-  
+
   &:focus-visible {
     outline: 2px solid $primary-color;
     outline-offset: 2px;
   }
-  
+
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -95,7 +95,7 @@ $transition-slow: all 0.3s ease-in-out;
   @include button-base;
   background-color: $primary-color;
   color: $background-white;
-  
+
   &:hover:not(:disabled) {
     background-color: $primary-hover;
     transform: translateY(-1px);
@@ -108,7 +108,7 @@ $transition-slow: all 0.3s ease-in-out;
   background-color: $background-gray-100;
   color: $text-secondary;
   border-color: $border-gray-200;
-  
+
   &:hover:not(:disabled) {
     background-color: $background-gray-200;
     color: $text-primary;
@@ -120,7 +120,7 @@ $transition-slow: all 0.3s ease-in-out;
   background-color: transparent;
   color: $text-secondary;
   border-color: transparent;
-  
+
   &:hover:not(:disabled) {
     background-color: $background-gray-50;
     color: $text-primary;
@@ -138,13 +138,13 @@ $transition-slow: all 0.3s ease-in-out;
   color: $text-primary;
   transition: $transition-all;
   resize: vertical;
-  
+
   &:focus {
     outline: none;
     border-color: $primary-color;
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
   }
-  
+
   &::placeholder {
     color: $text-muted;
   }
@@ -173,7 +173,7 @@ $transition-slow: all 0.3s ease-in-out;
   max-width: 76rem;
   margin: 0 auto;
   padding: $spacing-4;
-  
+
   @media (max-width: 768px) {
     padding: $spacing-2;
   }
@@ -185,27 +185,27 @@ $transition-slow: all 0.3s ease-in-out;
   padding: $spacing-6;
   margin-bottom: $spacing-4;
   position: relative;
-  
+
   &.is-reply {
     margin-left: $spacing-8;
     margin-top: $spacing-4;
     border-left: 3px solid $primary-color;
     background: $background-gray-50;
-    
+
     @media (max-width: 768px) {
       margin-left: $spacing-4;
     }
-    
+
     .comment-item {
       margin-left: $spacing-6;
       background: $background-white;
-      
+
       @media (max-width: 768px) {
         margin-left: $spacing-3;
       }
     }
   }
-  
+
   &:hover {
     box-shadow: $shadow-md;
   }
@@ -217,52 +217,53 @@ $transition-slow: all 0.3s ease-in-out;
   align-items: flex-start;
   justify-content: space-between;
   margin-bottom: $spacing-4;
-  
+
   .comment-author-info {
     display: flex;
     align-items: center;
     gap: $spacing-3;
     flex: 1;
-    
+
     .author-avatar {
       @include avatar(2.5rem);
     }
-    
+
     .author-details {
+      font-family: Mulish, sans-serif;
       display: flex;
       flex-direction: column;
       gap: $spacing-1;
-      
+
       .author-name {
         font-size: $font-base;
         font-weight: $font-semibold;
         color: $text-primary;
       }
-      
+
       .comment-date {
         font-size: $font-xs;
         color: $text-muted;
       }
     }
   }
-  
+
   .comment-menu {
     position: relative;
-    
+
     .menu-btn {
       @include button-ghost;
       width: 2rem;
       height: 2rem;
       padding: 0;
       border-radius: $radius-full;
-      
+
       .menu-icon {
         font-size: $font-lg;
         font-weight: $font-bold;
         transform: rotate(90deg);
       }
     }
-    
+
     .menu-dropdown {
       position: absolute;
       top: 100%;
@@ -278,13 +279,13 @@ $transition-slow: all 0.3s ease-in-out;
       visibility: hidden;
       transform: translateY(-$spacing-2);
       transition: $transition-fast;
-      
+
       &.show {
         opacity: 1;
         visibility: visible;
         transform: translateY(0);
       }
-      
+
       .menu-item {
         @include button-ghost;
         width: 100%;
@@ -292,16 +293,16 @@ $transition-slow: all 0.3s ease-in-out;
         padding: $spacing-2 $spacing-3;
         border-radius: $radius-sm;
         font-size: $font-sm;
-        
+
         &.delete {
           color: $error-color;
-          
+
           &:hover:not(:disabled) {
             background-color: $background-red-50;
             color: $error-hover;
           }
         }
-        
+
         .menu-icon {
           font-size: $font-sm;
         }
@@ -313,37 +314,38 @@ $transition-slow: all 0.3s ease-in-out;
 // Comment content
 .comment-content {
   margin-bottom: $spacing-4;
-  
+
   .comment-text {
     font-size: $font-base;
+    font-family: Mulish, sans-serif;
     line-height: 1.6;
     color: $text-primary;
-    
+
     p {
       margin: 0 0 $spacing-3 0;
-      
+
       &:last-child {
         margin-bottom: 0;
       }
     }
   }
-  
+
   .edit-form {
     .edit-textarea {
       @include input-base;
       min-height: 4rem;
       margin-bottom: $spacing-3;
     }
-    
+
     .edit-actions {
       display: flex;
       gap: $spacing-2;
-      
+
       .btn {
         &.btn-primary {
           @include button-primary;
         }
-        
+
         &.btn-secondary {
           @include button-secondary;
         }
@@ -359,44 +361,53 @@ $transition-slow: all 0.3s ease-in-out;
   gap: $spacing-4;
   padding-top: $spacing-4;
   border-top: 1px solid $border-gray-200;
-  
+
   .action-btn {
     @include button-ghost;
     font-size: $font-sm;
-    
+
     .action-icon {
       font-size: $font-base;
     }
-    
+    .action-icon svg {
+      width: 22px;
+      height: 22px;
+      min-width: 22px;
+      min-height: 22px;
+      fill: #653023;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
     .action-count {
       font-weight: $font-semibold;
       color: $text-primary;
     }
   }
-  
+
   .like-btn {
     &.liked {
       background: rgba(239, 68, 68, 0.1);
       color: $error-color;
       border-color: rgba(239, 68, 68, 0.2);
-      
+
       &:hover:not(:disabled) {
         background: rgba(239, 68, 68, 0.15);
       }
     }
   }
-  
+
   .reply-btn {
     color: $primary-color;
-    
+
     &:hover:not(:disabled) {
       background: $background-blue-50;
     }
   }
-  
+
   .share-btn {
     color: $success-color;
-    
+
     &:hover:not(:disabled) {
       background: rgba(16, 185, 129, 0.1);
     }
@@ -408,39 +419,39 @@ $transition-slow: all 0.3s ease-in-out;
   margin-top: $spacing-4;
   padding-top: $spacing-4;
   border-top: 1px solid $border-gray-200;
-  
+
   .reply-form-header {
     display: flex;
     align-items: center;
     gap: $spacing-3;
     margin-bottom: $spacing-3;
-    
+
     .reply-avatar {
       @include avatar(2rem);
     }
-    
+
     .reply-to {
       font-size: $font-sm;
       font-weight: $font-medium;
       color: $text-secondary;
     }
   }
-  
+
   .reply-textarea {
     @include input-base;
     min-height: 3rem;
     margin-bottom: $spacing-3;
   }
-  
+
   .reply-actions {
     display: flex;
     gap: $spacing-2;
-    
+
     .btn {
       &.btn-primary {
         @include button-primary;
       }
-      
+
       &.btn-secondary {
         @include button-secondary;
       }
@@ -451,33 +462,33 @@ $transition-slow: all 0.3s ease-in-out;
 // Replies container
 .replies-container {
   margin-top: $spacing-4;
-  
+
   .replies-header {
     margin-bottom: $spacing-3;
-    
+
     .toggle-replies {
       @include button-ghost;
       font-size: $font-sm;
       padding: $spacing-2;
-      
+
       .toggle-icon {
         font-size: $font-xs;
         transition: transform $transition-fast;
         margin-right: $spacing-1;
       }
-      
+
       .replies-count {
         font-weight: $font-medium;
         color: $text-primary;
       }
     }
   }
-  
+
   .replies-list {
     .reply-item {
       border-left: 2px solid $border-gray-200;
       padding-left: $spacing-4;
-      
+
       &:not(:last-child) {
         margin-bottom: $spacing-3;
       }
@@ -493,10 +504,10 @@ $transition-slow: all 0.3s ease-in-out;
   justify-content: center;
   padding: $spacing-8;
   color: $text-secondary;
-  
+
   .loading-spinner {
     margin-bottom: $spacing-4;
-    
+
     .spinner {
       width: 2rem;
       height: 2rem;
@@ -506,7 +517,7 @@ $transition-slow: all 0.3s ease-in-out;
       animation: spin 1s linear infinite;
     }
   }
-  
+
   .loading-text {
     font-size: $font-base;
     font-weight: $font-medium;
@@ -521,19 +532,19 @@ $transition-slow: all 0.3s ease-in-out;
   justify-content: center;
   padding: $spacing-12;
   text-align: center;
-  
+
   .empty-icon {
     font-size: 3rem;
     margin-bottom: $spacing-4;
   }
-  
+
   .empty-title {
     font-size: $font-xl;
     font-weight: $font-semibold;
     color: $text-primary;
     margin: 0 0 $spacing-2 0;
   }
-  
+
   .empty-description {
     font-size: $font-base;
     color: $text-secondary;
@@ -553,26 +564,26 @@ $transition-slow: all 0.3s ease-in-out;
   background: $background-red-50;
   border: 1px solid $border-red-200;
   border-radius: $radius-lg;
-  
+
   .error-icon {
     font-size: 2rem;
     margin-bottom: $spacing-3;
   }
-  
+
   .error-title {
     font-size: $font-lg;
     font-weight: $font-semibold;
     color: $error-color;
     margin: 0 0 $spacing-2 0;
   }
-  
+
   .error-description {
     font-size: $font-base;
     color: $text-secondary;
     margin: 0 0 $spacing-4 0;
     max-width: 24rem;
   }
-  
+
   .btn {
     &.btn-primary {
       @include button-primary;
@@ -590,29 +601,29 @@ $transition-slow: all 0.3s ease-in-out;
 @media (max-width: 768px) {
   .comment-item {
     padding: $spacing-4;
-    
+
     &.is-reply {
       margin-left: $spacing-4;
     }
   }
-  
+
   .comment-actions {
     flex-wrap: wrap;
     gap: $spacing-2;
   }
-  
+
   .action-btn {
     .action-text {
       display: none;
     }
   }
-  
+
   .reply-form,
   .edit-form {
     .reply-actions,
     .edit-actions {
       flex-direction: column;
-      
+
       .btn {
         width: 100%;
       }
@@ -624,19 +635,19 @@ $transition-slow: all 0.3s ease-in-out;
   .comments-container {
     padding: $spacing-2;
   }
-  
+
   .comment-item {
     padding: $spacing-3;
-    
+
     &.is-reply {
       margin-left: $spacing-2;
     }
   }
-  
+
   .comment-header {
     .comment-author-info {
       gap: $spacing-2;
-      
+
       .author-avatar {
         @include avatar(2rem);
       }

@@ -7,8 +7,7 @@ import associationService from '../../services/annuaire/associationService.js';
  */
 const creerAssociation = async (req, res) => {
   try {
-    const association = await associationService.creerAssociation(req.body);
-    
+    const association = await associationService.creerAssociation(req);
     res.status(201).json({
       message: 'Association créée avec succès',
       association
