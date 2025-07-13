@@ -45,13 +45,12 @@ const login = asyncHandler(async (req, res, next) => {
       },
     });
 
-    const verifyLink = `${BASE_URL}/auth/verify-email/${plainVerifyToken}`;
+    const verifyLink = `${BASE_URL}/auth/verify-email/${plainVerfiyToken}`;
 
 
 
     // Envoi du mail de vérification
     const info = {
-      from: `Mailer Company`,
       to: email,
       subject: "Email verification",
       text: "Verify your email",
