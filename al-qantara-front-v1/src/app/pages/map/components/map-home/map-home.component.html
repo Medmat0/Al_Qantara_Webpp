@@ -1,6 +1,10 @@
 
 <div class="map-layout">
-  <app-map-list *ngIf="showMapList"></app-map-list>
+  <app-map-list
+    *ngIf="showMapList"
+    [itineraires]="itineraires"
+    (traceItineraire)="onTraceItineraire($event)">
+  </app-map-list>
   <div class="map-container">
     <div id="map" style="width: 100%; height: 100vh; border-radius:12px;"></div>
     <div class="map-buttons">
@@ -9,5 +13,8 @@
     </div>
 
   </div>
-  <app-spot-description *ngIf="showSpotDescription"></app-spot-description>
+  <app-spot-description
+    *ngIf="showSpotDescription"
+    [spot]="selectedSpot">
+  </app-spot-description>
 </div>

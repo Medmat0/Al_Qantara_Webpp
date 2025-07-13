@@ -1,4 +1,5 @@
-<div *ngIf="spot">
-  <h2>{{ spot.name }}</h2>
-  <p>{{ spot.description }}</p>
+<div *ngIf="spot" class="spot-description">
+  <img [src]="spot.image" [alt]="spot.name" class="spot-image">
+  <h2 class="spot-title">{{ spot.name }}</h2>
+  <p class="spot-text">{{ spot.description }}</p>
 </div>

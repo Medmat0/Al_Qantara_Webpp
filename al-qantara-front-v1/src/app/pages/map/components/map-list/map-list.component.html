@@ -1,1 +1,6 @@
-<p>map-list works!</p>
+<ul class="itineraire-list">
+  <li *ngFor="let itineraire of itineraires" class="itineraire-item">
+    <span class="itineraire-name">{{ itineraire.name }}</span>
+    <button class="btn-tracer" (click)="onSelectItineraire(itineraire)">Tracer</button>
+  </li>
+</ul>

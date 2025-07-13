@@ -1,0 +1,49 @@
+.itineraire-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-family: 'Mulish', sans-serif;
+}
+
+.itineraire-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f9f9f9;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  transition: background 0.2s;
+
+  &:hover {
+    background: #f0e9e8;
+  }
+}
+
+.itineraire-name {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.btn-tracer {
+  background-color: #3a0706;
+  color: #fff;
+  border: none;
+  padding: 8px 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: background 0.3s;
+
+  &:hover {
+    background-color: #56100c;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(58, 7, 6, 0.3);
+  }
+}

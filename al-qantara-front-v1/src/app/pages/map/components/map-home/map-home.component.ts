@@ -21,7 +21,6 @@ export class MapHomeComponent {
   showMapList = false;
   showSpotDescription = false;
   selectedSpot: any = null;
-  safeMapUrl: any;
   MarocLatitude = 31.791702;
   MarocLongitude = -7.092619;
 
@@ -29,15 +28,11 @@ export class MapHomeComponent {
 
   showSpotsInedits = false;
 
-  constructor(private sanitizer: DomSanitizer) {
+  itineraireLayer: any = null;
+  itineraireMarkers: any[] = [];
 
-    this.safeMapUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-      'https://www.openstreetmap.org/export/embed.html?bbox=' +
-      (this.MarocLongitude - 5.5) + ',' +
-      (this.MarocLatitude- 5.5) + ',' +
-      (this.MarocLongitude + 5.5) + ',' +
-      (this.MarocLatitude + 5.5)
-    );
+
+  constructor() {
   }
 
   ngAfterViewInit() {
@@ -52,16 +47,55 @@ export class MapHomeComponent {
     {
       id: 1,
       name: 'Spot 1',
-      description: 'Description of Spot 1',
+      description: 'Jolie montagne avec une vue imprenable',
+      image: "https://picsum.photos/200/300",
       latitude: 29.791702,
       longitude: -8.092619
     },
     {
       id: 2,
       name: 'Spot 2',
-      description: 'Description of Spot 2',
+      description: 'Maison traditionnelle avec un jardin magnifique',
+      image: "https://picsum.photos/200/300",
       latitude: 30.291702,
       longitude: -8.292619
+    }
+  ];
+
+  itineraires = [
+    {
+      id: 1,
+      name: 'Itinéraire 1',
+      image: "https://picsum.photos/200/300",
+      description: 'Un itinéraire pittoresque à travers les montagnes',
+      points: [
+        [29.791702, -8.092619],
+        [30.291702, -8.292619],
+        [31.791702, -7.092619],
+        [32.291702, -6.292619]
+      ]
+    },
+    {
+      id: 2,
+      name: 'Itinéraire 2',
+      image: "https://picsum.photos/200/300",
+      description: 'Un itinéraire culturel à travers les villages berbères',
+      points: [
+        [29.791702, -8.092619],
+        [30.291702, -8.292619],
+        [31.791702, -7.092619]
+      ]
+    },
+    {
+      id: 3,
+      name: 'Itinéraire 3',
+      image: "https://picsum.photos/200/300",
+      description: 'Un itinéraire aventureux à travers les dunes de sable',
+      points: [
+        [30.291702, -8.292619],
+        [31.791702, -7.092619],
+        [32.291702, -6.292619]
+      ]
     }
   ];
 
@@ -69,31 +103,77 @@ export class MapHomeComponent {
     console.log('Itineraires clicked');
     this.showMapList = true;
     this.showSpotDescription = false;
+
+    // Supprime les marqueurs de spots
+    this.map.eachLayer((layer: any) => {
+      if (layer instanceof L.Marker) this.map.removeLayer(layer);
+    });
   }
 
   onSpotsIneditsClick() {
     console.log('Spots Inédits clicked');
     this.showMapList = false;
     this.showSpotDescription = false;
-    this.showSpotsInedits = true
+    this.showSpotsInedits = true;
 
-    // Supprime les anciens marqueurs si besoin
+    // Supprime le tracé d'itinéraire s'il existe
+    if (this.itineraireLayer) {
+      this.map.removeLayer(this.itineraireLayer);
+      this.itineraireLayer = null;
+    }
+    // Supprime les marqueurs d'itinéraire s'ils existent
+    if (this.itineraireMarkers && this.itineraireMarkers.length) {
+      this.itineraireMarkers.forEach(marker => this.map.removeLayer(marker));
+      this.itineraireMarkers = [];
+    }
+
+    // Supprime les anciens marqueurs de spots
     this.map.eachLayer((layer: any) => {
       if (layer instanceof L.Marker) this.map.removeLayer(layer);
     });
 
-    // Ajoute les marqueurs OSM
+    // Ajoute les marqueurs
     this.fakeSpots.forEach(spot => {
       L.marker([spot.latitude, spot.longitude]).addTo(this.map)
-        .bindPopup(`<b>${spot.name}</b><br>${spot.description}`)
         .on('click', () => this.onSpotMarkerClick(spot));
     });
   }
 
   onSpotMarkerClick(spot: any) {
+    console.log('Marker clicked:', spot);
     this.selectedSpot = spot;
     this.showSpotDescription = true;
     this.showMapList = false;
+  }
+
+  onTraceItineraire(itineraire: any) {
+    // Supprime l'ancien tracé et les anciens marqueurs
+    if (this.itineraireLayer) {
+      this.map.removeLayer(this.itineraireLayer);
+    }
+    if (this.itineraireMarkers && this.itineraireMarkers.length) {
+      this.itineraireMarkers.forEach(marker => this.map.removeLayer(marker));
+    }
+    this.itineraireMarkers = [];
+
+    // Trace la polyline de l'itinéraire
+    this.itineraireLayer = L.polyline(itineraire.points, { color: 'red' }).addTo(this.map);
+    this.map.fitBounds(this.itineraireLayer.getBounds());
+
+    // Ajoute un marker sur chaque point de l'itinéraire
+    itineraire.points.forEach((point: [number, number], idx: number) => {
+      const marker = L.marker(point).addTo(this.map)
+        .on('click', () => {
+          this.selectedSpot = {
+            name: `${itineraire.name} - Point ${idx + 1}`,
+            description: itineraire.description,
+            image: itineraire.image
+          };
+          this.showSpotDescription = true;
+          this.showMapList = false;
+        });
+      this.itineraireMarkers.push(marker);
+    });
   }
 
 }
