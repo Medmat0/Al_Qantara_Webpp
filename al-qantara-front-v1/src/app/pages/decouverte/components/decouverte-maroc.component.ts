@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -24,12 +24,17 @@ export class SafeUrlPipe implements PipeTransform {
   standalone: true,
   imports: [CommonModule, SafeUrlPipe]
 })
-export class DecouverteMarocComponent implements AfterViewInit {
+export class DecouverteMarocComponent implements AfterViewInit, OnInit {
   guides: Guide[] = [];
   selectedGuide: Guide| null = null;
   selectedPhoto: string | null = null;
+  selectedPoi: any = null;
   showRouteMap: boolean = false;
+  showListOnMobile: boolean = false; // Pour afficher la liste des guides sur mobile
   debugMode: boolean = false; // Pour ajuster les positions
+  isMobile: boolean = window.innerWidth <= 768; // Détecte si c'est un mobile
+
+  overlayVisible: boolean = true;
 
   filters = {
     actif: 'all' as boolean | 'all',
@@ -43,6 +48,12 @@ export class DecouverteMarocComponent implements AfterViewInit {
 
   constructor(private guideService: AdminGuidesService) {
     this.loadGuides();
+  }
+
+  ngOnInit() {
+    window.addEventListener('resize', () => {
+      this.isMobile = window.innerWidth <= 768;
+    });
   }
 
   ngAfterViewInit() {
@@ -72,6 +83,9 @@ export class DecouverteMarocComponent implements AfterViewInit {
     this.selectedGuide = guide;
     this.showRouteMap = false;
     this.showMainMarker(guide);
+    if (this.isMobile) {
+      this.showListOnMobile = true; // Ouvre la modale POI sur mobile
+    }
   }
   openPhotoModal(photo: string) {
     this.selectedPhoto = photo;
@@ -79,6 +93,37 @@ export class DecouverteMarocComponent implements AfterViewInit {
 
   closePhotoModal() {
     this.selectedPhoto = null;
+  }
+
+  toggleOverlay() {
+    this.overlayVisible = !this.overlayVisible;
+  }
+
+  toggleListOnMobile() {
+    this.showListOnMobile = !this.showListOnMobile;
+  }
+
+  openPoiAndShowRoute(poi: any) {
+    this.openPoiModal(poi);
+    this.showRouteMap = true;
+
+    // Ne retrace l’itinéraire que si ce n’est pas déjà affiché
+    if (!this.itineraireLayer && this.selectedGuide) {
+      this.traceItineraireGuide(this.selectedGuide);
+    }
+
+    // Centre et zoom sur le POI
+    if (this.map && poi.latitude && poi.longitude) {
+      this.map.setView([poi.latitude, poi.longitude], 16, { animate: true });
+    }
+  }
+
+  openPoiModal(poi: any) {
+    this.selectedPoi = poi;
+  }
+
+  closePoiModal() {
+    this.selectedPoi = null;
   }
 
   showRoute() {
