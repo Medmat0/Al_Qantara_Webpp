@@ -10,4 +10,5 @@ export { checkParticipationService, participerEvenementService } from "./partici
 export { rateEvenementService, getEvenementRatingsService } from "./rateEvenement.service.js";
 export { shareEvenementService } from "./shareEvenement.service.js";
 export { deleteEvenementService } from "./deleteEvenement.service.js";
-export { checkQRCodeParticipationService } from "./checkQRCodeParticipation.service.js"; 
+export { checkQRCodeParticipationService } from "./checkQRCodeParticipation.service.js";
+export { processRatingReminders, getFinishedEventsNeedingRatings, sendRatingReminderEmail } from "./ratingReminderService.js"; 

@@ -61,7 +61,7 @@ export class GuideFormComponent implements OnInit {
     this.searchSubject.pipe(
       debounceTime(500),
       distinctUntilChanged(),
-      switchMap(query => this.addressService.searchAddress(query))
+      switchMap(query => this.addressService.searchAddress(query, 'ma')) // Maroc pour les guides
     ).subscribe(suggestions => {
       this.addressSuggestions = suggestions;
       this.showSuggestions = suggestions.length > 0;
@@ -216,7 +216,7 @@ export class GuideFormComponent implements OnInit {
         debounceTime(500),
         distinctUntilChanged((prev, curr) => prev.query === curr.query),
         switchMap(({query, index}) => 
-          this.addressService.searchAddress(query).pipe(
+          this.addressService.searchAddress(query, 'ma').pipe( // Maroc pour les POI des guides
             map((suggestions: AddressSuggestion[]) => ({suggestions, index}))
           )
         )

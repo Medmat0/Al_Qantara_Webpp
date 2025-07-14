@@ -15,6 +15,7 @@ import { fileURLToPath } from "url";
 import offresRoutes from './src/routes/offres.routes.js';
 import messagerieRoutes from './src/routes/messagerie.routes.js';
 import { setUserOnline, setUserOffline, cleanupInactiveUsers } from './src/services/messagerie/onlineStatusService.js';
+import { initializeCronJobs } from './src/services/cronService.js';
 import newsletterRoutes from './src/routes/newsletter.routes.js';
 import adhesionRoutes from './src/routes/adhesion.routes.js';
 import bodyParser from "body-parser";
@@ -167,4 +168,7 @@ app.use("/api/guides", guidesRoutes);
 // Démarrer le serveur avec Socket.IO
 httpServer.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
+  
+  // Initialiser les tâches automatiques programmées
+  initializeCronJobs();
 });

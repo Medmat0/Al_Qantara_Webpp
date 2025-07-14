@@ -39,7 +39,7 @@ export class AddressService {
       .replace(/[ç]/g, 'c');
   }
 
-  searchAddress(query: string): Observable<AddressSuggestion[]> {
+  searchAddress(query: string, countryCode: string = 'ma'): Observable<AddressSuggestion[]> {
     if (!query || query.length < 3) {
       return of([]);
     }
@@ -53,7 +53,7 @@ export class AddressService {
           q: normalizedQuery,
           format: 'json',
           limit: '10',
-          countrycodes: 'ma', // Morocco country code
+          countrycodes: countryCode, // Paramètre dynamique pour le pays
           addressdetails: '1',
           'accept-language': 'fr',
           featuretype: 'settlement,building,poi', // Include settlements, buildings and POIs
