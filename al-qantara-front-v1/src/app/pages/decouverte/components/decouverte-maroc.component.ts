@@ -28,6 +28,7 @@ export class DecouverteMarocComponent implements AfterViewInit {
   guides: Guide[] = [];
   selectedGuide: Guide| null = null;
   selectedPhoto: string | null = null;
+  selectedPoi: any = null;
   showRouteMap: boolean = false;
   debugMode: boolean = false; // Pour ajuster les positions
 
@@ -79,6 +80,29 @@ export class DecouverteMarocComponent implements AfterViewInit {
 
   closePhotoModal() {
     this.selectedPhoto = null;
+  }
+
+  openPoiAndShowRoute(poi: any) {
+    this.openPoiModal(poi);
+    this.showRouteMap = true;
+
+    // Ne retrace l’itinéraire que si ce n’est pas déjà affiché
+    if (!this.itineraireLayer && this.selectedGuide) {
+      this.traceItineraireGuide(this.selectedGuide);
+    }
+
+    // Centre et zoom sur le POI
+    if (this.map && poi.latitude && poi.longitude) {
+      this.map.setView([poi.latitude, poi.longitude], 16, { animate: true });
+    }
+  }
+
+  openPoiModal(poi: any) {
+    this.selectedPoi = poi;
+  }
+
+  closePoiModal() {
+    this.selectedPoi = null;
   }
 
   showRoute() {

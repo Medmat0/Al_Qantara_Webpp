@@ -32,11 +32,11 @@
   position: absolute;
   bottom: 20px;
   left: 20px;
+  font-family: Mulish, sans-serif;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   border-radius: 16px;
   padding: 20px;
-  max-width: 400px;
   max-height: 60vh;
   overflow-y: auto;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
@@ -170,6 +170,7 @@
   gap: 12px;
   padding: 12px 0;
   border-bottom: 1px solid #e2e8f0;
+  cursor: pointer;
   transition: all 0.3s ease;
 }
 
@@ -288,7 +289,7 @@
 .menu-header {
   padding: 24px 20px;
   border-bottom: 1px solid #e2e8f0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #80100f;
   color: white;
 }
 
@@ -310,6 +311,7 @@
 /* Liste des villes */
 .cities-list {
   flex: 1;
+  font-family: Mulish, sans-serif;
   overflow-y: auto;
   padding: 16px 0;
 }
@@ -331,7 +333,7 @@
 
 .city-item.active {
   background: linear-gradient(135deg, #667eea20, #764ba220);
-  border-left: 4px solid #667eea;
+  border-left: 4px solid #e23f3f;
 }
 
 .city-item.active .city-arrow i {
@@ -568,6 +570,57 @@
 .debug-toggle.active {
   background: #ff4444;
   animation: pulse 1.5s infinite;
+}
+
+.poi-overlay {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  font-size: 0.9rem;
+  font-family: Mulish, sans-serif;
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 20px 24px 24px 24px;
+  min-height: 200px;
+  max-width: 340px;
+  min-width: 260px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  z-index: 600;
+  animation: slideInPoi 0.3s;
+  display: flex;
+  flex-direction: column;
+}
+
+.poi-overlay-content {
+  position: relative;
+}
+
+.poi-overlay .close-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #f3f4f6;
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #374151;
+  transition: all 0.2s;
+  z-index: 2;
+}
+.poi-overlay .close-btn:hover {
+  background: #e2e8f0;
+}
+
+@keyframes slideInPoi {
+  from { opacity: 0; transform: translateY(40px);}
+  to { opacity: 1; transform: translateY(0);}
 }
 
 /* Responsive */

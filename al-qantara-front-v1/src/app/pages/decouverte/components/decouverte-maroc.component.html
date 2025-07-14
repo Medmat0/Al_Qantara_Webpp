@@ -33,11 +33,11 @@
             <p><i class="fas fa-walking"></i> {{ selectedGuide.pointsInteret.length }} étapes à découvrir</p>
           </div>
           <ol class="route-steps">
-            <li *ngFor="let poi of selectedGuide.pointsInteret; let i = index" class="route-step">
+            <li (click)="openPoiAndShowRoute(poi)" *ngFor="let poi of selectedGuide.pointsInteret; let i = index" class="route-step">
               <div class="step-number">{{ i + 1 }}</div>
               <div class="step-content">
                 <h5>{{ poi.nom }}</h5>
-                <small class="coordinates">{{ poi.latitude | number:'1.4-4' }}, {{ poi.longitude | number:'1.4-4' }}</small>
+                <small class="coordinates">{{ poi.adresse }}</small>
               </div>
             </li>
           </ol>
@@ -55,6 +55,32 @@
         </div>
       </div>
     </div>
+
+    <div class="poi-overlay" *ngIf="selectedPoi">
+      <button class="close-btn" (click)="closePoiModal()">
+        <i class="fas fa-times"></i>
+      </button>
+      <div class="poi-overlay-content">
+        <h3>Destination: {{ selectedPoi.nom }}</h3>
+        <p *ngIf="selectedPoi.typePoint"><strong>Type:</strong> {{ selectedPoi.typePoint }}</p>
+        <p class="region" *ngIf="selectedPoi.adresse"><strong>Adresse: </strong>{{ selectedPoi.adresse }}</p>
+        <p><strong>Description: </strong></p>
+        <p class="description" *ngIf="selectedPoi.description">{{ selectedPoi.description }}</p>
+        <div *ngIf="selectedPoi.images && selectedPoi.images.length">
+          <img [src]="selectedPoi.images" [alt]="selectedPoi.nom" class="gallery-photo" style="height:120px;">
+        </div>
+        <p *ngIf="selectedPoi.horairesOuverture"><strong>Horaires:</strong> {{ selectedPoi.horairesOuverture }}</p>
+        <p *ngIf="selectedPoi.tarifs"><strong>Tarifs: </strong> {{ selectedPoi.tarifs }}</p>
+        <p *ngIf="selectedPoi.telephone"><strong>Téléphone:</strong> {{ selectedPoi.telephone }}</p>
+        <p *ngIf="selectedPoi.siteWeb">
+          <strong>Site web:</strong>
+          <a [href]="selectedPoi.siteWeb" target="_blank" rel="noopener">{{ selectedPoi.siteWeb }}</a>
+        </p>
+        <p *ngIf="selectedPoi.email"><strong>Email:</strong> {{ selectedPoi.email }}</p>
+
+      </div>
+    </div>
+
   </div>
 
   <!-- Menu de sélection à droite -->
@@ -94,6 +120,8 @@
       </div>
     </div>
   </div>
+
+
 </div>
 
 <!-- Modal pour afficher les photos en grand -->
