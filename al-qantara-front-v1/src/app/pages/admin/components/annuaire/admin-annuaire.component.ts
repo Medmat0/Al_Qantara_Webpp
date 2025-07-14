@@ -129,11 +129,7 @@ export class AdminAnnuaireComponent implements OnInit {
     this.activeCardMenu = this.activeCardMenu === index ? null : index;
   }
 
-  // Actions sur les associations
-  viewAssociation(association: Association): void {
-    // À implémenter : navigation ou modal détail
-    console.log('Voir association:', association);
-  }
+
 
   editAssociation(association: Association): void {
     // À implémenter : navigation ou modal édition
