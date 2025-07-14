@@ -38,8 +38,8 @@
               }
             ],
             "styles": [
-              "src/styles.scss",
-              "node_modules/leaflet/dist/leaflet.css"
+              "src/assets/leaflet-fixed.css",
+              "src/styles.scss"
             ],
             "scripts": []
           },
@@ -98,9 +98,8 @@
               }
             ],
             "styles": [
-              "src/styles.scss",
-              "node_modules/leaflet/dist/leaflet.css"
-
+              "src/assets/leaflet-fixed.css",
+              "src/styles.scss"
             ],
             "scripts": []
           }
