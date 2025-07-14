@@ -80,11 +80,14 @@ nav {
     height: 100vh;
     background: white;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     transform: translateX(100%);
     z-index: 1000;
     padding-top: 80px;
+    padding-bottom: 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
 
     &.active {
       transform: translateX(0);
