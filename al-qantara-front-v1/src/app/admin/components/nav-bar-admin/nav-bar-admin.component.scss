@@ -226,7 +226,7 @@
         }
 
         &.active {
-          background: var(--admin-success);
+          background: #6b1c1c;
           border-color: var(--admin-success);
 
           i {
@@ -301,7 +301,7 @@
   }
 
   &.active {
-    background: linear-gradient(135deg, var(--admin-accent), var(--admin-tertiary));
+    background: #6b1c1c;
     border-color: rgba(255, 255, 255, 0.6);
     transform: rotate(180deg);
 
