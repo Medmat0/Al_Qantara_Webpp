@@ -9,7 +9,10 @@
   background: #f8fafc;
 }
 
-
+#map {
+  height: 100vh;
+  width: 100%;
+}
 
 /* Carte principale */
 .map-main {
@@ -38,6 +41,7 @@
   overflow-y: auto;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.3);
+  z-index: 500;
 }
 
 .overlay-content h3 {
