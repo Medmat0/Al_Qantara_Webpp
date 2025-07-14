@@ -1,71 +1,33 @@
 
 <div class="decouverte-container">
-  <!-- Carte principale qui occupe presque tout l'écran -->
+
+
+  <!-- Carte principale Leaflet -->
   <div class="map-main">
-    <iframe
-      width="100%"
-      height="100%"
-      [src]="(showRouteMap ? getRouteUrl(selectedGuide) : getMapUrl(selectedGuide)) | safeUrl"
-      style="border: none;">
-    </iframe>
-    
-    <!-- Overlay avec points d'intérêt visibles en mode trajet -->
-    <div class="map-markers-overlay" *ngIf="showRouteMap">
-      <div 
-        *ngFor="let poi of selectedGuide.pointsInteret; let i = index" 
-        class="map-marker"
-        [class.debug-marker]="debugMode"
-        [style.left]="getCalibratedMarkerPosition(poi, 'x') + '%'"
-        [style.top]="getCalibratedMarkerPosition(poi, 'y') + '%'"
-        [title]="poi.nom"
-        (click)="onMarkerClick(poi, $event)">
-        <div class="marker-pin">
-          <span class="marker-number">{{ i + 1 }}</span>
-        </div>
-        <div class="marker-label">
-          {{ poi.nom }}
-          <small *ngIf="debugMode" class="debug-coords">
-            ({{ getCalibratedMarkerPosition(poi, 'x') | number:'1.0-0' }}%, 
-             {{ getCalibratedMarkerPosition(poi, 'y') | number:'1.0-0' }}%)
-          </small>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Bouton debug (temporaire pour ajustements) -->
-    <button 
-      *ngIf="showRouteMap" 
-      class="debug-toggle"
-      (click)="toggleDebugMode()"
-      [class.active]="debugMode">
-      🔧 Debug
-    </button>
-    
+
+    <div id="map" style="width: 100%; height: 100%;"></div>
     <!-- Overlay avec info sur la ville sélectionnée -->
     <div class="map-overlay" *ngIf="selectedGuide">
       <div class="overlay-content">
         <h3>{{ selectedGuide.nom }}</h3>
         <p class="region">{{ selectedGuide.region }}</p>
         <p class="description">{{ selectedGuide.description }}</p>
-        
+
         <!-- Photos de la ville -->
         <div class="photos-gallery" *ngIf="selectedGuide.images">
-          <img 
-            *ngFor="let image of selectedGuide.images" 
-            [src]="image" 
+          <img
+            *ngFor="let image of selectedGuide.images"
+            [src]="image"
             [alt]="selectedGuide.nom"
             class="gallery-photo"
             (click)="openPhotoModal(image)">
         </div>
-        
+
         <!-- Points d'intérêt avec trajet -->
         <div class="points-interet">
           <h4>
-            <i class="fas fa-route"></i> 
+            <i class="fas fa-route"></i>
             Itinéraire recommandé
-            <span *ngIf="showRouteMap" class="route-indicator">
-              <i class="fas fa-eye"></i> Vue active
-            </span>
           </h4>
           <div class="route-info">
             <p><i class="fas fa-walking"></i> {{ selectedGuide.pointsInteret.length }} étapes à découvrir</p>
@@ -75,18 +37,18 @@
               <div class="step-number">{{ i + 1 }}</div>
               <div class="step-content">
                 <h5>{{ poi.nom }}</h5>
-                <small class="coordinates">{{ poi.lat | number:'1.4-4' }}, {{ poi.lng | number:'1.4-4' }}</small>
+                <small class="coordinates">{{ poi.latitude | number:'1.4-4' }}, {{ poi.longitude | number:'1.4-4' }}</small>
               </div>
             </li>
           </ol>
-          
+
           <div class="route-actions">
             <button class="btn-route" (click)="showRoute()">
-              <i class="fas fa-map"></i> 
+              <i class="fas fa-map"></i>
               {{ showRouteMap ? 'Vue normale' : 'Vue trajet' }}
             </button>
             <button class="btn-route-external" (click)="openFullRoute()">
-              <i class="fas fa-external-link-alt"></i> 
+              <i class="fas fa-external-link-alt"></i>
               Itinéraire Google Maps
             </button>
           </div>
@@ -101,23 +63,23 @@
       <h2><i class="fas fa-compass"></i> Découverte du Maroc</h2>
       <p>Sélectionnez une ville pour explorer</p>
     </div>
-    
+
     <div class="cities-list">
-      <div 
-        *ngFor="let guide of guides" 
+      <div
+        *ngFor="let guide of guides"
         class="city-item"
         [class.active]="selectedGuide?.id === guide.id"
         (click)="selectGuide(guide)">
-        
+
         <div class="city-image">
           <img [src]="guide.image" [alt]="guide.nom">
         </div>
-        
+
         <div class="city-info">
           <h3>{{ guide.nom }}</h3>
           <p class="region">{{ guide.region }}</p>
           <p class="preview">{{ guide.description | slice:0:80 }}...</p>
-          
+
           <div class="city-stats">
             <span class="stat">
               <i class="fas fa-route"></i>
@@ -125,7 +87,7 @@
             </span>
           </div>
         </div>
-        
+
         <div class="city-arrow">
           <i class="fas fa-chevron-right"></i>
         </div>

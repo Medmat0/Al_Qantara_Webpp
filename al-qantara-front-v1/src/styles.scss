@@ -29,7 +29,22 @@ html, body {
   max-width: 90vw !important;
   max-height: 85vh !important;
 }
-
+.custom-number-icon .marker-pin {
+  background: linear-gradient(135deg, rgba(56, 253, 3, 0.31), #1dd852);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+.custom-number-icon .marker-number {
+  color: #fff;
+  font-weight: bold;
+  font-size: 1rem;
+}
 
 /* Mulish */
 @font-face {

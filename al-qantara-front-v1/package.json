@@ -17,7 +17,6 @@
     "@angular/platform-browser": "^19.2.0",
     "@angular/platform-browser-dynamic": "^19.2.0",
     "@angular/router": "^19.2.0",
-    "@asymmetrik/ngx-leaflet": "^18.0.1",
     "@fullcalendar/angular": "^6.1.17",
     "@fullcalendar/core": "^6.1.17",
     "@fullcalendar/daygrid": "^6.1.17",
