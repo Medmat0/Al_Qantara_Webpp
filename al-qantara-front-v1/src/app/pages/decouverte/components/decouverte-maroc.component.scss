@@ -9,6 +9,8 @@
   background: #f8fafc;
 }
 
+
+
 /* Carte principale */
 .map-main {
   flex: 1;
@@ -552,21 +554,21 @@
   .decouverte-container {
     flex-direction: column;
   }
-  
+
   .sidebar-menu {
     width: 100%;
     height: 40%;
     border-left: none;
     border-top: 1px solid #e2e8f0;
   }
-  
+
   .map-overlay {
     left: 10px;
     right: 10px;
     bottom: 10px;
     max-width: none;
   }
-  
+
   .photos-gallery {
     grid-template-columns: repeat(3, 1fr);
   }

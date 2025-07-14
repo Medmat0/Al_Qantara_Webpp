@@ -1,9 +1,14 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { GUIDES_MAROC, GuideVille } from './guides-maroc';
 import { Pipe, PipeTransform } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { GuideVille} from '../guides-maroc';
+import L from 'leaflet';
+import {AdminGuidesService, Guide} from '../../../admin/services/admin-guides.service';
+import {GuidesService} from '../../../member/services/guides.service';
+import { AfterViewInit } from '@angular/core';
 
+import "leaflet/dist/leaflet.css";
 @Pipe({ name: 'safeUrl', standalone: true })
 export class SafeUrlPipe implements PipeTransform {
   constructor(private sanitizer: DomSanitizer) {}
@@ -19,16 +24,54 @@ export class SafeUrlPipe implements PipeTransform {
   standalone: true,
   imports: [CommonModule, SafeUrlPipe]
 })
-export class DecouverteMarocComponent {
-  guides: GuideVille[] = GUIDES_MAROC;
-  selectedGuide: GuideVille = this.guides[0]; // Marrakech par défaut
+export class DecouverteMarocComponent implements AfterViewInit {
+  guides: Guide[] = [];
+  selectedGuide: Guide| null = null;
   selectedPhoto: string | null = null;
   showRouteMap: boolean = false;
   debugMode: boolean = false; // Pour ajuster les positions
 
-  selectGuide(guide: GuideVille) {
+  filters = {
+    actif: 'all' as boolean | 'all',
+    page: 1,
+    limit: 10
+  };
+
+  map: any;
+  itineraireLayer: any = null;
+  itineraireMarkers: any[] = [];
+
+  constructor(private guideService: AdminGuidesService) {
+    this.loadGuides();
+  }
+
+  ngAfterViewInit() {
+    this.map = L.map('map').setView([31.791702, -7.092619], 6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(this.map);
+
+    setTimeout(() => {
+      this.map.invalidateSize();
+    }, 100);
+  }
+  loadGuides() {
+    // Charger les guides depuis le service
+    this.guideService.getAllGuides(this.filters).subscribe({
+      next: (response) => {
+        console.log('Guides chargés:', response.data);
+        this.guides = response.data;
+      },
+      error: (error) => {
+        console.error('Erreur lors du chargement des guides:', error);
+      }
+    });
+  }
+
+  selectGuide(guide: Guide) {
     this.selectedGuide = guide;
-    this.showRouteMap = false; // Reset route view when changing city
+    this.showRouteMap = false;
+    this.traceItineraireGuide(guide);
   }
 
   openPhotoModal(photo: string) {
@@ -43,82 +86,111 @@ export class DecouverteMarocComponent {
     this.showRouteMap = !this.showRouteMap;
   }
 
+  traceItineraireGuide(guide: Guide) {
+    // Nettoie l’ancien tracé et les anciens marqueurs
+    if (this.itineraireLayer) {
+      this.map.removeLayer(this.itineraireLayer);
+    }
+    if (this.itineraireMarkers.length) {
+      this.itineraireMarkers.forEach(marker => this.map.removeLayer(marker));
+    }
+    this.itineraireMarkers = [];
+
+    // Récupère les points d’intérêt
+    const points: [number, number][] = guide.pointsInteret.map(
+      poi => [poi.latitude, poi.longitude] as [number, number]
+    );
+
+// Trace la polyline
+    this.itineraireLayer = L.polyline(points as L.LatLngTuple[], { color: 'blue' }).addTo(this.map);
+    this.map.fitBounds(this.itineraireLayer.getBounds());
+
+    // Place un marker sur chaque point
+    guide.pointsInteret.forEach((poi, idx) => {
+      const marker = L.marker([poi.latitude, poi.longitude]).addTo(this.map)
+        .on('click', () => {
+          // Affiche les infos du point d’intérêt
+          this.selectedPhoto = (poi.images && poi.images.length) ? poi.images[0] : (guide.image ?? null);
+          alert(`${poi.nom}\n${poi.description || ''}`);
+        });
+      this.itineraireMarkers.push(marker);
+    });
+  }
+
   openFullRoute() {
     // Ouvrir Google Maps avec le trajet dans une nouvelle fenêtre
     const guide = this.selectedGuide;
-    if (guide.pointsInteret.length < 2) return;
-    
-    const origin = `${guide.pointsInteret[0].lat},${guide.pointsInteret[0].lng}`;
-    const destination = `${guide.pointsInteret[guide.pointsInteret.length - 1].lat},${guide.pointsInteret[guide.pointsInteret.length - 1].lng}`;
-    
+    if (!guide || !guide.pointsInteret || guide.pointsInteret.length < 2) return;
+
+    const origin = `${guide.pointsInteret[0].latitude},${guide.pointsInteret[0].longitude}`;
+    const destination = `${guide.pointsInteret[guide.pointsInteret.length - 1].latitude},${guide.pointsInteret[guide.pointsInteret.length - 1].longitude}`;
+
     let waypoints = '';
     if (guide.pointsInteret.length > 2) {
       const middlePoints = guide.pointsInteret.slice(1, -1);
-      waypoints = middlePoints.map(poi => `${poi.lat},${poi.lng}`).join('|');
+      waypoints = middlePoints.map(poi => `${poi.latitude},${poi.longitude}`).join('|');
     }
-    
+
     const waypointsParam = waypoints ? `&waypoints=${waypoints}` : '';
     const url = `https://www.google.com/maps/dir/${origin}/${destination}${waypointsParam ? '/' + waypoints.replace(/\|/g, '/') : ''}`;
-    
+
     window.open(url, '_blank');
   }
 
-  getMapUrl(guide: GuideVille): string {
-    const lat = guide.lat;
-    const lng = guide.lng;
-    
-    // Créer les waypoints pour le trajet
-    const waypoints = guide.pointsInteret.map(poi => `${poi.lat},${poi.lng}`).join('|');
-    
-    // URL pour OpenRouteService avec trajet
+  getMapUrl(guide: Guide | null): string {
+    if (!guide) return '';
+    const lat = guide.latitude;
+    const lng = guide.longitude;
     const bbox = `${lng-0.05},${lat-0.05},${lng+0.05},${lat+0.05}`;
     return `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat},${lng}`;
   }
 
-  getRouteUrl(guide: GuideVille): string {
-    if (guide.pointsInteret.length < 2) {
+  getRouteUrl(guide: Guide | null): string {
+    if (!guide || !guide.pointsInteret || guide.pointsInteret.length < 2) {
       return this.getMapUrl(guide);
     }
-    
+
     // Calculer les limites pour inclure tous les points d'intérêt
-    const lats = guide.pointsInteret.map(poi => poi.lat);
-    const lngs = guide.pointsInteret.map(poi => poi.lng);
-    
+    const lats = guide.pointsInteret.map(poi => poi.latitude);
+    const lngs = guide.pointsInteret.map(poi => poi.longitude);
+
     // Calculer la dispersion des points pour ajuster les marges
     const latRange = Math.max(...lats) - Math.min(...lats);
     const lngRange = Math.max(...lngs) - Math.min(...lngs);
-    
+
     // Marge adaptative : plus petite si les points sont dispersés, plus grande s'ils sont proches
     const adaptiveMargin = Math.max(0.003, Math.min(0.01, Math.max(latRange, lngRange) * 0.2));
-    
+
     const minLat = Math.min(...lats) - adaptiveMargin;
     const maxLat = Math.max(...lats) + adaptiveMargin;
     const minLng = Math.min(...lngs) - adaptiveMargin;
     const maxLng = Math.max(...lngs) + adaptiveMargin;
-    
+
     // URL vers OpenStreetMap avec bbox adaptatif
     return `https://www.openstreetmap.org/export/embed.html?bbox=${minLng},${minLat},${maxLng},${maxLat}&layer=mapnik`;
   }
 
   getMarkerPosition(poi: any, axis: 'x' | 'y'): number {
-    if (!this.showRouteMap) return 0;
-    
+    if (!this.showRouteMap || !this.selectedGuide) return 0;
+
     // Calculer les limites exactes utilisées par la carte
-    const lats = this.selectedGuide.pointsInteret.map(p => p.lat);
-    const lngs = this.selectedGuide.pointsInteret.map(p => p.lng);
-    
+    const lats = this.selectedGuide.pointsInteret?.map(p => p.latitude) ?? [];
+    const lngs = this.selectedGuide.pointsInteret?.map(p => p.longitude) ?? [];
+
+    if (lats.length === 0 || lngs.length === 0) return 0;
+
     // Calculer la dispersion des points pour ajuster les marges
     const latRange = Math.max(...lats) - Math.min(...lats);
     const lngRange = Math.max(...lngs) - Math.min(...lngs);
-    
+
     // Marge adaptative : même calcul que dans getRouteUrl
     const adaptiveMargin = Math.max(0.003, Math.min(0.01, Math.max(latRange, lngRange) * 0.2));
-    
+
     const minLat = Math.min(...lats) - adaptiveMargin;
     const maxLat = Math.max(...lats) + adaptiveMargin;
     const minLng = Math.min(...lngs) - adaptiveMargin;
     const maxLng = Math.max(...lngs) + adaptiveMargin;
-    
+
     if (axis === 'x') {
       // Position horizontale (longitude)
       // Compensation pour la projection Mercator et les marges de l'iframe
@@ -135,10 +207,13 @@ export class DecouverteMarocComponent {
     }
   }
 
-  // Positions calibrées manuellement pour chaque ville
   getCalibratedMarkerPosition(poi: any, axis: 'x' | 'y'): number {
+    if (!this.selectedGuide) {
+      // Fallback sur le calcul automatique si aucun guide sélectionné
+      return this.getMarkerPosition(poi, axis);
+    }
     const cityId = this.selectedGuide.id;
-    
+
     // Positions calibrées pour chaque point d'intérêt par ville
     const calibratedPositions: any = {
       'marrakech': {
@@ -161,12 +236,12 @@ export class DecouverteMarocComponent {
         'Marina d\'Agadir': { x: 35, y: 70 }
       }
     };
-    
+
     const cityPositions = calibratedPositions[cityId];
     if (cityPositions && cityPositions[poi.nom]) {
       return cityPositions[poi.nom][axis];
     }
-    
+
     // Fallback sur le calcul automatique
     return this.getMarkerPosition(poi, axis);
   }
@@ -180,7 +255,7 @@ export class DecouverteMarocComponent {
   toggleDebugMode() {
     this.debugMode = !this.debugMode;
     console.log('Debug mode:', this.debugMode ? 'ON' : 'OFF');
-    if (this.debugMode) {
+    if (this.debugMode && this.selectedGuide) {
       console.log('Current city:', this.selectedGuide.nom);
       console.log('Points d\'intérêt:', this.selectedGuide.pointsInteret);
     }
