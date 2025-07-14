@@ -14,6 +14,8 @@ export const routes: Routes = [
   {path: 'adhesion', loadChildren: () => import('./pages/adhesion/adhesion.routes').then(m => m.default)},
   {path: 'articles', loadChildren: () => import('./pages/articles/articles.routes').then(m => m.default)},
   {path: 'messaging', loadChildren: () => import('./pages/messaging/messaging.routes').then(m => m.default)},
+  {path: 'annuaire', loadChildren: () => import('./pages/annuaire/annuaire.routes').then(m => m.default)},
+  {path: 'decouvertes', loadChildren: () => import('./pages/decouverte/decouverte.routes').then(m => m.default)},
   {path: 'not-found', component: NotFoundComponent},
   {path: '**', redirectTo: 'not-found', pathMatch: 'full'},
 ];

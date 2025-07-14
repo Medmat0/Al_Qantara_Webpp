@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-nav-bar-admin',
@@ -10,14 +12,39 @@ import { Router } from '@angular/router';
   templateUrl: './nav-bar-admin.component.html',
   styleUrl: './nav-bar-admin.component.scss'
 })
-export class NavBarAdminComponent implements OnInit {
-  isMenuOpen = true;
+export class NavBarAdminComponent implements OnInit, OnDestroy {
+  isMenuOpen = false;
+  private routerSubscription: Subscription = new Subscription();
 
   constructor(private router: Router) {}
 
   ngOnInit() {
-    if (this.router.url.includes('/admin')) {
-      this.isMenuOpen = true;
+    this.routerSubscription = this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => {
+        if (window.innerWidth <= 768) {
+          this.closeMenu();
+        }
+      });
+
+    this.updateMenuState();
+  }
+
+  ngOnDestroy() {
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.updateMenuState();
+  }
+
+  @HostListener('document:keydown.escape', ['$event'])
+  onEscapeKey(event: KeyboardEvent) {
+    if (this.isMenuOpen && window.innerWidth <= 768) {
+      this.closeMenu();
     }
   }
 
@@ -27,5 +54,15 @@ export class NavBarAdminComponent implements OnInit {
 
   closeMenu() {
     this.isMenuOpen = false;
+  }
+
+  openMenu() {
+    this.isMenuOpen = true;
+  }
+
+  private updateMenuState() {
+    if (window.innerWidth <= 768) {
+      this.isMenuOpen = false;
+    }
   }
 }

@@ -118,3 +118,8 @@
   (close)="showUsersModal = false"
   (startConversation)="onShareByMessage($event)">
 </app-users-list>
+
+<app-auth-required-modal
+  *ngIf="showAuthModal"
+  (close)="onAuthModalClose()">
+</app-auth-required-modal>

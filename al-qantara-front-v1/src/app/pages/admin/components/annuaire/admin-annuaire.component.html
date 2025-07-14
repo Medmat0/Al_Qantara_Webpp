@@ -1,0 +1,389 @@
+<div class="admin-annuaire-container">
+  <!-- En-tête moderne -->
+  <div class="header-section">
+    <div class="header-content">
+      <div class="title-area">
+        <h1 class="page-title">
+          <i class="fas fa-building"></i>
+          Gestion de l'Annuaire
+        </h1>
+        <p class="page-subtitle">Gérez vos associations marocaines en France</p>
+      </div>
+      <button
+        class="btn-add-association"
+        routerLink="/admin/annuaire/add"
+        type="button">
+        <i class="fas fa-plus"></i>
+        <span>Nouvelle Association</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Messages de feedback -->
+  <div class="messages-container" *ngIf="successMessage || errorMessage">
+    <div *ngIf="successMessage" class="alert alert-success">
+      <i class="fas fa-check-circle"></i>
+      <span>{{ successMessage }}</span>
+    </div>
+    <div *ngIf="errorMessage" class="alert alert-error">
+      <i class="fas fa-exclamation-triangle"></i>
+      <span>{{ errorMessage }}</span>
+    </div>
+  </div>
+
+  <!-- Statistiques en cartes modernes -->
+  <div class="stats-grid">
+    <div class="stat-card primary">
+      <div class="stat-header">
+        <div class="stat-icon">
+          <i class="fas fa-building"></i>
+        </div>
+        <div class="stat-trend up">
+          <i class="fas fa-arrow-up"></i>
+          <span>+5%</span>
+        </div>
+      </div>
+      <div class="stat-body">
+        <div class="stat-number">{{ totalAssociations }}</div>
+        <div class="stat-label">Associations au total</div>
+      </div>
+    </div>
+
+    <div class="stat-card success">
+      <div class="stat-header">
+        <div class="stat-icon">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="stat-trend up">
+          <i class="fas fa-arrow-up"></i>
+          <span>+12%</span>
+        </div>
+      </div>
+      <div class="stat-body">
+        <div class="stat-number">{{ totalAssociations }}</div>
+        <div class="stat-label">Associations actives</div>
+      </div>
+    </div>
+
+    <div class="stat-card info">
+      <div class="stat-header">
+        <div class="stat-icon">
+          <i class="fas fa-layer-group"></i>
+        </div>
+        <div class="stat-trend neutral">
+          <i class="fas fa-minus"></i>
+          <span>12</span>
+        </div>
+      </div>
+      <div class="stat-body">
+        <div class="stat-number">12</div>
+        <div class="stat-label">Secteurs d'activité</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtres et recherche -->
+  <div class="filters-section">
+    <div class="search-container">
+      <div class="search-input-wrapper">
+        <i class="fas fa-search"></i>
+        <input
+          type="text"
+          placeholder="Rechercher une association..."
+          class="search-input"
+          [(ngModel)]="searchTerm"
+          (input)="onSearch()"
+        >
+      </div>
+    </div>
+
+    <div class="filter-buttons">
+      <button
+        class="filter-btn"
+        [class.active]="selectedSecteur === ''"
+        (click)="filterBySecteur('')">
+        <i class="fas fa-th"></i>
+        Tous
+      </button>
+      <button
+        *ngFor="let secteur of uniqueSecteurs"
+        class="filter-btn"
+        [class.active]="selectedSecteur === secteur"
+        (click)="filterBySecteur(secteur)">
+        {{ secteur }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Loader moderne -->
+  <div *ngIf="isLoading" class="loader-container">
+    <div class="modern-loader">
+      <div class="loader-circle"></div>
+      <div class="loader-text">Chargement des associations...</div>
+    </div>
+  </div>
+
+  <!-- Grille des associations -->
+  <div *ngIf="!isLoading" class="associations-container">
+    <div *ngIf="associations && associations.length > 0; else emptyState" class="associations-grid">
+      <div
+        *ngFor="let association of associations; trackBy: trackByAssociation; let i = index"
+        class="association-card"
+        [style.animation-delay]="(i * 0.1) + 's'"
+      >
+        <!-- Header de la carte avec logo et badge -->
+        <div class="card-header">
+          <div class="logo-section">
+            <div class="logo-container">
+              <img
+                *ngIf="association.logo; else defaultLogo"
+                [src]="association.logo"
+                [alt]="association.nom"
+                class="association-logo"
+                (error)="onImageError($event)"
+              >
+              <ng-template #defaultLogo>
+                <div class="default-logo">
+                  <i class="fas fa-building"></i>
+                </div>
+              </ng-template>
+            </div>
+            <!-- Badge secteur d'activité sous le logo -->
+            <span class="secteur-badge" [class]="getSecteurClass(association.secteurActivite)">
+              {{ association.secteurActivite || 'Non spécifié' }}
+            </span>
+          </div>
+
+          <div class="header-badges">
+            <span *ngIf="isRecentAssociation(association)" class="recent-badge">
+              <i class="fas fa-star"></i>
+              Nouveau
+            </span>
+          </div>
+
+          <!-- Actions rapides repositionnées en haut à droite -->
+          <div class="card-actions">
+            <button
+              class="action-btn edit-btn"
+              (click)="editAssociation(association)"
+              title="Modifier"
+            >
+              <i class="fas fa-edit"></i>
+            </button>
+
+            <button
+              class="action-btn delete-btn"
+              (click)="confirmDelete(association)"
+              title="Supprimer"
+            >
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Contenu principal -->
+        <div class="card-body">
+          <div class="association-info">
+            <h3 class="association-name" [title]="association.nom">
+              {{ association.nom }}
+            </h3>
+
+          </div>
+
+          <!-- Informations de contact -->
+          <div class="contact-section">
+            <div class="contact-item" *ngIf="association.ville || association.region">
+              <i class="fas fa-map-marker-alt"></i>
+              <span class="contact-text">
+                {{ association.ville }}{{ association.ville && association.region ? ', ' : '' }}{{ association.region }}
+              </span>
+            </div>
+
+            <div class="contact-item" *ngIf="association.email">
+              <i class="fas fa-envelope"></i>
+              <span class="contact-text" [title]="association.email">{{ association.email }}</span>
+            </div>
+
+            <div class="contact-item" *ngIf="association.telephone">
+              <i class="fas fa-phone"></i>
+              <span class="contact-text">{{ association.telephone }}</span>
+            </div>
+          </div>
+
+          <!-- Réseaux sociaux -->
+          <div class="social-section" *ngIf="hasSocialLinks(association)">
+            <div class="social-links">
+              <a
+                *ngIf="association.siteWeb"
+                [href]="association.siteWeb"
+                target="_blank"
+                class="social-link website"
+                title="Site web"
+              >
+                <i class="fas fa-globe"></i>
+              </a>
+
+              <a
+                *ngIf="association.facebook"
+                [href]="association.facebook"
+                target="_blank"
+                class="social-link facebook"
+                title="Facebook"
+              >
+                <i class="fab fa-facebook-f"></i>
+              </a>
+
+              <a
+                *ngIf="association.instagram"
+                [href]="association.instagram"
+                target="_blank"
+                class="social-link instagram"
+                title="Instagram"
+              >
+                <i class="fab fa-instagram"></i>
+              </a>
+
+              <a
+                *ngIf="association.linkedin"
+                [href]="association.linkedin"
+                target="_blank"
+                class="social-link linkedin"
+                title="LinkedIn"
+              >
+                <i class="fab fa-linkedin-in"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer avec date -->
+        <div class="card-footer">
+          <div class="creation-info">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Créée le {{ formatDate(association.dateCreation) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- État vide moderne -->
+    <ng-template #emptyState>
+      <div class="empty-state">
+        <div class="empty-icon">
+          <i class="fas fa-building"></i>
+        </div>
+        <h3 class="empty-title">Aucune association trouvée</h3>
+        <p class="empty-message">
+          {{ searchTerm ? 'Aucune association ne correspond à votre recherche.' : 'Commencez par ajouter votre première association à l\'annuaire.' }}
+        </p>
+        <div class="empty-actions">
+          <button *ngIf="!searchTerm" class="btn-primary" routerLink="/admin/annuaire/add">
+            <i class="fas fa-plus"></i>
+            Ajouter une association
+          </button>
+          <button *ngIf="searchTerm" class="btn-secondary" (click)="clearSearch()">
+            <i class="fas fa-times"></i>
+            Effacer la recherche
+          </button>
+        </div>
+      </div>
+    </ng-template>
+
+    <!-- Pagination moderne -->
+    <div class="pagination-section" *ngIf="totalPages > 1">
+      <div class="pagination-info">
+        <span class="results-count">
+          Affichage {{ (currentPage - 1) * 12 + 1 }}-{{ Math.min(currentPage * 12, totalAssociations) }}
+          sur {{ totalAssociations }} associations
+        </span>
+      </div>
+
+      <div class="pagination-controls">
+        <button
+          class="pagination-btn prev"
+          [disabled]="currentPage === 1"
+          (click)="goToPage(currentPage - 1)"
+          title="Page précédente"
+        >
+          <i class="fas fa-chevron-left"></i>
+        </button>
+
+        <div class="page-numbers">
+          <button
+            *ngFor="let page of getVisiblePages()"
+            class="page-btn"
+            [class.active]="currentPage === page"
+            [class.ellipsis]="page === '...'"
+            [disabled]="page === '...'"
+            (click)="page !== '...' && goToPage(page)"
+          >
+            {{ page }}
+          </button>
+        </div>
+
+        <button
+          class="pagination-btn next"
+          [disabled]="currentPage === totalPages"
+          (click)="goToPage(currentPage + 1)"
+          title="Page suivante"
+        >
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+
+      <div class="pagination-jump">
+        <label>Aller à la page :</label>
+        <input
+          type="number"
+          [min]="1"
+          [max]="totalPages"
+          [(ngModel)]="jumpToPage"
+          (keyup.enter)="goToPage(jumpToPage)"
+          class="page-input"
+        >
+        <button
+          class="jump-btn"
+          (click)="goToPage(jumpToPage)"
+          [disabled]="!jumpToPage || jumpToPage < 1 || jumpToPage > totalPages"
+        >
+          <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal d'édition d'association -->
+  <app-edit-association
+    *ngIf="showEditModal"
+    [associationToEdit]="associationToEdit"
+    (closeModal)="onEditModalClose()"
+    (associationUpdated)="onAssociationUpdated($event)">
+  </app-edit-association>
+
+  <!-- Modal de confirmation de suppression -->
+  <div class="modal-overlay" *ngIf="showDeleteModal" (click)="cancelDelete()">
+    <div class="delete-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>
+          <i class="fas fa-exclamation-triangle"></i>
+          Confirmer la suppression
+        </h3>
+      </div>
+      <div class="modal-body">
+        <p>Êtes-vous sûr de vouloir supprimer l'association <strong>"{{ associationToDelete?.nom }}"</strong> ?</p>
+        <p class="warning-text">Cette action est irréversible.</p>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" (click)="cancelDelete()">
+          <i class="fas fa-times"></i>
+          Annuler
+        </button>
+        <button class="btn-delete" (click)="confirmDeleteAssociation()" [disabled]="isDeleting">
+          <i class="fas fa-trash" *ngIf="!isDeleting"></i>
+          <i class="fas fa-spinner fa-spin" *ngIf="isDeleting"></i>
+          {{ isDeleting ? 'Suppression...' : 'Supprimer' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

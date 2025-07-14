@@ -7,6 +7,8 @@ import { Router, RouterModule } from '@angular/router';
 import {AuthService} from '../../../../member/services/auth.service';
 import { CommunityPostResearchComponent } from '../community-post-research/community-post-research.component';
 import { CommunityResearchComponent } from '../community-research/community-research.component';
+import { AuthRequiredModalComponent } from '../../../auth-required-modal/auth-required-modal.component';
+
 
 @Component({
   selector: 'app-community-home',
@@ -17,20 +19,28 @@ import { CommunityResearchComponent } from '../community-research/community-rese
     CommunityPropositionsComponent,
     RouterModule,
     CommunityPostResearchComponent,
-    CommunityResearchComponent
+    CommunityResearchComponent,
+    AuthRequiredModalComponent
   ],
   templateUrl: './community-home.component.html',
   styleUrl: './community-home.component.scss'
 })
 export class CommunityHomeComponent implements OnInit {
   posts: any[] = [];
-  loading = true;
+  loading = false;
   error: string | null = null;
   isModerator: boolean = false;
   userId: number | null = null;
   isAuthenticated: boolean = false;
 
   showResearchPopup = false; // Par défaut, le popup est fermé
+  showCommunityResearchPopup = false; // Par défaut, le popup de recherche communauté est fermé
+  showPostResearchPopup = false; // Par défaut, le popup de recherche post est fermé
+  showAuthModal = false; // Modal d'authentification
+
+  page = 1;
+  limit = 5;
+  allLoaded = false;
 
   constructor(
     private communityService: CommunityService,
@@ -53,10 +63,22 @@ export class CommunityHomeComponent implements OnInit {
       }
     });
 
-    this.communityService.getRandomPosts().subscribe({
+    this.loadPosts();
+
+  }
+
+
+
+  loadPosts() {
+    if (this.loading || this.allLoaded) return;
+    this.loading = true;
+    this.communityService.getRandomPosts(this.page, this.limit).subscribe({
       next: (res) => {
-        this.posts = res || [];
+        const newPosts = res.posts?.posts ?? [];
+        this.posts = [...this.posts, ...newPosts];
+        this.allLoaded = newPosts.length < this.limit;
         this.loading = false;
+        this.page++;
       },
       error: (err) => {
         this.error = 'Erreur lors du chargement des posts';
@@ -65,16 +87,24 @@ export class CommunityHomeComponent implements OnInit {
     });
   }
 
+  onScroll(event: any): void {
+    if (this.loading || this.allLoaded) return;
+    const element = event.target;
+    if (element.scrollTop + element.clientHeight >= element.scrollHeight - 100) {
+      this.loadPosts();
+    }
+  }
+
   checkAuthentication(): boolean {
     if (!this.isAuthenticated) {
-
-      if(confirm('Vous devez être connecté pour créer une communauté.')){
-        this.router.navigate(['auth/login']);
-      }
+      this.showAuthModal = true;
       return false;
-
     }
     return true;
+  }
+
+  onAuthModalClose() {
+    this.showAuthModal = false;
   }
 
   onPostEvent(event: any) {
@@ -83,8 +113,8 @@ export class CommunityHomeComponent implements OnInit {
     }
   }
 
-  onCommunitySelected(community: any) {
-    this.router.navigate([`/communities/${community.id}`]);
+  onCommunitySelected(communityId: number) {
+    this.router.navigate([`/communities/${communityId}`]);
   }
 
   goToPost(post: any) {
@@ -106,11 +136,11 @@ export class CommunityHomeComponent implements OnInit {
     console.log('POPUP CLICK - AVANT:', this.showResearchPopup);
     this.showResearchPopup = true;
     console.log('POPUP CLICK - APRÈS:', this.showResearchPopup);
-    
+
     // Empêcher le scroll de la page
     document.body.style.overflow = 'hidden';
     document.body.style.paddingRight = '15px'; // Compensate for scrollbar
-    
+
     // Force le reflow pour s'assurer que l'affichage est mis à jour
     setTimeout(() => {
       const overlay = document.querySelector('.community-popup-overlay');
@@ -122,8 +152,32 @@ export class CommunityHomeComponent implements OnInit {
 
   closeResearchPopup() {
     this.showResearchPopup = false;
-    
+
     // Restaurer le scroll
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+  }
+
+  openCommunityResearchPopup() {
+    this.showCommunityResearchPopup = true;
+    document.body.style.overflow = 'hidden';
+    document.body.style.paddingRight = '15px';
+  }
+
+  closeCommunityResearchPopup() {
+    this.showCommunityResearchPopup = false;
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+  }
+
+  openPostResearchPopup() {
+    this.showPostResearchPopup = true;
+    document.body.style.overflow = 'hidden';
+    document.body.style.paddingRight = '15px';
+  }
+
+  closePostResearchPopup() {
+    this.showPostResearchPopup = false;
     document.body.style.overflow = '';
     document.body.style.paddingRight = '';
   }

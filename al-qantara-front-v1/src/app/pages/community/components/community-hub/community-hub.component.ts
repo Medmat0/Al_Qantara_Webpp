@@ -7,11 +7,12 @@ import { CommunityMembersComponent } from '../community-members/community-member
 import { CommunityPostResearchComponent } from '../community-post-research/community-post-research.component';
 import { AuthService } from '../../../../member/services/auth.service';
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
+import { AuthRequiredModalComponent } from '../../../auth-required-modal/auth-required-modal.component';
 
 @Component({
   selector: 'app-community-hub',
   standalone: true,
-  imports: [CommonModule, CommunityPostComponent, CommunityMembersComponent, CommunityPostResearchComponent, ReactiveFormsModule],
+  imports: [CommonModule, CommunityPostComponent, CommunityMembersComponent, CommunityPostResearchComponent, ReactiveFormsModule, AuthRequiredModalComponent],
   templateUrl: './community-hub.component.html',
   styleUrl: './community-hub.component.scss'
 })
@@ -19,7 +20,8 @@ export class CommunityHubComponent implements OnInit {
   communityId!: number;
   community: any = null;
   posts: any[] = [];
-  loading = true;
+  loadingCommunity = true;
+  loadingPosts = false;
   error: string | null = null;
   isMember: boolean | null = false;
   userId: number | null = null;
@@ -28,12 +30,17 @@ export class CommunityHubComponent implements OnInit {
   showMembersPopup = false;
   showPostSearchPopup = false;
   showCreateForm = false;
+  showAuthModal = false; // Modal d'authentification
 
   // Formulaire de création de post
   postForm!: FormGroup;
   selectedFile: File | null = null;
   isSubmitting = false;
   imagePreview: string | null = null;
+
+  page = 1;
+  limit = 4;
+  allLoaded = false;
 
   openPostSearchPopup() {
     this.showPostSearchPopup = true;
@@ -58,10 +65,8 @@ export class CommunityHubComponent implements OnInit {
   }
 
   ngOnInit() {
-
     this.authService.authStatus$.subscribe((status) => {
       this.isAuthenticated = status;
-      console.log('Authentication status:', this.isAuthenticated);
       if (status) {
         const user = localStorage.getItem('utilisateur');
         if (user) {
@@ -76,6 +81,9 @@ export class CommunityHubComponent implements OnInit {
       const id = params.get('communityId');
       if (id) {
         this.communityId = +id;
+        this.posts = [];
+        this.page = 1;
+        this.allLoaded = false;
         this.fetchCommunity();
         this.fetchPosts();
         if (this.isAuthenticated) {
@@ -89,6 +97,23 @@ export class CommunityHubComponent implements OnInit {
         }
       }
     });
+
+    this.route.queryParamMap.subscribe(params => {
+      const eventTitle = params.get('eventTitle');
+      const eventDescription = params.get('eventDescription');
+      const link = params.get('link') || '';
+      console.log('Event Title:', eventTitle);
+      console.log('Event Description:', eventDescription);
+      if (eventTitle && eventDescription) {
+        this.prefillPostFormWithEvent({
+          titre: eventTitle,
+          description: eventDescription,
+          link: link
+        });
+        this.showCreateForm = true;
+      }
+    });
+
   }
 
   // Initialisation du formulaire de création de post
@@ -105,13 +130,19 @@ export class CommunityHubComponent implements OnInit {
       pollDeadline: ['']
     });
 
-    // Ajoute la validation de la date limite après l'init
     this.postForm.get('pollDeadline')?.setValidators([
       this.pollDeadlineValidator.bind(this)
     ]);
   }
 
-  // Validator pour pollOptions
+  prefillPostFormWithEvent(event: any) {
+    this.postForm.patchValue({
+      title: `Regardez cette event: ${event.titre}`,
+      description: "Bonjour je vous partage cet événement: " + event.titre
+        + "\nDescription: " +event.description + '\n\n' + "Lien: " + event.link +"\n\nVenez nombreux !",
+    });
+  }
+
   private pollOptionsValidator(control: AbstractControl): ValidationErrors | null {
     const options = (control.value || []).filter((opt: string) => opt && opt.trim() !== '');
     if (options.length === 1) {
@@ -120,7 +151,6 @@ export class CommunityHubComponent implements OnInit {
     return null;
   }
 
-  // Validator pour pollDeadline
   private pollDeadlineValidator(control: AbstractControl): ValidationErrors | null {
     const pollOptions = this.postForm?.get('pollOptions')?.value || [];
     const hasPoll = pollOptions.filter((opt: string) => opt && opt.trim() !== '').length > 0;
@@ -149,7 +179,6 @@ export class CommunityHubComponent implements OnInit {
     return this.tags.touched;
   }
 
-  // Getters pour les FormArrays
   get tags(): FormArray {
     return this.postForm.get('tags') as FormArray;
   }
@@ -158,7 +187,6 @@ export class CommunityHubComponent implements OnInit {
     return this.postForm.get('pollOptions') as FormArray;
   }
 
-  // Toggle du formulaire de création
   toggleCreateForm() {
     this.showCreateForm = !this.showCreateForm;
     if (this.showCreateForm) {
@@ -166,9 +194,8 @@ export class CommunityHubComponent implements OnInit {
     }
   }
 
-  // Gestion des tags
   addTag() {
-    if (this.tags.length < 5) { // Limite à 5 tags
+    if (this.tags.length < 5) {
       this.tags.push(this.fb.control('', Validators.required));
     }
   }
@@ -179,7 +206,6 @@ export class CommunityHubComponent implements OnInit {
     }
   }
 
-  // Gestion des options de sondage
   addPollOption() {
     if (this.pollOptions.length < 6) {
       this.pollOptions.push(this.fb.control('', Validators.required));
@@ -196,16 +222,13 @@ export class CommunityHubComponent implements OnInit {
     }
   }
 
-  // Gestion du type de post
   onPostTypeChange(event: any) {
     const type = event.target.value;
     this.postForm.patchValue({ type });
 
-    // Reset poll options si ce n'est pas un sondage
     if (type !== 'POLL') {
       this.pollOptions.clear();
     } else {
-      // Ajouter 2 options par défaut pour un sondage
       if (this.pollOptions.length === 0) {
         this.addPollOption();
         this.addPollOption();
@@ -213,23 +236,19 @@ export class CommunityHubComponent implements OnInit {
     }
   }
 
-  // Gestion de la sélection de fichier
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
-      // Vérifier la taille (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
         alert('Le fichier est trop volumineux. Taille maximale : 5MB');
         return;
       }
-      // Vérifier le type de fichier
       const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
       if (!allowedTypes.includes(file.type)) {
         alert('Type de fichier non supporté. Formats acceptés : JPEG, PNG, GIF, WebP');
         return;
       }
       this.selectedFile = file;
-      // Générer l'aperçu
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.imagePreview = e.target.result;
@@ -241,7 +260,6 @@ export class CommunityHubComponent implements OnInit {
     }
   }
 
-  // Soumission du formulaire
   onSubmit(communityId: number) {
     if (!this.checkAuthentication()) {
       return;
@@ -270,45 +288,40 @@ export class CommunityHubComponent implements OnInit {
 
     this.communityService.createPost(communityId, data).subscribe({
       next: (response) => {
-        console.log('Post créé avec succès:', response);
         this.resetForm();
         this.showCreateForm = false;
+        this.posts = [];
+        this.page = 1;
+        this.allLoaded = false;
         this.fetchPosts();
         this.isSubmitting = false;
       },
       error: (error) => {
-        console.error('Erreur lors de la création du post:', error);
         this.error = error.error?.message || 'Erreur lors de la création du post';
         this.isSubmitting = false;
       }
     });
   }
 
-  // Réinitialiser le formulaire
   private resetForm() {
     this.postForm.reset();
     this.postForm.patchValue({ type: 'TEXT' });
 
-    // Reset des tags
     while (this.tags.length > 1) {
       this.tags.removeAt(this.tags.length - 1);
     }
     this.tags.at(0).setValue('');
 
-    // Reset des options de sondage
     this.pollOptions.clear();
 
-    // Reset du fichier et de l'aperçu
     this.selectedFile = null;
     this.imagePreview = null;
-    // Reset de l'input file
     const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
     if (fileInput) {
       fileInput.value = '';
     }
   }
 
-  // Marquer tous les champs comme touchés pour afficher les erreurs
   private markFormGroupTouched(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach(key => {
       const control = formGroup.get(key);
@@ -328,7 +341,6 @@ export class CommunityHubComponent implements OnInit {
     });
   }
 
-  // Méthodes utilitaires pour le template
   isFieldInvalid(fieldName: string): boolean {
     const field = this.postForm.get(fieldName);
     return !!(field && field.invalid && field.touched);
@@ -345,27 +357,26 @@ export class CommunityHubComponent implements OnInit {
 
   checkAuthentication(): boolean {
     if (!this.isAuthenticated) {
-
-      if(confirm('Vous devez être connecté pour interagir avec cette communauté.')){
-        this.router.navigate(['auth/login']);
-      }
+      this.showAuthModal = true;
       return false;
-
     }
     return true;
   }
 
+  onAuthModalClose() {
+    this.showAuthModal = false;
+  }
+
   fetchCommunity() {
-    this.loading = true;
+    this.loadingCommunity = true;
     this.communityService.getCommunityById(this.communityId).subscribe({
       next: (community) => {
         this.community = community;
-        this.loading = false;
+        this.loadingCommunity = false;
       },
       error: (err) => {
         this.error = err.error?.message || 'Erreur lors du chargement de la communauté.';
-        this.loading = false;
-
+        this.loadingCommunity = false;
       }
     });
   }
@@ -382,17 +393,31 @@ export class CommunityHubComponent implements OnInit {
   }
 
   fetchPosts() {
-    this.communityService.getCommunityPosts(this.communityId).subscribe({
+    if (this.loadingPosts || this.allLoaded) return;
+    this.loadingPosts = true;
+    this.error = null;
+    this.communityService.getCommunityPosts(this.communityId, { page: this.page, limit: this.limit }).subscribe({
       next: (res) => {
-        this.posts = res.posts || [];
+        const newPosts = res?.posts ?? [];
+        this.posts = [...this.posts, ...newPosts];
+        this.allLoaded = newPosts.length < this.limit;
+        this.loadingPosts = false;
+        this.page++;
       },
       error: (err) => {
         this.error = err.error?.message || 'Erreur lors du chargement des posts.';
+        this.loadingPosts = false;
       }
     });
   }
 
-
+  onScroll(event: any): void {
+    if (this.loadingPosts || this.allLoaded) return;
+    const element = event.target;
+    if (element.scrollTop + element.clientHeight >= element.scrollHeight - 100) {
+      this.fetchPosts();
+    }
+  }
 
   onPostEvent(event: any) {
     if (event?.type === 'deleted') {
@@ -413,7 +438,6 @@ export class CommunityHubComponent implements OnInit {
   }
 
   goToSettings() {
-    // Rediriger vers la page des paramètres de la communauté
     this.router.navigate([`/communities/${this.communityId}/settings`]);
   }
 
@@ -424,9 +448,7 @@ export class CommunityHubComponent implements OnInit {
   }
 
   goToPost(post: any) {
-    // Rediriger vers la page du post
     this.router.navigate([`/communities/${post.communityId}/posts/${post.id}`]);
-    console.log('Aller au post:', post);
   }
 
   joinCommunity() {
@@ -452,6 +474,7 @@ export class CommunityHubComponent implements OnInit {
       }
     });
   }
+
   trackByPostId(index: number, post: any): any {
     return post.id;
   }

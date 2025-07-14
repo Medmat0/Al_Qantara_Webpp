@@ -8,21 +8,17 @@ import { checkAdhesionStatus, processAdhesionPayment } from '../../services/adhe
  */
 const createAdhesionCheckout = async (req, res) => {
   try {
-    console.log('🎯 createAdhesionCheckout - Début');
-    console.log('📋 Body de la requête:', req.body);
-    console.log('👤 Utilisateur connecté:', req.user);
+
     
     const { utilisateurId } = req.body;
     const userId = req.user?.id || utilisateurId;
 
     if (!userId) {
-      console.log('❌ Aucun ID utilisateur trouvé');
       return res.status(400).json({
         message: 'ID utilisateur requis'
       });
     }
 
-    console.log('✅ ID utilisateur récupéré:', userId);
 
     // Validation des données du payer - Structure exacte HelloAsso
     let payerData;
@@ -73,18 +69,12 @@ const createAdhesionCheckout = async (req, res) => {
       }
     };
 
-    console.log('Données payer pour adhésion:', adhesionData.payer);
-    console.log('Utilisateur connecté:', req.user);
-    console.log('Données complètes adhésion:', adhesionData);
-
-    console.log('🚀 Appel à createAdhesionCheckoutIntent...');
+   
     const checkoutResponse = await createAdhesionCheckoutIntent(adhesionData);
-    console.log('✅ Réponse HelloAsso reçue:', checkoutResponse);
     
     res.json(checkoutResponse);
   } catch (error) {
-    console.error('❌ Erreur dans createAdhesionCheckout:', error);
-    console.error('❌ Stack trace:', error.stack);
+   
     res.status(500).json({
       message: 'Erreur lors de la création du checkout adhésion',
       error: error.message
@@ -123,13 +113,7 @@ const createDonationCheckout = async (req, res) => {
       });
     }
 
-    console.log('Structure payer don avant envoi HelloAsso:', {
-      email: payerData.email,
-      firstName: payerData.firstName,
-      lastName: payerData.lastName,
-      montant: parseFloat(montant)
-    });
-
+   
     const donationData = {
       totalAmount: parseFloat(montant),
       initialAmount: parseFloat(montant),

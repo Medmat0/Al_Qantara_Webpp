@@ -13,7 +13,8 @@ const getArticleByIdService = async (id) => {
       where: { id },
       include: {
         revue: true,
-        createur: true
+        createur: true,
+        categories: true
       }
     });
 
@@ -23,4 +24,4 @@ const getArticleByIdService = async (id) => {
   }
 };
 
-export { getArticleByIdService }; 
+export { getArticleByIdService };

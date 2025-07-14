@@ -1,0 +1,302 @@
+<div class="guide-form-container">
+  <!-- Authentication check -->
+  <div *ngIf="!isAuthenticated" class="auth-warning">
+    <div class="alert alert-warning">
+      <i class="fas fa-exclamation-triangle"></i>
+      Vous devez être connecté en tant qu'administrateur pour accéder à cette page.
+    </div>
+  </div>
+
+  <div *ngIf="isAuthenticated">
+    <div class="header">
+      <h1>{{ isEditMode ? 'Modifier' : 'Créer' }} un Guide</h1>
+      <button type="button" class="btn btn-secondary" (click)="goBack()">
+        <i class="fas fa-arrow-left"></i> Retour
+      </button>
+    </div>
+
+    <form [formGroup]="guideForm" (ngSubmit)="onSubmit()" class="guide-form">
+      <!-- Informations générales -->
+      <div class="form-section">
+        <h3>Informations générales</h3>
+        
+        <!-- Address search helper -->
+        <div class="form-group">
+          <label for="adresseSearch">Rechercher une adresse (aide)</label>
+          <div class="address-search-container">
+            <input
+              type="text"
+              id="adresseSearch"
+              [(ngModel)]="addressSearchInput"
+              (input)="onAddressSearch($any($event).target.value)"
+              name="adresseSearch"
+              placeholder="Tapez une adresse pour aide à la localisation"
+              autocomplete="off"
+              [ngModelOptions]="{standalone: true}">
+
+            <div class="address-suggestions" *ngIf="showSuggestions">
+              <div class="suggestion-item"
+                   *ngFor="let suggestion of addressSuggestions"
+                   (click)="handleAddressSelect(suggestion)">
+                <div class="suggestion-main">{{ addressService.formatSuggestion(suggestion) }}</div>
+                <div class="suggestion-details">{{ suggestion.display_name }}</div>
+              </div>
+            </div>
+          </div>
+          <small class="form-text text-muted">
+            Cette recherche peut vous aider à remplir automatiquement la région et les coordonnées (latitude/longitude).
+          </small>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="nom">Nom du guide *</label>
+            <input 
+              type="text" 
+              id="nom" 
+              formControlName="nom" 
+              placeholder="Ex: Découverte de Marrakech"
+              [class.error]="isFieldInvalid('nom')">
+            <div class="error-message" *ngIf="isFieldInvalid('nom')">
+              Le nom du guide est requis
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="region">Région *</label>
+            <input 
+              type="text" 
+              id="region" 
+              formControlName="region" 
+              placeholder="Ex: Marrakech-Safi"
+              [class.error]="isFieldInvalid('region')">
+            <div class="error-message" *ngIf="isFieldInvalid('region')">
+              La région est requise
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description *</label>
+          <textarea 
+            id="description" 
+            formControlName="description" 
+            rows="4"
+            placeholder="Décrivez votre guide de voyage..."
+            [class.error]="isFieldInvalid('description')"></textarea>
+          <div class="error-message" *ngIf="isFieldInvalid('description')">
+            La description est requise
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="latitude">Latitude *</label>
+            <input 
+              type="number" 
+              id="latitude" 
+              formControlName="latitude" 
+              step="any"
+              placeholder="Ex: 31.6295"
+              [class.error]="isFieldInvalid('latitude')"
+              [class.auto-filled]="guideForm.get('latitude')?.value && guideForm.get('latitude')?.value !== ''">
+            <div class="error-message" *ngIf="isFieldInvalid('latitude')">
+              Une latitude valide est requise
+            </div>
+            <small class="form-text text-muted" *ngIf="guideForm.get('latitude')?.value">
+              <i class="fas fa-check-circle text-success"></i> Coordonnée remplie automatiquement
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label for="longitude">Longitude *</label>
+            <input 
+              type="number" 
+              id="longitude" 
+              formControlName="longitude" 
+              step="any"
+              placeholder="Ex: -7.9811"
+              [class.error]="isFieldInvalid('longitude')"
+              [class.auto-filled]="guideForm.get('longitude')?.value && guideForm.get('longitude')?.value !== ''">
+            <div class="error-message" *ngIf="isFieldInvalid('longitude')">
+              Une longitude valide est requise
+            </div>
+            <small class="form-text text-muted" *ngIf="guideForm.get('longitude')?.value">
+              <i class="fas fa-check-circle text-success"></i> Coordonnée remplie automatiquement
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Images -->
+      <div class="form-section">
+        <h3>Images</h3>
+        
+        <div class="form-group">
+          <label for="mainImage">Image principale</label>
+          <input 
+            type="file" 
+            id="mainImage" 
+            accept="image/*"
+            (change)="onMainImageChange($event)">
+          <small class="form-text">Format recommandé : JPG/PNG, max 10MB</small>
+          
+          <div class="image-preview" *ngIf="mainImagePreview">
+            <img [src]="mainImagePreview" alt="Aperçu image principale">
+            <button type="button" class="remove-image" (click)="removeMainImage()">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="galleryImages">Images de galerie</label>
+          <input 
+            type="file" 
+            id="galleryImages" 
+            accept="image/*"
+            multiple
+            (change)="onGalleryImagesChange($event)">
+          <small class="form-text">Plusieurs images possibles, max 10MB chacune</small>
+          
+          <div class="gallery-preview" *ngIf="galleryImagesPreviews.length > 0">
+            <div class="gallery-item" *ngFor="let preview of galleryImagesPreviews; let i = index">
+              <img [src]="preview" [alt]="'Aperçu ' + (i + 1)">
+              <button type="button" class="remove-image" (click)="removeGalleryImage(i)">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Points d'intérêt -->
+      <div class="form-section">
+        <h3>Points d'intérêt</h3>
+        <p class="section-description">Ajoutez les lieux à visiter dans votre guide</p>
+        
+        <div formArrayName="pointsInteret">
+          <div class="point-interet" 
+               *ngFor="let point of pointsInteretArray.controls; let i = index" 
+               [formGroupName]="i">
+            
+            <div class="point-header">
+              <h4>Point d'intérêt #{{ i + 1 }}</h4>
+              <button type="button" class="btn btn-sm btn-danger" (click)="removePointInteret(i)">
+                <i class="fas fa-trash"></i> Supprimer
+              </button>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Nom *</label>
+                <input type="text" formControlName="nom" placeholder="Ex: Place Jemaa el-Fna">
+              </div>
+              <div class="form-group">
+                <label>Type</label>
+                <select formControlName="typePoint">
+                  <option value="MONUMENT">Monument</option>
+                  <option value="MUSEE">Musée</option>
+                  <option value="RESTAURANT">Restaurant</option>
+                  <option value="HOTEL">Hôtel</option>
+                  <option value="PLAGE">Plage</option>
+                  <option value="PARC">Parc</option>
+                  <option value="MARCHE">Marché</option>
+                  <option value="ARTISANAT">Artisanat</option>
+                  <option value="AUTRE">Autre</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Adresse *</label>
+              <div class="address-search-container">
+                <input 
+                  type="text" 
+                  [(ngModel)]="poiAddressSearchInputs[i]"
+                  (input)="onPoiAddressSearch($any($event).target.value, i)"
+                  [name]="'poiAddress' + i"
+                  placeholder="Tapez une adresse..."
+                  autocomplete="off"
+                  [ngModelOptions]="{standalone: true}">
+                
+                <div class="address-suggestions" *ngIf="showPoiSuggestions[i]">
+                  <div class="suggestion-item"
+                       *ngFor="let suggestion of poiAddressSuggestions[i]"
+                       (click)="handlePoiAddressSelect(suggestion, i)">
+                    <div class="suggestion-main">{{ addressService.formatSuggestion(suggestion) }}</div>
+                    <div class="suggestion-details">{{ suggestion.display_name }}</div>
+                  </div>
+                </div>
+              </div>
+              <input 
+                type="hidden" 
+                formControlName="adresse" 
+                placeholder="Adresse complète">
+              <small class="form-text text-muted">
+                L'adresse sélectionnée remplira automatiquement l'adresse et les coordonnées (latitude/longitude).
+              </small>
+            </div>
+
+            <div class="form-group">
+              <label>Description</label>
+              <textarea formControlName="description" rows="3" placeholder="Décrivez ce lieu..."></textarea>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Latitude *</label>
+                <input type="number" formControlName="latitude" step="any">
+              </div>
+              <div class="form-group">
+                <label>Longitude *</label>
+                <input type="number" formControlName="longitude" step="any">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Horaires d'ouverture</label>
+                <input type="text" formControlName="horairesOuverture" placeholder="Ex: 9h-18h">
+              </div>
+              <div class="form-group">
+                <label>Tarifs</label>
+                <input type="text" formControlName="tarifs" placeholder="Ex: 50 DH">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Téléphone</label>
+                <input type="tel" formControlName="telephone" placeholder="Ex: +212 5XX XXXXXX">
+              </div>
+              <div class="form-group">
+                <label>Site web</label>
+                <input type="url" formControlName="siteWeb" placeholder="https://...">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-outline" (click)="addPointInteret()">
+          <i class="fas fa-plus"></i> Ajouter un point d'intérêt
+        </button>
+      </div>
+
+      <!-- Actions -->
+      <div class="form-actions">
+        <!-- Error message -->
+        <div class="error-alert" *ngIf="errorMessage" style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 4px; margin-bottom: 15px;">
+          <i class="fas fa-exclamation-triangle"></i> {{ errorMessage }}
+        </div>
+        
+        <button type="button" class="btn btn-secondary" (click)="goBack()">
+          Annuler
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="guideForm.invalid || submitting">
+          {{ submitting ? 'Enregistrement...' : (isEditMode ? 'Modifier' : 'Créer') }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -42,7 +42,6 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
 
   // Envoi de l'email avec le code de réinitialisation
   const info = {
-    from: `Mailer Company`,
     to: email,
     subject: "Réinitialisation de mot de passe",
     text: "Vous pouvez maintenant changer votre mot de passe.",

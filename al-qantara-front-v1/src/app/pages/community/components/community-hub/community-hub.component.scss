@@ -387,6 +387,8 @@
       }
 
       .posts-container {
+        height: 60vh;
+        overflow-y: auto;
         .posts-list {
           .post-wrapper {
             border-bottom: 1px solid #e2e8f0;

@@ -68,6 +68,8 @@ export class NavBarComponent {
   }
 
   logout() {
+    this.isUserMenuOpen = false;
+    this.isMenuOpen = false;
     this.authService.logout().subscribe({
       next: () => {
         this.router.navigate(['']);
@@ -83,7 +85,13 @@ export class NavBarComponent {
     this.router.navigate(['/profile']);
   }
 
+  navigateToMessagerie(): void {
+    this.isUserMenuOpen = false;  // Ferme le menu
+    this.router.navigate(['/messaging']);
+  }
+
   navigateTo(path: string): void {
+    this.isMenuOpen = false;
     this.router.navigate([path]);
   }
 
@@ -94,6 +102,7 @@ export class NavBarComponent {
   }
 
   goToAdhesion(): void {
+    this.isMenuOpen = false;
     this.router.navigate(['/adhesion']);
   }
 }

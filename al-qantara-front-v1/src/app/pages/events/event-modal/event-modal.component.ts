@@ -5,9 +5,12 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { PaymentModalComponent } from '../payment-modal/payment-modal.component';
 import { RemboursementModalComponent } from '../remboursement-modal/remboursement-modal.component';
+import { RatingModalComponent } from '../rating-modal/rating-modal.component';
 import { AuthService } from '../../../member/services/auth.service';
 import { EvenementService } from '../../../member/services/evenement.service';
 import { Router } from '@angular/router';
+import { CommunityResearchComponent } from '../../community/components/community-research/community-research.component';
+import { AuthRequiredModalComponent } from '../../auth-required-modal/auth-required-modal.component';
 
 @Component({
   selector: 'app-event-modal',
@@ -20,7 +23,10 @@ import { Router } from '@angular/router';
     NgForOf,
     CommonModule,
     PaymentModalComponent,
-    RemboursementModalComponent
+    CommunityResearchComponent,
+    RemboursementModalComponent,
+    RatingModalComponent,
+    AuthRequiredModalComponent
   ],
   styleUrl: './event-modal.component.scss'
 })
@@ -70,6 +76,16 @@ export class EventModalComponent implements OnChanges {
   userHasLiked: boolean = false;
   likesLoading: boolean = false;
 
+  showCommunityResearchPopup = false;
+  communityIDResearched: number | null = null;
+
+  // Ajout de la propriété pour contrôler l'affichage du modal auth-required
+  showAuthRequiredModal = false;
+
+  // Propriétés pour la notation
+  showRatingModal = false;
+  userHasRated = false;
+
   constructor(private sanitizer: DomSanitizer) {
     if (this.event && !Array.isArray(this.event.comments)) {
       this.event.comments = [];
@@ -102,6 +118,7 @@ export class EventModalComponent implements OnChanges {
             // Initialiser les données des likes depuis le backend
             this.nombreLikes = this.event.nombreLikes || 0;
             this.checkIfUserLiked();
+            this.checkIfUserHasRated();
           }
         },
         error: (error) => {
@@ -140,17 +157,22 @@ export class EventModalComponent implements OnChanges {
     this.showShareMenu = false;
   }
 
+  shareOnCommunity() {
+    if (!this.checkAuthentication()) return;
+
+    this.showCommunityResearchPopup = true;
+    document.body.style.overflow = 'hidden';
+    document.body.style.paddingRight = '17px'; // Pour éviter le décalage de la scrollbar
+  }
+
 
   shareOnLinkedIn() {
-    const url = encodeURIComponent(window.location.href);
+    const url = `/events/${this.event?.id}`;
+    navigator.clipboard.writeText(url);
     window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
     this.showShareMenu = false;
   }
 
-  shareOnInstagram() {
-    alert('Le partage direct sur Instagram n\'est pas supporté depuis le web.');
-    this.showShareMenu = false;
-  }
 
   formatDateTime(dateStr: string) {
     return new Date(dateStr).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' });
@@ -167,8 +189,7 @@ export class EventModalComponent implements OnChanges {
 
   checkAuthentication(): boolean {
     if (!this.isAuthenticated) {
-      confirm('Vous devez être connecté pour interagir avec cet événement');
-      this.router.navigate(['auth/login']);
+      this.showAuthRequiredModal = true;
       return false;
     }
     return true;
@@ -200,6 +221,9 @@ export class EventModalComponent implements OnChanges {
   }
 
   onPayWithHelloAsso() {
+    // Vérifier l'authentification avant de procéder à l'achat
+    if (!this.checkAuthentication()) return;
+
     this.errorPaymentMessage = '';
     const utilisateur = JSON.parse(localStorage.getItem('utilisateur') || '{}');
     if (
@@ -238,6 +262,20 @@ export class EventModalComponent implements OnChanges {
   checkIfUserLiked() {
     if (this.userId && this.event?.likes) {
       this.userHasLiked = this.event.likes.some((like: any) => like.utilisateurId === this.userId);
+    }
+  }
+
+  /**
+   * Vérifier si l'utilisateur connecté a déjà noté cet événement
+   */
+  checkIfUserHasRated() {
+    if (this.userId && this.event?.ratings) {
+      this.userHasRated = this.event.ratings.some((rating: any) => rating.utilisateur.id === this.userId);
+      console.log('Vérification notation utilisateur:', {
+        userId: this.userId,
+        ratings: this.event.ratings,
+        userHasRated: this.userHasRated
+      });
     }
   }
 
@@ -292,6 +330,27 @@ export class EventModalComponent implements OnChanges {
     });
   }
 
+  closeCommunityResearchPopup(communityID: number | null = null) {
+    this.showCommunityResearchPopup = false;
+    this.communityIDResearched = communityID;
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+  }
+
+  onCommunitySelected(communityId: number) {
+    this.closeCommunityResearchPopup(communityId);
+    console.log('Evenement:', this.event);
+    this.router.navigate(
+      ['/communities', communityId],
+      {
+        queryParams: {
+          eventTitle: this.event.titre,
+          eventDescription: this.event.description,
+          link: window.location.href+"/"+ this.event.id,
+        }
+      }
+    );
+  }
   /**
    * Vérifier si l'utilisateur peut demander un remboursement
    */
@@ -327,4 +386,27 @@ export class EventModalComponent implements OnChanges {
     this.canRequestRefund = false; // Masquer le bouton après demande
   }
 
+
+  /**
+   * Ouvrir le modal de notation
+   */
+  openRatingModal(): void {
+    if (!this.checkAuthentication()) return;
+    this.showRatingModal = true;
+  }
+
+  /**
+   * Fermer le modal de notation
+   */
+  closeRatingModal(): void {
+    this.showRatingModal = false;
+  }
+
+  /**
+   * Gérer le succès de la notation
+   */
+  onRatingSubmitted(): void {
+    console.log('✅ Notation envoyée avec succès');
+
+  }
 }

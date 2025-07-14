@@ -3,13 +3,13 @@
   <header class="main-header">
     <div class="header-content">
       <button class="back-btn" (click)="goToCommunityHome()">
-        <span class="btn-icon">🏠</span>
+        <span class="btn-icon"></span>
         <span>Retour à l'accueil</span>
       </button>
       <h1 class="community-title">{{ community?.nom }}</h1>
       <div class="header-actions">
         <button class="btn btn-ghost" (click)="openMembersPopup()" *ngIf="isModerator">
-          <span class="btn-icon">👥</span>
+          <span class="btn-icon"></span>
           <span>Membres</span>
         </button>
         <button class="btn btn-ghost" (click)="goToSettings()" *ngIf="isModerator">
@@ -27,7 +27,7 @@
       <!-- Toggle pour créer un post -->
       <div class="create-post-toggle">
         <button class="toggle-btn" (click)="toggleCreateForm()">
-          <span class="btn-icon">{{ showCreateForm ? '📝' : '✍️' }}</span>
+          <span class="btn-icon">{{ showCreateForm ? '' : '' }}</span>
           <span>{{ showCreateForm ? 'Masquer le formulaire' : 'Créer un post' }}</span>
         </button>
       </div>
@@ -181,7 +181,7 @@
       <!-- Barre de recherche -->
       <div class="search-bar">
         <button class="search-btn" (click)="openPostSearchPopup()">
-          <span class="btn-icon">🔎</span>
+          <span class="btn-icon"></span>
           <span>Rechercher un post dans la communauté...</span>
         </button>
       </div>
@@ -190,15 +190,15 @@
       <div class="posts-section">
         <div class="posts-header">
           <h2 class="section-title">
-            <span class="title-icon">📋</span>
+            <span class="title-icon"></span>
             Publications récentes
           </h2>
           <div class="posts-count" *ngIf="posts.length > 0">
-            {{ posts.length }} post{{ posts.length > 1 ? 's' : '' }}
+            {{ community?.nbrPosts }} post{{ community?.nbrPosts > 1 ? 's' : '' }}
           </div>
         </div>
 
-        <div class="posts-container">
+        <div class="posts-container" (scroll)="onScroll($event)">
           <div class="posts-list" *ngIf="posts.length > 0">
             <div
               *ngFor="let post of posts; trackBy: trackByPostId"
@@ -215,7 +215,7 @@
 
           <div class="empty-state" *ngIf="posts.length === 0">
             <div class="empty-illustration">
-              <div class="empty-icon">📝</div>
+              <div class="empty-icon"></div>
               <div class="empty-particles">
                 <span class="particle"></span>
                 <span class="particle"></span>
@@ -229,9 +229,14 @@
             <button
               (click)="toggleCreateForm()"
               class="btn btn-primary empty-action">
-              <span class="btn-icon">✍️</span>
+              <span class="btn-icon">✍</span>
               <span>Créer le premier post</span>
             </button>
+          </div>
+
+          <div class="loading-indicator" *ngIf="loadingPosts">
+            <div class="spinner"></div>
+            <span>Chargement des posts...</span>
           </div>
         </div>
       </div>
@@ -248,7 +253,7 @@
               class="community-logo">
           </div>
           <div class="default-logo" *ngIf="!community?.logo">
-            <span class="default-icon">🏠</span>
+            <span class="default-icon"></span>
             <div class="logo-ring"></div>
           </div>
         </div>
@@ -259,9 +264,9 @@
 
           <div class="community-meta">
             <div class="meta-item">
-              <span class="meta-icon">📅</span>
+              <span class="meta-icon"></span>
               <span class="meta-text">
-                Crée le {{ community?.dateCreation | date:'dd/MM/yyyy' }}
+                Créé le {{ community?.dateCreation | date:'dd/MM/yyyy' }}
               </span>
             </div>
             <div class="meta-item" *ngIf="community?.createdBy">
@@ -278,7 +283,7 @@
             *ngIf="isMember === false"
             (click)="joinCommunity()"
             class="btn btn-success join-btn">
-            <span class="btn-icon">➕</span>
+            <span class="btn-icon"></span>
             <span>Rejoindre</span>
           </button>
 
@@ -286,7 +291,7 @@
             *ngIf="isMember === true"
             (click)="leaveCommunity()"
             class="btn btn-outline leave-btn">
-            <span class="btn-icon">🚪</span>
+            <span class="btn-icon"></span>
             <span>Quitter</span>
           </button>
         </div>
@@ -295,12 +300,12 @@
       <!-- Statistiques -->
       <div class="community-stats-card">
         <h3 class="stats-title">
-          <span class="title-icon">📊</span>
+          <span class="title-icon"></span>
           Statistiques
         </h3>
         <div class="stats-grid">
           <div class="stat-item">
-            <div class="stat-number">{{ posts.length }}</div>
+            <div class="stat-number">{{ community?.nbrPosts }}</div>
             <div class="stat-label">Posts</div>
           </div>
 
@@ -313,7 +318,7 @@
   <div class="community-popup-overlay" *ngIf="showPostSearchPopup" (click)="closePostSearchPopup()">
     <div class="community-popup" (click)="$event.stopPropagation()">
       <button class="close-popup" (click)="closePostSearchPopup()">✖</button>
-      <app-community-post-research></app-community-post-research>
+      <app-community-post-research [communityId]="communityId"></app-community-post-research>
     </div>
   </div>
 
@@ -323,4 +328,9 @@
       <app-community-members [communityId]="communityId"></app-community-members>
     </div>
   </div>
+
+  <app-auth-required-modal
+    *ngIf="showAuthModal"
+    (close)="onAuthModalClose()">
+  </app-auth-required-modal>
 </div>

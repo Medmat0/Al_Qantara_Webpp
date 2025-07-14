@@ -5,6 +5,8 @@ import { map, debounceTime, distinctUntilChanged, switchMap, catchError } from '
 
 export interface AddressSuggestion {
   display_name: string;
+  lat?: string;
+  lon?: string;
   address: {
     house_number?: string;
     road?: string;
@@ -13,6 +15,9 @@ export interface AddressSuggestion {
     city?: string;
     town?: string;
     village?: string;
+    state?: string;
+    region?: string;
+    country?: string;
   };
 }
 
@@ -34,33 +39,37 @@ export class AddressService {
       .replace(/[ç]/g, 'c');
   }
 
-  searchAddress(query: string): Observable<AddressSuggestion[]> {
+  searchAddress(query: string, countryCode: string = 'ma'): Observable<AddressSuggestion[]> {
     if (!query || query.length < 3) {
       return of([]);
     }
 
-    const normalizedQuery = this.normalizeQuery(query);    return this.http.get<AddressSuggestion[]>(
+    const normalizedQuery = this.normalizeQuery(query);
+    
+    return this.http.get<AddressSuggestion[]>(
       'https://nominatim.openstreetmap.org/search',
       {
         params: {
           q: normalizedQuery,
           format: 'json',
           limit: '10',
-          countrycodes: 'fr',
+          countrycodes: countryCode, // Paramètre dynamique pour le pays
           addressdetails: '1',
           'accept-language': 'fr',
-          featuretype: 'address',
+          featuretype: 'settlement,building,poi', // Include settlements, buildings and POIs
           'email': 'contact@alqantara.fr',
           dedupe: '1',
-          'bounded': '1'
+          'bounded': '0', // Don't restrict to viewbox
+          'extratags': '1' // Include extra tags for better info
         }
       }
     ).pipe(
       map(suggestions => suggestions.filter(suggestion => {
         const address = suggestion.address;
         return address && (
-          (address.road || address.street) &&
-          (address.postcode || address.city || address.town || address.village)
+          // More flexible filtering for Moroccan addresses
+          (address.road || address.street || address.city || address.town || address.village) &&
+          (address.postcode || address.city || address.town || address.village || address.state)
         );
       })),
       catchError(error => {

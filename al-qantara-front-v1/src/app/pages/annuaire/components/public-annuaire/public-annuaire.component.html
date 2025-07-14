@@ -1,0 +1,416 @@
+<div class="public-annuaire-container">
+  <!-- En-tête moderne -->
+  <div class="hero-section">
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1 class="hero-title">
+          <i class="fas fa-building"></i>
+          Annuaire des Associations
+        </h1>
+        <p class="hero-subtitle">
+          Découvrez les associations marocaines en France
+        </p>
+        <p class="hero-description">
+          Explorez notre réseau d'associations qui œuvrent pour renforcer les liens culturels,
+          sociaux et économiques entre le Maroc et la France.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistiques en cartes modernes -->
+  <div class="stats-section">
+    <div class="stats-grid">
+      <div class="stat-card primary">
+        <div class="stat-header">
+          <div class="stat-icon">
+            <i class="fas fa-building"></i>
+          </div>
+          <div class="stat-trend up">
+            <i class="fas fa-arrow-up"></i>
+            <span>+{{ evolutionMensuelle }}%</span>
+          </div>
+        </div>
+        <div class="stat-body">
+          <div class="stat-number">{{ totalAssociations }}</div>
+          <div class="stat-label">Associations référencées</div>
+        </div>
+      </div>
+
+      <div class="stat-card success">
+        <div class="stat-header">
+          <div class="stat-icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <div class="stat-trend up">
+            <i class="fas fa-arrow-up"></i>
+            <span>Actives</span>
+          </div>
+        </div>
+        <div class="stat-body">
+          <div class="stat-number">{{ associationsActives }}</div>
+          <div class="stat-label">Associations actives</div>
+        </div>
+      </div>
+
+      <div class="stat-card info">
+        <div class="stat-header">
+          <div class="stat-icon">
+            <i class="fas fa-layer-group"></i>
+          </div>
+          <div class="stat-trend neutral">
+            <i class="fas fa-chart-bar"></i>
+            <span>Secteurs</span>
+          </div>
+        </div>
+        <div class="stat-body">
+          <div class="stat-number">{{ nombreSecteurs }}</div>
+          <div class="stat-label">Secteurs d'activité</div>
+        </div>
+      </div>
+
+      <div class="stat-card warning">
+        <div class="stat-header">
+          <div class="stat-icon">
+            <i class="fas fa-map-marker-alt"></i>
+          </div>
+          <div class="stat-trend neutral">
+            <i class="fas fa-map"></i>
+            <span>Régions</span>
+          </div>
+        </div>
+        <div class="stat-body">
+          <div class="stat-number">{{ nombreRegions }}</div>
+          <div class="stat-label">Régions couvertes</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtres et recherche -->
+  <div class="filters-section">
+    <div class="filters-header">
+      <h2 class="filters-title">
+        <i class="fas fa-search"></i>
+        Rechercher une association
+      </h2>
+      <div class="view-controls">
+        <button
+          class="view-btn"
+          [class.active]="viewMode === 'grid'"
+          (click)="viewMode = 'grid'"
+          title="Vue grille"
+        >
+          <i class="fas fa-th"></i>
+        </button>
+        <button
+          class="view-btn"
+          [class.active]="viewMode === 'list'"
+          (click)="viewMode = 'list'"
+          title="Vue liste"
+        >
+          <i class="fas fa-list"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="filters-content">
+      <!-- Barre de recherche -->
+      <div class="search-container">
+        <div class="search-input-wrapper">
+          <i class="fas fa-search"></i>
+          <input
+            type="text"
+            placeholder="Rechercher par nom, description ou ville..."
+            class="search-input"
+            [(ngModel)]="searchTerm"
+            (input)="onSearch()"
+          >
+          <button
+            *ngIf="searchTerm"
+            class="clear-search"
+            (click)="clearSearch()"
+            title="Effacer la recherche"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Filtres par secteur -->
+      <div class="filter-group">
+        <label class="filter-label">Secteur d'activité :</label>
+        <div class="filter-buttons">
+          <button
+            class="filter-btn"
+            [class.active]="selectedSecteur === ''"
+            (click)="filterBySecteur('')">
+            <i class="fas fa-th"></i>
+            Tous les secteurs
+          </button>
+          <button
+            *ngFor="let secteur of uniqueSecteurs"
+            class="filter-btn"
+            [class.active]="selectedSecteur === secteur"
+            (click)="filterBySecteur(secteur)">
+            <span class="secteur-badge" [class]="getSecteurClass(secteur)"></span>
+            {{ secteur }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Filtres par région -->
+      <div class="filter-group">
+        <label class="filter-label">Région :</label>
+        <div class="filter-buttons">
+          <button
+            class="filter-btn"
+            [class.active]="selectedRegion === ''"
+            (click)="filterByRegion('')">
+            <i class="fas fa-map"></i>
+            Toutes les régions
+          </button>
+          <button
+            *ngFor="let region of uniqueRegions"
+            class="filter-btn"
+            [class.active]="selectedRegion === region"
+            (click)="filterByRegion(region)">
+            <i class="fas fa-map-marker-alt"></i>
+            {{ region }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Actions rapides -->
+      <div class="filter-actions" *ngIf="searchTerm || selectedSecteur || selectedRegion">
+        <button class="clear-filters-btn" (click)="clearFilters()">
+          <i class="fas fa-times"></i>
+          Effacer tous les filtres
+        </button>
+        <div class="results-summary">
+          {{ filteredAssociations.length }} association(s) trouvée(s)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loader moderne -->
+  <div *ngIf="isLoading" class="loader-container">
+    <div class="modern-loader">
+      <div class="loader-circle"></div>
+      <div class="loader-text">Chargement des associations...</div>
+    </div>
+  </div>
+
+  <!-- Grille/Liste des associations -->
+  <div *ngIf="!isLoading" class="associations-container">
+    <div *ngIf="associationsPage && associationsPage.length > 0; else emptyState"
+         class="associations-grid"
+         [class.list-view]="viewMode === 'list'">
+      <div
+        *ngFor="let association of associationsPage; trackBy: trackByAssociation; let i = index"
+        class="association-card"
+        [style.animation-delay]="(i * 0.1) + 's'"
+      >
+        <!-- Header de la carte avec logo et badge -->
+        <div class="card-header">
+          <div class="logo-container">
+            <img
+              [src]="getAssociationLogo(association)"
+              [alt]="association.nom || 'Logo association'"
+              class="association-logo"
+              (error)="onImageError($event)"
+              (load)="onImageLoad($event)"
+              style="opacity: 0; transition: opacity 0.3s ease;"
+            >
+          </div>
+
+          <div class="header-info">
+            <div class="header-badges">
+              <span class="secteur-badge" [class]="getSecteurClass(association.secteurActivite)">
+                {{ association.secteurActivite || 'Non spécifié' }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contenu principal -->
+        <div class="card-body">
+          <div class="association-info">
+            <h3 class="association-name" [title]="association.nom">
+              {{ association.nom }}
+            </h3>
+
+            <p class="association-description" *ngIf="association.description" [title]="association.description">
+              {{ association.description | slice:0:150 }}
+              <span *ngIf="association.description && association.description.length > 150">...</span>
+            </p>
+          </div>
+
+          <!-- Informations de contact -->
+          <div class="contact-section">
+            <div class="contact-item" *ngIf="association.ville || association.region">
+              <i class="fas fa-map-marker-alt"></i>
+              <span class="contact-text">
+                {{ association.ville }}{{ association.ville && association.region ? ', ' : '' }}{{ association.region }}
+              </span>
+            </div>
+
+            <div class="contact-item" *ngIf="association.email">
+              <i class="fas fa-envelope"></i>
+              <span class="contact-text" [title]="association.email">{{ association.email }}</span>
+            </div>
+
+            <div class="contact-item" *ngIf="association.telephone">
+              <i class="fas fa-phone"></i>
+              <span class="contact-text">{{ association.telephone }}</span>
+            </div>
+          </div>
+
+          <!-- Réseaux sociaux -->
+          <div class="social-section" *ngIf="hasSocialLinks(association)">
+            <div class="social-links">
+              <a
+                *ngIf="association.siteWeb"
+                [href]="formatWebsiteUrl(association.siteWeb)"
+                target="_blank"
+                class="social-link website"
+                title="Site web"
+              >
+                <i class="fas fa-globe"></i>
+                <span>Site web</span>
+              </a>
+
+              <a
+                *ngIf="association.facebook"
+                [href]="association.facebook"
+                target="_blank"
+                class="social-link facebook"
+                title="Facebook"
+              >
+                <i class="fab fa-facebook-f"></i>
+                <span>Facebook</span>
+              </a>
+
+              <a
+                *ngIf="association.instagram"
+                [href]="association.instagram"
+                target="_blank"
+                class="social-link instagram"
+                title="Instagram"
+              >
+                <i class="fab fa-instagram"></i>
+                <span>Instagram</span>
+              </a>
+
+              <a
+                *ngIf="association.linkedin"
+                [href]="association.linkedin"
+                target="_blank"
+                class="social-link linkedin"
+                title="LinkedIn"
+              >
+                <i class="fab fa-linkedin-in"></i>
+                <span>LinkedIn</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions publiques -->
+        <div class="card-actions">
+          <button
+            class="action-btn primary"
+            (click)="viewDetails(association)"
+            title="Voir les détails"
+          >
+            <i class="fas fa-eye"></i>
+            <span>Détails</span>
+          </button>
+
+        </div>
+
+        <!-- Footer avec date de création -->
+        <div class="card-footer" *ngIf="association.dateCreation">
+          <div class="creation-info">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Membre depuis {{ formatDate(association.dateCreation) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- État vide moderne -->
+    <ng-template #emptyState>
+      <div class="empty-state">
+        <div class="empty-icon">
+          <i class="fas fa-search"></i>
+        </div>
+        <h3 class="empty-title">
+          {{ searchTerm || selectedSecteur || selectedRegion ? 'Aucun résultat trouvé' : 'Aucune association disponible' }}
+        </h3>
+        <p class="empty-message">
+          {{ searchTerm || selectedSecteur || selectedRegion
+            ? 'Essayez de modifier vos critères de recherche pour trouver des associations.'
+            : 'Il n\'y a actuellement aucune association dans notre annuaire.' }}
+        </p>
+        <div class="empty-actions" *ngIf="searchTerm || selectedSecteur || selectedRegion">
+          <button class="btn-secondary" (click)="clearFilters()">
+            <i class="fas fa-times"></i>
+            Effacer les filtres
+          </button>
+        </div>
+      </div>
+    </ng-template>
+
+    <!-- Pagination moderne -->
+    <div class="pagination-section" *ngIf="totalPages > 1">
+      <div class="pagination-info">
+        <span class="results-count">
+          Affichage {{ (currentPage - 1) * itemsPerPage + 1 }}-{{ Math.min(currentPage * itemsPerPage, filteredAssociations.length) }}
+          sur {{ filteredAssociations.length }} associations
+        </span>
+      </div>
+
+      <div class="pagination-controls">
+        <button
+          class="pagination-btn prev"
+          [disabled]="currentPage === 1"
+          (click)="goToPage(currentPage - 1)"
+          title="Page précédente"
+        >
+          <i class="fas fa-chevron-left"></i>
+        </button>
+
+        <div class="page-numbers">
+          <button
+            *ngFor="let page of getVisiblePages()"
+            class="page-btn"
+            [class.active]="currentPage === page"
+            [class.ellipsis]="page === '...'"
+            [disabled]="page === '...'"
+            (click)="page !== '...' && goToPage(page)"
+          >
+            {{ page }}
+          </button>
+        </div>
+
+        <button
+          class="pagination-btn next"
+          [disabled]="currentPage === totalPages"
+          (click)="goToPage(currentPage + 1)"
+          title="Page suivante"
+        >
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de détails -->
+<app-detail-annuaire
+  [association]="selectedAssociation"
+  [isVisible]="showModal"
+  (closeModalEvent)="onCloseModal()"
+></app-detail-annuaire>

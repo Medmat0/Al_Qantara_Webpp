@@ -26,6 +26,8 @@
         <li><a (click)="navigateTo('/events')">Événements</a></li>
         <li><a (click)="navigateTo('/recruitment')">Nous rejoindre</a></li>
         <li><a (click)="navigateTo('/communities')">Nos Communautés</a></li>
+        <li><a (click)="navigateTo('/annuaire')">Annuaire</a></li>
+        <li><a (click)="navigateTo('/decouvertes')">Découvertes</a></li>
       </ul>
 
       <div class="ConnectingOptions">
@@ -44,8 +46,11 @@
             </svg>
           </button>
           <div class="user-dropdown" *ngIf="isUserMenuOpen">
+
             <ul>
               <li><a (click)="navigateToProfile()">Mon profil</a></li>
+              <li><a (click)="navigateToMessagerie()">Messagerie</a></li>
+              <li *ngIf="userRole?.toLowerCase() === 'admin'"><a (click)="navigateTo('/admin')">Administrateur</a></li>
               <li><a class="logout-link" (click)="logout()">Déconnexion</a></li>
             </ul>
           </div>

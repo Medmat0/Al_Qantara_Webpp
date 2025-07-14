@@ -1,4 +1,3 @@
-
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RecruitmentService } from '../../services/recruitment.service';
@@ -37,6 +36,10 @@ export class ManageRecruitmentComponent implements OnInit {
   // Variables pour la modale des candidats
   public applicantsOfferId: number | null = null;
   public showApplicantsModal: boolean = false;
+
+  // Variables pour le modal de suppression
+  public showDeleteModal: boolean = false;
+  public offerToDelete: Offer | null = null;
 
   constructor(
     private recruitmentService: RecruitmentService,
@@ -92,16 +95,33 @@ export class ManageRecruitmentComponent implements OnInit {
   }
 
   deleteOffer(id: number): void {
-    if (confirm('Êtes-vous sûr de vouloir supprimer cette offre ?')) {
-      this.recruitmentService.deleteOffer(id).subscribe({
+    const offer = this.offers.find(o => o.id === id);
+    if (offer) {
+      this.offerToDelete = offer;
+      this.showDeleteModal = true;
+    }
+  }
+
+  confirmDeleteOffer(): void {
+    if (this.offerToDelete) {
+      this.recruitmentService.deleteOffer(this.offerToDelete.id).subscribe({
         next: () => {
-          this.offers = this.offers.filter(offer => offer.id !== id);
+          this.offers = this.offers.filter(offer => offer.id !== this.offerToDelete?.id);
+          this.applyFilters();
+          this.closeDeleteModal();
         },
         error: (error) => {
           console.error('Erreur lors de la suppression de l\'offre:', error);
+          alert('Une erreur est survenue lors de la suppression de l\'offre.');
+          this.closeDeleteModal();
         }
       });
     }
+  }
+
+  closeDeleteModal(): void {
+    this.showDeleteModal = false;
+    this.offerToDelete = null;
   }
 
   viewApplicants(id: number): void {

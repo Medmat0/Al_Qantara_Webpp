@@ -1,0 +1,163 @@
+
+<div class="decouverte-container">
+
+
+  <!-- Carte principale Leaflet -->
+  <div class="map-main">
+
+    <div id="map" style="width: 100%; height: 100%;"></div>
+    <!-- Overlay avec info sur la ville sélectionnée -->
+    <div class="map-overlay" *ngIf="selectedGuide">
+      <div class="overlay-content">
+        <h3>{{ selectedGuide.nom }}</h3>
+        <p class="region">{{ selectedGuide.region }}</p>
+        <p class="description">{{ selectedGuide.description }}</p>
+
+        <!-- Photos de la ville -->
+        <div class="photos-gallery" *ngIf="selectedGuide.images">
+          <img
+            *ngFor="let image of selectedGuide.images"
+            [src]="image"
+            [alt]="selectedGuide.nom"
+            class="gallery-photo"
+            (click)="openPhotoModal(image)">
+        </div>
+
+        <!-- Points d'intérêt avec trajet -->
+        <div class="points-interet" *ngIf="!isMobile">
+          <h4>
+            <i class="fas fa-route"></i>
+            Itinéraire recommandé
+          </h4>
+          <div class="route-info">
+            <p><i class="fas fa-walking"></i> {{ selectedGuide.pointsInteret.length }} étapes à découvrir</p>
+          </div>
+          <ol class="route-steps">
+            <li (click)="openPoiAndShowRoute(poi)" *ngFor="let poi of selectedGuide.pointsInteret; let i = index" class="route-step">
+              <div class="step-number">{{ i + 1 }}</div>
+              <div class="step-content">
+                <h5>{{ poi.nom }}</h5>
+                <small class="coordinates">{{ poi.adresse }}</small>
+              </div>
+            </li>
+          </ol>
+
+          <div class="route-actions">
+            <button class="btn-route" (click)="showRoute()">
+              <i class="fas fa-map"></i>
+              {{ showRouteMap ? 'Vue normale' : 'Vue trajet' }}
+            </button>
+            <button class="btn-route-external" (click)="openFullRoute()">
+              <i class="fas fa-external-link-alt"></i>
+              Itinéraire Google Maps
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="poi-overlay" *ngIf="selectedPoi">
+      <button class="close-btn" (click)="closePoiModal()">
+        <i class="fas fa-times"></i>
+      </button>
+      <div class="poi-overlay-content">
+        <div class="icon-container">
+          <svg xmlns="http://www.w3.org/2000/svg" style="height: 30px; width: 30px; fill: red;" viewBox="0 0 24 24"><title>map-marker-radius-outline</title><path d="M12 4C14.2 4 16 5.8 16 8C16 10.1 13.9 13.5 12 15.9C10.1 13.4 8 10.1 8 8C8 5.8 9.8 4 12 4M12 2C8.7 2 6 4.7 6 8C6 12.5 12 19 12 19S18 12.4 18 8C18 4.7 15.3 2 12 2M12 6C10.9 6 10 6.9 10 8S10.9 10 12 10 14 9.1 14 8 13.1 6 12 6M20 19C20 21.2 16.4 23 12 23S4 21.2 4 19C4 17.7 5.2 16.6 7.1 15.8L7.7 16.7C6.7 17.2 6 17.8 6 18.5C6 19.9 8.7 21 12 21S18 19.9 18 18.5C18 17.8 17.3 17.2 16.2 16.7L16.8 15.8C18.8 16.6 20 17.7 20 19Z" /></svg>          <h3>Destination: {{ selectedPoi.nom }}</h3>
+        </div>
+        <p *ngIf="selectedPoi.typePoint"><strong>Type:</strong> {{ selectedPoi.typePoint }}</p>
+        <p class="region" *ngIf="selectedPoi.adresse"><strong>Adresse: </strong>{{ selectedPoi.adresse }}</p>
+        <p><strong>Description: </strong></p>
+        <p class="description" *ngIf="selectedPoi.description">{{ selectedPoi.description }}</p>
+        <div *ngIf="selectedPoi.images && selectedPoi.images.length">
+          <img [src]="selectedPoi.images" [alt]="selectedPoi.nom" class="gallery-photo" style="height:120px;">
+        </div>
+        <p *ngIf="selectedPoi.horairesOuverture"><strong>Horaires:</strong> {{ selectedPoi.horairesOuverture }}</p>
+        <p *ngIf="selectedPoi.tarifs"><strong>Tarifs: </strong> {{ selectedPoi.tarifs }}</p>
+        <p *ngIf="selectedPoi.telephone"><strong>Téléphone:</strong> {{ selectedPoi.telephone }}</p>
+        <p *ngIf="selectedPoi.siteWeb">
+          <strong>Site web:</strong>
+          <a [href]="selectedPoi.siteWeb" target="_blank" rel="noopener">{{ selectedPoi.siteWeb }}</a>
+        </p>
+        <p *ngIf="selectedPoi.email"><strong>Email:</strong> {{ selectedPoi.email }}</p>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Modale mobile pour la liste des POI, visible uniquement sur mobile -->
+  <div
+    class="mobile-poi-modal"
+    *ngIf="isMobile && showListOnMobile && selectedGuide">
+    <div class="menu-header">
+      <h2><i class="fas fa-route"></i> Itinéraire</h2>
+      <button class="close-btn" (click)="toggleListOnMobile()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="cities-list">
+      <div
+        *ngFor="let poi of selectedGuide.pointsInteret; let i = index"
+        class="city-item"
+        (click)="openPoiAndShowRoute(poi)">
+        <div class="city-info">
+          <h3>{{ i + 1 }}. {{ poi.nom }}</h3>
+          <p class="region">{{ poi.adresse }}</p>
+          <p class="preview">{{ poi.description | slice:0:80 }}...</p>
+        </div>
+        <div class="city-arrow">
+          <i class="fas fa-chevron-right"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Menu de sélection à droite -->
+  <div class="sidebar-menu">
+    <div class="menu-header">
+      <h2><i class="fas fa-compass"></i> Découverte du Maroc</h2>
+      <p>Sélectionnez une ville pour explorer</p>
+    </div>
+
+    <div class="cities-list">
+      <div
+        *ngFor="let guide of guides"
+        class="city-item"
+        [class.active]="selectedGuide?.id === guide.id"
+        (click)="selectGuide(guide)">
+
+        <div class="city-image">
+          <img [src]="guide.image" [alt]="guide.nom">
+        </div>
+
+        <div class="city-info">
+          <h3>{{ guide.nom }}</h3>
+          <p class="region">{{ guide.region }}</p>
+          <p class="preview">{{ guide.description | slice:0:80 }}...</p>
+
+          <div class="city-stats">
+            <span class="stat">
+              <i class="fas fa-route"></i>
+              {{ guide.pointsInteret.length }} étapes
+            </span>
+          </div>
+        </div>
+
+        <div class="city-arrow">
+          <i class="fas fa-chevron-right"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+<!-- Modal pour afficher les photos en grand -->
+<div class="photo-modal" *ngIf="selectedPhoto" (click)="closePhotoModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="closePhotoModal()">
+      <i class="fas fa-times"></i>
+    </button>
+    <img [src]="selectedPhoto" [alt]="selectedGuide?.nom">
+  </div>
+</div>

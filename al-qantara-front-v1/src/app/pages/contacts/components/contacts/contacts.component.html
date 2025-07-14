@@ -37,6 +37,24 @@
   </div>
 
   <div class="right-container">
+    <!-- Section Email Association -->
+    <div class="association-contact">
+      <div class="contact-header">
+        <div class="contact-icon">
+          <i class="fas fa-at"></i>
+        </div>
+        <h3>Contact de l'association</h3>
+        <p>Pour toute question ou demande d'information</p>
+      </div>
+      <div class="contact-content">
+        <div class="email-info">
+          <i class="fas fa-envelope"></i>
+          <a href="mailto:contact@alqantara.fr" class="email-link">contact&#64;alqantara.fr</a>
+        </div>
+        <p class="contact-note">Nous vous répondrons dans les plus brefs délais</p>
+      </div>
+    </div>
+
     <!-- Section Newsletter -->
     <div class="newsletter-container">
       <div class="newsletter-header">
@@ -53,12 +71,12 @@
           <span class="user-email">{{ utilisateur.email }}</span>
           <span class="user-name">{{ utilisateur.prenom }} {{ utilisateur.nom }}</span>
         </div>
-        
+
         <!-- Bouton d'abonnement si pas encore abonné -->
-        <button 
+        <button
           *ngIf="!isAlreadySubscribed && !checkingSubscription"
-          class="newsletter-btn" 
-          (click)="sAbonnerNewsletter()" 
+          class="newsletter-btn"
+          (click)="sAbonnerNewsletter()"
           [disabled]="isSubscribing"
           [class.loading]="isSubscribing">
           <i *ngIf="!isSubscribing" class="fas fa-bell"></i>
@@ -84,8 +102,7 @@
       <!-- Si l'utilisateur n'est pas connecté -->
       <div *ngIf="!isConnected" class="newsletter-login">
         <p class="login-message">Connectez-vous pour vous abonner à notre newsletter</p>
-        <button class="login-btn" (click)="redirectToLogin()">>
-          <i class="fas fa-sign-in-alt"></i>
+        <button class="login-btn" (click)="redirectToLogin()">
           Se connecter
         </button>
       </div>

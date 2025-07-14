@@ -10,6 +10,7 @@ import {Evenement, LikeEvenement} from '../../../member/models/evenement';
 import {AuthService} from '../../../member/services/auth.service';
 import {UsersListComponent} from '../../messaging/components/users-list/users-list.component';
 import {MessagerieService} from '../../../member/services/messagerie.service';
+import { AuthRequiredModalComponent } from '../../auth-required-modal/auth-required-modal.component';
 
 @Component({
   selector: 'app-event-listing',
@@ -21,7 +22,8 @@ import {MessagerieService} from '../../../member/services/messagerie.service';
     NgSwitch,
     NgSwitchCase,
     FormsModule,
-    UsersListComponent
+    UsersListComponent,
+    AuthRequiredModalComponent
 
   ],
   templateUrl: './event-listing.component.html',
@@ -61,6 +63,7 @@ export class EventListingComponent {
   users: any[] = []; // Liste des utilisateurs pour la modal de partage
   showUsersModal = false; // Contrôle l'affichage de la modal de partage
   eventToShare: any = null;
+  showAuthModal = false; // Modal d'authentification
 
   userId: number | null = null;
   constructor() {
@@ -79,11 +82,14 @@ export class EventListingComponent {
 
   checkAuthentication(): boolean {
     if (!this.isAuthenticated) {
-      confirm('Vous devez être connecté pour interagir avec cet événement');
-      this.router.navigate(['auth/login']);
+      this.showAuthModal = true;
       return false;
     }
     return true;
+  }
+
+  onAuthModalClose() {
+    this.showAuthModal = false;
   }
 
   openModal(event: any) {

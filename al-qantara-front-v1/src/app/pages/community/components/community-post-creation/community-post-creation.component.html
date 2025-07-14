@@ -45,7 +45,7 @@
       <div class="form-group">
         <label for="image">Image (optionnel)</label>
         <div class="file-input-wrapper">
-          <input id="image" type="file" (change)="onFileSelected($event)" accept="image/*">
+          <input id="image" type="file" (change)="onFileSelected($event)" accept="image/png">
           <span class="file-input-label">Choisir une image</span>
         </div>
         <div *ngIf="selectedFile" class="image-preview-block">
@@ -95,3 +95,9 @@
     </form>
   </div>
 </div>
+
+<!-- Modal d'authentification -->
+<app-auth-required-modal
+  *ngIf="showAuthModal"
+  (close)="onAuthModalClose()">
+</app-auth-required-modal>

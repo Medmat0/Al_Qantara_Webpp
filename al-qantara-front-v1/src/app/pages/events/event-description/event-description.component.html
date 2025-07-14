@@ -31,7 +31,7 @@
         ></iframe>
       </div>
 
-      <div class="places-section" *ngIf="evenement.placesTotal && evenement.placesTotal > 0">
+      <div class="places-section" *ngIf="evenement.placesTotal && evenement.placesTotal > 0 && !isEventPassed()">
         <span><strong>Places disponibles :</strong> {{ evenement.placesRestantes }}/{{ evenement.placesTotal }}</span>
       </div>
 
@@ -46,12 +46,12 @@
           </button>
         </div>
         <div class="dropdown d-inline-block" (mouseleave)="showShareMenu = false">
-          <button (click)="showShareMenu = !showShareMenu" class="btn-share"> Partager</button>
+          <button (click)="showShareMenu = !showShareMenu" class="btn-share">Partager</button>
           <ul *ngIf="showShareMenu" class="share-menu">
             <li (click)="copyLink()"><span>Copier le lien</span></li>
             <li (click)="shareByMessage()"><span>Message</span></li>
-            <li (click)="shareOnLinkedIn()"><span>in LinkedIn</span></li>
-            <li (click)="shareOnInstagram()"><span>Instagram</span></li>
+            <li (click)="shareOnLinkedIn()"><span>Sur LinkedIn</span></li>
+            <li (click)="shareOnCommunity()"><span>Sur une  Communauté</span></li>
           </ul>
         </div>
 
@@ -79,6 +79,14 @@
           class="btn-unsubscribe">
           {{ loading ? 'Désinscription en cours...' : '❌ Se désinscrire' }}
         </button>
+
+        <button
+          *ngIf="isEventPassed() && (isParticipating || !evenement.placesTotal) && !userHasRated"
+          (click)="openRatingModal()"
+          [disabled]="loading"
+          class="btn-participate">
+          Noter l'événement
+        </button>
       </div>
 
       <div class="mb-2">
@@ -90,7 +98,7 @@
         </div>
       </div>
 
-      <div *ngIf="isParticipating && participation" class="mb-2">
+      <div *ngIf="isParticipating && participation && !isEventPassed()" class="mb-2">
         <div class="confirmed-green-box">
           <strong>Votre participation est confirmée !</strong>
           <div>
@@ -150,4 +158,26 @@
       (close)="closePaymentModal()"
     ></app-payment-modal>
 
+    <!-- Modal de notation -->
+    <app-rating-modal
+      *ngIf="showRatingModal"
+      [eventId]="evenement?.id"
+      [eventTitle]="evenement?.titre"
+      (close)="closeRatingModal()"
+      (ratingSubmitted)="onRatingSubmitted()"
+    ></app-rating-modal>
+
+    <app-auth-required-modal
+      *ngIf="showAuthRequiredModal"
+      (close)="showAuthRequiredModal = false"
+    ></app-auth-required-modal>
+
+</div>
+
+<!-- Overlay et popup recherche communauté -->
+<div class="community-popup-overlay" *ngIf="showCommunityResearchPopup" (click)="closeCommunityResearchPopup()">
+  <div class="community-popup" (click)="$event.stopPropagation()">
+    <button class="close-popup" (click)="closeCommunityResearchPopup()">✖</button>
+    <app-community-research (communitySelected)="onCommunitySelected($event)"></app-community-research>
+  </div>
 </div>

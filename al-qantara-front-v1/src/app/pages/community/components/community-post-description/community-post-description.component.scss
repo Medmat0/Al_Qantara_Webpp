@@ -13,7 +13,7 @@ $text-secondary: #835353; // bordeaux
 $text-muted: #bfa6a6; // beige rosé
 $text-light: #fbeee6; // beige très clair
 
-$background-white: #fff8f3;
+$background-white: #f6f2f2;
 $background-gray-50: #fbeee6;
 $background-gray-100: #f8f5f2;
 $background-blue-50: #fbeee6;
@@ -133,16 +133,20 @@ $transition-transform: transform 0.15s ease-in-out;
   }
 }
 
-// Main container
 .post-container {
   @include card;
   max-width: 80rem;
   margin: $spacing-8 auto;
-  padding: $spacing-8;
+  padding: 0 $spacing-8 $spacing-8 $spacing-8; // plus de padding en haut
+
+  // Ajoute un sélecteur pour cibler tous les enfants sauf .rectangle-bar
+  > :not(.rectangle-bar) {
+    margin-top: $spacing-8;
+  }
 
   @media (max-width: 768px) {
     margin: $spacing-4;
-    padding: $spacing-6;
+    padding: 0 $spacing-6 $spacing-6 $spacing-6;
   }
 }
 
@@ -164,6 +168,7 @@ $transition-transform: transform 0.15s ease-in-out;
   }
 
   .post-header-content {
+    font-family: Mulish, sans-serif;
     flex: 1;
     min-width: 0;
   }
@@ -275,6 +280,7 @@ $transition-transform: transform 0.15s ease-in-out;
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: $spacing-5;
+    font-family: Mulish, sans-serif;
 
     @media (max-width: 640px) {
       flex-direction: column;
@@ -443,6 +449,16 @@ $transition-transform: transform 0.15s ease-in-out;
   }
 }
 
+.post-actions svg {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  min-height: 22px;
+  fill: #653023;
+  display: inline-block;
+  vertical-align: middle;
+}
+
 // Loading state
 .loading-spinner {
   display: flex;
@@ -499,6 +515,8 @@ $transition-transform: transform 0.15s ease-in-out;
 .comments-title {
   font-size: 1.5rem;
   font-weight: 700;
+  font-family: Mulish, sans-serif;
+  padding-left: 5px;
   color: #835353;
   margin-bottom: $spacing-6;
   letter-spacing: 0.5px;
@@ -507,7 +525,6 @@ $transition-transform: transform 0.15s ease-in-out;
   align-items: center;
   gap: 0.75rem;
   &::before {
-    content: "💬";
     font-size: 1.3rem;
     margin-right: 0.5rem;
   }
@@ -556,7 +573,7 @@ $transition-transform: transform 0.15s ease-in-out;
 
 .submit-btn {
   align-self: flex-end;
-  background: linear-gradient(135deg, #835353 0%, #c9b37c 100%);
+  background: linear-gradient(135deg, #e15555 0%, #cb4740 100%);
   color: #fff;
   border: none;
   border-radius: $radius-md;
@@ -566,10 +583,6 @@ $transition-transform: transform 0.15s ease-in-out;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(201, 179, 124, 0.13);
   transition: background 0.2s, transform 0.2s;
-  &:hover:not(:disabled) {
-    background: linear-gradient(135deg, #6b2e2e 0%, #bfa6a6 100%);
-    transform: translateY(-2px);
-  }
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
@@ -599,7 +612,7 @@ $transition-transform: transform 0.15s ease-in-out;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: linear-gradient(135deg, #835353 0%, #c9b37c 100%);
+  background: linear-gradient(135deg, #e15555 0%, #cb4740 100%);
   color: #fff;
   border: none;
   border-radius: $radius-lg;
@@ -616,8 +629,21 @@ $transition-transform: transform 0.15s ease-in-out;
     font-size: 1.2rem;
   }
 
-  &:hover {
-    background: linear-gradient(135deg, #6b2e2e 0%, #bfa6a6 100%);
-    transform: translateY(-2px);
+}
+
+.rectangle-bar {
+  background: linear-gradient(135deg, #ea6666 0%, #a24b4b 100%);
+  color: white;
+  padding: 1.75rem .5rem;
+  border-radius: 16px 16px 0 0;
+  margin: 0 -2rem; // -$spacing-8 pour compenser le padding du parent
+  width: auto;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  @media (max-width: 768px) {
+    margin: 0 -1.5rem; // -$spacing-6 pour mobile
   }
 }

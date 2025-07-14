@@ -63,7 +63,7 @@ export class AddEvenementComponent {
     this.searchSubject.pipe(
       debounceTime(500),
       distinctUntilChanged(),
-      switchMap(query => this.addressService.searchAddress(query))
+      switchMap(query => this.addressService.searchAddress(query, 'fr')) // France pour les événements
     ).subscribe(suggestions => {
       this.addressSuggestions = suggestions;
       this.showSuggestions = suggestions.length > 0;

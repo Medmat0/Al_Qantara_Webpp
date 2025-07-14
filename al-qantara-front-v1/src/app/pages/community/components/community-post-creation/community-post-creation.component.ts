@@ -4,6 +4,7 @@ import { CommunityService } from '../../../../member/services/community.service'
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../../member/services/auth.service';
 import { DatePipe, NgForOf, NgIf } from '@angular/common';
+import { AuthRequiredModalComponent } from '../../../auth-required-modal/auth-required-modal.component';
 
 @Component({
   selector: 'app-community-post-creation',
@@ -14,7 +15,8 @@ import { DatePipe, NgForOf, NgIf } from '@angular/common';
     ReactiveFormsModule,
     NgForOf,
     NgIf,
-    DatePipe
+    DatePipe,
+    AuthRequiredModalComponent
   ]
 })
 export class CommunityPostCreationComponent implements OnInit {
@@ -25,6 +27,7 @@ export class CommunityPostCreationComponent implements OnInit {
   isAuthenticated: boolean = false;
   selectedFile: File | null = null;
   imagePreview: string | null = null;
+  showAuthModal = false; // Modal d'authentification
 
   constructor(
     private route: ActivatedRoute,
@@ -127,13 +130,15 @@ export class CommunityPostCreationComponent implements OnInit {
 
   checkAuthentication(): boolean {
     if (!this.isAuthenticated) {
-      if (confirm('Vous devez être connecté pour interagir avec cette communauté.')) {
-        this.router.navigate(['auth/login']);
-      }
+      this.showAuthModal = true;
       return false;
     }
     this.checkMembership();
     return true;
+  }
+
+  onAuthModalClose() {
+    this.showAuthModal = false;
   }
 
   checkMembership() {

@@ -1,10 +1,11 @@
 // --- Gestion des remboursements ---
- 
+
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { EventItemComponent } from '../../../events/event-listing/event-item/event-item.component';
+import { EditEvenementComponent } from '../edit-evenement/edit-evenement.component';
 import { Evenement } from '../../../../member/models/evenement';
 import { AdminEvenementService } from '../../../../admin/services/admin-evenement.service';
 import { EvenementService } from '../../../../member/services/evenement.service';
@@ -20,10 +21,36 @@ interface Participant {
   photoProfil?: string;
 }
 
+interface Rating {
+  id: number;
+  noteOrganisateur: number;
+  noteLieu: number;
+  noteAmbiance: number;
+  noteEvenement: number;
+  commentaire: string;
+  dateRating: string;
+  utilisateur: {
+    id: number;
+    nom: string;
+    prenom: string;
+  };
+}
+
+interface EventRatings {
+  ratings: Rating[];
+  moyennes: {
+    noteOrganisateur: number;
+    noteLieu: number;
+    noteAmbiance: number;
+    noteEvenement: number;
+  };
+  nombreRatings: number;
+}
+
 @Component({
   selector: 'app-evenements-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, EventItemComponent],
+  imports: [CommonModule, FormsModule, EventItemComponent, EditEvenementComponent],
   templateUrl: './evenements.component.html',
   styleUrls: ['./evenements.component.scss']
 })
@@ -39,9 +66,10 @@ export class EvenementsComponent {
   deletingEventId: number | null = null;
 
   currentPage = 1;
-  itemsPerPage = 6;
+  itemsPerPage = 9;
 
   selectedFilter = 'none';
+  selectedStatusFilter = 'all'; // Nouveau filtre de statut
 
   showModal = false;
   modalTitle = '';
@@ -52,6 +80,15 @@ export class EvenementsComponent {
   participants: Participant[] = [];
   loadingParticipants = false;
   selectedEventTitle = '';
+
+  // Propriétés pour le modal d'édition
+  showEditModal = false;
+  eventToEdit: Evenement | null = null;
+
+  showRatingsModal = false;
+  eventRatings: EventRatings | null = null;
+  loadingRatings = false;
+  selectedEventForRatings: Evenement | null = null;
 
   ngOnInit() {
     this.loadEvents();
@@ -128,6 +165,49 @@ export class EvenementsComponent {
     this.isRibVisible = {}; // Reset visibility state
   }
 
+  // Nouvelle méthode pour gérer les changements de filtre de statut
+  onStatusFilterChange(status: string): void {
+    this.selectedStatusFilter = status;
+    this.currentPage = 1; // Reset à la première page
+  }
+
+  // Méthode pour déterminer le statut d'un événement
+  getEventStatus(event: Evenement): string {
+    const now = new Date();
+    const startDate = new Date(event.dateDebut);
+    const endDate = new Date(event.dateFin);
+
+    if (now < startDate) {
+      return 'upcoming';
+    } else if (now >= startDate && now <= endDate) {
+      return 'happening';
+    } else {
+      return 'past';
+    }
+  }
+
+  onEditEvent(event: Evenement): void {
+    this.eventToEdit = { ...event };
+    this.showEditModal = true;
+  }
+
+  closeEditModal(): void {
+    this.showEditModal = false;
+    this.eventToEdit = null;
+  }
+
+  onEventUpdated(updatedEvent: any): void {
+    const index = this.events.findIndex(e => e.id === updatedEvent.id);
+    if (index !== -1) {
+      this.events[index] = { ...this.events[index], ...updatedEvent };
+    }
+    this.closeEditModal();
+  }
+
+  onEditCancel(): void {
+    this.closeEditModal();
+  }
+
   async onDeleteEvent(event: Evenement): Promise<void> {
     this.eventToDelete = event;
     this.modalTitle = 'Confirmation de suppression';
@@ -189,19 +269,34 @@ export class EvenementsComponent {
       });
     }
 
+    // Appliquer le filtre de statut
+    if (this.selectedStatusFilter !== 'all') {
+      filtered = filtered.filter(event => this.getEventStatus(event) === this.selectedStatusFilter);
+    }
+
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     return filtered.slice(startIndex, startIndex + this.itemsPerPage);
   }
 
   get totalPages(): number {
-    const filteredCount = this.events.filter(event => {
-      if (!this.searchTerm) return true;
+    let filtered = this.events;
+
+    // Appliquer le filtre de recherche
+    if (this.searchTerm) {
       const searchLower = this.searchTerm.toLowerCase();
-      return event.titre.toLowerCase().includes(searchLower) ||
-             event.description.toLowerCase().includes(searchLower) ||
-             event.lieu.toLowerCase().includes(searchLower);
-    }).length;
-    return Math.ceil(filteredCount / this.itemsPerPage);
+      filtered = filtered.filter(event =>
+        event.titre.toLowerCase().includes(searchLower) ||
+        event.description.toLowerCase().includes(searchLower) ||
+        event.lieu.toLowerCase().includes(searchLower)
+      );
+    }
+
+    // Appliquer le filtre de statut
+    if (this.selectedStatusFilter !== 'all') {
+      filtered = filtered.filter(event => this.getEventStatus(event) === this.selectedStatusFilter);
+    }
+
+    return Math.ceil(filtered.length / this.itemsPerPage);
   }
 
   changePage(page: number): void {
@@ -349,7 +444,7 @@ export class EvenementsComponent {
 
     doc.setFontSize(10);
     doc.text(`Nombre de demandes: ${this.remboursements.length}`, 14, 52);
-    
+
     const tableData = this.remboursements.map(demande => [
       `${demande.utilisateur.nom} ${demande.utilisateur.prenom}`,
       demande.utilisateur.email,
@@ -382,7 +477,7 @@ export class EvenementsComponent {
       },
       margin: { top: 60, left: 14, right: 14 }
     });
-    
+
     doc.save(fileName);
   }
 
@@ -444,5 +539,61 @@ export class EvenementsComponent {
 
   toggleRibVisibility(demandeId: number): void {
     this.isRibVisible[demandeId] = !this.isRibVisible[demandeId];
+  }
+
+  // Méthodes pour le modal des statistiques des ratings
+  onShowRatings(eventId: number): void {
+    const event = this.events.find(e => e.id === eventId);
+    if (!event) return;
+
+    this.selectedEventForRatings = event;
+    this.showRatingsModal = true;
+    this.loadEventRatings(eventId);
+  }
+
+  loadEventRatings(eventId: number): void {
+    this.loadingRatings = true;
+    this.eventRatings = null;
+
+    this.evenementService.getEvenementById(eventId).subscribe({
+      next: (response) => {
+        if (response) {
+          this.eventRatings = {
+            ratings: response.ratings || [],
+            moyennes: response.moyennes || {
+              noteOrganisateur: 0,
+              noteLieu: 0,
+              noteAmbiance: 0,
+              noteEvenement: 0
+            },
+            nombreRatings: response.nombreRatings || 0
+          };
+        }
+        this.loadingRatings = false;
+      },
+      error: (error) => {
+        console.error('Erreur lors de la récupération des ratings:', error);
+        this.loadingRatings = false;
+      }
+    });
+  }
+
+  closeRatingsModal(): void {
+    this.showRatingsModal = false;
+    this.selectedEventForRatings = null;
+    this.eventRatings = null;
+  }
+
+  // Méthode utilitaire pour générer un tableau d'étoiles
+  getStars(rating: number): boolean[] {
+    return Array(5).fill(false).map((_, i) => i < rating);
+  }
+
+  // Méthode pour obtenir la couleur de la note
+  getRatingColor(rating: number): string {
+    if (rating >= 4) return '#10B981'; // Vert
+    if (rating >= 3) return '#F59E0B'; // Orange
+    if (rating >= 2) return '#EF4444'; // Rouge
+    return '#6B7280'; // Gris
   }
 }

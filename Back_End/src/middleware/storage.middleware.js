@@ -1,3 +1,16 @@
+// Storage pour les logos d'associations
+const logoAssociationsStorage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: "logoAssociations", // Dossier sur Cloudinary
+        format: async () => "png", // Force PNG
+    },
+});
+
+const uploadlogoAssociations = multer({
+    storage: logoAssociationsStorage,
+    limits: { fileSize: 20 * 1024 * 1024 }, // Limite de 20MB
+});
 import multer from "multer";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import cloudinary from "../config/cloudinary.js";
@@ -63,6 +76,8 @@ export  {
     uploadCandidature,
     uploadlogoCommunities,
     logoCommunitiesStorage,
+    uploadlogoAssociations,
+    logoAssociationsStorage,
     uploadPostImage,
     postImageStorage
 };

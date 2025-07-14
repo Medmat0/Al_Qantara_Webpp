@@ -48,7 +48,7 @@ $gray-900: #271611;
   // Header Section
   .header-section {
     margin-bottom: 2rem;
-    
+
     .header-content {
       display: flex;
       justify-content: space-between;
@@ -258,7 +258,7 @@ $gray-900: #271611;
           border-radius: 20px;
           font-size: 0.8rem;
           font-weight: 600;
-          
+
           &.active {
             background: linear-gradient(135deg, $success-color, #059669);
             color: white;
@@ -427,7 +427,7 @@ $gray-900: #271611;
 
     .empty-icon {
       margin-bottom: 1.5rem;
-      
+
       svg {
         fill: $gray-400;
         opacity: 0.5;
@@ -470,7 +470,32 @@ $gray-900: #271611;
     }
   }
 
-  // Responsive Design
+  @media (max-width: 1024px) {
+    padding: 1.5rem;
+
+    .header-section {
+      .title-section h1 {
+        font-size: 2.2rem;
+      }
+
+
+      .stats-cards {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.75rem;
+      }
+
+      .stat-card {
+        flex: 1;
+        min-width: 200px;
+      }
+    }
+
+    .offers-grid {
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    }
+  }
+
   @media (max-width: 768px) {
     padding: 1rem;
 
@@ -486,29 +511,351 @@ $gray-900: #271611;
 
       .stats-cards {
         justify-content: center;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .stat-card {
+        width: 100%;
+        justify-content: center;
       }
     }
 
     .filters-section {
       flex-direction: column;
       align-items: stretch;
+      gap: 1rem;
 
       .search-bar {
         max-width: none;
       }
 
       .filter-controls {
-        justify-content: center;
+        flex-direction: column;
+        gap: 0.75rem;
+
+        .filter-select {
+          width: 100%;
+        }
+
+        .add-offer-btn {
+          justify-content: center;
+          width: 100%;
+        }
       }
     }
 
     .offers-grid {
       grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .offer-card {
+      .offer-header {
+        padding-right: 2rem;
+
+        .offer-title {
+          font-size: 1.1rem;
+        }
+
+        .offer-meta {
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+      }
+
+      .offer-details {
+        .detail-row {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.25rem;
+        }
+      }
+
+      .offer-actions {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+
+        .action-btn {
+          flex: 1;
+          justify-content: center;
+          min-width: 120px;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 430px) {
+    padding: 0.75rem;
+
+    .header-section {
+      margin-bottom: 1.5rem;
+
+      .title-section h1 {
+        font-size: 1.8rem;
+        text-align: center;
+      }
+
+      .subtitle {
+        text-align: center;
+        font-size: 1rem;
+      }
+
+      .stats-cards {
+        gap: 0.75rem;
+      }
+
+      .stat-card {
+        padding: 1rem;
+
+        .stat-icon {
+          width: 40px;
+          height: 40px;
+        }
+
+        .stat-content {
+          .stat-number {
+            font-size: 1.5rem;
+          }
+
+          .stat-label {
+            font-size: 0.8rem;
+          }
+        }
+      }
+    }
+
+    .filters-section {
+      gap: 0.75rem;
+
+      .search-bar {
+        input {
+          padding: 0.6rem 1rem 0.6rem 2.5rem;
+          font-size: 0.9rem;
+        }
+      }
+
+      .filter-controls {
+        gap: 0.5rem;
+
+        .filter-select {
+          padding: 0.6rem 0.8rem;
+          font-size: 0.9rem;
+        }
+
+        .add-offer-btn {
+          padding: 0.6rem 1rem;
+          font-size: 0.9rem;
+        }
+      }
+    }
+
+    .offers-grid {
+      gap: 0.75rem;
+    }
+
+    .offer-card {
+      padding: 1rem;
+      border-radius: 16px;
+
+      .offer-status {
+        top: 0.75rem;
+        right: 0.75rem;
+
+        .status-badge {
+          font-size: 0.75rem;
+          padding: 0.2rem 0.6rem;
+        }
+      }
+
+      .offer-header {
+        margin-bottom: 1rem;
+        padding-right: 1.5rem;
+
+        .offer-title {
+          font-size: 1rem;
+          margin-bottom: 0.5rem;
+        }
+
+        .offer-meta {
+          .meta-item {
+            font-size: 0.8rem;
+
+            svg {
+              width: 14px;
+              height: 14px;
+            }
+          }
+        }
+      }
+
+      .offer-details {
+        margin-bottom: 1rem;
+        padding: 0.75rem;
+
+        .detail-row {
+          margin-bottom: 0.5rem;
+
+          .detail-label,
+          .detail-value {
+            font-size: 0.8rem;
+          }
+
+          .detail-value.contract-type {
+            font-size: 0.75rem;
+            padding: 0.2rem 0.6rem;
+          }
+        }
+      }
+
+      .tags-section {
+        margin-bottom: 1rem;
+
+        .tag {
+          font-size: 0.8rem;
+          padding: 0.4rem 0.8rem;
+        }
+      }
+
+      .offer-actions {
+        .action-btn {
+          padding: 0.4rem 0.8rem;
+          font-size: 0.8rem;
+
+          span {
+            font-size: 0.8rem;
+          }
+
+          svg {
+            width: 14px;
+            height: 14px;
+          }
+        }
+      }
+    }
+
+    .empty-state {
+      padding: 2rem 1rem;
+
+      h3 {
+        font-size: 1.2rem;
+      }
+
+      p {
+        font-size: 0.9rem;
+      }
+
+      .add-offer-btn {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9rem;
+      }
+    }
+  }
+
+  // Très petits écrans (≤360px)
+  @media (max-width: 360px) {
+    padding: 0.5rem;
+
+    .header-section {
+      .title-section h1 {
+        font-size: 1.6rem;
+      }
+
+      .stats-cards {
+        gap: 0.5rem;
+      }
+
+      .stat-card {
+        padding: 0.75rem;
+
+        .stat-icon {
+          width: 36px;
+          height: 36px;
+        }
+
+        .stat-content {
+          .stat-number {
+            font-size: 1.3rem;
+          }
+
+          .stat-label {
+            font-size: 0.75rem;
+          }
+        }
+      }
+    }
+
+    .filters-section {
+      gap: 0.5rem;
+
+      .search-bar {
+        input {
+          padding: 0.5rem 0.75rem 0.5rem 2.25rem;
+          font-size: 0.85rem;
+        }
+      }
+
+      .filter-controls {
+        .filter-select,
+        .add-offer-btn {
+          padding: 0.5rem 0.75rem;
+          font-size: 0.85rem;
+        }
+      }
+    }
+
+    .offer-card {
+      padding: 0.75rem;
+
+      .offer-header {
+        .offer-title {
+          font-size: 0.95rem;
+        }
+
+        .offer-meta {
+          .meta-item {
+            font-size: 0.75rem;
+          }
+        }
+      }
+
+      .offer-details {
+        padding: 0.5rem;
+
+        .detail-row {
+          .detail-label,
+          .detail-value {
+            font-size: 0.75rem;
+          }
+        }
+      }
+
+      .tags-section {
+        .tag {
+          font-size: 0.75rem;
+          padding: 0.3rem 0.6rem;
+        }
+      }
+
+      .offer-actions {
+        .action-btn {
+          padding: 0.35rem 0.6rem;
+          font-size: 0.75rem;
+
+          span {
+            font-size: 0.75rem;
+          }
+
+          svg {
+            width: 12px;
+            height: 12px;
+          }
+        }
+      }
     }
   }
 }
 
-// Animations additionnelles
 .offer-card {
   &:nth-child(1) { animation-delay: 0.1s; }
   &:nth-child(2) { animation-delay: 0.2s; }
@@ -516,4 +863,79 @@ $gray-900: #271611;
   &:nth-child(4) { animation-delay: 0.4s; }
   &:nth-child(5) { animation-delay: 0.5s; }
   &:nth-child(6) { animation-delay: 0.6s; }
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(2px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+
+  .modal-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    min-width: 300px;
+    max-width: 500px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border: 2px solid rgba(127, 24, 24, 0.1);
+
+    h3 {
+      margin-top: 0;
+      font-size: 1.5rem;
+      color: #333;
+      font-family: 'Mulish', sans-serif;
+    }
+
+    p {
+      margin: 1rem 0;
+      color: #666;
+      font-family: 'Mulish', sans-serif;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-top: 1.5rem;
+
+      button {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-family: 'Mulish', sans-serif;
+        font-weight: 600;
+        transition: all 0.3s;
+
+        &.confirm-btn {
+          background-color: #dc3545;
+          color: white;
+
+          &:hover {
+            background-color: #bb2d3b;
+            transform: translateY(-1px);
+          }
+        }
+
+        &.cancel-btn {
+          background-color: #6c757d;
+          color: white;
+
+          &:hover {
+            background-color: #5a6268;
+            transform: translateY(-1px);
+          }
+        }
+      }
+    }
+  }
 }

@@ -1,5 +1,5 @@
 import express from "express";
-import associationRoutes from './src/routes/association.routes.js';
+import annuaireRoutes from './src/routes/annuaire.routes.js';
 import { createServer } from "http";
 import { Server } from "socket.io";
 import authRoutes from "./src/routes/auth.routes.js";
@@ -15,12 +15,14 @@ import { fileURLToPath } from "url";
 import offresRoutes from './src/routes/offres.routes.js';
 import messagerieRoutes from './src/routes/messagerie.routes.js';
 import { setUserOnline, setUserOffline, cleanupInactiveUsers } from './src/services/messagerie/onlineStatusService.js';
+import { initializeCronJobs } from './src/services/cronService.js';
 import newsletterRoutes from './src/routes/newsletter.routes.js';
 import adhesionRoutes from './src/routes/adhesion.routes.js';
 import bodyParser from "body-parser";
 import helmet from "helmet";
 import communityRoutes from "./src/routes/community.routes.js";
 import socketAuthMiddleware from "./src/middleware/socketAuth.middleware.js";
+import guidesRoutes from "./src/routes/guides.routes.js";
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -160,9 +162,13 @@ app.use("/messages", messagerieRoutes);
 app.use("/newsletter", newsletterRoutes);
 app.use("/adhesion", adhesionRoutes);
 app.use("/communities", communityRoutes);
-app.use("/associations", associationRoutes);
+app.use("/annuaire", annuaireRoutes);
+app.use("/api/guides", guidesRoutes);
 
 // Démarrer le serveur avec Socket.IO
 httpServer.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
+  
+  // Initialiser les tâches automatiques programmées
+  initializeCronJobs();
 });

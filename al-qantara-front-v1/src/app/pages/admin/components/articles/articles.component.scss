@@ -51,7 +51,7 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   transition: $transition;
   outline: none;
-  
+
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
@@ -118,7 +118,7 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border-radius: $border-radius-sm;
   box-shadow: $shadow-sm;
   border: 1px solid $border-color;
-  
+
   .stat-number {
     display: block;
     font-size: 2rem;
@@ -126,7 +126,7 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     color: $primary-color;
     line-height: 1;
   }
-  
+
   .stat-label {
     font-size: 0.875rem;
     color: $text-secondary;
@@ -152,7 +152,7 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
 .search-input-wrapper {
   position: relative;
-  
+
   .search-icon {
     position: absolute;
     left: 1rem;
@@ -173,13 +173,13 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-size: 1rem;
   background: $white;
   transition: $transition;
-  
+
   &:focus {
     outline: none;
     border-color: $primary-color;
     box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
   }
-  
+
   &::placeholder {
     color: $text-muted;
   }
@@ -213,7 +213,7 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   transition: $transition;
   min-width: 160px;
-  
+
   &:focus {
     outline: none;
     border-color: $primary-color;
@@ -232,7 +232,7 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   @include flex-center;
   flex-direction: column;
   gap: 1.5rem;
-  
+
   .spinner {
     width: 3rem;
     height: 3rem;
@@ -241,7 +241,7 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
-  
+
   p {
     font-size: 1.1rem;
     color: $text-secondary;
@@ -251,20 +251,20 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
 .error-state {
   max-width: 400px;
-  
+
   .error-icon {
     width: 4rem;
     height: 4rem;
     color: $danger-color;
     margin-bottom: 1rem;
   }
-  
+
   h3 {
     color: $danger-color;
     margin: 0 0 1rem 0;
     font-size: 1.5rem;
   }
-  
+
   p {
     color: $text-secondary;
     margin: 0 0 2rem 0;
@@ -278,12 +278,12 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   background: $primary-color;
   color: $white;
   gap: 0.5rem;
-  
+
   svg {
     width: 1rem;
     height: 1rem;
   }
-  
+
   &:hover {
     background: $primary-dark;
     transform: translateY(-2px);
@@ -295,20 +295,20 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-align: center;
   padding: 4rem 2rem;
   color: $text-secondary;
-  
+
   .empty-icon {
     width: 5rem;
     height: 5rem;
     margin-bottom: 1.5rem;
     color: $text-muted;
   }
-  
+
   h3 {
     font-size: 1.5rem;
     margin: 0 0 1rem 0;
     color: $text-primary;
   }
-  
+
   p {
     font-size: 1rem;
     margin: 0;
@@ -355,7 +355,7 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   gap: 0.5rem;
   font-size: 0.875rem;
   color: $text-secondary;
-  
+
   .date-icon {
     width: 1rem;
     height: 1rem;
@@ -372,35 +372,35 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 50%;
-  
+
   svg {
     width: 1.125rem;
     height: 1.125rem;
   }
-  
+
   &.edit-btn {
     background: linear-gradient(135deg, $info-color 0%, darken($info-color, 10%) 100%);
     color: $white;
-    
+
     &:hover {
       transform: scale(1.1);
       box-shadow: 0 0.5rem 1rem rgba($info-color, 0.3);
     }
   }
-  
+
   &.delete-btn {
     background: linear-gradient(135deg, $danger-color 0%, darken($danger-color, 10%) 100%);
     color: $white;
-    
+
     &:hover {
       transform: scale(1.1);
       box-shadow: 0 0.5rem 1rem rgba($danger-color, 0.3);
     }
-    
+
     &.loading {
       opacity: 0.7;
       cursor: not-allowed;
-      
+
       &:hover {
         transform: none;
       }
@@ -435,7 +435,7 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   gap: 0.5rem;
   font-size: 0.875rem;
   color: $text-secondary;
-  
+
   .author-icon {
     width: 1rem;
     height: 1rem;
@@ -451,22 +451,22 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-size: 0.95rem;
   color: $text-secondary;
   line-height: 1.6;
-  
+
   // Nettoyer le contenu HTML
   ::ng-deep {
     p {
       margin: 0 0 1rem 0;
-      
+
       &:last-child {
         margin-bottom: 0;
       }
     }
-    
+
     h1, h2, h3, h4, h5, h6 {
       margin: 0 0 0.5rem 0;
       color: $text-primary;
     }
-    
+
     ul, ol {
       margin: 0 0 1rem 0;
       padding-left: 1.5rem;
@@ -544,30 +544,30 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid $border-color;
   color: $text-secondary;
   font-size: 0.875rem;
-  
+
   svg {
     width: 1rem;
     height: 1rem;
   }
-  
+
   &:hover:not(:disabled) {
     background: $secondary-color;
     border-color: $primary-color;
     color: $primary-color;
   }
-  
+
   &.active {
     background: $primary-color;
     border-color: $primary-color;
     color: $white;
     font-weight: 600;
   }
-  
+
   &.ellipsis {
     border: none;
     background: none;
     cursor: default;
-    
+
     &:hover {
       background: none;
       color: $text-secondary;
@@ -575,7 +575,84 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 
-// Modal
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(2px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+
+  .modal-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    min-width: 300px;
+    max-width: 500px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border: 2px solid rgba(158, 46, 44, 0.1);
+
+    h3 {
+      margin-top: 0;
+      font-size: 1.5rem;
+      color: #333;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+    }
+
+    p {
+      margin: 1rem 0;
+      color: #666;
+      font-family: 'Inter', sans-serif;
+      line-height: 1.5;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-top: 1.5rem;
+
+      button {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        transition: all 0.3s;
+
+        &.confirm-btn {
+          background-color: #dc3545;
+          color: white;
+
+          &:hover {
+            background-color: #bb2d3b;
+            transform: translateY(-1px);
+          }
+        }
+
+        &.cancel-btn {
+          background-color: #6c757d;
+          color: white;
+
+          &:hover {
+            background-color: #5a6268;
+            transform: translateY(-1px);
+          }
+        }
+      }
+    }
+  }
+}
+
+// Anciens styles du modal (conservés pour compatibilité)
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -605,7 +682,7 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   padding: 1.5rem;
   border-bottom: 1px solid $border-color;
   background: linear-gradient(135deg, rgba($primary-color, 0.05) 0%, rgba($primary-color, 0.02) 100%);
-  
+
   h3 {
     margin: 0;
     font-size: 1.25rem;
@@ -621,12 +698,12 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   background: none;
   color: $text-muted;
   border-radius: 50%;
-  
+
   svg {
     width: 1rem;
     height: 1rem;
   }
-  
+
   &:hover {
     background: rgba($danger-color, 0.1);
     color: $danger-color;
