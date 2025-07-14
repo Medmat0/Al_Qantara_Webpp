@@ -24,7 +24,7 @@
         </div>
 
         <!-- Points d'intérêt avec trajet -->
-        <div class="points-interet">
+        <div class="points-interet" *ngIf="!isMobile">
           <h4>
             <i class="fas fa-route"></i>
             Itinéraire recommandé
@@ -82,9 +82,35 @@
 
       </div>
     </div>
-
   </div>
 
+
+  <!-- Modale mobile pour la liste des POI, visible uniquement sur mobile -->
+  <div
+    class="mobile-poi-modal"
+    *ngIf="isMobile && showListOnMobile && selectedGuide">
+    <div class="menu-header">
+      <h2><i class="fas fa-route"></i> Itinéraire</h2>
+      <button class="close-btn" (click)="toggleListOnMobile()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="cities-list">
+      <div
+        *ngFor="let poi of selectedGuide.pointsInteret; let i = index"
+        class="city-item"
+        (click)="openPoiAndShowRoute(poi)">
+        <div class="city-info">
+          <h3>{{ i + 1 }}. {{ poi.nom }}</h3>
+          <p class="region">{{ poi.adresse }}</p>
+          <p class="preview">{{ poi.description | slice:0:80 }}...</p>
+        </div>
+        <div class="city-arrow">
+          <i class="fas fa-chevron-right"></i>
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- Menu de sélection à droite -->
   <div class="sidebar-menu">
     <div class="menu-header">
