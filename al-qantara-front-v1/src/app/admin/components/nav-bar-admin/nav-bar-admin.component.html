@@ -1,29 +1,135 @@
-<!-- Bouton hamburger pour mobile -->
-<button class="hamburger-menu" (click)="toggleMenu()" [class.active]="isMenuOpen">
+<button class="hamburger-menu" (click)="toggleMenu()" [class.active]="isMenuOpen" [class.hidden]="isMenuOpen">
   <span></span>
   <span></span>
   <span></span>
 </button>
 
-<!-- Overlay pour fermer le menu en cliquant à l'extérieur -->
 <div class="overlay" [class.active]="isMenuOpen" (click)="closeMenu()"></div>
 
 <nav class="admin-nav" [class.mobile-open]="isMenuOpen">
-    <h2 class="admin-logo">Administrateur</h2>
-    <ul>
-      <li><a [routerLink]="['users']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()">Utilisateurs</a></li>
-      <li><a [routerLink]="['revues']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()">Revues</a></li>
-      <li><a [routerLink]="['revues/add-revue']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()">➕ Ajouter Revue</a></li>
-      <li><a [routerLink]="['articles']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()">Articles</a></li>
-      <li><a [routerLink]="['articles/add']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()">➕ Ajouter Article</a></li>
-      <li><a [routerLink]="['events']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()">Événements</a></li>
-      <li><a [routerLink]="['events/add-evenement']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()">➕ Ajouter Événement</a></li>
-      <li><a [routerLink]="['recruitments']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()">Recrutements</a></li>
-      <li><a [routerLink]="['recruitments/add']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()">➕ Ajouter Recrutement</a></li>
-      <li><a [routerLink]="['annuaire']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()">Annuaire Associations</a></li>
-      <li><a [routerLink]="['annuaire/add']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()">➕ Ajouter Association</a></li>
-      <li><a [routerLink]="['guides']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()">🗺️ Guides Maroc</a></li>
-      <li><a [routerLink]="['guides/add']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()">➕ Ajouter Guide</a></li>
-      <li><a [routerLink]="['newsletter']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()">Newsletter</a></li>
-    </ul>
+  <div class="nav-header">
+    <h2 class="admin-logo">
+      <i class="fas fa-shield-alt"></i>
+      Administrateur
+    </h2>
+    <button class="close-btn" (click)="closeMenu()">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <div class="nav-content">
+    <div class="nav-section">
+      <h3 class="section-title">Gestion des Utilisateurs</h3>
+      <ul class="nav-list">
+        <li>
+          <a [routerLink]="['users']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()">
+            <i class="fas fa-users"></i>
+            <span>Utilisateurs</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="nav-section">
+      <h3 class="section-title">Contenu</h3>
+      <ul class="nav-list">
+        <li>
+          <a [routerLink]="['revues']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()">
+            <i class="fas fa-newspaper"></i>
+            <span>Revues</span>
+          </a>
+        </li>
+        <li>
+          <a [routerLink]="['revues/add-revue']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()" class="add-item">
+            <i class="fas fa-plus-circle"></i>
+            <span>Ajouter Revue</span>
+          </a>
+        </li>
+        <li>
+          <a [routerLink]="['articles']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()">
+            <i class="fas fa-file-alt"></i>
+            <span>Articles</span>
+          </a>
+        </li>
+        <li>
+          <a [routerLink]="['articles/add']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()" class="add-item">
+            <i class="fas fa-plus-circle"></i>
+            <span>Ajouter Article</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="nav-section">
+      <h3 class="section-title">Événements & Recrutement</h3>
+      <ul class="nav-list">
+        <li>
+          <a [routerLink]="['events']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Événements</span>
+          </a>
+        </li>
+        <li>
+          <a [routerLink]="['events/add-evenement']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()" class="add-item">
+            <i class="fas fa-plus-circle"></i>
+            <span>Ajouter Événement</span>
+          </a>
+        </li>
+        <li>
+          <a [routerLink]="['recruitments']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()">
+            <i class="fas fa-briefcase"></i>
+            <span>Recrutements</span>
+          </a>
+        </li>
+        <li>
+          <a [routerLink]="['recruitments/add']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()" class="add-item">
+            <i class="fas fa-plus-circle"></i>
+            <span>Ajouter Recrutement</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="nav-section">
+      <h3 class="section-title">Communauté</h3>
+      <ul class="nav-list">
+        <li>
+          <a [routerLink]="['annuaire']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()">
+            <i class="fas fa-building"></i>
+            <span>Annuaire Associations</span>
+          </a>
+        </li>
+        <li>
+          <a [routerLink]="['annuaire/add']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()" class="add-item">
+            <i class="fas fa-plus-circle"></i>
+            <span>Ajouter Association</span>
+          </a>
+        </li>
+        <li>
+          <a [routerLink]="['guides']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()">
+            <i class="fas fa-map-marked-alt"></i>
+            <span>Guides Maroc</span>
+          </a>
+        </li>
+        <li>
+          <a [routerLink]="['guides/add']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()" class="add-item">
+            <i class="fas fa-plus-circle"></i>
+            <span>Ajouter Guide</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="nav-section">
+      <h3 class="section-title">Communication</h3>
+      <ul class="nav-list">
+        <li>
+          <a [routerLink]="['newsletter']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()">
+            <i class="fas fa-envelope"></i>
+            <span>Newsletter</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
 </nav>
