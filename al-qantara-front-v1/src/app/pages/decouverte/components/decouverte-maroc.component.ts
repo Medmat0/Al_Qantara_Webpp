@@ -71,9 +71,8 @@ export class DecouverteMarocComponent implements AfterViewInit {
   selectGuide(guide: Guide) {
     this.selectedGuide = guide;
     this.showRouteMap = false;
-    this.traceItineraireGuide(guide);
+    this.showMainMarker(guide);
   }
-
   openPhotoModal(photo: string) {
     this.selectedPhoto = photo;
   }
@@ -84,6 +83,29 @@ export class DecouverteMarocComponent implements AfterViewInit {
 
   showRoute() {
     this.showRouteMap = !this.showRouteMap;
+    if (this.selectedGuide) {
+      if (this.showRouteMap) {
+        this.traceItineraireGuide(this.selectedGuide); // Affiche le tracé
+      } else {
+        this.showMainMarker(this.selectedGuide); // Affiche le marker principal
+      }
+    }
+  }
+
+  showMainMarker(guide: Guide) {
+    // Nettoie l’ancien tracé et les anciens marqueurs
+    if (this.itineraireLayer) {
+      this.map.removeLayer(this.itineraireLayer);
+      this.itineraireLayer = null;
+    }
+    if (this.itineraireMarkers.length) {
+      this.itineraireMarkers.forEach(marker => this.map.removeLayer(marker));
+      this.itineraireMarkers = [];
+    }
+    // Place le marker principal
+    const marker = L.marker([guide.latitude, guide.longitude]).addTo(this.map);
+    this.itineraireMarkers.push(marker);
+    this.map.setView([guide.latitude, guide.longitude], 13);
   }
 
   traceItineraireGuide(guide: Guide) {
