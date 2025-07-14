@@ -1,9 +1,11 @@
 // --- Variables ---
-$primary: #2563eb;
+$primary: #d97706; // Orange/ambre marocain
 $success: #10b981;
 $warning: #f59e0b;
 $danger: #ef4444;
-$info: #06b6d4;
+$info: #0891b2;
+$accent: #dc2626; // Rouge marocain
+$gold: #f59e0b; // Or marocain
 $bg-glass: rgba(255, 255, 255, 0.8);
 $bg-glass-dark: rgba(255, 255, 255, 0.95);
 $border-radius: 1rem;
@@ -19,7 +21,6 @@ $breakpoint-mobile: 480px;
   max-width: 1400px;
   margin: 0 auto;
   font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
   min-height: 100vh;
 }
 
@@ -414,9 +415,6 @@ $breakpoint-mobile: 480px;
         letter-spacing: 0.025em;
         text-align: center;
         white-space: nowrap;
-        max-width: 100px;
-        overflow: hidden;
-        text-overflow: ellipsis;
 
         &.secteur-autre {
           background: linear-gradient(135deg, #64748b, #475569);

@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AnnuaireService, Association } from '../../../../services/annuaire.service';
+import { EditAssociationComponent } from './edit-association/edit-association.component';
 
 @Component({
   selector: 'app-admin-annuaire',
   templateUrl: './admin-annuaire.component.html',
   styleUrls: ['./admin-annuaire.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink]
+  imports: [CommonModule, FormsModule, RouterLink, EditAssociationComponent]
 })
 export class AdminAnnuaireComponent implements OnInit {
   protected annuaireService = inject(AnnuaireService);
@@ -32,6 +33,10 @@ export class AdminAnnuaireComponent implements OnInit {
   errorMessage = '';
   successMessage = '';
   Math = Math;
+
+  // Modal d'édition
+  showEditModal = false;
+  associationToEdit: Association | null = null;
 
   ngOnInit(): void {
     this.loadAssociations();
@@ -132,8 +137,27 @@ export class AdminAnnuaireComponent implements OnInit {
 
 
   editAssociation(association: Association): void {
-    // À implémenter : navigation ou modal édition
-    console.log('Editer association:', association);
+    this.associationToEdit = association;
+    this.showEditModal = true;
+  }
+
+  // Gestion des événements du modal d'édition
+  onEditModalClose(): void {
+    this.showEditModal = false;
+    this.associationToEdit = null;
+  }
+
+  onAssociationUpdated(updatedAssociation: Association): void {
+    // Mettre à jour l'association dans la liste
+    const index = this.associations.findIndex(a => a.id === updatedAssociation.id);
+    if (index !== -1) {
+      this.associations[index] = updatedAssociation;
+      this.applyFilters(); // Réappliquer les filtres
+    }
+
+    // Afficher un message de succès
+    this.successMessage = 'Association mise à jour avec succès!';
+    setTimeout(() => { this.successMessage = ''; }, 3000);
   }
 
   confirmDelete(association: Association): void {

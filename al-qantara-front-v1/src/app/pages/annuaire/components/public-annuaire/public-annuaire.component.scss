@@ -1,12 +1,13 @@
 // --- Variables ---
-$primary: #d24525;
-$success: #b93d10;
+$primary: #d97706; // Orange/ambre marocain
+$success: #10b981;
 $warning: #f59e0b;
 $danger: #ef4444;
-$info: #d46906;
-$accent: #f67b5c;
+$info: #0891b2;
+$accent: #dc2626; // Rouge marocain
+$gold: #f59e0b; // Or marocain
 $bg-glass: rgba(255, 255, 255, 0.9);
-$bg-gradient: linear-gradient(135deg, #ea6666 0%, #a2694b 100%);
+$bg-gradient: linear-gradient(135deg, #fef7ed 0%, #fed7aa 100%);
 $border-radius: 1rem;
 $shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 $shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.15);
@@ -27,7 +28,7 @@ $breakpoint-mobile: 480px;
   padding: 4rem 2rem 6rem 2rem;
   position: relative;
   overflow: hidden;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -38,17 +39,17 @@ $breakpoint-mobile: 480px;
     background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
     opacity: 0.3;
   }
-  
+
   .hero-content {
     max-width: 1200px;
     margin: 0 auto;
     position: relative;
     z-index: 1;
     text-align: center;
-    
+
     .hero-text {
       color: white;
-      
+
       .hero-title {
         font-size: 3.5rem;
         font-weight: 800;
@@ -57,41 +58,41 @@ $breakpoint-mobile: 480px;
         align-items: center;
         justify-content: center;
         gap: 1rem;
-        
+
         i {
           font-size: 3rem;
           color: rgba(255, 255, 255, 0.9);
         }
-        
+
         @media (max-width: $breakpoint-tablet) {
           font-size: 2.5rem;
           flex-direction: column;
           gap: 0.5rem;
-          
+
           i {
             font-size: 2.5rem;
           }
         }
       }
-      
+
       .hero-subtitle {
         font-size: 1.5rem;
         font-weight: 600;
         margin: 0 0 1.5rem 0;
         opacity: 0.95;
-        
+
         @media (max-width: $breakpoint-tablet) {
           font-size: 1.25rem;
         }
       }
-      
+
       .hero-description {
         font-size: 1.125rem;
         line-height: 1.6;
         max-width: 600px;
         margin: 0 auto;
         opacity: 0.9;
-        
+
         @media (max-width: $breakpoint-tablet) {
           font-size: 1rem;
         }
@@ -106,7 +107,7 @@ $breakpoint-mobile: 480px;
   margin-top: -3rem;
   position: relative;
   z-index: 2;
-  
+
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -129,7 +130,7 @@ $breakpoint-mobile: 480px;
   border: 1px solid rgba(255, 255, 255, 0.3);
   backdrop-filter: blur(10px);
   transition: all $transition;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -139,29 +140,29 @@ $breakpoint-mobile: 480px;
     height: 4px;
     background: linear-gradient(90deg, $primary, #1d4ed8);
   }
-  
+
   &.success::before {
     background: linear-gradient(90deg, $success, #059669);
   }
-  
+
   &.warning::before {
     background: linear-gradient(90deg, $warning, #d97706);
   }
-  
+
   &.info::before {
     background: linear-gradient(90deg, $info, #0891b2);
   }
-  
+
   &:hover {
     transform: translateY(-4px);
     box-shadow: $shadow-hover;
   }
-  
+
   .stat-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    
+
     .stat-icon {
       width: 3.5rem;
       height: 3.5rem;
@@ -173,24 +174,24 @@ $breakpoint-mobile: 480px;
       color: white;
       font-size: 1.75rem;
     }
-    
+
     .stat-trend {
       display: flex;
       align-items: center;
       gap: 0.25rem;
       font-weight: 600;
       font-size: 0.875rem;
-      
+
       &.up {
         color: $success;
       }
-      
+
       &.neutral {
         color: #64748b;
       }
     }
   }
-  
+
   .stat-body {
     .stat-number {
       font-size: 2.5rem;
@@ -199,7 +200,7 @@ $breakpoint-mobile: 480px;
       line-height: 1;
       margin-bottom: 0.5rem;
     }
-    
+
     .stat-label {
       color: #64748b;
       font-size: 1.125rem;
@@ -213,13 +214,13 @@ $breakpoint-mobile: 480px;
   padding: 4rem 2rem 2rem 2rem;
   max-width: 1200px;
   margin: 0 auto;
-  
+
   .filters-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
-    
+
     .filters-title {
       font-size: 2rem;
       font-weight: 700;
@@ -228,16 +229,16 @@ $breakpoint-mobile: 480px;
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      
+
       i {
         color: $primary;
       }
     }
-    
+
     .view-controls {
       display: flex;
       gap: 0.5rem;
-      
+
       .view-btn {
         border: none;
         background: rgba(255, 255, 255, 0.8);
@@ -251,7 +252,7 @@ $breakpoint-mobile: 480px;
         font-size: 1rem;
         cursor: pointer;
         transition: all $transition;
-        
+
         &:hover,
         &.active {
           background: $primary;
@@ -261,12 +262,12 @@ $breakpoint-mobile: 480px;
       }
     }
   }
-  
+
   .filters-content {
     display: flex;
     flex-direction: column;
     gap: 2rem;
-    
+
     .search-container {
       .search-input-wrapper {
         display: flex;
@@ -278,18 +279,18 @@ $breakpoint-mobile: 480px;
         border: 1px solid rgba(255, 255, 255, 0.3);
         transition: all $transition;
         position: relative;
-        
+
         &:focus-within {
           box-shadow: $shadow-hover;
           border-color: $primary;
         }
-        
+
         i {
           color: $primary;
           font-size: 1.25rem;
           margin-right: 1rem;
         }
-        
+
         .search-input {
           border: none;
           background: transparent;
@@ -297,12 +298,12 @@ $breakpoint-mobile: 480px;
           width: 100%;
           outline: none;
           color: #1e293b;
-          
+
           &::placeholder {
             color: #94a3b8;
           }
         }
-        
+
         .clear-search {
           border: none;
           background: none;
@@ -312,7 +313,7 @@ $breakpoint-mobile: 480px;
           padding: 0.25rem;
           border-radius: 50%;
           transition: all $transition;
-          
+
           &:hover {
             color: $danger;
             background: rgba(239, 68, 68, 0.1);
@@ -320,7 +321,7 @@ $breakpoint-mobile: 480px;
         }
       }
     }
-    
+
     .filter-group {
       .filter-label {
         display: block;
@@ -329,12 +330,12 @@ $breakpoint-mobile: 480px;
         color: #374151;
         margin-bottom: 1rem;
       }
-      
+
       .filter-buttons {
         display: flex;
         flex-wrap: wrap;
         gap: 0.75rem;
-        
+
         .filter-btn {
           background: $bg-glass;
           color: #695747;
@@ -348,7 +349,7 @@ $breakpoint-mobile: 480px;
           display: flex;
           align-items: center;
           gap: 0.5rem;
-          
+
           &:hover,
           &.active {
             background: $primary;
@@ -357,7 +358,7 @@ $breakpoint-mobile: 480px;
             box-shadow: $shadow;
             transform: translateY(-1px);
           }
-          
+
           .secteur-badge {
             width: 0.75rem;
             height: 0.75rem;
@@ -368,7 +369,7 @@ $breakpoint-mobile: 480px;
         }
       }
     }
-    
+
     .filter-actions {
       display: flex;
       justify-content: space-between;
@@ -377,7 +378,7 @@ $breakpoint-mobile: 480px;
       background: rgba(239, 68, 68, 0.05);
       border-radius: $border-radius;
       border: 1px solid rgba(239, 68, 68, 0.2);
-      
+
       .clear-filters-btn {
         border: none;
         background: $danger;
@@ -391,14 +392,14 @@ $breakpoint-mobile: 480px;
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        
+
         &:hover {
           background: #dc2626;
           transform: translateY(-1px);
           box-shadow: $shadow;
         }
       }
-      
+
       .results-summary {
         color: #dc2626;
         font-weight: 600;
@@ -421,7 +422,7 @@ $breakpoint-mobile: 480px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  
+
   .loader-circle {
     width: 3.5rem;
     height: 3.5rem;
@@ -431,7 +432,7 @@ $breakpoint-mobile: 480px;
     animation: spin 1s linear infinite;
     margin-bottom: 1.5rem;
   }
-  
+
   .loader-text {
     color: $primary;
     font-weight: 600;
@@ -449,38 +450,38 @@ $breakpoint-mobile: 480px;
   padding: 0 2rem 4rem 2rem;
   max-width: 1200px;
   margin: 0 auto;
-  
+
   .associations-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
     gap: $card-gap;
     margin-bottom: 3rem;
-    
+
     &.list-view {
       grid-template-columns: 1fr;
-      
+
       .association-card {
         display: grid;
         grid-template-columns: auto 1fr auto;
         align-items: center;
         padding: 1.5rem;
-        
+
         .card-header {
           grid-column: 1;
           margin-right: 1.5rem;
         }
-        
+
         .card-body {
           grid-column: 2;
           margin-right: 1.5rem;
         }
-        
+
         .card-actions {
           grid-column: 3;
           flex-direction: column;
           gap: 0.5rem;
         }
-        
+
         .card-footer {
           grid-column: 1 / -1;
           margin-top: 1rem;
@@ -506,12 +507,12 @@ $breakpoint-mobile: 480px;
   backdrop-filter: blur(10px);
   transition: all $transition;
   animation: fadeInUp 0.6s ease-out both;
-  
+
   &:hover {
     transform: translateY(-6px);
     box-shadow: $shadow-hover;
   }
-  
+
   .card-header {
     display: flex;
     align-items: center;
@@ -527,7 +528,7 @@ $breakpoint-mobile: 480px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         flex-shrink: 0;
         position: relative;
-        
+
         // Loading état par défaut
         &::before {
           content: '';
@@ -543,7 +544,7 @@ $breakpoint-mobile: 480px;
           animation: spin 1s linear infinite;
           z-index: 1;
         }
-        
+
         .association-logo {
           width: 100%;
           height: 100%;
@@ -552,17 +553,17 @@ $breakpoint-mobile: 480px;
           position: relative;
           z-index: 2;
           background: white;
-          
+
           // Cacher le loader une fois l'image chargée
           &[style*="opacity: 1"] + ::before {
             display: none;
           }
         }
       }
-    
+
     .header-info {
       flex: 1;
-      
+
       .header-badges {
         .secteur-badge {
           background: linear-gradient(135deg, $primary, #1d4ed8);
@@ -573,7 +574,7 @@ $breakpoint-mobile: 480px;
           font-weight: 600;
           text-transform: uppercase;
           letter-spacing: 0.025em;
-          
+
           &.secteur-autre {
             background: linear-gradient(135deg, #64748b, #475569);
           }
@@ -581,13 +582,13 @@ $breakpoint-mobile: 480px;
       }
     }
   }
-  
+
   .card-body {
     flex: 1;
-    
+
     .association-info {
       margin-bottom: 1.5rem;
-      
+
       .association-name {
         font-size: 1.375rem;
         font-weight: 700;
@@ -595,7 +596,7 @@ $breakpoint-mobile: 480px;
         margin: 0 0 0.75rem 0;
         line-height: 1.3;
       }
-      
+
       .association-description {
         color: #64748b;
         font-size: 1rem;
@@ -603,39 +604,39 @@ $breakpoint-mobile: 480px;
         margin: 0;
       }
     }
-    
+
     .contact-section {
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
       margin-bottom: 1.5rem;
-      
+
       .contact-item {
         display: flex;
         align-items: center;
         gap: 0.75rem;
         color: #64748b;
         font-size: 0.95rem;
-        
+
         i {
           color: $primary;
           font-size: 1.125rem;
           width: 1.25rem;
           text-align: center;
         }
-        
+
         .contact-text {
           flex: 1;
         }
       }
     }
-    
+
     .social-section {
       .social-links {
         display: flex;
         flex-wrap: wrap;
         gap: 1rem;
-        
+
         .social-link {
           display: flex;
           align-items: center;
@@ -647,31 +648,31 @@ $breakpoint-mobile: 480px;
           border-radius: 0.5rem;
           background: rgba(255, 255, 255, 0.5);
           transition: all $transition;
-          
+
           i {
             font-size: 1.125rem;
           }
-          
+
           &:hover {
             transform: translateY(-2px);
             box-shadow: $shadow;
           }
-          
+
           &.website:hover {
             background: $info;
             color: white;
           }
-          
+
           &.facebook:hover {
             background: #1877f2;
             color: white;
           }
-          
+
           &.instagram:hover {
             background: #e4405f;
             color: white;
           }
-          
+
           &.linkedin:hover {
             background: #0077b5;
             color: white;
@@ -680,11 +681,11 @@ $breakpoint-mobile: 480px;
       }
     }
   }
-  
+
   .card-actions {
     display: flex;
     gap: 1rem;
-    
+
     .action-btn {
       border: none;
       border-radius: 0.75rem;
@@ -698,23 +699,23 @@ $breakpoint-mobile: 480px;
       transition: all $transition;
       flex: 1;
       justify-content: center;
-      
+
       &.primary {
         background: $primary;
         color: white;
-        
+
         &:hover {
           background: #1d4ed8;
           transform: translateY(-2px);
           box-shadow: $shadow;
         }
       }
-      
+
       &.secondary {
         background: rgba(255, 255, 255, 0.8);
         color: #64748b;
         border: 1px solid rgba(255, 255, 255, 0.3);
-        
+
         &:hover {
           background: $info;
           color: white;
@@ -723,7 +724,7 @@ $breakpoint-mobile: 480px;
       }
     }
   }
-  
+
   .card-footer {
     .creation-info {
       color: #94a3b8;
@@ -731,7 +732,7 @@ $breakpoint-mobile: 480px;
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      
+
       i {
         color: $primary;
       }
@@ -762,21 +763,21 @@ $breakpoint-mobile: 480px;
   box-shadow: $shadow;
   padding: 4rem 2rem;
   text-align: center;
-  
+
   .empty-icon {
     font-size: 5rem;
     color: $primary;
     margin-bottom: 2rem;
     opacity: 0.7;
   }
-  
+
   .empty-title {
     font-size: 1.75rem;
     font-weight: 700;
     color: #1e293b;
     margin: 0 0 1rem 0;
   }
-  
+
   .empty-message {
     color: #64748b;
     font-size: 1.125rem;
@@ -784,7 +785,7 @@ $breakpoint-mobile: 480px;
     max-width: 500px;
     line-height: 1.6;
   }
-  
+
   .empty-actions {
     .btn-secondary {
       border: none;
@@ -801,7 +802,7 @@ $breakpoint-mobile: 480px;
       background: rgba(255, 255, 255, 0.8);
       color: #64748b;
       border: 1px solid rgba(255, 255, 255, 0.3);
-      
+
       &:hover {
         background: $danger;
         color: white;
@@ -825,18 +826,18 @@ $breakpoint-mobile: 480px;
   box-shadow: $shadow;
   padding: 1.5rem 2rem;
   margin-top: 2rem;
-  
+
   .pagination-info {
     color: #64748b;
     font-size: 1rem;
     font-weight: 500;
   }
-  
+
   .pagination-controls {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    
+
     .pagination-btn {
       border: none;
       background: rgba(255, 255, 255, 0.8);
@@ -850,25 +851,25 @@ $breakpoint-mobile: 480px;
       font-size: 1.125rem;
       cursor: pointer;
       transition: all $transition;
-      
+
       &:hover:not(:disabled) {
         background: $primary;
         color: white;
         box-shadow: $shadow;
         transform: translateY(-2px);
       }
-      
+
       &:disabled {
         opacity: 0.4;
         cursor: not-allowed;
       }
     }
-    
+
     .page-numbers {
       display: flex;
       gap: 0.5rem;
       margin: 0 1rem;
-      
+
       .page-btn {
         border: none;
         background: rgba(255, 255, 255, 0.8);
@@ -880,19 +881,19 @@ $breakpoint-mobile: 480px;
         font-weight: 500;
         cursor: pointer;
         transition: all $transition;
-        
+
         &.active {
           background: $primary;
           color: white;
           box-shadow: $shadow;
         }
-        
+
         &:hover:not(:disabled):not(.ellipsis) {
           background: $primary;
           color: white;
           transform: translateY(-2px);
         }
-        
+
         &.ellipsis {
           background: none;
           color: #94a3b8;
@@ -908,50 +909,50 @@ $breakpoint-mobile: 480px;
   .hero-section {
     padding: 3rem 1rem 4rem 1rem;
   }
-  
+
   .stats-section {
     padding: 0 1rem;
-    
+
     .stats-grid {
       grid-template-columns: repeat(2, 1fr);
       gap: 1rem;
     }
   }
-  
+
   .filters-section {
     padding: 3rem 1rem 1rem 1rem;
-    
+
     .filters-header {
       flex-direction: column;
       gap: 1rem;
       text-align: center;
     }
   }
-  
+
   .associations-container {
     padding: 0 1rem 3rem 1rem;
-    
+
     .associations-grid {
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 1rem;
-      
+
       &.list-view .association-card {
         display: flex;
         flex-direction: column;
-        
+
         .card-header,
         .card-body,
         .card-actions {
           grid-column: auto;
         }
-        
+
         .card-footer {
           grid-column: auto;
         }
       }
     }
   }
-  
+
   .pagination-section {
     flex-direction: column;
     gap: 1rem;
@@ -964,34 +965,34 @@ $breakpoint-mobile: 480px;
   .hero-section {
     padding: 2rem 0.75rem 3rem 0.75rem;
   }
-  
+
   .stats-section {
     padding: 0 0.75rem;
-    
+
     .stats-grid {
       grid-template-columns: 1fr;
     }
   }
-  
+
   .filters-section {
     padding: 2rem 0.75rem 1rem 0.75rem;
-    
+
     .filters-content .filter-group .filter-buttons {
       justify-content: center;
     }
   }
-  
+
   .associations-container {
     padding: 0 0.75rem 2rem 0.75rem;
-    
+
     .associations-grid {
       grid-template-columns: 1fr;
     }
   }
-  
+
   .association-card {
     padding: 1.25rem;
-    
+
     .card-actions {
       flex-direction: column;
     }
