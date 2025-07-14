@@ -647,3 +647,14 @@
     grid-template-columns: repeat(3, 1fr);
   }
 }
+
+.icon-container{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+}
+
+.icon-container svg{
+  margin-right: 10px;
+}
