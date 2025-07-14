@@ -26,7 +26,6 @@ export const initializeCronJobs = () => {
     timezone: "Europe/Paris"
   });
 
-  console.log('✅ Tâche automatique programmée: vérification toutes les 2 minutes');
 };
 
 /**
