@@ -1,5 +1,5 @@
 import cron from 'node-cron';
-import { processRatingReminders } from '../services/evenements/ratingReminderService.js';
+import { processRatingReminders } from './evenements/index.js';
 
 /**
  * @desc Service de gestion des tâches automatiques programmées
