@@ -123,19 +123,68 @@ class GuidesService {
 
   // Mettre à jour un guide
   async updateGuide(id, updateData) {
-    return await prisma.guide.update({
-      where: { id: parseInt(id) },
-      data: updateData,
-      include: {
-        pointsInteret: {
-          where: { actif: true },
-          orderBy: { ordre: 'asc' }
-        },
-        createur: {
-          select: { id: true, nom: true, prenom: true }
+    const { pointsInteret, ...guideData } = updateData;
+    
+    // Si des points d'intérêt sont fournis, on fait une transaction
+    if (pointsInteret && Array.isArray(pointsInteret)) {
+      return await prisma.$transaction(async (prismaTransaction) => {
+        // 1. Supprimer tous les points d'intérêt existants
+        await prismaTransaction.pointInteret.deleteMany({
+          where: { guideId: parseInt(id) }
+        });
+
+        // 2. Mettre à jour le guide avec les nouvelles données
+        const updatedGuide = await prismaTransaction.guide.update({
+          where: { id: parseInt(id) },
+          data: {
+            ...guideData,
+            pointsInteret: {
+              create: pointsInteret.map((point, index) => ({
+                nom: point.nom,
+                description: point.description || null,
+                adresse: point.adresse,
+                latitude: parseFloat(point.latitude),
+                longitude: parseFloat(point.longitude),
+                images: point.images || [],
+                horairesOuverture: point.horairesOuverture || null,
+                tarifs: point.tarifs || null,
+                telephone: point.telephone || null,
+                siteWeb: point.siteWeb || null,
+                email: point.email || null,
+                typePoint: point.typePoint || 'AUTRE',
+                ordre: index + 1
+              }))
+            }
+          },
+          include: {
+            pointsInteret: {
+              where: { actif: true },
+              orderBy: { ordre: 'asc' }
+            },
+            createur: {
+              select: { id: true, nom: true, prenom: true }
+            }
+          }
+        });
+
+        return updatedGuide;
+      });
+    } else {
+      // Pas de points d'intérêt à mettre à jour, mise à jour simple
+      return await prisma.guide.update({
+        where: { id: parseInt(id) },
+        data: guideData,
+        include: {
+          pointsInteret: {
+            where: { actif: true },
+            orderBy: { ordre: 'asc' }
+          },
+          createur: {
+            select: { id: true, nom: true, prenom: true }
+          }
         }
-      }
-    });
+      });
+    }
   }
 
   // Supprimer un guide

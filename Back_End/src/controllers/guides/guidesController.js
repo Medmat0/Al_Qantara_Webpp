@@ -131,7 +131,8 @@ const updateGuide = async (req, res) => {
       description,
       latitude,
       longitude,
-      actif
+      actif,
+      pointsInteret = []
     } = req.body;
 
     // Vérifier que le guide existe
@@ -142,6 +143,21 @@ const updateGuide = async (req, res) => {
         success: false,
         message: 'Guide non trouvé'
       });
+    }
+
+    // Parse pointsInteret si c'est une string JSON
+    let parsedPointsInteret = [];
+    if (pointsInteret) {
+      if (typeof pointsInteret === 'string') {
+        try {
+          parsedPointsInteret = JSON.parse(pointsInteret);
+        } catch (e) {
+          console.error('Erreur parsing pointsInteret:', e);
+          parsedPointsInteret = [];
+        }
+      } else if (Array.isArray(pointsInteret)) {
+        parsedPointsInteret = pointsInteret;
+      }
     }
 
     // Préparer les données de mise à jour
@@ -163,6 +179,9 @@ const updateGuide = async (req, res) => {
       const newImageUrls = await uploadGalleryImages(req.files.images);
       updateData.images = [...existingGuide.images, ...newImageUrls];
     }
+
+    // Ajouter les points d'intérêt à mettre à jour
+    updateData.pointsInteret = parsedPointsInteret;
 
     const guide = await guidesService.updateGuide(id, updateData);
 
