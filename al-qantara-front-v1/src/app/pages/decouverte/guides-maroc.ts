@@ -15,7 +15,7 @@ export interface GuideVille {
   lat: number;
   lng: number;
 }
-
+/*
 export const GUIDES_MAROC: GuideVille[] = [
   {
     id: 'marrakech',
@@ -134,3 +134,5 @@ export const GUIDES_MAROC: GuideVille[] = [
     lng: -9.5981
   }
 ];
+
+ */
