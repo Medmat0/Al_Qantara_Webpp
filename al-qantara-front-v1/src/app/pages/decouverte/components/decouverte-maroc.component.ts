@@ -107,6 +107,15 @@ export class DecouverteMarocComponent implements AfterViewInit {
     this.itineraireMarkers.push(marker);
     this.map.setView([guide.latitude, guide.longitude], 13);
   }
+  // css des icones dans styles.scss
+  getNumberedIcon(number: number) {
+    return L.divIcon({
+      className: 'custom-number-icon',
+      html: `<div class="marker-pin"><span class="marker-number">${number}</span></div>`,
+      iconSize: [32, 32],
+      iconAnchor: [16, 32]
+    });
+  }
 
   traceItineraireGuide(guide: Guide) {
     // Nettoie l’ancien tracé et les anciens marqueurs
@@ -127,11 +136,10 @@ export class DecouverteMarocComponent implements AfterViewInit {
     this.itineraireLayer = L.polyline(points as L.LatLngTuple[], { color: 'blue' }).addTo(this.map);
     this.map.fitBounds(this.itineraireLayer.getBounds());
 
-    // Place un marker sur chaque point
     guide.pointsInteret.forEach((poi, idx) => {
-      const marker = L.marker([poi.latitude, poi.longitude]).addTo(this.map)
+      const marker = L.marker([poi.latitude, poi.longitude], { icon: this.getNumberedIcon(idx + 1) })
+        .addTo(this.map)
         .on('click', () => {
-          // Affiche les infos du point d’intérêt
           this.selectedPhoto = (poi.images && poi.images.length) ? poi.images[0] : (guide.image ?? null);
           alert(`${poi.nom}\n${poi.description || ''}`);
         });
