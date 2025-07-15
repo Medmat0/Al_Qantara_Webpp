@@ -185,8 +185,7 @@ export class DecouverteMarocComponent implements AfterViewInit, OnInit {
       const marker = L.marker([poi.latitude, poi.longitude], { icon: this.getNumberedIcon(idx + 1) })
         .addTo(this.map)
         .on('click', () => {
-          this.selectedPhoto = (poi.images && poi.images.length) ? poi.images[0] : (guide.image ?? null);
-          alert(`${poi.nom}\n${poi.description || ''}`);
+          this.openPoiModal(poi);
         });
       this.itineraireMarkers.push(marker);
     });
