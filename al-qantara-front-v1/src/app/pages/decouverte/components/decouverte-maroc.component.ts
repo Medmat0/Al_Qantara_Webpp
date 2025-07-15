@@ -31,6 +31,8 @@ export class DecouverteMarocComponent implements AfterViewInit, OnInit {
   selectedPoi: any = null;
   showRouteMap: boolean = false;
   showListOnMobile: boolean = false; // Pour afficher la liste des guides sur mobile
+  showDescriptionModal: boolean = false;
+
   debugMode: boolean = false; // Pour ajuster les positions
   isMobile: boolean = window.innerWidth <= 768; // Détecte si c'est un mobile
 
@@ -93,6 +95,13 @@ export class DecouverteMarocComponent implements AfterViewInit, OnInit {
 
   closePhotoModal() {
     this.selectedPhoto = null;
+  }
+
+  openDescriptionModal() {
+    this.showDescriptionModal = true;
+  }
+  closeDescriptionModal() {
+    this.showDescriptionModal = false;
   }
 
   toggleOverlay() {

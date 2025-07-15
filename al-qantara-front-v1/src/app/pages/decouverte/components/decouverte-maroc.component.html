@@ -121,11 +121,25 @@
     class="mobile-poi-modal"
     *ngIf="isMobile && showListOnMobile && selectedGuide">
     <div class="menu-header">
-      <h2><i class="fas fa-route"></i> Itinéraire</h2>
+      <div class="header-flex">
+        <span class="header-title">
+          <i class="fas fa-route"></i> Itinéraire
+        </span>
+        <div class="mobiles-buttons">
+          <button class="btn-route-external" (click)="openDescriptionModal()">
+            <i class="fas fa-info-circle"></i> Voir description
+          </button>
+          <button class="btn-route" (click)="showRoute()">
+            <i class="fas fa-map"></i>
+             Changer la vue
+          </button>
+        </div>
+      </div>
       <button class="close-btn" (click)="toggleListOnMobile()">
         <i class="fas fa-times"></i>
       </button>
     </div>
+
     <div class="cities-list">
       <div
         *ngFor="let poi of selectedGuide.pointsInteret; let i = index"
@@ -138,6 +152,27 @@
         </div>
         <div class="city-arrow">
           <i class="fas fa-chevron-right"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="poi-modal" *ngIf="isMobile && showDescriptionModal">
+    <div class="poi-modal-content">
+      <button class="close-btn" (click)="closeDescriptionModal()">
+        <i class="fas fa-times"></i>
+      </button>
+      <div class="overlay-content">
+        <h3>{{ selectedGuide?.nom }}</h3>
+        <p class="region">{{ selectedGuide?.region }}</p>
+        <p class="description">{{ selectedGuide?.description }}</p>
+        <div class="photos-gallery" *ngIf="selectedGuide?.images">
+          <img
+            *ngFor="let image of selectedGuide?.images"
+            [src]="image"
+            [alt]="selectedGuide?.nom"
+            class="gallery-photo"
+            (click)="openPhotoModal(image)">
         </div>
       </div>
     </div>

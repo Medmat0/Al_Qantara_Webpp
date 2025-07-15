@@ -278,6 +278,13 @@
   transform: translateY(0);
 }
 
+
+.mobiles-buttons{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+}
 /* Sidebar Menu */
 .sidebar-menu {
   width: 350px;
@@ -296,6 +303,23 @@
   background: #80100f;
   color: white;
 }
+
+.menu-header .header-flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.header-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+
 
 .menu-header h2 {
   margin: 0 0 8px 0;
