@@ -11,7 +11,7 @@ import { EvenementService } from '../../../member/services/evenement.service';
 import { Router } from '@angular/router';
 import { CommunityResearchComponent } from '../../community/components/community-research/community-research.component';
 import { AuthRequiredModalComponent } from '../../auth-required-modal/auth-required-modal.component';
-
+import { FRONTEND_URL } from '../../../utils/config';
 @Component({
   selector: 'app-event-modal',
   standalone: true,
@@ -146,7 +146,7 @@ export class EventModalComponent implements OnChanges {
   }
 
   copyLink() {
-    const url = `/events/${this.event?.id}`;
+    const url = `${FRONTEND_URL}/events/${this.event?.id}`;
     navigator.clipboard.writeText(url);
     this.showShareMenu = false;
     alert('Lien copié !');
