@@ -103,8 +103,8 @@
             </div>
         </div>
 
-        <div [ngClass]="viewMode === 'grid' ? 'articles-grid' : 'articles-list'" id="articles-container">
-            <div *ngFor="let article of filteredArticles" class="article-card">
+        <div [ngClass]="viewMode === 'grid' ? 'articles-grid' : 'articles-list'" id="articles-container" >
+            <div *ngFor="let article of filteredArticles" class="article-card" (click)="navigateToArticle(article.id)">
                 <div class="article-image-container" *ngIf="article.revue && article.revue.fichier">
                     <img [src]="getPreviewUrl(article.revue.fichier)" alt="Aperçu revue" class="article-image" />
                     <div class="image-overlay">
@@ -132,7 +132,7 @@
                         </div>
                     </div>
 
-                    <div class="article-preview">
+                    <div class="article-preview" (click)="navigateToArticle(article.id)">
                         <p [innerHTML]="article.contenu | slice:0:150"></p>
                         <span *ngIf="article.contenu.length > 150" class="read-more-indicator">...</span>
                     </div>
