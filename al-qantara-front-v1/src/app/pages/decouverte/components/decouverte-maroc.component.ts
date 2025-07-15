@@ -177,7 +177,7 @@ export class DecouverteMarocComponent implements AfterViewInit, OnInit {
       poi => [poi.latitude, poi.longitude] as [number, number]
     );
 
-// Trace la polyline
+    // Trace la polyline
     this.itineraireLayer = L.polyline(points as L.LatLngTuple[], { color: 'blue' }).addTo(this.map);
     this.map.fitBounds(this.itineraireLayer.getBounds());
 
