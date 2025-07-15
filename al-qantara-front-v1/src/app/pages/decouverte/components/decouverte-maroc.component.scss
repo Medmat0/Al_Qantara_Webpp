@@ -81,6 +81,8 @@
   color: #475569;
   line-height: 1.6;
   font-size: 0.95rem;
+  max-height: 100px;
+  overflow-y: auto;
 }
 
 /* Galerie de photos */
@@ -290,6 +292,7 @@
 .menu-header {
   padding: 24px 20px;
   border-bottom: 1px solid #e2e8f0;
+  font-family: Mulish, sans-serif;
   background: #80100f;
   color: white;
 }
@@ -757,9 +760,7 @@
     min-height: 180px;
   }
 
-  #map {
-    margin-top: 50px;
-  }
+
 
   .poi-overlay {
     display: none !important;
@@ -770,8 +771,9 @@
 
   .poi-modal {
     margin-bottom: 40px;
-    align-items: flex-end;
+    align-items: center;
     padding-bottom: 24px;
+    font-family: Mulish, sans-serif;
   }
 
   .poi-modal-content {
