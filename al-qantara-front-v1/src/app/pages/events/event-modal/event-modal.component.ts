@@ -62,6 +62,7 @@ export class EventModalComponent implements OnChanges {
   // Propriétés pour la demande de remboursement
   showRemboursementModal = false;
   canRequestRefund = false;
+  hasRequestedRefund = false; // Nouvelle propriété pour tracker si l'utilisateur a déjà demandé un remboursement
 
   //share
   showShareMenu = false;
@@ -105,6 +106,9 @@ export class EventModalComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['event'] && this.event) {
+      // Vérifier si l'utilisateur a déjà demandé un remboursement pour cet événement
+      this.checkRefundRequestStatus();
+
       // Récupérer l'événement complet avec les commentaires
       this.evenementService.getEvenementById(this.event.id).subscribe({
         next: (response) => {
@@ -359,7 +363,8 @@ export class EventModalComponent implements OnChanges {
     // 1. Il était inscrit à l'événement
     // 2. L'événement était payant
     // 3. Il s'est désinscrit récemment
-    this.canRequestRefund = this.unsubscribeConfirmed && this.event?.isPayant;
+    // 4. Il n'a pas encore demandé de remboursement
+    this.canRequestRefund = this.unsubscribeConfirmed && this.event?.isPayant && !this.hasRequestedRefund;
   }
 
   /**
@@ -382,8 +387,18 @@ export class EventModalComponent implements OnChanges {
    */
   onRemboursementSuccess(response: any): void {
     console.log('✅ Demande de remboursement envoyée avec succès:', response);
+    
+    // Marquer que l'utilisateur a demandé un remboursement
+    this.hasRequestedRefund = true;
+    this.canRequestRefund = false;
+
+    // Sauvegarder dans localStorage pour persister l'état
+    if (this.userId && this.event?.id) {
+      const refundKey = `refund_requested_${this.userId}_${this.event.id}`;
+      localStorage.setItem(refundKey, 'true');
+    }
+
     alert('Votre demande de remboursement a été envoyée. Vous recevrez une réponse par email.');
-    this.canRequestRefund = false; // Masquer le bouton après demande
   }
 
 
@@ -408,5 +423,15 @@ export class EventModalComponent implements OnChanges {
   onRatingSubmitted(): void {
     console.log('✅ Notation envoyée avec succès');
 
+  }
+
+  /**
+   * Vérifier si l'utilisateur a déjà demandé un remboursement pour cet événement
+   */
+  checkRefundRequestStatus(): void {
+    if (this.userId && this.event?.id) {
+      const refundKey = `refund_requested_${this.userId}_${this.event.id}`;
+      this.hasRequestedRefund = localStorage.getItem(refundKey) === 'true';
+    }
   }
 }

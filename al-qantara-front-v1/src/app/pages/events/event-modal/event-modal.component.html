@@ -124,11 +124,18 @@
           <button
             (click)="openRemboursementModal()"
             class="btn-refund">
-            💰 Demander un remboursement
+             Demander un remboursement
           </button>
           <p class="refund-info">
             Vous pouvez demander un remboursement pour cet événement payant.
           </p>
+        </div>
+
+        <!-- Message si demande de remboursement déjà envoyée -->
+        <div *ngIf="event?.isPayant && hasRequestedRefund" class="refund-requested-message">
+          <div class="alert alert-info">
+             Votre demande de remboursement a été envoyée. Vous recevrez une réponse par email.
+          </div>
         </div>
       </div>
 
