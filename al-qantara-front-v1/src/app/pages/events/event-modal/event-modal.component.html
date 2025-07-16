@@ -118,24 +118,27 @@
         <div class="text-xs text-red-500 mt-2">
           Vous avez bien été désinscrit de l'événement.
         </div>
+      </div>
 
-        <!-- Bouton de demande de remboursement pour événements payants -->
-        <div *ngIf="event?.isPayant && canRequestRefund" class="refund-request-section">
+      <!-- Section remboursement en dehors de unsubscribeConfirmed pour qu'elle reste visible -->
+      <div *ngIf="event?.isPayant && canRequestRefund" class="refund-request-section mb-2">
+        <div class="alert alert-warning">
+          <strong> Demande de remboursement</strong>
+          <p class="refund-info">
+            Vous pouvez demander un remboursement pour cet événement payant.
+          </p>
           <button
             (click)="openRemboursementModal()"
             class="btn-refund">
              Demander un remboursement
           </button>
-          <p class="refund-info">
-            Vous pouvez demander un remboursement pour cet événement payant.
-          </p>
         </div>
+      </div>
 
-        <!-- Message si demande de remboursement déjà envoyée -->
-        <div *ngIf="event?.isPayant && hasRequestedRefund" class="refund-requested-message">
-          <div class="alert alert-info">
-             Votre demande de remboursement a été envoyée. Vous recevrez une réponse par email.
-          </div>
+      <!-- Message si demande de remboursement déjà envoyée -->
+      <div *ngIf="event?.isPayant && hasRequestedRefund" class="refund-requested-message mb-2">
+        <div class="alert alert-info">
+           Votre demande de remboursement a été envoyée. Vous recevrez une réponse par email.
         </div>
       </div>
 

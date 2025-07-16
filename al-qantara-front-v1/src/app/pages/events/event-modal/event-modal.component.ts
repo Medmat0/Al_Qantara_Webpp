@@ -63,6 +63,7 @@ export class EventModalComponent implements OnChanges {
   showRemboursementModal = false;
   canRequestRefund = false;
   hasRequestedRefund = false; // Nouvelle propriété pour tracker si l'utilisateur a déjà demandé un remboursement
+  userHasUnsubscribed = false; // Nouvelle propriété pour tracker si l'utilisateur s'est désinscrit
 
   //share
   showShareMenu = false;
@@ -145,6 +146,12 @@ export class EventModalComponent implements OnChanges {
     }
 
     if (changes['unsubscribeConfirmed']) {
+      // Si l'utilisateur vient de se désinscrire, sauvegarder l'état
+      if (this.unsubscribeConfirmed && this.userId && this.event?.id) {
+        const unsubscribeKey = `unsubscribed_${this.userId}_${this.event.id}`;
+        localStorage.setItem(unsubscribeKey, 'true');
+        this.userHasUnsubscribed = true;
+      }
       this.checkCanRequestRefund();
     }
   }
@@ -360,11 +367,11 @@ export class EventModalComponent implements OnChanges {
    */
   checkCanRequestRefund(): void {
     // L'utilisateur peut demander un remboursement si :
-    // 1. Il était inscrit à l'événement
+    // 1. Il s'est désinscrit de l'événement (via unsubscribeConfirmed OU userHasUnsubscribed)
     // 2. L'événement était payant
-    // 3. Il s'est désinscrit récemment
-    // 4. Il n'a pas encore demandé de remboursement
-    this.canRequestRefund = this.unsubscribeConfirmed && this.event?.isPayant && !this.hasRequestedRefund;
+    // 3. Il n'a pas encore demandé de remboursement
+    const hasUnsubscribed = this.unsubscribeConfirmed || this.userHasUnsubscribed;
+    this.canRequestRefund = hasUnsubscribed && this.event?.isPayant && !this.hasRequestedRefund;
   }
 
   /**
@@ -432,6 +439,10 @@ export class EventModalComponent implements OnChanges {
     if (this.userId && this.event?.id) {
       const refundKey = `refund_requested_${this.userId}_${this.event.id}`;
       this.hasRequestedRefund = localStorage.getItem(refundKey) === 'true';
+      
+      // Vérifier si l'utilisateur s'est désinscrit de cet événement
+      const unsubscribeKey = `unsubscribed_${this.userId}_${this.event.id}`;
+      this.userHasUnsubscribed = localStorage.getItem(unsubscribeKey) === 'true';
     }
   }
 }
