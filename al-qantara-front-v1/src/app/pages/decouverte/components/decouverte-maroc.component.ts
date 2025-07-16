@@ -30,6 +30,8 @@ export class DecouverteMarocComponent implements AfterViewInit, OnInit {
   selectedPoi: any = null;
   showRouteMap: boolean = false;
   showListOnMobile: boolean = false; // Pour afficher la liste des guides sur mobile
+  showDescriptionModal: boolean = false;
+
   debugMode: boolean = false; // Pour ajuster les positions
   isMobile: boolean = window.innerWidth <= 768; // Détecte si c'est un mobile
 
@@ -95,6 +97,13 @@ export class DecouverteMarocComponent implements AfterViewInit, OnInit {
 
   closePhotoModal() {
     this.selectedPhoto = null;
+  }
+
+  openDescriptionModal() {
+    this.showDescriptionModal = true;
+  }
+  closeDescriptionModal() {
+    this.showDescriptionModal = false;
   }
 
   toggleOverlay() {
@@ -179,7 +188,7 @@ export class DecouverteMarocComponent implements AfterViewInit, OnInit {
       poi => [poi.latitude, poi.longitude] as [number, number]
     );
 
-// Trace la polyline
+    // Trace la polyline
     this.itineraireLayer = L.polyline(points as L.LatLngTuple[], { color: 'blue' }).addTo(this.map);
     this.map.fitBounds(this.itineraireLayer.getBounds());
 
@@ -187,8 +196,7 @@ export class DecouverteMarocComponent implements AfterViewInit, OnInit {
       const marker = L.marker([poi.latitude, poi.longitude], { icon: this.getNumberedIcon(idx + 1) })
         .addTo(this.map)
         .on('click', () => {
-          this.selectedPhoto = (poi.images && poi.images.length) ? poi.images[0] : (guide.image ?? null);
-          alert(`${poi.nom}\n${poi.description || ''}`);
+          this.openPoiModal(poi);
         });
       this.itineraireMarkers.push(marker);
     });
