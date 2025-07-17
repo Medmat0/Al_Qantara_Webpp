@@ -154,18 +154,37 @@ export class ConversationComponent implements OnChanges , OnInit{
     });
   }
 
+  // Modal properties
+  showModal = false;
+  modalMessage = '';
+  messageToDeleteId: number | null = null;
+
   deleteMessage(messageId: number): void {
-    if(confirm('Êtes-vous sûr de vouloir supprimer ce message ?')) {
-      this.messagerieService.deleteMessage(messageId).subscribe({
-        next: (res) => {
-          this.conversation.messages = this.conversation.messages.filter((msg: any) => msg.id !== messageId);
-          console.log('Message deleted successfully:', res);
+    this.messageToDeleteId = messageId;
+    this.modalMessage = 'Êtes-vous sûr de vouloir supprimer ce message ?';
+    this.showModal = true;
+  }
+
+  confirmModal(): void {
+    if (this.messageToDeleteId !== null) {
+      this.messagerieService.deleteMessage(this.messageToDeleteId).subscribe({
+        next: () => {
+          this.conversation.messages = this.conversation.messages.filter(
+            (msg: any) => msg.id !== this.messageToDeleteId
+          );
+          this.closeModal();
         },
         error: (err) => {
           console.error('Error deleting message:', err);
-        }
+          this.closeModal();
+        },
       });
     }
+  }
+
+  closeModal(): void {
+    this.showModal = false;
+    this.messageToDeleteId = null;
   }
 
   goToSharedEvent(evenementId: number | undefined): void {
