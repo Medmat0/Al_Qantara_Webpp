@@ -75,8 +75,4 @@ export class OffreDescriptionComponent implements OnInit {
     }
   }
 
-  saveOffer(): void {
-    // À adapter selon la logique de sauvegarde (API ou localStorage)
-    alert('Offre sauvegardée !');
-  }
 }

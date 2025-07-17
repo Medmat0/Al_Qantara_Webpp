@@ -13,7 +13,7 @@ import { CandidatureService } from '../../../../../../member/services/candidatur
   standalone: true
 })
 export class CandidatureFormComponent implements OnInit, OnChanges {
-  
+
   fb: FormBuilder = inject(FormBuilder);
   authService = inject(AuthService);
   candidatureService = inject(CandidatureService);
@@ -122,8 +122,6 @@ export class CandidatureFormComponent implements OnInit, OnChanges {
         candidature.motivation
       ).subscribe({
         next: (response) => {
-          console.log('Candidature ajoutée avec succès:', response);
-          alert('Votre candidature a été envoyée avec succès.');
           this.candidatureForm.reset();
           this.experiences.clear();
           this.competences.clear();
