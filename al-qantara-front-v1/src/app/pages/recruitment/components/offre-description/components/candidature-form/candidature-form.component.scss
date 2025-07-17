@@ -204,58 +204,160 @@ button[type="submit"]:hover {
   margin-bottom: 0.5rem;
 }
 
-// Responsive
-@media (max-width: 768px) {
-  .candidature-form-card.section-card {
-    padding: 1.5rem;
-    border-radius: 15px;
-  }
-  .exp-comp-container {
-    flex-direction: column;
-    gap: 1.2rem;
-  }
-  .exp-comp-container > div {
-    min-width: 0;
+// Message "Vous avez déjà candidaté"
+.already-applied-message {
+  background: linear-gradient(135deg, #e8f5e8, #f0f8f0);
+  border: 2px solid #28a745;
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
+  margin: 2rem 0;
+  text-align: center;
+  animation: fadeInUp 0.6s ease-out;
+  box-shadow: $shadow-md;
+
+  .message-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, #28a745, #20c997);
+    border-radius: 50%;
+    margin-bottom: 1.5rem;
+    color: white;
+
+    svg {
+      width: 32px;
+      height: 32px;
+    }
   }
 
-  .cv-upload-container {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
+  h3 {
+    color: #28a745;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 1rem 0;
+    font-family: inherit;
   }
 
-  .autofill-btn {
-    width: 100%;
-    padding: 0.75rem 1rem;
+  p {
+    color: #155724;
     font-size: 1rem;
-    text-align: center;
+    line-height: 1.6;
+    margin: 0;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 
-@media (max-width: 480px) {
-  .candidature-form-card.section-card {
-    padding: 1rem;
-    border-radius: 10px;
-  }
-  label {
-    font-size: 0.98rem;
-  }
+// Notifications personnalisées
+.custom-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  max-width: 400px;
+  z-index: 1000;
+  animation: slideInRight 0.3s ease-out;
 
-  .cv-upload-container {
-    gap: 0.75rem;
-  }
-
-  .autofill-btn {
-    padding: 0.8rem 1rem;
-    font-size: 0.9rem;
+  .notification-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem;
     border-radius: 12px;
+    box-shadow: $shadow-lg;
+    background: white;
+    border-left: 4px solid;
   }
 
-  input[type="file"] {
-    font-size: 0.9rem;
-    padding: 0.6rem;
+  .notification-icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .notification-message {
+    flex: 1;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: $text-dark;
+  }
+
+  .notification-close {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    color: $text-medium;
+    padding: 0;
+
+    &:hover {
+      color: $text-dark;
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  // Types de notifications
+  &.notification-success {
+    .notification-content {
+      border-left-color: #28a745;
+    }
+    .notification-icon {
+      color: #28a745;
+    }
+  }
+
+  &.notification-error {
+    .notification-content {
+      border-left-color: #dc3545;
+    }
+    .notification-icon {
+      color: #dc3545;
+    }
+  }
+
+  &.notification-warning {
+    .notification-content {
+      border-left-color: #ffc107;
+    }
+    .notification-icon {
+      color: #ffc107;
+    }
+  }
+
+  &.notification-info {
+    .notification-content {
+      border-left-color: #17a2b8;
+    }
+    .notification-icon {
+      color: #17a2b8;
+    }
   }
 }
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -267,217 +369,18 @@ button[type="submit"]:hover {
   }
 }
 
-form {
-  background: $white;
-  padding: 2.5rem 2rem;
-  border-radius: 20px;
-  box-shadow: $shadow-md;
-  max-width: 900px;
-  margin: auto;
-  font-family: Arial, sans-serif;
-  color: $text-dark;
-  animation: fadeInUp 0.6s ease-out;
-}
-
-label {
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  display: block;
-  color: $primary-color;
-  font-size: 1.05rem;
-}
-
-.cv-upload-container {
+.submit-loading {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
+  justify-content: center;
+  gap: 0.5rem;
 
-input[type="file"] {
-  font-size: 0.95rem;
-  border: 1px solid $border-color;
-  border-radius: 10px;
-  padding: 0.45rem;
-  background-color: $secondary-color;
-  flex-grow: 1;
-}
-
-.autofill-btn {
-  background: linear-gradient(135deg, $primary-color, $primary-hover);
-  color: $white;
-  border: none;
-  border-radius: 20px;
-  padding: 0.5rem 1.2rem;
-  font-size: 0.95rem;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background 0.3s;
-}
-.autofill-btn:hover {
-  background: linear-gradient(135deg, $primary-hover, #2d1a13);
-  color: $accent-color;
-}
-
-.circular-loader .spinner {
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid $primary-color;
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.exp-comp-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  margin-bottom: 2rem;
-}
-.exp-comp-container > div {
-  flex: 1;
-  min-width: 300px;
-}
-
-input[type="text"],
-textarea {
-  width: 100%;
-  padding: 0.6rem 0.8rem;
-  border: 1px solid $border-color;
-  border-radius: 12px;
-  margin-bottom: 0.8rem;
-  font-size: 0.95rem;
-  background: $secondary-color;
-  color: $text-dark;
-  transition: border 0.2s;
-}
-input[type="text"]:focus,
-textarea:focus {
-  border-color: $primary-color;
-  outline: none;
-}
-
-textarea {
-  resize: vertical;
-  min-height: 120px;
-}
-
-button[type="button"] {
-  background: linear-gradient(135deg, $primary-color, $primary-hover);
-  color: $white;
-  border: none;
-  border-radius: 20px;
-  padding: 0.4rem 1rem;
-  font-size: 0.9rem;
-  margin-top: 0.2rem;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background 0.3s;
-}
-button[type="button"]:hover {
-  background: linear-gradient(135deg, $primary-hover, #2d1a13);
-  color: $accent-color;
-}
-button[disabled] {
-  background-color: #ccc;
-  color: $text-light;
-  cursor: not-allowed;
-}
-
-button[type="submit"] {
-  display: block;
-  width: 100%;
-  background: linear-gradient(135deg, $primary-color, $primary-hover);
-  color: $white;
-  padding: 0.7rem;
-  font-size: 1rem;
-  border: none;
-  border-radius: 24px;
-  cursor: pointer;
-  font-weight: 700;
-  margin-top: 1.5rem;
-  box-shadow: $shadow-md;
-  transition: background 0.3s;
-}
-button[type="submit"]:hover {
-  background: linear-gradient(135deg, $primary-hover, #2d1a13);
-  color: $accent-color;
-}
-
-.is-invalid {
-  border-color: #e74c3c;
-  background-color: #fdf0f0;
-}
-
-.error {
-  color: #e74c3c;
-  font-size: 0.85rem;
-  margin-bottom: 0.5rem;
-}
-
-// Responsive
-@media (max-width: 768px) {
-  .candidature-form-card.section-card {
-    padding: 1.5rem;
-    border-radius: 15px;
-  }
-  .exp-comp-container {
-    flex-direction: column;
-    gap: 1.2rem;
-  }
-  .exp-comp-container > div {
-    min-width: 0;
-  }
-
-  .cv-upload-container {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
-  }
-
-  .autofill-btn {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    font-size: 1rem;
-    text-align: center;
-  }
-}
-
-@media (max-width: 480px) {
-  .candidature-form-card.section-card {
-    padding: 1rem;
-    border-radius: 10px;
-  }
-  label {
-    font-size: 0.98rem;
-  }
-
-  .cv-upload-container {
-    gap: 0.75rem;
-  }
-
-  .autofill-btn {
-    padding: 0.8rem 1rem;
-    font-size: 0.9rem;
-    border-radius: 12px;
-  }
-
-  input[type="file"] {
-    font-size: 0.9rem;
-    padding: 0.6rem;
-  }
-}
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  .spinner {
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid $white;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    animation: spin 1s linear infinite;
   }
 }
