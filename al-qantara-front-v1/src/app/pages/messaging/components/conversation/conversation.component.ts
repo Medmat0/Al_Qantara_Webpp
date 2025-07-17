@@ -29,6 +29,7 @@ export class ConversationComponent implements OnChanges , OnInit{
   userId: number | null = null;
   isAuthenticated: boolean = false;
   private socketListener: any;
+  private deleteListener: any; // Nouveau listener pour les suppressions
   messageInput: string = '';
   preloadedType: string | null = null;
   preloadedEvenementId: number | null = null;
@@ -69,6 +70,7 @@ export class ConversationComponent implements OnChanges , OnInit{
 
   ngOnInit(): void {
     this.registerSocketListener();
+    this.registerDeleteListener(); // Ajouter le listener de suppression
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -107,9 +109,35 @@ export class ConversationComponent implements OnChanges , OnInit{
     this.socketService.on('nouveauMessage', this.socketListener);
   }
 
+  registerDeleteListener() {
+    if (this.deleteListener) {
+      this.socketService.socket.off('messageSupprime', this.deleteListener);
+    }
+    this.deleteListener = (data: any) => {
+      console.log('Message supprimé reçu via socket:', data);
+      if (this.conversation && this.conversation.messages) {
+        // Trouver et marquer le message comme supprimé
+        const messageIndex = this.conversation.messages.findIndex(
+          (msg: any) => msg.id === data.messageId
+        );
+        if (messageIndex !== -1) {
+          this.conversation.messages[messageIndex] = {
+            ...this.conversation.messages[messageIndex],
+            contenu: 'Ce message a été supprimé',
+            estSupprime: true
+          };
+        }
+      }
+    };
+    this.socketService.on('messageSupprime', this.deleteListener);
+  }
+
   ngOnDestroy(): void {
     if (this.socketListener) {
       this.socketService.socket.off('nouveauMessage', this.socketListener);
+    }
+    if (this.deleteListener) {
+      this.socketService.socket.off('messageSupprime', this.deleteListener);
     }
   }
 
@@ -154,18 +182,45 @@ export class ConversationComponent implements OnChanges , OnInit{
     });
   }
 
+  // Modal properties
+  showModal = false;
+  modalMessage = '';
+  messageToDeleteId: number | null = null;
+
   deleteMessage(messageId: number): void {
-    if(confirm('Êtes-vous sûr de vouloir supprimer ce message ?')) {
-      this.messagerieService.deleteMessage(messageId).subscribe({
-        next: (res) => {
-          this.conversation.messages = this.conversation.messages.filter((msg: any) => msg.id !== messageId);
-          console.log('Message deleted successfully:', res);
+    this.messageToDeleteId = messageId;
+    this.modalMessage = 'Êtes-vous sûr de vouloir supprimer ce message ?';
+    this.showModal = true;
+  }
+
+  confirmModal(): void {
+    if (this.messageToDeleteId !== null) {
+      this.messagerieService.deleteMessage(this.messageToDeleteId).subscribe({
+        next: () => {
+          // Marquer localement le message comme supprimé au lieu de le supprimer
+          const messageIndex = this.conversation.messages.findIndex(
+            (msg: any) => msg.id === this.messageToDeleteId
+          );
+          if (messageIndex !== -1) {
+            this.conversation.messages[messageIndex] = {
+              ...this.conversation.messages[messageIndex],
+              contenu: 'Ce message a été supprimé',
+              estSupprime: true
+            };
+          }
+          this.closeModal();
         },
         error: (err) => {
           console.error('Error deleting message:', err);
-        }
+          this.closeModal();
+        },
       });
     }
+  }
+
+  closeModal(): void {
+    this.showModal = false;
+    this.messageToDeleteId = null;
   }
 
   goToSharedEvent(evenementId: number | undefined): void {

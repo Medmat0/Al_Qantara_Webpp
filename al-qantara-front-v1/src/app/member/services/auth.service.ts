@@ -72,8 +72,6 @@ export class AuthService {
           localStorage.removeItem('utilisateur');
           this.logout().subscribe({
             next: () => {
-              console.log('User logged out due to invalid or expired token');
-              confirm('Your session has expired. Please log in again.');
               this.authStatusSubject.next(false);
               this.router.navigate(['/']); // Redirect to home
             },

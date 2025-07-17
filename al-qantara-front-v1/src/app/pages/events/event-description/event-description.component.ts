@@ -56,6 +56,10 @@ export class EventDescriptionComponent {
   users: any[] = []; // Liste des utilisateurs pour la modal de partage
   showUsersModal = false; // Contrôle l'affichage de la modal de partage
 
+  // Toast notification
+  showToast = false;
+  toastMessage = '';
+
   // propriétés pour la gestion visuelle de la description
   loading = false;
   error = '';
@@ -162,7 +166,7 @@ export class EventDescriptionComponent {
     const url = window.location.href;
     navigator.clipboard.writeText(url);
     this.showShareMenu = false;
-    alert('Lien copié !');
+    this.showToastMessage('Lien copié !');
   }
 
   shareByMessage() {
@@ -484,6 +488,15 @@ export class EventDescriptionComponent {
     console.log('✅ Notation envoyée avec succès');
     // Optionnel : rafraîchir les données de l'événement
     // this.evenementService.getEvenementById(this.evenementId).subscribe(...);
+  }
+
+  private showToastMessage(message: string): void {
+    this.toastMessage = message;
+    this.showToast = true;
+
+    setTimeout(() => {
+      this.showToast = false;
+    }, 3000);
   }
 
 }

@@ -108,3 +108,19 @@
     Sélectionnez une conversation pour commencer à discuter.
   </div>
 </ng-template>
+
+<!-- Modal de confirmation de suppression -->
+<div class="modal-overlay" *ngIf="showModal">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h3>Confirmation</h3>
+    </div>
+    <div class="modal-body">
+      <p>{{ modalMessage }}</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-cancel" (click)="closeModal()">Annuler</button>
+      <button class="btn btn-confirm" (click)="confirmModal()">Confirmer</button>
+    </div>
+  </div>
+</div>
