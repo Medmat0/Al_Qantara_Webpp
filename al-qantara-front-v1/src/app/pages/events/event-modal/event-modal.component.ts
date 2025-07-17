@@ -49,6 +49,10 @@ export class EventModalComponent implements OnChanges {
   @Output() participate = new EventEmitter<void>();
   @Output() unsubscribe = new EventEmitter<void>();
 
+
+  showToast = false;
+  toastMessage = '';
+
   safeMapUrl: SafeResourceUrl | null = null;
   commentText = '';
   showCommentForm = false;
@@ -160,7 +164,7 @@ export class EventModalComponent implements OnChanges {
     const url = `${FRONTEND_URL}/events/${this.event?.id}`;
     navigator.clipboard.writeText(url);
     this.showShareMenu = false;
-    alert('Lien copié !');
+    this.showToastMessage('Lien copié !');
   }
 
   shareByMessage() {
@@ -394,7 +398,7 @@ export class EventModalComponent implements OnChanges {
    */
   onRemboursementSuccess(response: any): void {
     console.log('✅ Demande de remboursement envoyée avec succès:', response);
-    
+
     // Marquer que l'utilisateur a demandé un remboursement
     this.hasRequestedRefund = true;
     this.canRequestRefund = false;
@@ -439,10 +443,19 @@ export class EventModalComponent implements OnChanges {
     if (this.userId && this.event?.id) {
       const refundKey = `refund_requested_${this.userId}_${this.event.id}`;
       this.hasRequestedRefund = localStorage.getItem(refundKey) === 'true';
-      
+
       // Vérifier si l'utilisateur s'est désinscrit de cet événement
       const unsubscribeKey = `unsubscribed_${this.userId}_${this.event.id}`;
       this.userHasUnsubscribed = localStorage.getItem(unsubscribeKey) === 'true';
     }
+  }
+
+  private showToastMessage(message: string): void {
+    this.toastMessage = message;
+    this.showToast = true;
+
+    setTimeout(() => {
+      this.showToast = false;
+    }, 3000);
   }
 }
