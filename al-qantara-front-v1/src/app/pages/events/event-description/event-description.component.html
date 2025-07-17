@@ -181,3 +181,9 @@
     <app-community-research (communitySelected)="onCommunitySelected($event)"></app-community-research>
   </div>
 </div>
+
+<!-- notification lien copié -->
+<div class="toast-notification" [class.show]="showToast">
+  <i class="fas fa-check-circle"></i>
+  <span>{{ toastMessage }}</span>
+</div>
