@@ -11,7 +11,7 @@ import { EvenementService } from '../../../member/services/evenement.service';
 import { Router } from '@angular/router';
 import { CommunityResearchComponent } from '../../community/components/community-research/community-research.component';
 import { AuthRequiredModalComponent } from '../../auth-required-modal/auth-required-modal.component';
-
+import { FRONTEND_URL } from '../../../utils/config';
 @Component({
   selector: 'app-event-modal',
   standalone: true,
@@ -62,6 +62,8 @@ export class EventModalComponent implements OnChanges {
   // Propriétés pour la demande de remboursement
   showRemboursementModal = false;
   canRequestRefund = false;
+  hasRequestedRefund = false; // Nouvelle propriété pour tracker si l'utilisateur a déjà demandé un remboursement
+  userHasUnsubscribed = false; // Nouvelle propriété pour tracker si l'utilisateur s'est désinscrit
 
   //share
   showShareMenu = false;
@@ -105,6 +107,9 @@ export class EventModalComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['event'] && this.event) {
+      // Vérifier si l'utilisateur a déjà demandé un remboursement pour cet événement
+      this.checkRefundRequestStatus();
+
       // Récupérer l'événement complet avec les commentaires
       this.evenementService.getEvenementById(this.event.id).subscribe({
         next: (response) => {
@@ -141,12 +146,18 @@ export class EventModalComponent implements OnChanges {
     }
 
     if (changes['unsubscribeConfirmed']) {
+      // Si l'utilisateur vient de se désinscrire, sauvegarder l'état
+      if (this.unsubscribeConfirmed && this.userId && this.event?.id) {
+        const unsubscribeKey = `unsubscribed_${this.userId}_${this.event.id}`;
+        localStorage.setItem(unsubscribeKey, 'true');
+        this.userHasUnsubscribed = true;
+      }
       this.checkCanRequestRefund();
     }
   }
 
   copyLink() {
-    const url = `/events/${this.event?.id}`;
+    const url = `${FRONTEND_URL}/events/${this.event?.id}`;
     navigator.clipboard.writeText(url);
     this.showShareMenu = false;
     alert('Lien copié !');
@@ -356,10 +367,11 @@ export class EventModalComponent implements OnChanges {
    */
   checkCanRequestRefund(): void {
     // L'utilisateur peut demander un remboursement si :
-    // 1. Il était inscrit à l'événement
+    // 1. Il s'est désinscrit de l'événement (via unsubscribeConfirmed OU userHasUnsubscribed)
     // 2. L'événement était payant
-    // 3. Il s'est désinscrit récemment
-    this.canRequestRefund = this.unsubscribeConfirmed && this.event?.isPayant;
+    // 3. Il n'a pas encore demandé de remboursement
+    const hasUnsubscribed = this.unsubscribeConfirmed || this.userHasUnsubscribed;
+    this.canRequestRefund = hasUnsubscribed && this.event?.isPayant && !this.hasRequestedRefund;
   }
 
   /**
@@ -382,8 +394,18 @@ export class EventModalComponent implements OnChanges {
    */
   onRemboursementSuccess(response: any): void {
     console.log('✅ Demande de remboursement envoyée avec succès:', response);
+    
+    // Marquer que l'utilisateur a demandé un remboursement
+    this.hasRequestedRefund = true;
+    this.canRequestRefund = false;
+
+    // Sauvegarder dans localStorage pour persister l'état
+    if (this.userId && this.event?.id) {
+      const refundKey = `refund_requested_${this.userId}_${this.event.id}`;
+      localStorage.setItem(refundKey, 'true');
+    }
+
     alert('Votre demande de remboursement a été envoyée. Vous recevrez une réponse par email.');
-    this.canRequestRefund = false; // Masquer le bouton après demande
   }
 
 
@@ -408,5 +430,19 @@ export class EventModalComponent implements OnChanges {
   onRatingSubmitted(): void {
     console.log('✅ Notation envoyée avec succès');
 
+  }
+
+  /**
+   * Vérifier si l'utilisateur a déjà demandé un remboursement pour cet événement
+   */
+  checkRefundRequestStatus(): void {
+    if (this.userId && this.event?.id) {
+      const refundKey = `refund_requested_${this.userId}_${this.event.id}`;
+      this.hasRequestedRefund = localStorage.getItem(refundKey) === 'true';
+      
+      // Vérifier si l'utilisateur s'est désinscrit de cet événement
+      const unsubscribeKey = `unsubscribed_${this.userId}_${this.event.id}`;
+      this.userHasUnsubscribed = localStorage.getItem(unsubscribeKey) === 'true';
+    }
   }
 }

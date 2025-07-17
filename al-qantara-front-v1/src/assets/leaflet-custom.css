@@ -1,0 +1,58 @@
+/* Custom Leaflet CSS to override image paths for production builds */
+
+/* Replace the problematic background-image rules from leaflet.css */
+.leaflet-control-layers-toggle {
+  background-image: url('/assets/images/layers.png') !important;
+  background-repeat: no-repeat !important;
+  background-position: 50% 50% !important;
+  background-size: 26px 26px !important;
+}
+
+@media (min-resolution: 2dppx) {
+  .leaflet-control-layers-toggle {
+    background-image: url('/assets/images/layers-2x.png') !important;
+  }
+}
+
+/* Default marker icon */
+.leaflet-default-icon-path {
+  background-image: url('/assets/images/marker-icon.png') !important;
+}
+
+/* Marker icons */
+.leaflet-marker-icon {
+  background-image: url('/assets/images/marker-icon.png') !important;
+}
+
+.leaflet-marker-shadow {
+  background-image: url('/assets/images/marker-shadow.png') !important;
+}
+
+/* Retina markers */
+@media (min-resolution: 2dppx) {
+  .leaflet-marker-icon {
+    background-image: url('/assets/images/marker-icon-2x.png') !important;
+  }
+}
+
+/* Fix for any other leaflet icons that might cause issues */
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out {
+  background-image: none !important;
+}
+
+.leaflet-control-zoom-in:before {
+  content: '+' !important;
+  font-weight: bold !important;
+  font-size: 18px !important;
+  line-height: 26px !important;
+  text-align: center !important;
+}
+
+.leaflet-control-zoom-out:before {
+  content: '−' !important;
+  font-weight: bold !important;
+  font-size: 18px !important;
+  line-height: 26px !important;
+  text-align: center !important;
+}

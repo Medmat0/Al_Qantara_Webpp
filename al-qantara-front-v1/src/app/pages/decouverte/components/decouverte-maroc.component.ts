@@ -7,8 +7,7 @@ import L from 'leaflet';
 import {AdminGuidesService, Guide} from '../../../admin/services/admin-guides.service';
 import {GuidesService} from '../../../member/services/guides.service';
 import { AfterViewInit } from '@angular/core';
-
-import "leaflet/dist/leaflet.css";
+import { initializeLeaflet } from '../../../utils/leaflet-config';
 @Pipe({ name: 'safeUrl', standalone: true })
 export class SafeUrlPipe implements PipeTransform {
   constructor(private sanitizer: DomSanitizer) {}
@@ -59,6 +58,9 @@ export class DecouverteMarocComponent implements AfterViewInit, OnInit {
   }
 
   ngAfterViewInit() {
+    // Initialiser la configuration Leaflet pour les icônes
+    initializeLeaflet();
+    
     this.map = L.map('map').setView([31.791702, -7.092619], 6);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors'
