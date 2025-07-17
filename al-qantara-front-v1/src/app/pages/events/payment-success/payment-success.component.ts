@@ -80,7 +80,6 @@ export class PaymentSuccessComponent implements OnInit {
 
       // Validation finale des paramètres
       if (!this.validateRequiredParams()) {
-        console.log('❌ Paramètres requis manquants, redirection...');
         this.router.navigate(['/events']);
         return;
       }

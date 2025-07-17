@@ -8,7 +8,12 @@ export const eventPaymentSuccessGuard: CanActivateFn = (route, state) => {
   // Récupérer le token depuis les paramètres de query si présent
   const token = route.queryParams['token'];
   
-  // Vérifier si l'accès est autorisé
+  if (!token) {
+    evenementPaymentService.redirectToEvents();
+    return false;
+  }
+  
+  // Vérifier si l'accès est autorisé avec le token
   const canAccess = evenementPaymentService.canAccessSuccessPage(token);
   
   if (!canAccess) {
@@ -16,5 +21,5 @@ export const eventPaymentSuccessGuard: CanActivateFn = (route, state) => {
     return false;
   }
   
-  return true;
+ return true;
 };

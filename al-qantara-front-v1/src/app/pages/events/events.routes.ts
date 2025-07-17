@@ -8,7 +8,7 @@ import { eventPaymentSuccessGuard } from '../../guards/event-payment-success.gua
 
 export default [
   {path: '', component:EventHomeComponent,},
-  {path: 'payment/success', component: PaymentSuccessComponent, canActivate: [eventPaymentSuccessGuard]},
+  {path: 'payment/success', component: PaymentSuccessComponent, canActivate: [eventPaymentSuccessGuard]}, 
   {path: 'payment/cancel', component: PaymentCancelComponent},
   {path: 'payment/error', component: PaymentErrorComponent},
   {path: ':id', component:EventDescriptionComponent,}
