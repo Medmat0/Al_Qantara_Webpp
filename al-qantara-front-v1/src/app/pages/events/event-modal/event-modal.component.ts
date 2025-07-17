@@ -213,19 +213,17 @@ export class EventModalComponent implements OnChanges {
 
   onAddComment(evenement: any, commentText: string) {
     if (!this.checkAuthentication()) return;
+    this.comment.emit(commentText);
 
-    this.evenementService.addCommentToEvenement(evenement.id, commentText).subscribe({
-      next: (res) => {
-        console.log('Commentaire ajouté avec succès', res);
-        // Ajoute le commentaire à l'événement localement
-        if (!Array.isArray(evenement.comments)) {
-          evenement.comments = [];
-        }
-        evenement.comments.push(res.commentaire);
-      },
-      error: (err) => {
-        console.error('Erreur lors de l\'ajout du commentaire', err);
-      }
+    // Ajoute le commentaire localement sans appel backend
+    if (!Array.isArray(evenement.comments)) {
+      evenement.comments = [];
+    }
+    evenement.comments.push({
+      id: Date.now(),
+      texte: commentText,
+      utilisateur: { id: this.userId },
+      date: new Date().toISOString()
     });
   }
 
