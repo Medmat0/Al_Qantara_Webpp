@@ -29,6 +29,7 @@ export class ConversationComponent implements OnChanges , OnInit{
   userId: number | null = null;
   isAuthenticated: boolean = false;
   private socketListener: any;
+  private deleteListener: any; // Nouveau listener pour les suppressions
   messageInput: string = '';
   preloadedType: string | null = null;
   preloadedEvenementId: number | null = null;
@@ -69,6 +70,7 @@ export class ConversationComponent implements OnChanges , OnInit{
 
   ngOnInit(): void {
     this.registerSocketListener();
+    this.registerDeleteListener();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -107,9 +109,34 @@ export class ConversationComponent implements OnChanges , OnInit{
     this.socketService.on('nouveauMessage', this.socketListener);
   }
 
+  registerDeleteListener() {
+    if (this.deleteListener) {
+      this.socketService.socket.off('messageSupprime', this.deleteListener);
+    }
+    this.deleteListener = (data: any) => {
+      console.log('Message supprimé reçu via socket:', data);
+      if (this.conversation && this.conversation.messages) {
+        // Trouver le message et le marquer comme supprimé au lieu de le supprimer
+        const messageIndex = this.conversation.messages.findIndex((msg: any) => msg.id === data.messageId);
+        if (messageIndex !== -1) {
+          this.conversation.messages[messageIndex] = {
+            ...this.conversation.messages[messageIndex],
+            estSupprime: true,
+            contenu: ' Ce message a été supprimé',
+            suppressedBy: data.suppressedBy
+          };
+        }
+      }
+    };
+    this.socketService.on('messageSupprime', this.deleteListener);
+  }
+
   ngOnDestroy(): void {
     if (this.socketListener) {
       this.socketService.socket.off('nouveauMessage', this.socketListener);
+    }
+    if (this.deleteListener) {
+      this.socketService.socket.off('messageSupprime', this.deleteListener);
     }
   }
 
@@ -169,9 +196,26 @@ export class ConversationComponent implements OnChanges , OnInit{
     if (this.messageToDeleteId !== null) {
       this.messagerieService.deleteMessage(this.messageToDeleteId).subscribe({
         next: () => {
-          this.conversation.messages = this.conversation.messages.filter(
-            (msg: any) => msg.id !== this.messageToDeleteId
+          // Marquer le message comme supprimé localement au lieu de le supprimer
+          const messageIndex = this.conversation.messages.findIndex(
+            (msg: any) => msg.id === this.messageToDeleteId
           );
+          if (messageIndex !== -1) {
+            this.conversation.messages[messageIndex] = {
+              ...this.conversation.messages[messageIndex],
+              estSupprime: true,
+              contenu: '🗑️ Ce message a été supprimé',
+              suppressedBy: this.userId
+            };
+          }
+
+          // Émettre l'événement Socket.IO pour notifier l'autre utilisateur
+          this.socketService.emit('messageSupprime', {
+            messageId: this.messageToDeleteId,
+            conversationId: `${Math.min(this.userId!, this.conversation.utilisateur.id)}-${Math.max(this.userId!, this.conversation.utilisateur.id)}`,
+            suppressedBy: this.userId
+          });
+
           this.closeModal();
         },
         error: (err) => {

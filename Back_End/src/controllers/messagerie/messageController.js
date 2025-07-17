@@ -140,7 +140,34 @@ const supprimerMessage = async (req, res) => {
       });
     }
 
-    await supprimerMessageService(parseInt(id), Number(currentUserId));
+    // Récupérer les informations du message avant suppression pour notifier l'autre utilisateur
+    const messageInfo = await supprimerMessageService(parseInt(id), Number(currentUserId));
+    
+    // Émettre l'événement de suppression aux deux utilisateurs connectés
+    if (messageInfo) {
+      const { expediteurId, destinataireId } = messageInfo;
+      
+      // Notifier l'expéditeur
+      const expediteurSocketId = req.userSockets?.get(expediteurId);
+      if (expediteurSocketId) {
+        req.io.to(expediteurSocketId).emit('messageSupprime', {
+          messageId: parseInt(id),
+          expediteurId,
+          destinataireId
+        });
+      }
+      
+      // Notifier le destinataire
+      const destinataireSocketId = req.userSockets?.get(destinataireId);
+      if (destinataireSocketId) {
+        req.io.to(destinataireSocketId).emit('messageSupprime', {
+          messageId: parseInt(id),
+          expediteurId,
+          destinataireId
+        });
+      }
+    }
+    
     res.status(200).json({
       message: "Message supprimé avec succès"
     });

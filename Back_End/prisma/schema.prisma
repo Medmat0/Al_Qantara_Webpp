@@ -385,6 +385,7 @@ model Message {
   dateEnvoi      DateTime      @default(now())
   dateExpiration DateTime
   estLu          Boolean       @default(false)
+  estSupprime    Boolean       @default(false)
   expediteur     Utilisateur   @relation("MessagesEnvoyes", fields: [expediteurId], references: [id], onDelete: Cascade)
   expediteurId   Int
   destinataire   Utilisateur   @relation("MessagesRecus", fields: [destinataireId], references: [id], onDelete: Cascade)
