@@ -238,17 +238,29 @@ export class EventListingComponent {
         dateLike: new Date().toString(),
       };
       evenement.likes = [...evenement.likes, fakeLike];
-      if (idx !== -1) this.events[idx].likes = [...evenement.likes];
+      evenement.nombreLikes = evenement.likes.length;
+      if (idx !== -1) {
+        this.events[idx].likes = [...evenement.likes];
+        this.events[idx].nombreLikes = evenement.likes.length;
+
+      }
       if (this.selectedEvent && this.selectedEvent.id === evenement.id) {
         this.selectedEvent.likes = [...evenement.likes];
+        this.selectedEvent.nombreLikes = evenement.likes.length;
       }
       this.hasLikedEvenement = true;
     } else {
       // Retire le like localement
       evenement.likes = likes.filter(like => like.utilisateurId !== this.userId);
-      if (idx !== -1) this.events[idx].likes = [...evenement.likes];
+      evenement.nombreLikes = evenement.likes.length;
+      if (idx !== -1){
+        this.events[idx].likes = [...evenement.likes];
+        this.events[idx].nombreLikes = evenement.likes.length;
+      }
       if (this.selectedEvent && this.selectedEvent.id === evenement.id) {
         this.selectedEvent.likes = [...evenement.likes];
+        this.selectedEvent.nombreLikes = evenement.likes.length;
+
       }
       this.hasLikedEvenement = false;
     }
@@ -290,6 +302,7 @@ export class EventListingComponent {
           evenement.comments = [];
         }
         evenement.comments.push(res.commentaire);
+        evenement.nombreCommentaires = evenement.comments.length;
 
       },
       error: (err) => {

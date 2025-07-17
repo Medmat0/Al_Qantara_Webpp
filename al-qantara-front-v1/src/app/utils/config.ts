@@ -1,3 +1,3 @@
-export const API_URL = "http://localhost:3000" //"https://al-qantara-webpp.onrender.com"; // Base URL of the API
-export const CV_WEB_SERVICE_URL = "https://crooked-cristin-alqantara-76ea917d.koyeb.app";
-export const FRONTEND_URL = "https://alqantara.fr"; // Base URL of the frontend
+export const FRONTEND_URL = "http://localhost:4200"; // Base URL of the frontend
+export const API_URL = "http://localhost:3000"; // Base URL of the API
+export const CV_WEB_SERVICE_URL = "http://localhost:8000"; // To change when hosted
