@@ -95,6 +95,7 @@ export class EventModalComponent implements OnChanges {
   constructor(private sanitizer: DomSanitizer) {
     if (this.event && !Array.isArray(this.event.comments)) {
       this.event.comments = [];
+
     }
 
     // Gestion de l'authentification
@@ -212,21 +213,27 @@ export class EventModalComponent implements OnChanges {
 
   onAddComment(evenement: any, commentText: string) {
     if (!this.checkAuthentication()) return;
+    const { nom = '', prenom = '' } = JSON.parse(<string>localStorage.getItem('utilisateur'));
+    // Création d'un faux commentaire local
+    const fakeComment = {
+      id: Date.now(),
+      contenu: commentText,
+      utilisateur: {
+        id: this.userId,
+        nom: nom || '',
+        prenom: prenom || ''
+      },
+      dateCommentaire: new Date().toISOString()
+    };
+
+    if (!Array.isArray(evenement.comments)) {
+      evenement.comments = [];
+    }
+    evenement.comments.push(fakeComment);
+
     this.comment.emit(commentText);
 
-    this.evenementService.addCommentToEvenement(evenement.id, commentText).subscribe({
-      next: (res) => {
-        console.log('Commentaire ajouté avec succès', res);
-        // Ajoute le commentaire à l'événement localement
-        if (!Array.isArray(evenement.comments)) {
-          evenement.comments = [];
-        }
-        evenement.comments.push(res.commentaire);
-      },
-      error: (err) => {
-        console.error('Erreur lors de l\'ajout du commentaire', err);
-      }
-    });
+    // Optionnel : tu peux ensuite remplacer ce faux commentaire par la vraie réponse du backend quand elle arrive
   }
 
   handleCommentSubmit() {
