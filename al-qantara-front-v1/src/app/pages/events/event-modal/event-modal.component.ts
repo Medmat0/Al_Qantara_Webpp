@@ -114,7 +114,6 @@ export class EventModalComponent implements OnChanges {
       // Vérifier si l'utilisateur a déjà demandé un remboursement pour cet événement
       this.checkRefundRequestStatus();
 
-
       // Récupérer l'événement complet avec les commentaires
       this.evenementService.getEvenementById(this.event.id).subscribe({
         next: (response) => {
@@ -213,17 +212,19 @@ export class EventModalComponent implements OnChanges {
 
   onAddComment(evenement: any, commentText: string) {
     if (!this.checkAuthentication()) return;
-    this.comment.emit(commentText);
 
-    // Ajoute le commentaire localement sans appel backend
-    if (!Array.isArray(evenement.comments)) {
-      evenement.comments = [];
-    }
-    evenement.comments.push({
-      id: Date.now(),
-      texte: commentText,
-      utilisateur: { id: this.userId },
-      date: new Date().toISOString()
+    this.evenementService.addCommentToEvenement(evenement.id, commentText).subscribe({
+      next: (res) => {
+        console.log('Commentaire ajouté avec succès', res);
+        // Ajoute le commentaire à l'événement localement
+        if (!Array.isArray(evenement.comments)) {
+          evenement.comments = [];
+        }
+        evenement.comments.push(res.commentaire);
+      },
+      error: (err) => {
+        console.error('Erreur lors de l\'ajout du commentaire', err);
+      }
     });
   }
 
@@ -298,41 +299,50 @@ export class EventModalComponent implements OnChanges {
    */
   toggleLike() {
     if (!this.checkAuthentication()) return;
-    this.like.emit(this.event);
 
     if (this.likesLoading) return;
 
     this.likesLoading = true;
 
-    // Gestion locale du like sans appel backend
-    if (this.userHasLiked) {
-      // L'utilisateur avait déjà liké, donc on retire le like
-      this.nombreLikes = Math.max(0, this.nombreLikes - 1);
-      this.userHasLiked = false;
+    this.evenementService.likeEvenement(this.event.id).subscribe({
+      next: (response) => {
+        console.log('Like toggled successfully:', response);
 
-      // Retirer le like de la liste locale
-      if (this.event.likes) {
-        this.event.likes = this.event.likes.filter((like: any) => like.utilisateurId !== this.userId);
+        // Mettre à jour l'état local en fonction de l'action effectuée
+        if (this.userHasLiked) {
+          // L'utilisateur avait déjà liké, donc on retire le like
+          this.nombreLikes = Math.max(0, this.nombreLikes - 1);
+          this.userHasLiked = false;
+
+          // Retirer le like de la liste locale
+          if (this.event.likes) {
+            this.event.likes = this.event.likes.filter((like: any) => like.utilisateurId !== this.userId);
+          }
+        } else {
+          // L'utilisateur n'avait pas liké, donc on ajoute le like
+          this.nombreLikes = this.nombreLikes + 1;
+          this.userHasLiked = true;
+
+          // Ajouter le like à la liste locale
+          if (!this.event.likes) {
+            this.event.likes = [];
+          }
+          this.event.likes.push({
+            id: Date.now(), // ID temporaire
+            utilisateurId: this.userId
+          });
+        }
+
+        // Mettre à jour le nombreLikes dans l'objet event
+        this.event.nombreLikes = this.nombreLikes;
+
+        this.likesLoading = false;
+      },
+      error: (error) => {
+        console.error('Erreur lors du toggle du like:', error);
+        this.likesLoading = false;
       }
-    } else {
-      // L'utilisateur n'avait pas liké, donc on ajoute le like
-      this.nombreLikes = this.nombreLikes + 1;
-      this.userHasLiked = true;
-
-      // Ajouter le like à la liste locale
-      if (!this.event.likes) {
-        this.event.likes = [];
-      }
-      this.event.likes.push({
-        id: Date.now(), // ID temporaire
-        utilisateurId: this.userId
-      });
-    }
-
-    // Mettre à jour le nombreLikes dans l'objet event
-    this.event.nombreLikes = this.nombreLikes;
-
-    this.likesLoading = false;
+    });
   }
 
   closeCommunityResearchPopup(communityID: number | null = null) {

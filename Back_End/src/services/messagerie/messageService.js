@@ -265,17 +265,20 @@ const supprimerMessageService = async (messageId, utilisateurId) => {
       throw new Error("Vous n'êtes pas autorisé à supprimer ce message.");
     }
 
-    // Récupérer les informations avant suppression
+    // Sauvegarder les infos avant suppression
     const messageInfo = {
-      expediteurId: message.expediteurId,
-      destinataireId: message.destinataireId
+      destinataireId: message.destinataireId,
+      expediteurId: message.expediteurId
     };
 
     await prisma.message.delete({
       where: { id: messageId }
     });
 
-    return messageInfo;
+    return { 
+      message: "Message supprimé avec succès.",
+      ...messageInfo
+    };
   } catch (error) {
     throw error;
   }

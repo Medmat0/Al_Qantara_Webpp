@@ -131,8 +131,7 @@ const getConversations = async (req, res) => {
 const supprimerMessage = async (req, res) => {
   try {
     const { id } = req.params;
-    // Pour les tests, on accepte currentUserId via query ou body
-    const currentUserId =  req.user?.id;
+    const currentUserId = req.user?.id;
 
     if (!currentUserId) {
       return res.status(400).json({
@@ -140,34 +139,20 @@ const supprimerMessage = async (req, res) => {
       });
     }
 
-    // Récupérer les informations du message avant suppression pour notifier l'autre utilisateur
+    // Récupérer les infos du message avant suppression
     const messageInfo = await supprimerMessageService(parseInt(id), Number(currentUserId));
     
-    // Émettre l'événement de suppression aux deux utilisateurs connectés
-    if (messageInfo) {
-      const { expediteurId, destinataireId } = messageInfo;
-      
-      // Notifier l'expéditeur
-      const expediteurSocketId = req.userSockets?.get(expediteurId);
-      if (expediteurSocketId) {
-        req.io.to(expediteurSocketId).emit('messageSupprime', {
-          messageId: parseInt(id),
-          expediteurId,
-          destinataireId
-        });
-      }
-      
-      // Notifier le destinataire
-      const destinataireSocketId = req.userSockets?.get(destinataireId);
+    // 🔔 ÉVÉNEMENT SOCKET.IO: Notifier l'autre utilisateur de la suppression
+    if (messageInfo.destinataireId && messageInfo.destinataireId !== currentUserId) {
+      const destinataireSocketId = req.userSockets.get(messageInfo.destinataireId);
       if (destinataireSocketId) {
         req.io.to(destinataireSocketId).emit('messageSupprime', {
           messageId: parseInt(id),
-          expediteurId,
-          destinataireId
+          suppressedBy: currentUserId
         });
       }
     }
-    
+
     res.status(200).json({
       message: "Message supprimé avec succès"
     });
