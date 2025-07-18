@@ -379,17 +379,24 @@ const sendZoomReunionService = async (req) => {
     await sendEmailToUser({
         to: adminEmail,
         subject: `Réunion Zoom planifiée avec ${candidateName}`,
-        html: `
-      <h2>Réunion planifiée</h2>
-      <p>Une réunion Zoom a été planifiée avec le candidat ${candidateName} pour l'offre: ${candidature.offre.titre}.</p>
-      <p>Email du candidat : ${candidateEmail}</p>
-      <p>Date : ${startTime.toLocaleString('fr-FR', { timeZone: 'UTC' })}</p>
-      <p><a href="${googleCalendarUrl}" target="_blank">Ajouter à Google Agenda</a></p>
-      <p>Lien Zoom admin (réservé pour une personne) : </p>
-      <p><a href="${zoomMeeting.start_url}">${zoomMeeting.start_url}</a></p>
-      <p>Lien Zoom à partager (pour d'autres membres d'AlQantara) : </p>
-      <p><a href="${zoomMeeting.join_url}">${zoomMeeting.join_url}</a></p>
-    `,
+        html: getNewsletterEmailTemplate({
+          title: `Réunion Zoom planifiée`,
+          subtitle: `Bonjour ${user.nom},`,
+          content: `
+            <p>Une réunion Zoom a été planifiée avec le candidat <strong>${candidateName}</strong> pour l'offre : <strong>${candidature.offre.titre}</strong>.</p>
+            <p>Email du candidat : <b>${candidateEmail}</b></p>
+            <p>Date : <b>${startTime.toLocaleString('fr-FR', { timeZone: 'UTC' })}</b></p>
+            <p><a href="${googleCalendarUrl}" target="_blank">Ajouter à Google Agenda</a></p>
+            <p>Lien Zoom admin (réservé pour une personne) :<br>
+              <a href="${zoomMeeting.start_url}">${zoomMeeting.start_url}</a>
+            </p>
+            <p>Lien Zoom à partager (pour d'autres membres d'AlQantara) :<br>
+              <a href="${zoomMeeting.join_url}">${zoomMeeting.join_url}</a>
+            </p>
+            <p>Cordialement,<br>L'équipe Al Qantara</p>
+          `,
+          unsubscribeLink: `${process.env.FRONT_URL}/newsletter/desinscription`
+        }),
     });
 
 
