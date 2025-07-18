@@ -79,6 +79,7 @@
       <label for="meetingDate">Date et heure de la réunion</label>
       <input type="datetime-local" id="meetingDate" [(ngModel)]="meetingDate" name="meetingDate" required>
       <div class="error-message" *ngIf="meetingError">{{ meetingError }}</div>
+      <div class="success-message" *ngIf="meetingSuccess">{{ meetingSuccess }}</div>
     </div>
     <div class="modal-footer">
       <button class="action-button" (click)="planifierReunion()">Planifier la réunion</button>

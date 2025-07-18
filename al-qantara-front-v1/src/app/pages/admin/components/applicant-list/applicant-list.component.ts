@@ -43,6 +43,7 @@ export class ApplicantListComponent implements OnInit, OnChanges {
   meetingDate: string = '';
   meetingApplicantId: number | null = null;
   meetingError: string = '';
+  meetingSuccess: string = '';
 
   showCvViewer: boolean = false;
   currentCvUrl: string = '';
@@ -134,6 +135,7 @@ export class ApplicantListComponent implements OnInit, OnChanges {
     this.meetingApplicantId = null;
     this.meetingDate = '';
     this.meetingError = '';
+    this.meetingSuccess = '';
   }
 
   planifierReunion(): void {
