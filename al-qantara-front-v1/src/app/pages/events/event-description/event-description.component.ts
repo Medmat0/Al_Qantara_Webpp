@@ -88,6 +88,7 @@ export class EventDescriptionComponent {
   canRequestRefund: boolean = false;
   hasRequestedRefund: boolean = false;
   showRemboursementModal: boolean = false;
+  userHasUnsubscribed: boolean = false; // Nouvelle propriété pour tracker si l'utilisateur s'est désinscrit
 
   openRemboursementModal() {
     this.showRemboursementModal = true;
@@ -98,8 +99,20 @@ export class EventDescriptionComponent {
   }
 
   onRemboursementSuccess(event: any) {
+    console.log('✅ Demande de remboursement envoyée avec succès:', event);
+
+    // Marquer que l'utilisateur a demandé un remboursement
     this.hasRequestedRefund = true;
+    this.canRequestRefund = false;
     this.showRemboursementModal = false;
+
+    // Sauvegarder dans localStorage pour persister l'état
+    if (this.userId && this.evenement?.id) {
+      const refundKey = `refund_requested_${this.userId}_${this.evenement.id}`;
+      localStorage.setItem(refundKey, 'true');
+    }
+
+    this.showToastMessage('Votre demande de remboursement a été envoyée. Vous recevrez une réponse par email.');
   }
 
   constructor(
@@ -134,9 +147,9 @@ export class EventDescriptionComponent {
             this.nombreLikes = this.evenement.nombreLikes || 0;
             this.checkIfUserLiked();
             this.checkIfUserHasRated();
-            // Gestion remboursement
-            this.canRequestRefund = !!this.evenement.canRequestRefund;
-            this.hasRequestedRefund = !!this.evenement.hasRequestedRefund;
+            // Gestion remboursement - utilise la logique du modal
+            this.checkRefundRequestStatus();
+            this.checkCanRequestRefund();
             if (this.userId && Array.isArray(this.evenement.likes)) {
               this.hasLikedEvenement = this.evenement.likes.some((like: LikeEvenement) => like.utilisateurId === this.userId);
             } else {
@@ -283,6 +296,16 @@ export class EventDescriptionComponent {
         this.participation = null;
         this.loading = false;
         this.unsubscribeConfirmed = true;
+
+        // Sauvegarder l'état de désinscription dans localStorage
+        if (this.userId && this.evenement?.id) {
+          const unsubscribeKey = `unsubscribed_${this.userId}_${this.evenement.id}`;
+          localStorage.setItem(unsubscribeKey, 'true');
+          this.userHasUnsubscribed = true;
+        }
+
+        // Vérifier si l'utilisateur peut maintenant demander un remboursement
+        this.checkCanRequestRefund();
 
         // Cache la notif de désinscription après 3s
         setTimeout(() => {
@@ -509,6 +532,32 @@ export class EventDescriptionComponent {
     console.log('✅ Notation envoyée avec succès');
     // Optionnel : rafraîchir les données de l'événement
     // this.evenementService.getEvenementById(this.evenementId).subscribe(...);
+  }
+
+  /**
+   * Vérifier si l'utilisateur peut demander un remboursement
+   */
+  checkCanRequestRefund(): void {
+    // L'utilisateur peut demander un remboursement si :
+    // 1. Il s'est désinscrit de l'événement (via unsubscribeConfirmed OU userHasUnsubscribed)
+    // 2. L'événement était payant
+    // 3. Il n'a pas encore demandé de remboursement
+    const hasUnsubscribed = this.unsubscribeConfirmed || this.userHasUnsubscribed;
+    this.canRequestRefund = hasUnsubscribed && this.evenement?.isPayant && !this.hasRequestedRefund;
+  }
+
+  /**
+   * Vérifier si l'utilisateur a déjà demandé un remboursement pour cet événement
+   */
+  checkRefundRequestStatus(): void {
+    if (this.userId && this.evenement?.id) {
+      const refundKey = `refund_requested_${this.userId}_${this.evenement.id}`;
+      this.hasRequestedRefund = localStorage.getItem(refundKey) === 'true';
+
+      // Vérifier si l'utilisateur s'est désinscrit de cet événement
+      const unsubscribeKey = `unsubscribed_${this.userId}_${this.evenement.id}`;
+      this.userHasUnsubscribed = localStorage.getItem(unsubscribeKey) === 'true';
+    }
   }
 
   private showToastMessage(message: string): void {

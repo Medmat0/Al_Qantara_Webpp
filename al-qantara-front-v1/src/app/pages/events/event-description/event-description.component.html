@@ -212,3 +212,12 @@
   <i class="fas fa-check-circle"></i>
   <span>{{ toastMessage }}</span>
 </div>
+
+<!-- Modal de remboursement -->
+<app-remboursement-modal
+  *ngIf="showRemboursementModal"
+  [isVisible]="showRemboursementModal"
+  [evenement]="evenement"
+  (close)="closeRemboursementModal()"
+  (success)="onRemboursementSuccess($event)">
+</app-remboursement-modal>
