@@ -1,0 +1,27 @@
+<div class="modal-overlay" (click)="onOverlayClick($event)">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h2 class="modal-title">Rejoindre ?</h2>
+    </div>
+
+    <div class="modal-content">
+      <p class="modal-message">
+        Vous devez être membre pour interagir</p>
+    </div>
+
+    <div class="modal-actions">
+      <button type="button" class="btn-secondary" (click)="onCancel()">
+        Annuler
+      </button>
+      <button type="button" class="btn-primary" (click)="onAccept()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+          <polyline points="10,17 15,12 10,7"/>
+          <line x1="15" y1="12" x2="3" y2="12"/>
+        </svg>
+        Rejoindre
+      </button>
+    </div>
+  </div>
+</div>
+
