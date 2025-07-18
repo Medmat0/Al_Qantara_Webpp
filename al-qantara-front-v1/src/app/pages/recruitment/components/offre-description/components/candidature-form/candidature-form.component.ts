@@ -1,5 +1,5 @@
 import { Component, inject, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
-import { NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf, NgClass } from '@angular/common';
 import { FormBuilder, FormGroup, FormArray, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../../../../member/services/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -7,7 +7,7 @@ import { CandidatureService } from '../../../../../../member/services/candidatur
 
 @Component({
   selector: 'app-candidature-form',
-  imports: [NgFor, NgIf, FormsModule, ReactiveFormsModule],
+  imports: [NgFor, NgIf, NgClass, FormsModule, ReactiveFormsModule],
   templateUrl: './candidature-form.component.html',
   styleUrl: './candidature-form.component.scss',
   standalone: true
@@ -21,7 +21,11 @@ export class CandidatureFormComponent implements OnInit, OnChanges {
 
   isAuthenticated = false;
   loadingCV = false;
+  loadingSubmit = false;
   hasAlreadyApplied = false;
+  showNotification = false;
+  notificationMessage = '';
+  notificationType: 'success' | 'error' | 'warning' | 'info' = 'info';
 
   constructor(private router: Router) {
     this.authService.authStatus$.subscribe((status) => {
@@ -55,8 +59,10 @@ export class CandidatureFormComponent implements OnInit, OnChanges {
 
   checkAuthentication(): boolean {
     if (!this.isAuthenticated) {
-      confirm('Vous devez être connecté pour envoyer une candidature');
-      this.router.navigate(['auth/login']);
+      this.showCustomNotification('Vous devez être connecté pour envoyer une candidature', 'warning');
+      setTimeout(() => {
+        this.router.navigate(['auth/login']);
+      }, 2000);
       return false;
     }
     return true;
@@ -108,11 +114,12 @@ export class CandidatureFormComponent implements OnInit, OnChanges {
       return;
     }
     if (!this.selectedCVFile) {
-      alert('Veuillez charger un fichier CV avant d’envoyer votre candidature.');
+      this.showCustomNotification('Veuillez charger un fichier CV avant d\'envoyer votre candidature.', 'warning');
       return;
     }
     if (this.checkAuthentication()) {
       const candidature = this.candidatureForm.value;
+      this.loadingSubmit = true; // Commencer le chargement
 
       this.candidatureService.addCandidature(
         this.offre.id,
@@ -122,14 +129,17 @@ export class CandidatureFormComponent implements OnInit, OnChanges {
         candidature.motivation
       ).subscribe({
         next: (response) => {
+          this.showCustomNotification('Votre candidature a été envoyée avec succès ! Nous vous contacterons bientôt.', 'success');
           this.candidatureForm.reset();
           this.experiences.clear();
           this.competences.clear();
           this.selectedCVFile = null;
           this.hasAlreadyApplied = true; // Affiche le message après envoi
+          this.loadingSubmit = false; // Arrêter le chargement
         },
         error: (error) => {
-          alert('Une erreur est survenue lors de l’envoi de votre candidature. Veuillez réessayer plus tard.');
+          this.showCustomNotification('Une erreur est survenue lors de l\'envoi de votre candidature. Veuillez réessayer plus tard.', 'error');
+          this.loadingSubmit = false; // Arrêter le chargement même en cas d'erreur
         }
       });
 
@@ -187,5 +197,21 @@ export class CandidatureFormComponent implements OnInit, OnChanges {
         this.loadingCV = false;
       }
     });
+  }
+
+  showCustomNotification(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') {
+    this.notificationMessage = message;
+    this.notificationType = type;
+    this.showNotification = true;
+    
+    // Fermer automatiquement après 5 secondes
+    setTimeout(() => {
+      this.closeNotification();
+    }, 5000);
+  }
+
+  closeNotification() {
+    this.showNotification = false;
+    this.notificationMessage = '';
   }
 }

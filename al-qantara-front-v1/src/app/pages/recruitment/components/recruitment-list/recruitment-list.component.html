@@ -33,22 +33,22 @@
     </div>
 
     <div class="filter-chips">
-      <div class="chip active" (click)="filterByContract('all')">
+      <div class="chip" [class.active]="isFilterActive('all')" (click)="filterByContract('all')">
         <span class="chip-text">Tous</span>
       </div>
-      <div class="chip" (click)="filterByContract('CDI')">
+      <div class="chip" [class.active]="isFilterActive('CDI')" (click)="filterByContract('CDI')">
         <span class="chip-text">CDI</span>
       </div>
-      <div class="chip" (click)="filterByContract('CDD')">
+      <div class="chip" [class.active]="isFilterActive('CDD')" (click)="filterByContract('CDD')">
         <span class="chip-text">CDD</span>
       </div>
-      <div class="chip" (click)="filterByContract('Stage')">
+      <div class="chip" [class.active]="isFilterActive('Stage')" (click)="filterByContract('Stage')">
         <span class="chip-text">Stage</span>
       </div>
-      <div class="chip" (click)="filterByContract('Freelance')">
+      <div class="chip" [class.active]="isFilterActive('Freelance')" (click)="filterByContract('Freelance')">
         <span class="chip-text">Freelance</span>
       </div>
-      <div class="chip" (click)="filterByContract('Bénévolat')">
+      <div class="chip" [class.active]="isFilterActive('BENEVOLAT')" (click)="filterByContract('BENEVOLAT')">
         <span class="chip-text">Bénévolat</span>
       </div>
     </div>

@@ -95,6 +95,7 @@ export class EventModalComponent implements OnChanges {
   constructor(private sanitizer: DomSanitizer) {
     if (this.event && !Array.isArray(this.event.comments)) {
       this.event.comments = [];
+
     }
 
     // Gestion de l'authentification
@@ -212,20 +213,27 @@ export class EventModalComponent implements OnChanges {
 
   onAddComment(evenement: any, commentText: string) {
     if (!this.checkAuthentication()) return;
-
-    this.evenementService.addCommentToEvenement(evenement.id, commentText).subscribe({
-      next: (res) => {
-        console.log('Commentaire ajouté avec succès', res);
-        // Ajoute le commentaire à l'événement localement
-        if (!Array.isArray(evenement.comments)) {
-          evenement.comments = [];
-        }
-        evenement.comments.push(res.commentaire);
+    const { nom = '', prenom = '' } = JSON.parse(<string>localStorage.getItem('utilisateur'));
+    // Création d'un faux commentaire local
+    const fakeComment = {
+      id: Date.now(),
+      contenu: commentText,
+      utilisateur: {
+        id: this.userId,
+        nom: nom || '',
+        prenom: prenom || ''
       },
-      error: (err) => {
-        console.error('Erreur lors de l\'ajout du commentaire', err);
-      }
-    });
+      dateCommentaire: new Date().toISOString()
+    };
+
+    if (!Array.isArray(evenement.comments)) {
+      evenement.comments = [];
+    }
+    evenement.comments.push(fakeComment);
+
+    this.comment.emit(commentText);
+
+    // Optionnel : tu peux ensuite remplacer ce faux commentaire par la vraie réponse du backend quand elle arrive
   }
 
   handleCommentSubmit() {
@@ -299,50 +307,41 @@ export class EventModalComponent implements OnChanges {
    */
   toggleLike() {
     if (!this.checkAuthentication()) return;
+    this.like.emit(this.event);
 
     if (this.likesLoading) return;
 
     this.likesLoading = true;
 
-    this.evenementService.likeEvenement(this.event.id).subscribe({
-      next: (response) => {
-        console.log('Like toggled successfully:', response);
+    // Gestion du like uniquement en local (pas d'appel backend)
+    if (this.userHasLiked) {
+      // L'utilisateur avait déjà liké, donc on retire le like
+      this.nombreLikes = Math.max(0, this.nombreLikes - 1);
+      this.userHasLiked = false;
 
-        // Mettre à jour l'état local en fonction de l'action effectuée
-        if (this.userHasLiked) {
-          // L'utilisateur avait déjà liké, donc on retire le like
-          this.nombreLikes = Math.max(0, this.nombreLikes - 1);
-          this.userHasLiked = false;
-
-          // Retirer le like de la liste locale
-          if (this.event.likes) {
-            this.event.likes = this.event.likes.filter((like: any) => like.utilisateurId !== this.userId);
-          }
-        } else {
-          // L'utilisateur n'avait pas liké, donc on ajoute le like
-          this.nombreLikes = this.nombreLikes + 1;
-          this.userHasLiked = true;
-
-          // Ajouter le like à la liste locale
-          if (!this.event.likes) {
-            this.event.likes = [];
-          }
-          this.event.likes.push({
-            id: Date.now(), // ID temporaire
-            utilisateurId: this.userId
-          });
-        }
-
-        // Mettre à jour le nombreLikes dans l'objet event
-        this.event.nombreLikes = this.nombreLikes;
-
-        this.likesLoading = false;
-      },
-      error: (error) => {
-        console.error('Erreur lors du toggle du like:', error);
-        this.likesLoading = false;
+      // Retirer le like de la liste locale
+      if (this.event.likes) {
+        this.event.likes = this.event.likes.filter((like: any) => like.utilisateurId !== this.userId);
       }
-    });
+    } else {
+      // L'utilisateur n'avait pas liké, donc on ajoute le like
+      this.nombreLikes = this.nombreLikes + 1;
+      this.userHasLiked = true;
+
+      // Ajouter le like à la liste locale
+      if (!this.event.likes) {
+        this.event.likes = [];
+      }
+      this.event.likes.push({
+        id: Date.now(), // ID temporaire
+        utilisateurId: this.userId
+      });
+    }
+
+    // Mettre à jour le nombreLikes dans l'objet event
+    this.event.nombreLikes = this.nombreLikes;
+
+    this.likesLoading = false;
   }
 
   closeCommunityResearchPopup(communityID: number | null = null) {
