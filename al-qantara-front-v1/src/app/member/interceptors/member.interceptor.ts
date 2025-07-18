@@ -4,10 +4,11 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { ModalService } from '../services/banishedmodal.service';
+import {JoinModalService} from '../services/joinmodal.service';
 
 @Injectable()
 export class MemberInterceptor implements HttpInterceptor {
-  constructor(private router: Router, private modalService: ModalService) {}
+  constructor(private router: Router, private modalService: ModalService, private joinModalService: JoinModalService) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(req).pipe(
@@ -19,14 +20,9 @@ export class MemberInterceptor implements HttpInterceptor {
           error.error &&
           error.error.message === "Vous n'êtes pas membre de cette communauté, requête impossible"
         ) {
-          // Extraction de l'id de la communauté depuis l'URL
           const match = req.url.match(/communities\/(\d+)/);
-          if (match && match[1]) {
-            const communityId = match[1];
-            if (confirm('Vous devez être membre de cette communauté pour y accéder. Voulez-vous rejoindre la communauté ?')) {
-              this.router.navigate(['/communities', communityId]);
-            }
-          }
+          const communityId = match ? match[1] : null;
+          this.joinModalService.openJoinModal(communityId); // Passe l'id au service
         }
 
         if (

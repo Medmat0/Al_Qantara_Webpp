@@ -6,7 +6,7 @@
           <path d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z" />
         </svg>
       </svg>
-      <h2 style="cursor:pointer" (click)="navigateTo('/')">Al&nbsp;Qantara</h2>
+      <h2>Al&nbsp;Qantara</h2>
     </div>
 
     <!-- Bouton hamburger pour mobile -->
@@ -19,24 +19,15 @@
     <!-- Conteneur principal du menu -->
     <div class="nav-container" [class.active]="isMenuOpen">
       <ul class="nav-links">
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle">Contenus</a>
-          <ul class="dropdown-menu">
-            <li><a (click)="navigateTo('/revues')">Revues</a></li>
-            <li><a (click)="navigateTo('/articles')">Articles</a></li>
-          </ul>
-        </li>
-        <li><a (click)="navigateTo('/events')">Événements</a></li>
-        <li class="dropdown">
-          <a href="#">Réseau</a>
-          <ul class="dropdown-menu">
-            <li><a (click)="navigateTo('/recruitment')">Nous rejoindre</a></li>
-            <li><a (click)="navigateTo('/communities')">Nos Communautés</a></li>
-            <li><a (click)="navigateTo('/annuaire')">Annuaire</a></li>
-          </ul>
-        </li>
-        <li><a (click)="navigateTo('/decouvertes')">Découvertes</a></li>
+        <li><a (click)="navigateTo('/')">Accueil</a></li>
+        <li><a (click)="navigateTo('/revues')">Revues</a></li>
+        <li><a (click)="navigateTo('/articles')">Articles</a></li>
         <li><a (click)="navigateTo('/contacts')">Nous&nbsp;Contacter</a></li>
+        <li><a (click)="navigateTo('/events')">Événements</a></li>
+        <li><a (click)="navigateTo('/recruitment')">Nous rejoindre</a></li>
+        <li><a (click)="navigateTo('/communities')">Nos Communautés</a></li>
+        <li><a (click)="navigateTo('/annuaire')">Annuaire</a></li>
+        <li><a (click)="navigateTo('/decouvertes')">Découvertes</a></li>
       </ul>
 
       <div class="ConnectingOptions">
