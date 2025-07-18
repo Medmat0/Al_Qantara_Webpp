@@ -4,6 +4,7 @@ import {Router} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
 import {Evenement} from '../../member/models/evenement';
 import {catchError, Observable, tap, throwError} from 'rxjs';
+import { CloudinaryService } from '../../member/services/cloudinary.service';
 
 
 @Injectable({
@@ -14,7 +15,8 @@ export class AdminEvenementService {
   errorMessage= '';
   constructor(
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private cloudinaryService: CloudinaryService
   ) {}
 
   addEvenement(evenement: Evenement): Observable<any> {
@@ -136,5 +138,16 @@ export class AdminEvenementService {
 
   }
 
+  // Upload d'images via Cloudinary
+  async uploadImages(files: File[]): Promise<string[]> {
+    if (!files || files.length === 0) return [];
+    return await this.cloudinaryService.uploadFiles(files);
+  }
+
+  // Upload d'une vidéo via Cloudinary
+  async uploadVideo(file: File): Promise<string | undefined> {
+    if (!file) return undefined;
+    return await this.cloudinaryService.uploadFile(file);
+  }
 
 }
