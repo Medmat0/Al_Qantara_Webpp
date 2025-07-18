@@ -34,13 +34,9 @@ const registerUser = asyncHandler(async (req, res) => {
       motDePasse: hashedPassword,
       telephone,
       role: userRole,
-      dateInscription: new Date(),
-      statut: STATUS.ACTIF,
+      statut: STATUS.EN_ATTENTE_VERIFICATION,
     },
   });
-
-  if (!user)
-    return res.status(400).json({ message: "Erreur lors de l'inscription" });
 
   const plainVerifyToken = crypto.randomBytes(64).toString("hex");
   const hashedToken = crypto.createHash("sha256").update(plainVerifyToken).digest("hex");
@@ -49,20 +45,37 @@ const registerUser = asyncHandler(async (req, res) => {
     where: { email: user.email },
     data: { emailVerificationToken: hashedToken },
   });
-  // Lien de vérification qui pointe vers la page Angular
-  const verifyLink = `${BASE_URL}/auth/verify-email/${plainVerifyToken}`;
 
+  const verifyLink = `${BASE_URL}/auth/verify-email/${plainVerifyToken}`;
 
   const emailInfo = {
     to: email,
     subject: "Vérification de votre email",
     text: "Veuillez vérifier votre email",
-    html: `<h1>Vérification de l'email</h1>
-           <p>Bonjour ${nom}, cliquez sur le lien ci-dessous pour vérifier votre compte :</p>
-           <a href="${verifyLink}">Vérifier mon email</a>`,
+    html: `
+      <div style="font-family: Arial, sans-serif; background: #f9f9f9; padding: 32px; color: #222;">
+        <div style="max-width: 600px; margin: auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+          <div style="text-align: center; padding: 24px 0;">
+            <img src='https://al-qantara.com/assets/main-icon.jpg' alt='Al Qantara' style='width: 80px; margin-bottom: 16px;' />
+            <h2 style="color: #006699; margin-bottom: 8px;">Bienvenue sur Al Qantara</h2>
+          </div>
+          <div style="padding: 0 32px 24px 32px;">
+            <h3 style="color: #006699;">Vérification de l'email</h3>
+            <p>Bonjour <b>${nom}</b>,</p>
+            <p>Merci de vous être inscrit sur Al Qantara ! Pour activer votre compte, veuillez cliquer sur le bouton ci-dessous :</p>
+            <div style="text-align: center; margin: 24px 0;">
+              <a href="${verifyLink}" style="background: #006699; color: #fff; padding: 12px 32px; border-radius: 4px; text-decoration: none; font-weight: bold;">Vérifier mon email</a>
+            </div>
+            <p style="font-size: 14px; color: #888;">Si le bouton ne fonctionne pas, copiez et collez ce lien dans votre navigateur :<br><span style="word-break: break-all;">${verifyLink}</span></p>
+            <hr style="margin: 32px 0; border: none; border-top: 1px solid #eee;" />
+            <p style="font-size: 13px; color: #888; text-align: center;">L'équipe Al Qantara<br>contact@al-qantara.com</p>
+          </div>
+        </div>
+      </div>
+    `,
   };
   const value = await sendEmailToUser(emailInfo);
-  console.log(value)
+  console.log(value);
 
   res.status(201).json({ message: "Inscription réussie", data: user });
 })

@@ -362,13 +362,18 @@ const sendZoomReunionService = async (req) => {
     await sendEmailToUser({
         to: candidateEmail,
         subject: `Entretien avec AlQantara`,
-        html: `
-      <h2>Bonjour ${candidateName},</h2>
-      <p>Votre entretien  pour le poste de ${candidature.offre.titre} est prévu le <strong>${startTime.toLocaleString('fr-FR', { timeZone: 'UTC' })}</strong>.</p>
-      <p>Voici le lien Zoom pour rejoindre l'appel :<br>
-      <p><a href="${zoomMeeting.join_url}">${zoomMeeting.join_url}</a></p>
-      <p><a href="${googleCalendarUrl}" target="_blank">Ajouter à Google Agenda</a></p>
-    `,
+        html: getNewsletterEmailTemplate({
+          title: `Convocation à un entretien Zoom`,
+          subtitle: `Bonjour ${candidateName},`,
+          content: `
+            <p>Votre entretien pour le poste de <strong>${candidature.offre.titre}</strong> est prévu le <strong>${startTime.toLocaleString('fr-FR', { timeZone: 'UTC' })}</strong>.</p>
+            <p>Voici le lien Zoom pour rejoindre l'appel :<br>
+            <a href="${zoomMeeting.join_url}">${zoomMeeting.join_url}</a></p>
+            <p><a href="${googleCalendarUrl}" target="_blank">Ajouter à Google Agenda</a></p>
+            <p>Cordialement,<br>L'équipe Al Qantara</p>
+          `,
+          unsubscribeLink: `${process.env.FRONT_URL}/newsletter/desinscription`
+        }),
     });
 
     await sendEmailToUser({
@@ -442,15 +447,16 @@ const acceptCandidatureService = async (req) => {
     await sendEmailToUser({
         to: acceptedEmail,
         subject: `Candidature acceptée pour le poste de ${candidature.offre.titre}`,
-        html: `
-            <h2>Bonjour ${acceptedName},</h2>
-            <p>Nous avons le plaisir de vous informer que votre candidature pour le poste de ${candidature.offre.titre} a été acceptée.</p>
+        html: getNewsletterEmailTemplate({
+          title: `Candidature acceptée !`,
+          subtitle: `Bonjour ${acceptedName},`,
+          content: `
+            <p>Nous avons le plaisir de vous informer que votre candidature pour le poste de <strong>${candidature.offre.titre}</strong> a été acceptée.</p>
             <p>Nous vous contacterons prochainement pour les démarches qui vont suivre.</p>
-            
-            <p>Cordialement,</p>
-            <p>L'équipe AlQantara</p>
-                
-        `,
+            <p>Cordialement,<br>L'équipe Al Qantara</p>
+          `,
+          unsubscribeLink: `${process.env.FRONT_URL}/newsletter/desinscription` // ou lien spécifique si besoin
+        }),
     });
 
     // Accepter la candidature sélectionnée
@@ -512,16 +518,17 @@ const refuseCandidatureService = async (req) => {
     await sendEmailToUser({
         to: refusedEmail,
         subject: `Candidature refusée pour le poste de ${candidature.offre.titre}`,
-        html: `
-            <h2>Bonjour ${refusedName},</h2>
-            <p>Nous vous remercions pour votre candidature au poste de ${candidature.offre.titre}.</p>
+        html: getNewsletterEmailTemplate({
+          title: `Candidature refusée`,
+          subtitle: `Bonjour ${refusedName},`,
+          content: `
+            <p>Nous vous remercions pour votre candidature au poste de <strong>${candidature.offre.titre}</strong>.</p>
             <p>Après examen, nous avons le regret de vous informer que nous ne pouvons pas retenir votre candidature pour ce poste.</p>
             <p>Nous vous souhaitons bonne chance dans vos recherches futures.</p>
-            
-            <p>Cordialement,</p>
-            <p>L'équipe AlQantara</p>
-                
-        `,
+            <p>Cordialement,<br>L'équipe Al Qantara</p>
+          `,
+          unsubscribeLink: `${process.env.FRONT_URL}/newsletter/desinscription`
+        }),
     });
 
     await prisma.candidature.update({
@@ -536,6 +543,35 @@ const refuseCandidatureService = async (req) => {
 
 }
 
+function getNewsletterEmailTemplate({ title, subtitle, content, unsubscribeLink }) {
+  return `
+    <div style="font-family: 'Cormorant Garamond', serif; max-width: 600px; margin: 0 auto; padding: 20px; background: linear-gradient(135deg, #9e2e2c 0%, #b8363f 100%); border-radius: 15px;">
+      <div style="background: white; padding: 40px; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
+        <div style="text-align: center; margin-bottom: 30px;">
+          <h1 style="color: #9e2e2c; font-size: 2.2rem; margin: 0; font-weight: 700;">Al Qantara</h1>
+          <p style="color: #666; font-size: 1.1rem; margin: 10px 0 0 0;">Association Culturelle</p>
+        </div>
+        <div style="text-align: center; margin-bottom: 30px;">
+          <h2 style="color: #2c3e50; font-size: 1.8rem; margin: 0;">${title}</h2>
+          <div style="width: 60px; height: 3px; background: linear-gradient(90deg, #9e2e2c, #b8363f); margin: 15px auto; border-radius: 2px;"></div>
+        </div>
+        <div style="margin: 30px 0;">
+          ${subtitle ? `<p style='color: #555; font-size: 1.1rem; line-height: 1.6; margin-bottom: 20px;'>${subtitle}</p>` : ''}
+          ${content}
+        </div>
+        <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee;">
+          <p style="color: #999; font-size: 0.85rem; margin: 0;">
+            Vous recevez cet email suite à une action sur la plateforme Al Qantara.
+          </p>
+          ${unsubscribeLink ? `<p style="color: #999; font-size: 0.85rem; margin: 5px 0 0 0;"><a href="${unsubscribeLink}" style="color: #9e2e2c; text-decoration: none;">Se désabonner</a></p>` : ''}
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+          <p style="color: #666; font-size: 0.8rem; margin: 0;">© 2024 Al Qantara. Tous droits réservés.</p>
+        </div>
+      </div>
+    </div>
+  `;
+}
 
 export {
     addCandidatureService,
