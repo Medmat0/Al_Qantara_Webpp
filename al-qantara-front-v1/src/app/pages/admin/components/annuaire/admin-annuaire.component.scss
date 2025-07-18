@@ -1,11 +1,11 @@
 // --- Variables ---
-$primary: #d97706; // Orange/ambre marocain
+$primary: #d90606; // Orange/ambre marocain
 $success: #10b981;
-$warning: #f59e0b;
+$warning: #f50b0b;
 $danger: #ef4444;
-$info: #0891b2;
+$info: #b20808;
 $accent: #dc2626; // Rouge marocain
-$gold: #f59e0b; // Or marocain
+$gold: #f50b0b; // Or marocain
 $bg-glass: rgba(255, 255, 255, 0.8);
 $bg-glass-dark: rgba(255, 255, 255, 0.95);
 $border-radius: 1rem;
@@ -98,7 +98,7 @@ $breakpoint-mobile: 480px;
     }
 
     .btn-add-association {
-      background: linear-gradient(135deg, $primary 0%, #1d4ed8 100%);
+      background: linear-gradient(135deg, $primary 0%, #d81d1d 100%);
       color: white;
       border: none;
       border-radius: $border-radius;
@@ -114,7 +114,7 @@ $breakpoint-mobile: 480px;
       text-decoration: none;
 
       &:hover {
-        background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+        background: linear-gradient(135deg, #d81d1d 0%, #af1e1e 100%);
         box-shadow: $shadow-hover;
         transform: translateY(-2px);
       }
@@ -154,7 +154,7 @@ $breakpoint-mobile: 480px;
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, $primary, #1d4ed8);
+    background: linear-gradient(90deg, $primary, #d81d1d);
   }
 
   &.success::before {
@@ -166,7 +166,7 @@ $breakpoint-mobile: 480px;
   }
 
   &.info::before {
-    background: linear-gradient(90deg, $info, #0891b2);
+    background: linear-gradient(90deg, $info, #b22208);
   }
 
   &:hover {
@@ -182,7 +182,7 @@ $breakpoint-mobile: 480px;
     .stat-icon {
       width: 3rem;
       height: 3rem;
-      background: linear-gradient(135deg, $primary, #1d4ed8);
+      background: linear-gradient(135deg, $primary, #d81d1d);
       border-radius: 0.75rem;
       display: flex;
       align-items: center;
@@ -212,13 +212,13 @@ $breakpoint-mobile: 480px;
     .stat-number {
       font-size: 2.25rem;
       font-weight: 800;
-      color: #1e293b;
+      color: #3b1e1e;
       line-height: 1;
       margin-bottom: 0.25rem;
     }
 
     .stat-label {
-      color: #64748b;
+      color: #8b6464;
       font-size: 1rem;
       font-weight: 500;
     }
@@ -280,7 +280,7 @@ $breakpoint-mobile: 480px;
 
     .filter-btn {
       background: $bg-glass;
-      color: #475569;
+      color: #694747;
       border: 1px solid rgba(255, 255, 255, 0.3);
       border-radius: $border-radius;
       padding: 0.625rem 1rem;
@@ -319,7 +319,7 @@ $breakpoint-mobile: 480px;
   .loader-circle {
     width: 3rem;
     height: 3rem;
-    border: 3px solid rgba(37, 99, 235, 0.2);
+    border: 3px solid rgba(235, 37, 37, 0.2);
     border-top: 3px solid $primary;
     border-radius: 50%;
     animation: spin 1s linear infinite;
@@ -405,7 +405,7 @@ $breakpoint-mobile: 480px;
       }
 
       .secteur-badge {
-        background: linear-gradient(135deg, $primary, #1d4ed8);
+        background: linear-gradient(135deg, $primary, #d81d1d);
         color: white;
         border-radius: 1rem;
         padding: 0.25rem 0.75rem;
@@ -680,11 +680,11 @@ $breakpoint-mobile: 480px;
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, $primary, #1d4ed8);
+      background: linear-gradient(135deg, $primary, #d81d1d);
       color: white;
 
       &:hover {
-        background: linear-gradient(135deg, #1d4ed8, #1e40af);
+        background: linear-gradient(135deg, #d81d1d, #af1e1e);
         transform: translateY(-2px);
         box-shadow: $shadow-hover;
       }
@@ -833,7 +833,7 @@ $breakpoint-mobile: 480px;
       transition: all $transition;
 
       &:hover:not(:disabled) {
-        background: #1d4ed8;
+        background: #d81d1d;
         box-shadow: $shadow;
       }
 
