@@ -32,6 +32,15 @@ export const checkAuthStatus = asyncHandler(async (req, res) => {
         if (!user) {
             return res.status(200).json({ authenticated: false, message: "User not found" });
         }
+
+        // Vérification du statut d'activité de l'utilisateur
+        if (user.statut === "INACTIF") {
+            return res.status(403).json({
+                authenticated: false,
+                message: "Votre compte est inactif. Veuillez contacter l'administrateur pour réactiver votre compte."
+            });
+        }
+
         res.status(200).json({
             authenticated: true,
             utilisateur: user,

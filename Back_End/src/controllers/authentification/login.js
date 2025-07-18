@@ -28,6 +28,13 @@ const login = asyncHandler(async (req, res, next) => {
   const matchedPasswords = await comparePassword(password, utilisateur.motDePasse);
   if (!matchedPasswords) return res.status(400).json({ message: "Wrong email or password" });
 
+  // Vérification du statut d'activité de l'utilisateur
+  if (utilisateur.statut === "INACTIF") {
+    return res.status(403).json({
+      message: "Votre compte est inactif. Veuillez contacter l'administrateur pour réactiver votre compte."
+    });
+  }
+
   // Vérification de l'email
   if (!utilisateur.emailVerified) {
     const plainVerfiyToken = crypto.randomBytes(64).toString("hex");

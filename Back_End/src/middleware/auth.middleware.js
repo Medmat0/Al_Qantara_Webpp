@@ -25,12 +25,20 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
         nom: true,
         prenom: true,
         role: true,
+        statut: true,
         emailVerified: true
       }
     });
 
     if (!user) {
       return res.status(403).json({ message: "User not found" });
+    }
+
+    // Vérification du statut d'activité de l'utilisateur
+    if (user.statut === "INACTIF") {
+      return res.status(403).json({
+        message: "Votre compte est inactif. Veuillez contacter l'administrateur pour réactiver votre compte."
+      });
     }
 
     req.user = user;
