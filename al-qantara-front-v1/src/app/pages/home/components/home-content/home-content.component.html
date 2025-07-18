@@ -40,8 +40,8 @@
             </div>
           </div>
           <div class="card-content">
-            <h3 class="card-title">{{ truncateText(article.titre, 60) }}</h3>
-            <p class="card-description">{{ truncateText(getArticleDescription(article), 120) }}</p>
+            <h3 class="card-title">{{ article.titre }}</h3>
+            <p class="card-description">{{ truncateText(getArticleDescription(article), 190) }}</p>
             <div class="card-meta">
               <span class="card-date">{{ formatDate(article.dateSoumission) }}</span>
               <a [routerLink]="['/articles', article.id]" class="card-link">Lire la suite</a>
@@ -134,12 +134,10 @@
         </button>
 
         <div id="revues-carousel" class="carousel revues-carousel">
-          <div *ngFor="let revue of latestRevues" class="revue-card">
-            <div class="revue-cover">
+          <div *ngFor="let revue of latestRevues; let i = index" class="revue-card">            <div class="revue-cover">
               <img [src]="getRevueImage(revue)" [alt]="revue.titre">
               <div class="revue-overlay">
-                <span class="revue-badge">Nouvelle revue</span>
-              </div>
+                <span class="revue-badge" *ngIf="i === 0">Nouvelle revue</span>              </div>
             </div>
             <div class="revue-content">
               <h3 class="revue-title">{{ truncateText(revue.titre, 40) }}</h3>
