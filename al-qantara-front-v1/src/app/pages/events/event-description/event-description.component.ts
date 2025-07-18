@@ -84,6 +84,24 @@ export class EventDescriptionComponent {
   showRatingModal = false;
   userHasRated = false;
 
+  // Remboursement
+  canRequestRefund: boolean = false;
+  hasRequestedRefund: boolean = false;
+  showRemboursementModal: boolean = false;
+
+  openRemboursementModal() {
+    this.showRemboursementModal = true;
+  }
+
+  closeRemboursementModal() {
+    this.showRemboursementModal = false;
+  }
+
+  onRemboursementSuccess(event: any) {
+    this.hasRequestedRefund = true;
+    this.showRemboursementModal = false;
+  }
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -116,6 +134,9 @@ export class EventDescriptionComponent {
             this.nombreLikes = this.evenement.nombreLikes || 0;
             this.checkIfUserLiked();
             this.checkIfUserHasRated();
+            // Gestion remboursement
+            this.canRequestRefund = !!this.evenement.canRequestRefund;
+            this.hasRequestedRefund = !!this.evenement.hasRequestedRefund;
             if (this.userId && Array.isArray(this.evenement.likes)) {
               this.hasLikedEvenement = this.evenement.likes.some((like: LikeEvenement) => like.utilisateurId === this.userId);
             } else {
