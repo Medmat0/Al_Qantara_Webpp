@@ -44,7 +44,7 @@ nav {
   border-bottom: 1px solid #e0e0e0;
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 10000; /* Augmentation du z-index du navbar pour qu'il reste toujours au-dessus */
 }
 
 .hamburger {
@@ -131,7 +131,7 @@ nav {
       visibility: hidden;
       transform: translateY(-10px);
       transition: all 0.3s ease;
-      z-index: 1000;
+      z-index: 9999; /* Augmentation du z-index pour passer au-dessus de la carte */
       list-style: none;
       padding: 8px 0;
       margin: 0;
@@ -310,7 +310,7 @@ nav {
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     min-width: 180px;
-    z-index: 1000;
+    z-index: 9999; /* Augmentation du z-index pour passer au-dessus de la carte */
 
     ul {
       list-style: none;
