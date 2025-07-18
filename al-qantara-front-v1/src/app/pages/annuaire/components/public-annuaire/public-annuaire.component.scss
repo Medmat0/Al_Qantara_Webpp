@@ -1,13 +1,13 @@
 // --- Variables ---
-$primary: #d97706; // Orange/ambre marocain
+$primary: #d90606; // Orange/ambre marocain
 $success: #10b981;
 $warning: #f59e0b;
 $danger: #ef4444;
-$info: #0891b2;
+$info: #b22708;
 $accent: #dc2626; // Rouge marocain
-$gold: #f59e0b; // Or marocain
+$gold: #f5420b; // Or marocain
 $bg-glass: rgba(255, 255, 255, 0.9);
-$bg-gradient: linear-gradient(135deg, #fef7ed 0%, #fed7aa 100%);
+$bg-gradient: linear-gradient(135deg, #fac7c7 0%,   #850f0f 100%);
 $border-radius: 1rem;
 $shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 $shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.15);
@@ -138,7 +138,7 @@ $breakpoint-mobile: 480px;
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, $primary, #1d4ed8);
+    background: linear-gradient(90deg, $primary, #d8201d);
   }
 
   &.success::before {
@@ -166,7 +166,7 @@ $breakpoint-mobile: 480px;
     .stat-icon {
       width: 3.5rem;
       height: 3.5rem;
-      background: linear-gradient(135deg, $primary, #1d4ed8);
+      background: linear-gradient(135deg, $primary, #d81d1d);
       border-radius: 1rem;
       display: flex;
       align-items: center;
@@ -426,7 +426,7 @@ $breakpoint-mobile: 480px;
   .loader-circle {
     width: 3.5rem;
     height: 3.5rem;
-    border: 4px solid rgba(37, 99, 235, 0.2);
+    border: 4px solid rgba(235, 37, 37, 0.2);
     border-top: 4px solid $primary;
     border-radius: 50%;
     animation: spin 1s linear infinite;
@@ -566,7 +566,7 @@ $breakpoint-mobile: 480px;
 
       .header-badges {
         .secteur-badge {
-          background: linear-gradient(135deg, $primary, #1d4ed8);
+          background: linear-gradient(135deg, $primary, #d8451d);
           color: white;
           border-radius: 2rem;
           padding: 0.5rem 1rem;
@@ -576,7 +576,7 @@ $breakpoint-mobile: 480px;
           letter-spacing: 0.025em;
 
           &.secteur-autre {
-            background: linear-gradient(135deg, #64748b, #475569);
+            background: linear-gradient(135deg, #8b6f64, #694b47);
           }
         }
       }
@@ -674,7 +674,7 @@ $breakpoint-mobile: 480px;
           }
 
           &.linkedin:hover {
-            background: #0077b5;
+            background: #b50c00;
             color: white;
           }
         }
@@ -705,7 +705,7 @@ $breakpoint-mobile: 480px;
         color: white;
 
         &:hover {
-          background: #1d4ed8;
+          background: #d84f1d;
           transform: translateY(-2px);
           box-shadow: $shadow;
         }
