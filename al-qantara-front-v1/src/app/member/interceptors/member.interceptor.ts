@@ -36,8 +36,25 @@ export class MemberInterceptor implements HttpInterceptor {
           // Extraction de l'id de la communauté depuis l'URL
           const match = req.url.match(/communities\/(\d+)/);
           if (match && match[1]) {
-            alert("Vous êtes banni de cette communauté et ne pouvez pas effectuer cette action.");
-
+            // Utilisation d'une notification personnalisée
+            const notificationDiv = document.createElement('div');
+            notificationDiv.className = 'custom-notification notification-warning';
+            notificationDiv.style.position = 'fixed';
+            notificationDiv.style.top = '32px';
+            notificationDiv.style.right = '32px';
+            notificationDiv.style.zIndex = '9999';
+            notificationDiv.style.minWidth = '320px';
+            notificationDiv.innerHTML = `
+              <div class="notification-content">
+                <div class="notification-icon">⚠️</div>
+                <div class="notification-message">Vous êtes banni de cette communauté et ne pouvez pas effectuer cette action.</div>
+                <button class="notification-close" style="margin-left:16px; background:none; border:none; font-size:18px; cursor:pointer;" onclick="this.parentElement.parentElement.remove()">&times;</button>
+              </div>
+            `;
+            document.body.appendChild(notificationDiv);
+            setTimeout(() => {
+              notificationDiv.remove();
+            }, 5000);
           }
         }
 

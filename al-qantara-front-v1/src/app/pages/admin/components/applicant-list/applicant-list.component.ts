@@ -48,6 +48,10 @@ export class ApplicantListComponent implements OnInit, OnChanges {
   currentCvUrl: string = '';
   currentApplicantName: string = '';
 
+  showNotification: boolean = false;
+  notificationMessage: string = '';
+  notificationType: 'success' | 'error' | 'warning' | 'info' = 'info';
+
   constructor(
     private recruitmentService: RecruitmentService,
     private datePipe: DatePipe
@@ -60,14 +64,13 @@ export class ApplicantListComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if ((changes['isVisible'] || changes['offerId']) && this.isVisible && this.offerId) {
+    if (this.isVisible && this.offerId) {
       this.loadApplicants();
     }
   }
 
   loadApplicants(): void {
     if (!this.offerId) return;
-
     this.loading = true;
     this.recruitmentService.getApplicantsByOfferId(this.offerId).subscribe({
       next: (response: Applicant[]) => {
@@ -75,6 +78,7 @@ export class ApplicantListComponent implements OnInit, OnChanges {
         this.loading = false;
       },
       error: (error) => {
+        this.showNotificationMessage('Erreur lors de la récupération des candidats.', 'error');
         console.error('Erreur lors de la récupération des candidats:', error);
         this.loading = false;
       }
@@ -84,7 +88,6 @@ export class ApplicantListComponent implements OnInit, OnChanges {
   closeModal(): void {
     this.close.emit();
   }
-
   sortByScore(): void {
     this.sortByScoreAsc = !this.sortByScoreAsc;
     this.applicants.sort((a, b) => {
@@ -102,6 +105,20 @@ export class ApplicantListComponent implements OnInit, OnChanges {
     if (score >= 60) return 'score-light-green';
     if (score > 50) return 'score-yellow';
     return 'score-red';
+  }
+
+  showNotificationMessage(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') {
+    this.notificationMessage = message;
+    this.notificationType = type;
+    this.showNotification = true;
+    setTimeout(() => {
+      this.closeNotification();
+    }, 5000);
+  }
+
+  closeNotification() {
+    this.showNotification = false;
+    this.notificationMessage = '';
   }
 
 
@@ -129,10 +146,11 @@ export class ApplicantListComponent implements OnInit, OnChanges {
     this.recruitmentService.scheduleInterviewZoom(this.offerId, this.meetingApplicantId, dateEntretien).subscribe({
       next: () => {
         this.closeMeetingModal();
-        alert('Réunion planifiée avec succès !');
+        this.showNotificationMessage('Réunion planifiée avec succès !', 'success');
       },
       error: (err) => {
         this.meetingError = 'Erreur lors de la planification de la réunion.';
+        this.showNotificationMessage('Erreur lors de la planification de la réunion.', 'error');
         console.error(err);
       }
     });
@@ -152,7 +170,7 @@ export class ApplicantListComponent implements OnInit, OnChanges {
         }
       },
       error: (error) => {
-        alert('Erreur lors du refus de la candidature.');
+        this.showNotificationMessage('Erreur lors du refus de la candidature.', 'error');
         console.error('Erreur lors du refus:', error);
       }
     });
@@ -168,7 +186,7 @@ export class ApplicantListComponent implements OnInit, OnChanges {
         }
       },
       error: (error) => {
-        alert('Erreur lors de l\'acceptation de la candidature.');
+        this.showNotificationMessage('Erreur lors de l\'acceptation de la candidature.', 'error');
         console.error('Erreur lors de l\'acceptation:', error);
       }
     });
