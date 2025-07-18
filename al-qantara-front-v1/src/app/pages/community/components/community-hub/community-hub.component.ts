@@ -294,6 +294,9 @@ export class CommunityHubComponent implements OnInit {
         this.page = 1;
         this.allLoaded = false;
         this.fetchPosts();
+        if (this.community && typeof this.community.nbrPosts === 'number') {
+          this.community.nbrPosts++;
+        }
         this.isSubmitting = false;
       },
       error: (error) => {
