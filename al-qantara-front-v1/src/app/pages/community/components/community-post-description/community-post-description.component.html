@@ -85,10 +85,24 @@
             <span class="action-text">Commentaires</span>
             <span class="action-count">{{ totalComments }}</span>
         </button>
-        <button class="action-btn delete-btn" *ngIf="canDelete" (click)="deletePost()">
-            <span class="action-icon"></span>
-            <span class="action-text">Supprimer</span>
+        <button class="action-btn delete-btn" *ngIf="canDelete && !showDeleteConfirm" (click)="onDeleteClick()">
+          <span class="action-icon"></span>
+          <span class="action-text">Supprimer</span>
         </button>
+        <div *ngIf="showDeleteConfirm" class="delete-confirm-buttons">
+          <button (click)="confirmDeletePost()" class="action-btn btn-success btn-icon-only">
+            <!-- Croix verte -->
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M5 10L9 14L15 6" stroke="#2ecc40" stroke-width="2" fill="none"/>
+            </svg>
+          </button>
+          <button (click)="cancelDeletePost()" class="action-btn delete-btn btn-icon-only">
+            <!-- Croix rouge -->
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M6 6L14 14M14 6L6 14" stroke="#ff4136" stroke-width="2" fill="none"/>
+            </svg>
+          </button>
+        </div>
     </div>
 
     <!-- Comment Section -->

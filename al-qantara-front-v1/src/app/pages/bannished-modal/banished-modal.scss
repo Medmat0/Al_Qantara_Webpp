@@ -1,0 +1,287 @@
+// Variables - Palette Al-Qantara
+$primary-color: #835353;
+$primary-hover: #6b2e2e;
+$secondary-color: #d59c9c;
+$secondary-hover: #bfa6a6;
+$accent-color: #06b6d4;
+$background-light: #ffffff;
+$background-card: #ffffff;
+$background-section: #f8f9fa;
+$text-primary: #1f2937;
+$text-secondary: #6b7280;
+$text-muted: #9ca3af;
+$border-color: #e5e7eb;
+$border-light: #f3f4f6;
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+$shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+$gradient-primary: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
+
+// Mixins
+@mixin smooth-transition($properties: all, $duration: 0.3s) {
+  transition: $properties $duration cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Animation d'entrée
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  @include flex-center;
+  z-index: 9999;
+  padding: 1rem;
+  animation: fadeIn 0.3s ease-out;
+
+  .modal-container {
+    background: $background-card;
+    border-radius: 24px;
+    padding: 2rem;
+    max-width: 480px;
+    width: 100%;
+    box-shadow: $shadow-xl;
+    position: relative;
+    animation: slideUp 0.4s ease-out;
+    border: 1px solid $border-light;
+
+    .modal-header {
+      text-align: center;
+      margin-bottom: 2rem;
+
+
+      .modal-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: $text-primary;
+        margin: 0;
+        font-family: 'Cormorant Garamond', serif;
+        background: $gradient-primary;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+    }
+
+    .modal-content {
+      text-align: center;
+      margin-bottom: 2rem;
+
+      .modal-message {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: $text-primary;
+        margin: 0 0 1rem 0;
+        line-height: 1.5;
+      }
+
+
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+
+      .btn-secondary,
+      .btn-primary {
+        padding: 0.875rem 2rem;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        @include smooth-transition;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        min-width: 120px;
+        border: none;
+
+        svg {
+          width: 20px;
+          height: 20px;
+        }
+      }
+
+      .btn-secondary {
+        background: $background-section;
+        color: $text-secondary;
+        border: 1px solid $border-color;
+
+        &:hover {
+          background: $border-light;
+          color: $text-primary;
+          transform: translateY(-1px);
+          box-shadow: $shadow-sm;
+        }
+      }
+
+      .btn-primary {
+        background: $gradient-primary;
+        color: white;
+        box-shadow: $shadow-md;
+
+        &:hover {
+          background: linear-gradient(135deg, $primary-hover 0%, $secondary-hover 100%);
+          transform: translateY(-2px);
+          box-shadow: $shadow-lg;
+        }
+
+        &:active {
+          transform: translateY(0);
+        }
+
+        svg {
+          fill: currentColor;
+          stroke: currentColor;
+        }
+      }
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .modal-overlay {
+    padding: 1rem 0.5rem;
+
+    .modal-container {
+      max-width: 100%;
+      padding: 1.5rem;
+      border-radius: 20px;
+
+      .modal-header {
+        margin-bottom: 1.5rem;
+
+
+
+        .modal-title {
+          font-size: 1.6rem;
+        }
+      }
+
+      .modal-content {
+        margin-bottom: 1.5rem;
+
+        .modal-message {
+          font-size: 1.1rem;
+        }
+
+
+      }
+
+      .modal-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+
+        .btn-secondary,
+        .btn-primary {
+          width: 100%;
+          padding: 1rem 1.5rem;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-overlay {
+    padding: 0.5rem 0.25rem;
+
+    .modal-container {
+      padding: 1.25rem;
+      border-radius: 16px;
+
+      .modal-header {
+        margin-bottom: 1.25rem;
+
+
+
+        .modal-title {
+          font-size: 1.4rem;
+        }
+      }
+
+      .modal-content {
+        margin-bottom: 1.25rem;
+
+        .modal-message {
+          font-size: 1rem;
+        }
+
+
+      }
+
+      .modal-actions {
+        gap: 0.5rem;
+
+        .btn-secondary,
+        .btn-primary {
+          padding: 0.875rem 1.25rem;
+          font-size: 0.95rem;
+        }
+      }
+    }
+  }
+}
+
+// Animation pour fermeture
+.modal-overlay.closing {
+  animation: fadeOut 0.2s ease-out;
+}
+
+.modal-overlay.closing .modal-container {
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}

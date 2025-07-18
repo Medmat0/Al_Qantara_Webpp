@@ -454,6 +454,21 @@
 }
 
 
+.delete-confirm-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-icon-only {
+  padding: 0.5rem;
+  border-radius: 50%;
+  min-width: 32px;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 @media (max-width: 480px) {
   .post-card {
     border-radius: 12px;
