@@ -143,7 +143,6 @@ export class CommunityPostDescriptionComponent implements OnInit {
       this.communityService.addReplyToComment(this.communityId, this.postId, commentId, replyContent).subscribe({
         next: (newReply) => {
           const adaptedReply =  newReply.comment || newReply;
-          console.log('Adding reply:', adaptedReply.id, 'parentId:', adaptedReply.parentId);
           if (!adaptedReply.id) {
             console.error('Invalid reply ID:', adaptedReply);
             this.error = 'Erreur : Réponse invalide retournée par le serveur.';
@@ -281,7 +280,6 @@ export class CommunityPostDescriptionComponent implements OnInit {
 
     this.communityService.deletePost(this.communityId, this.postId).subscribe({
       next: () => {
-        console.log('Post deleted successfully');
         this.router.navigate(['/communities', this.communityId]); // Rediriger vers la page de la communauté
         // Rediriger ou mettre à jour l'état de la page après la suppression
       },
@@ -312,7 +310,6 @@ export class CommunityPostDescriptionComponent implements OnInit {
             },
             replies: []
           };
-          console.log('Adding comment:', adaptedComment.id);
           if (!this.post.commentaires) {
             this.post.commentaires = [];
           }

@@ -125,7 +125,6 @@ export class EventListingComponent {
       } else {
         this.hasLikedEvenement = false;
       }
-      console.log("liked status: ", this.hasLikedEvenement);
 
       }
   }
@@ -296,7 +295,6 @@ export class EventListingComponent {
 
     this.evenementService.addCommentToEvenement(evenement.id,commentText).subscribe({
       next: (res) => {
-        console.log('Commentaire ajouté avec succès', res);
         // Ajoute le commentaire à l'événement localement
         if (!Array.isArray(evenement.comments)) {
           evenement.comments = [];

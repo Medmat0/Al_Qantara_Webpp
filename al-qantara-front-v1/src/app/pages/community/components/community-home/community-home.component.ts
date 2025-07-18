@@ -52,7 +52,6 @@ export class CommunityHomeComponent implements OnInit {
 
     this.authService.authStatus$.subscribe((status) => {
       this.isAuthenticated = status;
-      console.log('Authentication status:', this.isAuthenticated);
       if (status) {
         const user = localStorage.getItem('utilisateur');
         if (user) {
@@ -120,7 +119,6 @@ export class CommunityHomeComponent implements OnInit {
   goToPost(post: any) {
     // Rediriger vers la page du post
     this.router.navigate([`/communities/${post.communityId}/posts/${post.id}`]);
-    console.log('Aller au post:', post);
   }
 
   goToCreationForm() {
@@ -133,9 +131,7 @@ export class CommunityHomeComponent implements OnInit {
   }
 
   openResearchPopup() {
-    console.log('POPUP CLICK - AVANT:', this.showResearchPopup);
     this.showResearchPopup = true;
-    console.log('POPUP CLICK - APRÈS:', this.showResearchPopup);
 
     // Empêcher le scroll de la page
     document.body.style.overflow = 'hidden';
@@ -145,7 +141,6 @@ export class CommunityHomeComponent implements OnInit {
     setTimeout(() => {
       const overlay = document.querySelector('.community-popup-overlay');
       if (overlay) {
-        console.log('POPUP OVERLAY FOUND AND VISIBLE');
       }
     }, 10);
   }

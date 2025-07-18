@@ -67,7 +67,6 @@ export class PaymentSuccessComponent implements OnInit {
           try {
             const userData = JSON.parse(storedUser);
             this.utilisateurId = userData.id?.toString() || null;
-            console.log('📱 ID utilisateur récupéré depuis localStorage:', this.utilisateurId);
           } catch (error) {
             console.error('❌ Erreur lors du parsing des données utilisateur:', error);
           }
@@ -76,26 +75,20 @@ export class PaymentSuccessComponent implements OnInit {
 
       // Validation finale des paramètres
       if (!this.validateRequiredParams()) {
-        console.log('❌ Paramètres requis manquants, redirection...');
         this.router.navigate(['/']);
         return;
       }
 
-      console.log('🔍 Paramètres URL reçus:', {
-        utilisateurId: this.utilisateurId,
-        paymentType: this.paymentType,
-        donationAmount: this.donationAmount
-      });
+      
 
       // Récupérer les données de paiement depuis HelloAsso (si disponibles)
       this.loadPaymentData();
 
       // Si c'est un paiement d'adhésion, traiter l'adhésion
       if (this.paymentType === 'adhesion' && this.utilisateurId) {
-        console.log('✅ Conditions remplies pour processAdhesion - Démarrage...');
         this.processAdhesion();
       } else {
-        console.log('❌ Conditions NOT remplies pour processAdhesion:', {
+        console.log(' Conditions NOT remplies pour processAdhesion:', {
           paymentType: this.paymentType,
           isAdhesion: this.paymentType === 'adhesion',
           utilisateurId: this.utilisateurId,
@@ -118,7 +111,6 @@ export class PaymentSuccessComponent implements OnInit {
     
     // Si pas de referrer ou referrer externe suspect
     if (!referrer || (!referrer.startsWith(currentDomain) && !referrer.includes('helloasso'))) {
-      console.log('⚠️ Accès direct ou referrer suspect détecté');
       // Optionnel: ajouter un délai ou une vérification supplémentaire
     }
   }
@@ -172,10 +164,8 @@ export class PaymentSuccessComponent implements OnInit {
    * Traite l'adhésion après un paiement réussi
    */
   processAdhesion(): void {
-    console.log('🚀 ProcessAdhesion démarré avec utilisateurId:', this.utilisateurId);
     
     if (!this.utilisateurId) {
-      console.log('❌ Erreur: ID utilisateur manquant');
       this.processingError = 'ID utilisateur manquant';
       return;
     }
@@ -184,11 +174,9 @@ export class PaymentSuccessComponent implements OnInit {
     this.processingError = null;
 
     const userId = parseInt(this.utilisateurId);
-    console.log('📞 Appel API creerAdhesion avec userId:', userId);
     
     this.adhesionService.creerAdhesion(userId).subscribe({
       next: (response) => {
-        console.log('✅ Adhésion créée avec succès:', response);
         this.adhesionProcessed = true;
         this.isProcessing = false;
         
@@ -217,7 +205,6 @@ export class PaymentSuccessComponent implements OnInit {
       };
       
       localStorage.setItem('utilisateur', JSON.stringify(updatedUser));
-      console.log('Données utilisateur mises à jour dans localStorage:', updatedUser);
     } catch (error) {
       console.error('Erreur lors de la mise à jour du localStorage:', error);
     }

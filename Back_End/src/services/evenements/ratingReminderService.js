@@ -83,7 +83,6 @@ export const sendRatingReminderEmail = async (participant, event) => {
     };
 
     await sendEmailToUser(emailInfo);
-    console.log(`Email de rappel de rating envoyé à ${participant.utilisateur.email} pour l'événement ${event.titre}`);
   } catch (error) {
     console.error(`Erreur lors de l'envoi de l'email de rappel à ${participant.utilisateur.email}:`, error);
     throw error;
@@ -268,7 +267,6 @@ export const processRatingReminders = async () => {
     
     const eventsNeedingRatings = await getFinishedEventsNeedingRatings();
     
-    console.log(`📊 ${eventsNeedingRatings.length} événement(s) trouvé(s) nécessitant des rappels`);
     
     if (eventsNeedingRatings.length === 0) {
       return {
@@ -302,7 +300,6 @@ export const processRatingReminders = async () => {
       }
     }
     
-    console.log(`✅ Processus terminé. ${totalEmailsSent} email(s) de rappel envoyé(s).`);
     
     return {
       eventsProcessed: eventsNeedingRatings.length,

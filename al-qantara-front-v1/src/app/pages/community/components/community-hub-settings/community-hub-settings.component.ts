@@ -40,7 +40,6 @@ export class CommunityHubSettingsComponent implements OnInit {
 
     this.authService.authStatus$.subscribe((status) => {
       this.isAuthenticated = status;
-      console.log('Authentication status:', this.isAuthenticated);
       if (status) {
         const user = localStorage.getItem('utilisateur');
         if (user) {

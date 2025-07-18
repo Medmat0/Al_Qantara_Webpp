@@ -49,7 +49,6 @@ export class EditProfileComponent implements OnInit {
     this.http.get<any>(`${API_URL}/user/profile`, { withCredentials: true })
       .subscribe({
         next: (res) => {
-          console.log('GET /user/profile response:', res);
           this.originalData = res.user;
           this.prenom = res.user.prenom || '';
           this.nom = res.user.nom || '';
@@ -125,7 +124,6 @@ export class EditProfileComponent implements OnInit {
       telephone: this.telephone.trim()
     }, { withCredentials: true }).subscribe({
       next: (profileRes) => {
-        console.log('PUT /user/profile response:', profileRes);
         
         // Si mot de passe à changer
         if (this.hasPasswordFields()) {
@@ -148,7 +146,6 @@ export class EditProfileComponent implements OnInit {
       newPassword: this.newPassword
     }, { withCredentials: true }).subscribe({
       next: (pwdRes) => {
-        console.log('PUT /user/password response:', pwdRes);
         this.handleSuccess('Profil et mot de passe mis à jour avec succès.');
         this.clearPasswords();
       },

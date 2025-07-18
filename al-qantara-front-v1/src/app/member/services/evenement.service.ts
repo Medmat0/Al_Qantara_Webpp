@@ -31,7 +31,6 @@ export class EvenementService {  private readonly apiUrl = `${API_URL}/evenement
   getAllEvenements() :Observable<any>{
     return this.http.get(`${this.apiUrl}`).pipe(
       tap((response) => {
-        console.log('Fetched events:', response);
       }),
       catchError((error) => {
         console.error('Error fetching events:', error);
@@ -43,7 +42,6 @@ export class EvenementService {  private readonly apiUrl = `${API_URL}/evenement
   getEvenementById(id: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/${id}`).pipe(
       tap((response) => {
-        console.log('Fetched event:', response);
       }),
       catchError((error) => {
         console.error('Error fetching event:', error);
@@ -59,7 +57,6 @@ export class EvenementService {  private readonly apiUrl = `${API_URL}/evenement
       { withCredentials: true }
     ).pipe(
       tap((response) => {
-        console.log('Added participation:', response);
       }),
       catchError((error) => {
         console.error('Error adding participation:', error);
@@ -74,7 +71,6 @@ export class EvenementService {  private readonly apiUrl = `${API_URL}/evenement
       { withCredentials: true }
     ).pipe(
       tap((response) => {
-        console.log('Checked participation:', response);
       }),
       catchError((error) => {
         console.error('Error checking participation:', error);
@@ -90,7 +86,6 @@ export class EvenementService {  private readonly apiUrl = `${API_URL}/evenement
       { withCredentials: true }
     ).pipe(
       tap((response) => {
-        console.log('Removed participation successfully', response);
       }),
       catchError((error) => {
         console.error('Error removing participation:', error);
@@ -107,7 +102,6 @@ export class EvenementService {  private readonly apiUrl = `${API_URL}/evenement
       { withCredentials: true }
     ).pipe(
       tap((response) => {
-        console.log('Liked event:', response);
       }),
       catchError((error) => {
         console.error('Error liking event:', error);
@@ -123,7 +117,6 @@ export class EvenementService {  private readonly apiUrl = `${API_URL}/evenement
       { withCredentials: true }
     ).pipe(
       tap((response) => {
-        console.log('Added comment:', response);
       }),
       catchError((error) => {
         console.error('Error adding comment:', error);
@@ -145,7 +138,6 @@ export class EvenementService {  private readonly apiUrl = `${API_URL}/evenement
       { withCredentials: true }
     ).pipe(
       tap((response) => {
-        console.log('Rated event:', response);
       }),
       catchError((error) => {
         console.error('Error rating event:', error);
@@ -160,7 +152,6 @@ export class EvenementService {  private readonly apiUrl = `${API_URL}/evenement
       { withCredentials: true }
     ).pipe(
       tap((response) => {
-        console.log('Deleted comment:', response);
       }),
       catchError((error) => {
         console.error('Error deleting comment:', error);
@@ -191,16 +182,12 @@ export class EvenementService {  private readonly apiUrl = `${API_URL}/evenement
       });
 
       // Upload images
-      console.log(' upload images Cloudinary...');
       const imageUrls = await this.cloudinaryService.uploadFiles(imageFiles);
-      console.log('images uploadées:', imageUrls);
 
       // Upload video if provided
       let videoUrl: string | undefined;
       if (videoFile) {
-        console.log(' upload vidéo Cloudinary...');
         videoUrl = await this.cloudinaryService.uploadFile(videoFile);
-        console.log('vidéo uploadée:', videoUrl);
       }
 
       const payload = {
@@ -208,12 +195,10 @@ export class EvenementService {  private readonly apiUrl = `${API_URL}/evenement
         images: imageUrls,
         video: videoUrl
       };
-        console.log('Payload :', payload);
 
       return firstValueFrom(
         this.http.post(`${this.apiUrl}`, payload, { withCredentials: true }).pipe(
           tap((response) => {
-            console.log('Événement créé avec succès:', response);
           }),
           catchError((error) => {
             console.error('Erreur lors de la création de l\'événement:', error);

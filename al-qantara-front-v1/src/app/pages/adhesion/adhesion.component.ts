@@ -45,7 +45,6 @@ export class AdhesionComponent implements OnInit {
           const date = new Date(this.utilisateur.dateInscription);
           this.dateInscriptionFr = date.toLocaleDateString('fr-FR');
         }
-        // console.log('Utilisateur courant:', this.utilisateur);
       } catch (e) {
         this.utilisateur = null;
         this.dateInscriptionFr = null;
@@ -53,7 +52,6 @@ export class AdhesionComponent implements OnInit {
       }
     } else {
       this.dateInscriptionFr = null;
-      // console.log('Aucun utilisateur trouvé dans le localStorage');
     }
   }
 

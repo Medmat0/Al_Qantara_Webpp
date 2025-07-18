@@ -42,7 +42,6 @@ export class RevuesListingComponent {
     this.revueService.getAllRevues().subscribe({
       next: (response) => {
         this.revues = response;
-        console.log('Revues fetched and formatted successfully:', this.revues);
       },
       error: (error) => {
         console.error('Error fetching revues:', error);
@@ -111,13 +110,11 @@ export class RevuesListingComponent {
   }
 
   onRevueClick(revue: any): void {
-    console.log('Revue clicked:', revue);
     this.router.navigate(['/revues/revue-description/', revue.id]).then(r => console.log(r));
     const isAdminRoute = window.location.pathname.startsWith('/admin');
     if (!isAdminRoute) {
       this.revueService.addVueToRevue(revue.id).subscribe({
         next: (response) => {
-          console.log('View count updated successfully:', response);
         },
         error: (error) => {
           console.error('Error updating view count:', error);
@@ -140,7 +137,6 @@ export class RevuesListingComponent {
       this.adminRevueService.deleteRevueById(this.revueToDelete).subscribe({
         next: () => {
           this.revues = this.revues.filter(revue => revue.id !== this.revueToDelete);
-          console.log('Revue deleted successfully.');
           this.closeModal();
         },
         error: (error) => {

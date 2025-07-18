@@ -55,7 +55,6 @@ export class PaymentSuccessComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log('🎯 Initialisation de la page de succès événement');
     
     // Le guard s'est déjà occupé de la validation du token de sécurité
     this.validatePageAccess();
@@ -71,7 +70,6 @@ export class PaymentSuccessComponent implements OnInit {
           try {
             const userData = JSON.parse(storedUser);
             this.utilisateurId = userData.id?.toString() || null;
-            console.log('📱 ID utilisateur récupéré depuis localStorage:', this.utilisateurId);
           } catch (error) {
             console.error('❌ Erreur lors du parsing des données utilisateur:', error);
           }
@@ -84,11 +82,7 @@ export class PaymentSuccessComponent implements OnInit {
         return;
       }
 
-      console.log('🔍 Paramètres URL reçus:', {
-        evenementId: this.evenementId,
-        utilisateurId: this.utilisateurId
-      });
-
+  
       // Charger les informations de l'événement
       this.loadEventData();
 
@@ -97,7 +91,6 @@ export class PaymentSuccessComponent implements OnInit {
 
       // Créer automatiquement la participation à l'événement
       if (this.evenementId && this.utilisateurId) {
-        console.log('✅ Conditions remplies pour créer la participation - Démarrage...');
         this.createEventParticipation();
       }
     });
@@ -116,7 +109,6 @@ export class PaymentSuccessComponent implements OnInit {
     
     // Si pas de referrer ou referrer externe suspect
     if (!referrer || (!referrer.startsWith(currentDomain) && !referrer.includes('helloasso'))) {
-      console.log('⚠️ Accès direct ou referrer suspect détecté pour événement');
     }
   }
 
@@ -139,7 +131,6 @@ export class PaymentSuccessComponent implements OnInit {
         this.eventData = event;
         this.eventName = event?.titre || '';
         this.amount = event?.prix || 0;
-        console.log('📅 Données de l\'événement chargées:', this.eventData);
       },
       error: (error) => {
         console.error('❌ Erreur lors du chargement de l\'événement:', error);
@@ -151,10 +142,8 @@ export class PaymentSuccessComponent implements OnInit {
    * Crée automatiquement la participation à l'événement après un paiement réussi
    */
   createEventParticipation(): void {
-    console.log('🚀 Création de la participation démarrée pour événement:', this.evenementId);
     
     if (!this.evenementId || !this.utilisateurId) {
-      console.log('❌ Erreur: Paramètres manquants pour la participation');
       this.processingError = 'Paramètres manquants pour créer la participation';
       return;
     }
@@ -163,23 +152,19 @@ export class PaymentSuccessComponent implements OnInit {
     this.processingError = null;
 
     const eventId = parseInt(this.evenementId);
-    console.log('📞 Appel API addParticipationToEvenement avec eventId:', eventId);
     
     this.evenementService.addParticipationToEvenement(eventId).subscribe({
       next: (response) => {
-        console.log('✅ Participation créée avec succès:', response);
         this.participationCreated = true;
         this.isProcessing = false;
         
         // Succès : message personnalisé
-        console.log('🎊 Participation confirmée ! Redirection vers l\'événement...');
       },
       error: (error) => {
         console.error('❌ Erreur lors de la création de la participation:', error);
         
         // Vérifier si c'est une erreur de participation déjà existante
         if (error.status === 400 && error.error?.message?.includes('déjà inscrit')) {
-          console.log('ℹ️ L\'utilisateur est déjà inscrit à cet événement');
           this.participationExists = true;
           this.participationCreated = true; // Considérer comme succès
           this.processingError = null;

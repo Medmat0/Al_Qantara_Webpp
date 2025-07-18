@@ -74,7 +74,6 @@ export class DecouverteMarocComponent implements AfterViewInit, OnInit {
     // Charger les guides depuis le service
     this.guideService.getAllGuides(this.filters).subscribe({
       next: (response) => {
-        console.log('Guides chargés:', response.data);
         this.guides = response.data;
       },
       error: (error) => {
@@ -339,10 +338,7 @@ export class DecouverteMarocComponent implements AfterViewInit, OnInit {
 
   toggleDebugMode() {
     this.debugMode = !this.debugMode;
-    console.log('Debug mode:', this.debugMode ? 'ON' : 'OFF');
     if (this.debugMode && this.selectedGuide) {
-      console.log('Current city:', this.selectedGuide.nom);
-      console.log('Points d\'intérêt:', this.selectedGuide.pointsInteret);
     }
   }
 
@@ -353,7 +349,6 @@ export class DecouverteMarocComponent implements AfterViewInit, OnInit {
       if (rect) {
         const x = ((event.clientX - rect.left) / rect.width) * 100;
         const y = ((event.clientY - rect.top) / rect.height) * 100;
-        console.log(`${poi.nom}: { x: ${x.toFixed(0)}, y: ${y.toFixed(0)} }`);
       }
     } else {
       this.focusOnPoint(poi);

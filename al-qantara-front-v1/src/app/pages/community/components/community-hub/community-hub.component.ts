@@ -102,8 +102,6 @@ export class CommunityHubComponent implements OnInit {
       const eventTitle = params.get('eventTitle');
       const eventDescription = params.get('eventDescription');
       const link = params.get('link') || '';
-      console.log('Event Title:', eventTitle);
-      console.log('Event Description:', eventDescription);
       if (eventTitle && eventDescription) {
         this.prefillPostFormWithEvent({
           titre: eventTitle,

@@ -63,36 +63,28 @@ export class EditArticleComponent implements OnInit, OnDestroy, OnChanges {
   });
 
   constructor(private http: HttpClient, private fb: FormBuilder) {
-    console.log('Constructeur EditArticleComponent, articleId initial:', this.articleId);
   }
 
   ngOnInit(): void {
-    console.log('ngOnInit EditArticleComponent, articleId:', this.articleId, 'showModal:', this.showModal);
     this.editor = new Editor();
     this.getRevuesTitres();
 
     if (this.articleId) {
-      console.log('articleId présent dans ngOnInit, appel de loadArticleData');
       this.loadArticleData();
     } else {
-      console.log('articleId absent dans ngOnInit, pas d\'appel à loadArticleData');
     }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('ngOnChanges détecté:', changes);
 
     // Vérifier si le modal vient d'être ouvert
     if (changes['showModal'] && changes['showModal'].currentValue === true) {
-      console.log('Modal ouvert, articleId actuel:', this.articleId);
       if (this.articleId) {
-        console.log('Chargement des données de l\'article depuis ngOnChanges (modal ouvert)');
         this.loadArticleData();
       }
     }
     // Vérifier aussi si l'ID a changé
     else if (changes['articleId'] && changes['articleId'].currentValue) {
-      console.log('articleId a changé:', changes['articleId'].currentValue);
       this.loadArticleData();
     }
   }
@@ -102,16 +94,13 @@ export class EditArticleComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   loadArticleData(): void {
-    console.log('Début loadArticleData, articleId:', this.articleId);
     this.loading = true;
 
     // Récupérer les détails de l'article seulement
     this.http.get<any>(`${API_URL}/articles/${this.articleId}`, { withCredentials: true })
       .subscribe({
         next: (response) => {
-          console.log('Réponse de l\'API articles:', response);
           const article = response.article;
-          console.log('Article chargé :', article);
 
           // Préremplir le formulaire avec les données de l'article
           console.log('Patchage du formulaire avec:', {
@@ -128,7 +117,6 @@ export class EditArticleComponent implements OnInit, OnDestroy, OnChanges {
             content: article.contenu
           });
 
-          console.log('État du formulaire après patch:', this.form.value);
 
 
           setTimeout(() => {
@@ -137,15 +125,11 @@ export class EditArticleComponent implements OnInit, OnDestroy, OnChanges {
 
           // Préremplir les catégories si elles existent
           if (article.categories && article.categories.length > 0) {
-            console.log('Catégories trouvées:', article.categories);
             const categoryNames = article.categories.map((cat: any) => cat.nom);
-            console.log('Noms des catégories:', categoryNames);
             this.form.patchValue({
               categorie: categoryNames
             });
-            console.log('Catégories ajoutées au formulaire');
           } else {
-            console.log('Aucune catégorie trouvée dans l\'article');
           }
 
           this.loading = false;
@@ -158,17 +142,14 @@ export class EditArticleComponent implements OnInit, OnDestroy, OnChanges {
       });
 
     // Récupérer séparément toutes les catégories disponibles
-    console.log('Appel à getCategoriesNoms');
     this.getCategoriesNoms();
   }
 
   getRevuesTitres(): void {
     // Récupérer la liste des revues pour le sélecteur
-    console.log('Début getRevuesTitres');
     this.http.get<any>(`${API_URL}/revues`, { withCredentials: true })
       .subscribe({
         next: (response) => {
-          console.log('Réponse API revues:', response);
 
           // La réponse est directement un tableau de revues
           if (Array.isArray(response)) {
@@ -184,7 +165,6 @@ export class EditArticleComponent implements OnInit, OnDestroy, OnChanges {
             this.revues = [];
           }
 
-          console.log('Revues récupérées:', this.revues);
         },
         error: (error) => {
           console.error('Erreur lors du chargement des revues:', error);

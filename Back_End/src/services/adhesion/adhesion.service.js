@@ -63,12 +63,10 @@ const processAdhesionPayment = async (paymentData) => {
       data: updateData
     });
 
-    console.log(`Adhésion activée pour ${utilisateur.role === 'ADMIN' ? 'admin' : 'utilisateur'}: ${utilisateur.prenom} ${utilisateur.nom}`);
 
     // Envoyer l'email de bienvenue
     await envoyerEmailBienvenue(utilisateur.email, utilisateur.prenom, utilisateur.nom);
 
-    console.log('Adhésion traitée avec succès:', adhesion);
     return { adhesion, utilisateur: utilisateurMisAJour };
   } catch (error) {
     console.error('Erreur lors du traitement de l\'adhésion:', error);
@@ -111,7 +109,6 @@ const processDonationPayment = async (paymentData) => {
       }
     });
 
-    console.log('Don enregistré avec succès:', don);
     return don;
   } catch (error) {
     console.error('Erreur lors du traitement du don:', error);
@@ -265,7 +262,6 @@ Association Culturelle Marocaine
       text: textContent
     });
 
-    console.log(`Email de bienvenue envoyé à ${email}`);
   } catch (error) {
     console.error('Erreur lors de l\'envoi de l\'email de bienvenue:', error);
     // Ne pas faire échouer le processus d'adhésion si l'email ne peut pas être envoyé

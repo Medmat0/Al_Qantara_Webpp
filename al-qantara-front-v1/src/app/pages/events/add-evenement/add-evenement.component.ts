@@ -178,7 +178,6 @@ export class AddEvenementComponent {
       this.errorMessage = '';
 
       try {
-        console.log('Images à uploader:', this.selectedImages.map(img => ({ name: img.name, size: img.size })));
         console.log('Vidéo à uploader:', this.selectedVideo ? {
           name: this.selectedVideo.name,
           size: this.selectedVideo.size
@@ -203,10 +202,7 @@ export class AddEvenementComponent {
           this.selectedImages,
           this.selectedVideo || undefined
         );
-        console.log('Événement créé avec succès:', response);
         if (response.evenement) {
-          console.log('URLs des images uploadées:', response.evenement.images);
-          console.log('URL de la vidéo uploadée:', response.evenement.video);
           this.eventCreated.emit(response.evenement);
           this.successMessage = 'Événement créé avec succès!'; // Set success message
           // Réinitialiser le formulaire

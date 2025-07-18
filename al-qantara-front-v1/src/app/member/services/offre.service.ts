@@ -23,7 +23,6 @@ export class OffreService {
       withCredentials: true //envoi des credentials et reception cookies
     }).pipe(
       tap((response: any) => {
-        console.log('Offre retrieved successfully:', response);
       }),
       catchError((error) => {
         console.error('Error retrieving offre', error);

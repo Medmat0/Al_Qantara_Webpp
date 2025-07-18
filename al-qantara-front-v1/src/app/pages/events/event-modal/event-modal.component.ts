@@ -359,7 +359,6 @@ export class EventModalComponent implements OnChanges {
 
   onCommunitySelected(communityId: number) {
     this.closeCommunityResearchPopup(communityId);
-    console.log('Evenement:', this.event);
     this.router.navigate(
       ['/communities', communityId],
       {
@@ -402,7 +401,6 @@ export class EventModalComponent implements OnChanges {
    * Gérer le succès de la demande de remboursement
    */
   onRemboursementSuccess(response: any): void {
-    console.log('✅ Demande de remboursement envoyée avec succès:', response);
 
     // Marquer que l'utilisateur a demandé un remboursement
     this.hasRequestedRefund = true;
@@ -437,7 +435,6 @@ export class EventModalComponent implements OnChanges {
    * Gérer le succès de la notation
    */
   onRatingSubmitted(): void {
-    console.log('✅ Notation envoyée avec succès');
 
   }
 

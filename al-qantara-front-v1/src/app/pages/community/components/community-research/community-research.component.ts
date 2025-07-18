@@ -112,7 +112,6 @@ export class CommunityResearchComponent implements OnDestroy {
 
   goToCommunityHub(communityId: number) {
     this.communitySelected.emit(communityId);
-    console.log('Navigating to community hub:', communityId);
     this.router.navigate([`/communities/${communityId}`]);
   }
 }

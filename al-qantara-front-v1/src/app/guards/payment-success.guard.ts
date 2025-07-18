@@ -34,7 +34,6 @@ export class PaymentSuccessGuard implements CanActivate {
         const type = queryParams['type'];
         const userId = queryParams['userId'] || queryParams['utilisateurId'];
         
-        console.log('🔍 Paramètres URL:', { type, userId });
 
         if (!type || !userId) {
           this.redirectToAppropriateLocation();

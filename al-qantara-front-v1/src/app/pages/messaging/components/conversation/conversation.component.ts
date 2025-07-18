@@ -45,7 +45,6 @@ export class ConversationComponent implements OnChanges , OnInit{
 
     this.authService.authStatus$.subscribe((status) => {
       this.isAuthenticated = status;
-      console.log('Authentication status:', this.isAuthenticated);
       if (status) {
         const user = localStorage.getItem('utilisateur');
         if (user) {
@@ -95,7 +94,6 @@ export class ConversationComponent implements OnChanges , OnInit{
       this.socketService.socket.off('nouveauMessage', this.socketListener);
     }
     this.socketListener = (data: any) => {
-      console.log('Nouveau message reçu via socket:', data);
       if (
         this.conversation &&
         (
@@ -114,7 +112,6 @@ export class ConversationComponent implements OnChanges , OnInit{
       this.socketService.socket.off('messageSupprime', this.deleteListener);
     }
     this.deleteListener = (data: any) => {
-      console.log('Message supprimé reçu via socket:', data);
       if (this.conversation && this.conversation.messages) {
         // Trouver et marquer le message comme supprimé
         const messageIndex = this.conversation.messages.findIndex(

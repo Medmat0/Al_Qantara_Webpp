@@ -82,10 +82,8 @@ export class AddArticleComponent implements OnInit, OnDestroy {
         revueId: Number(this.form.value.revue),
         categories: selectedIds
       };
-      console.log('Body envoyé à l\'API :', article);
       this.http.post(`${API_URL}/articles`, article, { withCredentials: true }).subscribe(
         (res) => {
-          console.log('Article publié avec succès', res);
           // Afficher le message de succès
           this.successMessage = 'Article publié avec succès';
           // Réinitialiser le formulaire
@@ -106,7 +104,6 @@ export class AddArticleComponent implements OnInit, OnDestroy {
   getRevuesTitres() {
     this.http.get<any[]>(`${API_URL}/revues/`).subscribe(data => {
       this.revues = data.map(r => ({ id: r.id, titre: r.titre }));
-      console.log('Revues:', this.revues);
     });
   }
 
@@ -114,7 +111,6 @@ export class AddArticleComponent implements OnInit, OnDestroy {
     this.http.get<any>(`${API_URL}/articles/categories/all`, { withCredentials: true }).subscribe(data => {
       this.categories = (data.categories || []).map((c: any) => ({ id: c.id, nom: c.nom }));
       this.categoriesNoms = this.categories.map(c => c.nom); // pour ng-select
-      console.log('Catégories:', this.categories);
     });
   }
 

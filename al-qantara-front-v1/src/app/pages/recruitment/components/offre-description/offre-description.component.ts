@@ -39,7 +39,6 @@ export class OffreDescriptionComponent implements OnInit {
           return;
         }
         this.offre = response.offre;
-        console.log('Mapped Offre:', this.offre);
       },
       error: (error: any) => {
         console.error('Error fetching offre:', error);

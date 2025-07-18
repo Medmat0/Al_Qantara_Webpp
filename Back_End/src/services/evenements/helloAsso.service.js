@@ -37,7 +37,6 @@ const getAccessToken = async () => {
       }
     );
 
-    console.log('Token obtenu avec succès');
     return response.data.access_token;
   } catch (error) {
     console.error('Erreur détaillée lors de la génération du token:', {
@@ -75,7 +74,6 @@ const checkPaymentStatus = async (paymentId) => {
  */
 const handlePaymentWebhook = async (paymentData) => {
   try {
-    console.log('Webhook de paiement reçu:', paymentData);
     
     const { paymentId, status, amount, metadata } = paymentData;
     const { evenementId, utilisateurId, type } = metadata;
@@ -86,12 +84,10 @@ const handlePaymentWebhook = async (paymentData) => {
     }
 
     if (status === 'COMPLETED') {
-      console.log('Paiement validé, création de la participation...');
       
       try {
         // Utiliser le service de participation existant
         const participation = await participerEvenementService(evenementId, utilisateurId);
-        console.log('Participation créée avec succès:', participation);
         return participation;
       } catch (error) {
         console.error('Erreur lors de la création de la participation:', error);

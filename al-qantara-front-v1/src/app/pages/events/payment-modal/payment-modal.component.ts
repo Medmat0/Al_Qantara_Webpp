@@ -86,7 +86,6 @@ export class PaymentModalComponent {
       this.paymentService.createCheckout(body).subscribe({
         next: (res: any) => {
           if (res && res.redirectUrl) {
-            console.log('✅ URL de paiement générée, redirection...');
             window.open(res.redirectUrl, '_blank');
           } else {
             this.errorMessage = 'Erreur lors de la génération du lien de paiement.';

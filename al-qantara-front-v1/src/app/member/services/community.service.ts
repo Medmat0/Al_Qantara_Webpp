@@ -18,7 +18,6 @@ export class CommunityService {
     getRandomPosts(page: number = 1, limit: number = 10): Observable<any> {
       return this.http.get<any>(`${this.apiUrl}/randomPosts`, { params: { page, limit } }).pipe(
         tap((response) => {
-          console.log('Fetched random posts:', response);
         }),
         catchError((error) => {
           console.error('Error fetching random posts:', error);
@@ -26,11 +25,9 @@ export class CommunityService {
         })
       );
     }
-
     getRandomCommunities(): Observable<any[]> {
         return this.http.get<any>(`${this.apiUrl}/randomCommunities`).pipe(
             tap((response) => {
-                console.log('Fetched random communities:', response);
             }),
             map((response) => response.communities ?? []),
             catchError((error) => {
@@ -48,7 +45,6 @@ export class CommunityService {
 
         return this.http.post<any>(`${this.apiUrl}/create`, formData, { withCredentials: true }).pipe(
             tap((response) => {
-                console.log('Community created successfully:', response);
             }),
             catchError((error) => {
                 console.error('Error creating community:', error);
@@ -60,7 +56,6 @@ export class CommunityService {
   getCommunityByName(name: string, page: number, limit: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/name`, { params: { name, page, limit } }).pipe(
       tap((response) => {
-        console.log('Fetched community by name:', response);
       }),
       catchError((error) => {
         console.error('Error fetching community by name:', error);
@@ -78,7 +73,6 @@ export class CommunityService {
 
       return this.http.get<any>(`${this.apiUrl}/posts/name`, { params }).pipe(
         tap((response) => {
-          console.log('Fetched community posts by name/tags:', response);
         }),
         // Ne pas faire de map ici, retourne l'objet brut
         catchError((error) => {
@@ -93,7 +87,6 @@ export class CommunityService {
     getCommunityById(communityId: number): Observable<any> {
         return this.http.get<any>(`${this.apiUrl}/${communityId}`).pipe(
             tap((response) => {
-                console.log('Fetched community by ID:', response);
             }),
             catchError((error) => {
                 console.error('Error fetching community by ID:', error);
@@ -109,7 +102,6 @@ export class CommunityService {
 
         return this.http.get<any>(`${this.apiUrl}/${communityId}/posts`, { params }).pipe(
             tap((response) => {
-                console.log('Fetched community posts:', response);
             }),
             catchError((error) => {
                 console.error('Error fetching community posts:', error);
@@ -121,7 +113,6 @@ export class CommunityService {
     getCommunityPostById(communityId: number, postId: number): Observable<any> {
         return this.http.get<any>(`${this.apiUrl}/${communityId}/posts/${postId}`).pipe(
             tap((response) => {
-                console.log('Fetched community post by ID:', response);
             }),
             catchError((error) => {
                 console.error('Error fetching community post by ID:', error);
@@ -144,7 +135,6 @@ export class CommunityService {
 
           return this.http.patch<any>(`${this.apiUrl}/${communityId}`, formData, { withCredentials: true }).pipe(
               tap((response) => {
-                  console.log('Community modified successfully:', response);
               }),
               catchError((error) => {
                   console.error('Error modifying community:', error);
@@ -157,7 +147,6 @@ export class CommunityService {
     deleteCommunity(communityId: number): Observable<any> {
         return this.http.delete<any>(`${this.apiUrl}/${communityId}`, { withCredentials: true }).pipe(
             tap((response) => {
-                console.log('Community deleted successfully:', response);
             }),
             catchError((error) => {
                 console.error('Error deleting community:', error);
@@ -169,7 +158,6 @@ export class CommunityService {
     isModerator(communityId: number): Observable<boolean> {
         return this.http.get<any>(`${this.apiUrl}/${communityId}/isModerator`, { withCredentials: true }).pipe(
             map((response) => {
-                console.log('Checked if user is moderator:', response);
                 return response.isModerator;
             }),
             catchError((error) => {
@@ -182,7 +170,6 @@ export class CommunityService {
     checkIfUserIsMember(communityId: number): Observable<any> {
         return this.http.get<any>(`${this.apiUrl}/${communityId}/isMember`, { withCredentials: true }).pipe(
             map((response) => {
-                console.log('Checked if user is member:', response);
                 return response.response.isMember;
             }),
             catchError((error) => {
@@ -194,12 +181,10 @@ export class CommunityService {
 
     joinCommunity(communityId: number): Observable<any> {
         return this.http.post<any>(`${this.apiUrl}/${communityId}/join`, {}, { withCredentials: true }).pipe(
-            tap((response) => {
-                console.log('Joined community successfully:', response);
+            tap(() => {
             }),
             catchError((error) => {
-                console.error('Error joining community:', error);
-                return throwError(() => error);
+            return throwError(() => error);
             })
         );
     }
@@ -207,7 +192,6 @@ export class CommunityService {
     leaveCommunity(communityId: number): Observable<any> {
         return this.http.post<any>(`${this.apiUrl}/${communityId}/leave`, {}, { withCredentials: true }).pipe(
             tap((response) => {
-                console.log('Left community successfully:', response);
             }),
             catchError((error) => {
                 console.error('Error leaving community:', error);
@@ -246,7 +230,6 @@ export class CommunityService {
         { withCredentials: true }
       ).pipe(
         tap((response) => {
-          console.log('Post created successfully:', response);
         }),
         catchError((error) => {
           console.error('Error creating post:', error);
@@ -262,7 +245,6 @@ export class CommunityService {
         { withCredentials: true }
       ).pipe(
         tap((response) => {
-          console.log('Vote ajouté au post :', response);
         }),
         catchError((error) => {
           console.error('Erreur lors de l\'ajout du vote au post :', error);
@@ -279,7 +261,6 @@ export class CommunityService {
             { withCredentials: true }
         ).pipe(
             tap((response) => {
-                console.log('Added comment to post:', response);
             }),
             catchError((error) => {
                 console.error('Error adding comment to post:', error);
@@ -296,7 +277,6 @@ export class CommunityService {
             { withCredentials: true }
         ).pipe(
             tap((response) => {
-                console.log('Reply added successfully:', response);
             }),
             catchError((error) => {
                 console.error('Error adding reply:', error);
@@ -312,7 +292,6 @@ export class CommunityService {
             { withCredentials: true }
         ).pipe(
             tap((response) => {
-                console.log(`Interacted with post successfuly`, response);
             }),
             catchError((error) => {
                 console.error(`Error interacting with post:`, error);
@@ -328,7 +307,6 @@ export class CommunityService {
             { withCredentials: true }
         ).pipe(
             tap((response) => {
-                console.log(`Interacted with comment successfuly`, response);
             }),
             catchError((error) => {
                 console.error(`Error interacting with comment:`, error);
@@ -343,7 +321,6 @@ export class CommunityService {
             { withCredentials: true }
         ).pipe(
             tap((response) => {
-                console.log(`Post deleted successfully`, response);
             }),
             catchError((error) => {
                 console.error(`Error deleting post:`, error);
@@ -358,7 +335,6 @@ export class CommunityService {
             { withCredentials: true }
         ).pipe(
             tap((response) => {
-                console.log(`Comment deleted successfully`, response);
             }),
             catchError((error) => {
                 console.error(`Error deleting comment:`, error);
@@ -370,7 +346,6 @@ export class CommunityService {
     getCommunityMembers(communityId: number): Observable<any> {
         return this.http.get<any>(`${this.apiUrl}/${communityId}/members`, { withCredentials: true }).pipe(
             tap((response) => {
-                console.log('Fetched community members:', response);
             }),
             catchError((error) => {
                 console.error('Error fetching community members:', error);
@@ -386,7 +361,6 @@ export class CommunityService {
             { withCredentials: true }
         ).pipe(
             tap((response) => {
-                console.log('Member promoted successfully:', response);
             }),
             catchError((error) => {
                 console.error('Error promoting member:', error);
@@ -401,7 +375,6 @@ export class CommunityService {
         { withCredentials: true }
       ).pipe(
             tap((response) => {
-                console.log('Member demoted successfully:', response);
             }),
             catchError((error) => {
                 console.error('Error demoting member:', error);
@@ -417,7 +390,6 @@ export class CommunityService {
             { withCredentials: true }
         ).pipe(
             tap((response) => {
-                console.log('Member banned successfully:', response);
             }),
             catchError((error) => {
                 console.error('Error banning member:', error);
@@ -433,7 +405,6 @@ export class CommunityService {
             { withCredentials: true }
         ).pipe(
             tap((response) => {
-                console.log('Member unbanned successfully:', response);
             }),
             catchError((error) => {
                 console.error('Error unbanning member:', error);

@@ -28,7 +28,6 @@ export class AuthService {
 
           localStorage.setItem('utilisateur', JSON.stringify(response.utilisateur));
 
-          console.log('Login successful:', response);
           this.authStatusSubject.next(true);
         }
       }),
@@ -48,7 +47,6 @@ export class AuthService {
       tap(() => {
         localStorage.removeItem('utilisateur');
         this.authStatusSubject.next(false);
-        console.log('Logout successful');
       }),
       catchError((error) => {
         console.error('Logout failed', error);
@@ -65,7 +63,6 @@ export class AuthService {
       tap((response: any) => {
         if (response && response.authenticated === true) {
           localStorage.setItem('utilisateur', JSON.stringify(response.utilisateur));
-          console.log('User is authenticated:', response);
           this.authStatusSubject.next(true);
         } else if (response.message === 'Invalid or expired token' && response.authenticated === false) {
           console.error('Invalid or Expired access Token');
@@ -80,7 +77,6 @@ export class AuthService {
             }
           });
           }else if (response.message === 'User not authenticated' && response.authenticated === false){
-          console.log('User is not authenticated:', response);
           this.authStatusSubject.next(false);
           localStorage.removeItem('utilisateur');
         }
@@ -103,7 +99,6 @@ export class AuthService {
       tap((response: any) => {
         if (response && response.utilisateur) {
           localStorage.setItem('utilisateur', JSON.stringify(response.utilisateur));
-          console.log('Token refreshed successfully:', response);
         }
       }),
       catchError((error) => {
@@ -124,7 +119,6 @@ export class AuthService {
         if (response) {
           //if registration succesful, user should verify their email before being able their account
 
-          console.log('Registration successful:', response);
         }
       }),
       catchError((error) => {
@@ -144,7 +138,6 @@ export class AuthService {
       tap((response: any) => {
         if (response && response.success) {
           // Verification code sent successfully
-          console.log('Verification code sent successfully:', response);
         }
       }),
       catchError((error) => {
@@ -161,7 +154,6 @@ export class AuthService {
       tap((response: any) => {
         if (response && response.success) {
           // Password reset successfully
-          console.log('Password reset successfully:', response);
         }
       }),
       catchError((error) => {
@@ -195,7 +187,6 @@ export class AuthService {
       withCredentials: true
     }).pipe(
       tap((response: any) => {
-        console.log('Email verification successful:', response);
       }),
       catchError((error) => {
         console.error('Email verification failed', error);

@@ -145,7 +145,6 @@ export class AnnuaireService {
       formData.append('logo', logo);
     }
 
-    console.log('FormData contents:');
     for (let pair of formData.entries()) {
       console.log(pair[0] + ': ' + pair[1]);
     }

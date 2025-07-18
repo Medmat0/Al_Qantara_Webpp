@@ -101,7 +101,6 @@ export class EventCalendarComponent implements OnInit {
   }
 
   handleEventClick(info: any) {
-    console.log('Event clicked:', info.event);
     const originalEvent = info.event.extendedProps.originalEvent;
     if (originalEvent) {
       this.openModal(originalEvent);

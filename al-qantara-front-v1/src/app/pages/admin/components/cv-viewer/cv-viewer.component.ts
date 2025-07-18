@@ -53,7 +53,6 @@ export class CvViewerComponent implements OnChanges {
     this.error = '';
     this.pdfSrc = '';
 
-    console.log('Loading CV from:', this.cvUrl);
 
     const headers = new HttpHeaders({
       'Accept': 'application/pdf'
@@ -68,10 +67,8 @@ export class CvViewerComponent implements OnChanges {
         this.loading = false;
         if (response.body) {
           const blob = response.body;
-          console.log('CV PDF blob received, size:', blob.size, 'bytes');
 
           this.pdfSrc = URL.createObjectURL(blob);
-          console.log('Created CV Blob URL:', this.pdfSrc);
         } else {
           this.error = 'Impossible de charger le CV';
         }

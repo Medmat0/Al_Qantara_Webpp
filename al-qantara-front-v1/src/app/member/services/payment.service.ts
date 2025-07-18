@@ -10,7 +10,6 @@ export class PaymentService {
   constructor(private http: HttpClient) {}
 
   createCheckout(body: any): Observable<any> {
-    console.log('[PaymentService] Données envoyées à /evenements/checkout :', body);
     return this.http.post(`${API_URL}/evenements/checkout`, body, { withCredentials: true });
   }
 }

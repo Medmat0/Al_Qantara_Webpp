@@ -48,7 +48,6 @@ export class RevueDescriptionComponent implements OnInit {
         this.revue.nombreTelechargements = response.nombreTelechargements;
         this.revue.createdBy = response.createdBy;
 
-        console.log('Mapped Revue:', this.revue);
       },
       error: (error: any) => {
         console.error('Error fetching revue:', error);
@@ -59,12 +58,10 @@ export class RevueDescriptionComponent implements OnInit {
 
   downloadFile(): void {
     const isAdminRoute = window.location.pathname.startsWith('/admin');
-    console.log('Is Admin Route:', isAdminRoute);
 
     if (!isAdminRoute) {
       this.revueService.addDownloadToRevue(this.revue.id).subscribe({
         next: (response) => {
-          console.log('Download count updated successfully:', response);
           this.navigateToPdfViewer();
         },
         error: (error) => {
@@ -73,13 +70,11 @@ export class RevueDescriptionComponent implements OnInit {
         }
       });
     } else {
-      console.log('On admin page, skipping request.');
       this.navigateToPdfViewer();
     }
   }
 
   private navigateToPdfViewer(): void {
-    console.log('Navigating to PDF viewer with URL:', this.revue.fichier);
     this.router.navigate(['/revues/pdf-viewer'], {
       queryParams: { url: this.revue.fichier }
     });

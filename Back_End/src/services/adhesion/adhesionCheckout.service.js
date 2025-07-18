@@ -49,9 +49,7 @@ const createAdhesionCheckoutIntent = async (adhesionData) => {
       formActionVersion: "V5"
     };
 
-    console.log('Données checkout adhésion:', JSON.stringify(checkoutData, null, 2));
-    console.log('Payer structure:', JSON.stringify(checkoutData.payer, null, 2));
-    console.log('Token HelloAsso:', token ? 'Token présent' : 'Token manquant');
+
 
     const response = await axios.post(
       `${HELLOASSO_API_URL}/v5/organizations/${HELLOASSO_ORGANIZATION_SLUG}/checkout-intents`,
@@ -65,7 +63,6 @@ const createAdhesionCheckoutIntent = async (adhesionData) => {
       }
     );
 
-    console.log("Réponse checkout adhésion:", response.data);
     return response.data;
   } catch (error) {
     console.error('Erreur lors de la création de l\'intention de paiement adhésion:', error);
@@ -119,7 +116,6 @@ const createDonationCheckoutIntent = async (donationData) => {
       formActionVersion: "V5"
     };
 
-    console.log('Données checkout don:', JSON.stringify(checkoutData, null, 2));
 
     const response = await axios.post(
       `${HELLOASSO_API_URL}/v5/organizations/${HELLOASSO_ORGANIZATION_SLUG}/checkout-intents`,

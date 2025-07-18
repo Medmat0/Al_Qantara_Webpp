@@ -9,7 +9,6 @@ const handlePaymentWebhook = async (req, res) => {
   try {
     const { eventType, data } = req.body;
     
-    console.log('Webhook reçu:', { eventType, data });
 
     // Vérifier le type d'événement
     if (eventType === 'Payment') {
@@ -17,22 +16,18 @@ const handlePaymentWebhook = async (req, res) => {
       const { metadata } = paymentData;
 
       if (!metadata || !metadata.type) {
-        console.log('Métadonnées manquantes dans le webhook');
         return res.status(200).json({ message: 'Webhook traité (métadonnées manquantes)' });
       }
 
       // Traiter selon le type de paiement
       if (metadata.type === 'adhesion') {
         await processAdhesionPayment(paymentData);
-        console.log('Paiement d\'adhésion traité avec succès');
       } else if (metadata.type === 'donation') {
         await processDonationPayment(paymentData);
-        console.log('Paiement de don traité avec succès');
       }
 
       res.status(200).json({ message: 'Webhook traité avec succès' });
     } else {
-      console.log('Type d\'événement non géré:', eventType);
       res.status(200).json({ message: 'Type d\'événement non géré' });
     }
   } catch (error) {

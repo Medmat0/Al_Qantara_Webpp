@@ -22,7 +22,6 @@ export class SocketService {
 
     // Connexion
     this.socket.on('connection', () => {
-      console.log('Socket connecté :', this.socket.id);
     });
 
     // Événements entrants
@@ -35,7 +34,6 @@ export class SocketService {
     });
 
     this.socket.on('disconnect', () => {
-      console.log('Socket déconnecté');
     });
   }
 

@@ -23,7 +23,6 @@ export class AdhesionService {
       utilisateurId: utilisateurId
     }, { withCredentials: true }).pipe(
       tap((response) => {
-        console.log('Checkout adhésion créé:', response);
         // Générer un token de session pour sécuriser l'accès à la page de succès
         this.generatePaymentSessionToken(utilisateurId, 'adhesion');
       }),
@@ -49,7 +48,6 @@ export class AdhesionService {
       utilisateurId: utilisateurId
     }, { withCredentials: true }).pipe(
       tap((response) => {
-        console.log('Checkout don créé:', response);
         // Générer un token de session pour sécuriser l'accès à la page de succès
         this.generatePaymentSessionToken(utilisateurId, 'don');
       }),
@@ -69,7 +67,6 @@ export class AdhesionService {
     return this.http.get(`${this.apiUrl}/adhesion/checkout/${checkoutIntentId}`, 
     { withCredentials: true }).pipe(
       tap((response) => {
-        console.log('Détails checkout récupérés:', response);
       }),
       catchError((error) => {
         console.error('Erreur récupération détails checkout:', error);
@@ -87,7 +84,6 @@ export class AdhesionService {
     return this.http.get(`${this.apiUrl}/adhesion/status/${utilisateurId}`, 
     { withCredentials: true }).pipe(
       tap((response) => {
-        console.log('Statut adhésion vérifié:', response);
       }),
       catchError((error) => {
         console.error('Erreur vérification statut adhésion:', error);
@@ -121,7 +117,6 @@ export class AdhesionService {
       utilisateurId: utilisateurId
     }, { withCredentials: true }).pipe(
       tap((response) => {
-        console.log('Adhésion créée:', response);
       }),
       catchError((error) => {
         console.error('Erreur création adhésion:', error);
@@ -152,7 +147,6 @@ export class AdhesionService {
     sessionStorage.setItem('payment_session_token', token);
     sessionStorage.setItem('payment_session_data', JSON.stringify(tokenData));
     
-    console.log('🔐 Token de session généré pour:', { utilisateurId, type });
   }
 
   /**

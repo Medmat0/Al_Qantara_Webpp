@@ -15,7 +15,6 @@ const updateProfilePicture = asyncHandler(async (req, res) => {
   const { photoUrl } = req.body;
 
   if (!photoUrl) {
-    console.log('No photoUrl in request body');
     return res.status(400).json({ message: "URL de la photo manquante" });
   }
 
@@ -28,7 +27,6 @@ const updateProfilePicture = asyncHandler(async (req, res) => {
     return res.status(404).json({ message: "Utilisateur non trouvé" });
   }
 
-  console.log('Updating user profile with photoUrl:', photoUrl);
 
   // Mettre à jour l'URL de la photo dans la base de données
   const updatedUser = await prisma.utilisateur.update({
@@ -48,7 +46,6 @@ const updateProfilePicture = asyncHandler(async (req, res) => {
     },
   });
 
-  console.log('User updated successfully:', updatedUser);
 
   res.status(200).json({
     message: "Photo de profil mise à jour avec succès",

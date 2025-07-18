@@ -113,7 +113,6 @@ export class ConversationsComponent implements OnInit, OnDestroy {
       this.socketService.socket.off('nouveauMessage', this.socketListener);
     }
     this.socketListener = (data: any) => {
-      console.log('Nouveau message reçu via socket:', data);
 
       const msg = data.message;
       // Cherche la conversation concernée
@@ -147,7 +146,6 @@ export class ConversationsComponent implements OnInit, OnDestroy {
   selectConversation(conv: any) {
     conv.nonLus = 0;
     this.conversationSelected.emit(conv);
-    console.log('Conversation sélectionnée :', conv);
   }
 
   rafraichirConversations() {

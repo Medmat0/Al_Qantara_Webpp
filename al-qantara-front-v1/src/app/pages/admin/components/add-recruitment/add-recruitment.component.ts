@@ -71,11 +71,9 @@ export class AddRecruitmentComponent implements OnInit, OnDestroy {
         tags: this.tags
       };
 
-      console.log('Données envoyées:', formData);
 
       this.recruitmentService.createOffer(formData).subscribe({
         next: (response) => {
-          console.log('Offre créée avec succès:', response);
           // Ici il faut mettre la page de redirection après la création de la page recrutement
           this.router.navigate(['/admin']);
         },

@@ -59,7 +59,6 @@ export class ManageRecruitmentComponent implements OnInit {
             a.titre.localeCompare(b.titre, 'fr', { sensitivity: 'base' })
           );
           this.applyFilters();
-          console.log('Offres chargées et triées:', this.offers);
         }
       },
       error: (error) => {

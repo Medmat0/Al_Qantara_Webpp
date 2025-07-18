@@ -16,10 +16,8 @@ export class AdminGuard implements CanActivate {
       withCredentials: true //envoi des credentials et reception cookies
     }).pipe(tap((response: any) => {
         if (response.authorized) {
-          console.log('User authorized');
         }
         else {
-          console.log('User not authorized');
           this.router.navigate(['']);
         }
       }),

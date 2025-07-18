@@ -95,7 +95,6 @@ export class PdfViewerComponent implements OnInit {
     if (pdfUrl) {
       try {
         const decodedUrl = decodeURIComponent(pdfUrl);
-        console.log('PDF URL decoded:', decodedUrl);
         this.loadPdfFromCloudinary(decodedUrl);
       } catch (error) {
         console.error('Error decoding URL:', error);
@@ -106,7 +105,6 @@ export class PdfViewerComponent implements OnInit {
   }
 
   private loadPdfFromCloudinary(url: string) {
-    console.log('Loading PDF from:', url);
     
     const headers = new HttpHeaders({
       'Accept': 'application/pdf'
@@ -118,18 +116,12 @@ export class PdfViewerComponent implements OnInit {
       observe: 'response'
     }).subscribe({
       next: (response) => {
-        console.log('Response headers:', response.headers);
-        console.log('Response status:', response.status);
-        console.log('Response type:', response.body?.type);
         
         if (response.body) {
           const blob = response.body;
-          console.log('PDF blob received, size:', blob.size, 'bytes');
-          console.log('Blob type:', blob.type);
           
           // Création de l'URL du blob
           this.pdfSrc = URL.createObjectURL(blob);
-          console.log('Created Blob URL:', this.pdfSrc);
         } else {
           console.error('Response body is null');
         }

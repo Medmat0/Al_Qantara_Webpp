@@ -19,7 +19,6 @@ export class RevueService {
   getAllRevues(): Observable<any> {
     return this.http.get(`${this.apiUrl}`).pipe(
       tap((response) => {
-        console.log('Fetched revues:', response);
       }),
       catchError((error) => {
         console.error('Error fetching revues:', error);
@@ -31,7 +30,6 @@ export class RevueService {
   getRevueById(id: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/${id}`).pipe(
       tap((response) => {
-        console.log('Fetched revue:', response);
       }),
       catchError((error) => {
         console.error('Error fetching revue:', error);
@@ -43,7 +41,6 @@ export class RevueService {
   addVueToRevue(revueId: number): Observable<any> {
     return this.http.post(`${this.apiUrl}/${revueId}/view`, {}).pipe(
       tap((response) => {
-        console.log('Added view to revue:', response);
       }),
       catchError((error) => {
         console.error('Error adding view to revue:', error);
@@ -55,7 +52,6 @@ export class RevueService {
   addDownloadToRevue(revueId: number): Observable<any> {
     return this.http.post(`${this.apiUrl}/${revueId}/download`, {}).pipe(
       tap((response) => {
-        console.log('Added download to revue:', response);
       }),
       catchError((error) => {
         console.error('Error adding download to revue:', error);

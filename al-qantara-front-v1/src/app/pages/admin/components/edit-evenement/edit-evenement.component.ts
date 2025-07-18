@@ -289,7 +289,6 @@ export class EditEvenementComponent implements OnInit {
       return;
     }
 
-    console.log('Données à envoyer:', changedData);
 
     this.adminEvenementService.editEvenement(this.event.id, changedData).subscribe({
       next: (response: any) => {

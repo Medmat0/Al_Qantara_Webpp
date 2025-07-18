@@ -230,7 +230,6 @@ export class PublicAnnuaireComponent implements OnInit {
     // Récupérer les détails complets via l'API
     this.annuaireService.getAssociation(association.id).subscribe({
       next: (detailsAssociation) => {
-        console.log('🔍 Détails récupérés via API:', detailsAssociation);
         this.selectedAssociation = detailsAssociation;
         this.showModal = true;
       },

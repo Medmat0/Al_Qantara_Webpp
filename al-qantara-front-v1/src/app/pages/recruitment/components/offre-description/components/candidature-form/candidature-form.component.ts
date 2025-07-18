@@ -48,7 +48,6 @@ export class CandidatureFormComponent implements OnInit, OnChanges {
       this.candidatureService.checkCandidature(this.offre.id).subscribe({
         next: (response) => {
           this.hasAlreadyApplied = !!(response && response.hasApplied);
-          console.log('Candidature vérifiée avec succès:', response);
         },
         error: (error) => {
           console.error('Erreur lors de la vérification de la candidature:', error);

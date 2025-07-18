@@ -46,16 +46,13 @@ export class UserService {
   private readonly apiUrl = `${API_URL}/admin/users`;
 
   constructor(private http: HttpClient) {
-    console.log('UserService - API URL:', this.apiUrl);
   }
 
   getUsers(): Observable<UsersResponse> {
-    console.log('UserService - Calling getUsers()');
     return this.http.get<UsersResponse>(this.apiUrl, {
       withCredentials: true
     }).pipe(
       tap(response => {
-        console.log('UserService - Raw API Response:', response);
       }),
       map(response => {
         if (!response || !Array.isArray(response.users)) {

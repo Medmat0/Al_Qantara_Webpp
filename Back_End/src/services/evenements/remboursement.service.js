@@ -8,7 +8,6 @@ export const createRemboursementDemande = async (utilisateurId, evenementId, rai
     throw new Error('Le RIB est requis pour effectuer une demande de remboursement');
   }
 
-  console.log('🔧 Création demande remboursement:', { utilisateurId, evenementId, raison: raison ? 'FOURNI' : 'MANQUANT', rib: rib ? 'FOURNI' : 'MANQUANT' });
 
   // Création de la demande
   const demande = await prisma.remboursementDemande.create({
@@ -21,7 +20,6 @@ export const createRemboursementDemande = async (utilisateurId, evenementId, rai
     }
   });
 
-  console.log('✅ Demande créée:', demande.id);
 
   // Récupérer les informations utilisateur et événement séparément
   const utilisateur = await prisma.utilisateur.findUnique({
@@ -34,7 +32,6 @@ export const createRemboursementDemande = async (utilisateurId, evenementId, rai
 
   // Envoi email confirmation à l'utilisateur
   if (utilisateur?.email) {
-    console.log('📧 Envoi email de confirmation à:', utilisateur.email);
     const emailHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;">
         <h2 style="color: #2c3e50; text-align: center;">Demande de remboursement envoyée</h2>

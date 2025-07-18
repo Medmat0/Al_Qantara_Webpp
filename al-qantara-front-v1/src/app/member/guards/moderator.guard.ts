@@ -20,9 +20,7 @@ export class ModeratorGuard implements CanActivate {
     }).pipe(
       tap((response: any) => {
         if (response.isModerator) {
-          console.log('User is a moderator');
         } else {
-          console.log('User is not a moderator');
           this.router.navigate([`/communities/${communityId}`]);
         }
       }),

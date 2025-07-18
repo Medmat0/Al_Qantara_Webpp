@@ -112,7 +112,6 @@ export class NavBarComponent {
   showBecomeMemberButton(): boolean {
     // Affiche le bouton si l'utilisateur n'a pas une adhésion active (comme dans le profil)
      if (!this.isAuthenticated || !this.user) return false;
-    console.log('User adhésion status:', this.user.adhesion);
     // On cache le bouton si le statut est ACTIF ou ACCEPTE
     return !this.user.adhesion || (this.user.adhesion && this.user.adhesion.statut !== 'ACTIF' && this.user.adhesion.statut !== 'ACCEPTE');
   }

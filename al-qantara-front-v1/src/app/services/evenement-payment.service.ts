@@ -21,7 +21,6 @@ export class EvenementPaymentService {
     sessionStorage.setItem(this.SESSION_TOKEN_KEY, token);
     sessionStorage.setItem(this.TOKEN_EXPIRY_KEY, expiry.toString());
     
-    console.log('🔐 Token de session événement généré:', { token, expiry: new Date(expiry) });
     return token;
   }
 
@@ -36,7 +35,6 @@ export class EvenementPaymentService {
     this.clearSessionToken();
     
     if (!storedToken || !storedExpiry) {
-      console.log('⚠️ Token de session événement manquant');
       return false;
     }
     
@@ -44,16 +42,13 @@ export class EvenementPaymentService {
     const expiryTime = parseInt(storedExpiry);
     
     if (now > expiryTime) {
-      console.log('⚠️ Token de session événement expiré');
       return false;
     }
     
     if (providedToken && providedToken !== storedToken) {
-      console.log('⚠️ Token de session événement invalide');
       return false;
     }
     
-    console.log('✅ Token de session événement validé et consommé');
     return true;
   }
 
@@ -83,7 +78,6 @@ export class EvenementPaymentService {
    * Redirige vers la page d'événements en cas d'accès non autorisé
    */
   redirectToEvents(): void {
-    console.log('🔒 Redirection vers /events - accès non autorisé à la page de succès');
     this.router.navigate(['/events']);
   }
 

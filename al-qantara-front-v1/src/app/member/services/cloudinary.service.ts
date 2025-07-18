@@ -25,7 +25,6 @@ export class CloudinaryService {
           withCredentials: true
         })
       );
-      console.log('Signature response:', response);
       return response;
     } catch (error) {
       console.error('Erreur lors de la récupération de la signature Cloudinary:', error);
@@ -60,7 +59,6 @@ export class CloudinaryService {
       }
 
       const result = await response.json();
-      console.log('Upload result:', result);
       return result.secure_url;
     } catch (error) {
       console.error('Error uploading file:', error);

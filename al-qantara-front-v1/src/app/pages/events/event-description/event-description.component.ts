@@ -99,7 +99,6 @@ export class EventDescriptionComponent {
   }
 
   onRemboursementSuccess(event: any) {
-    console.log('✅ Demande de remboursement envoyée avec succès:', event);
 
     // Marquer que l'utilisateur a demandé un remboursement
     this.hasRequestedRefund = true;
@@ -160,7 +159,6 @@ export class EventDescriptionComponent {
             }else {
               this.evenementService.checkParticipation(this.evenementId).subscribe({
                 next: (res) => {
-                  console.log('Vérification de la participation réussie', res);
                   this.isParticipating = !!res.participation;
                   this.participation = res.participation;
                 },
@@ -225,7 +223,6 @@ export class EventDescriptionComponent {
 
   handleShareEventByMessage(user: any) {
     if (!this.checkAuthentication()) return;
-    console.log("test user choisi",user);
 
     const preloadedMessage = {
       destinataireId: user,
@@ -233,7 +230,6 @@ export class EventDescriptionComponent {
       type: 'EVENEMENT',
       evenementId: this.evenementId
     };
-    console.log("preloadedMessage", preloadedMessage);
 
     this.router.navigate(['/messaging'], {
       queryParams: {
@@ -370,7 +366,6 @@ export class EventDescriptionComponent {
 
     this.evenementService.likeEvenement(this.evenement.id).subscribe({
       next: (response) => {
-        console.log('Like toggled successfully:', response);
 
         // Mettre à jour l'état local en fonction de l'action effectuée
         if (this.userHasLiked) {
@@ -422,7 +417,6 @@ export class EventDescriptionComponent {
 
     this.evenementService.addCommentToEvenement(evenement.id,commentText).subscribe({
       next: (res) => {
-        console.log('Commentaire ajouté avec succès', res);
         // Ajoute le commentaire à l'événement localement
         if (!Array.isArray(evenement.comments)) {
           evenement.comments = [];
@@ -508,7 +502,6 @@ export class EventDescriptionComponent {
 
   onCommunitySelected(communityId: number) {
     this.closeCommunityResearchPopup(communityId);
-    console.log('Evenement:', this.evenement);
     this.router.navigate(
       ['/communities', communityId],
       {
@@ -541,7 +534,6 @@ export class EventDescriptionComponent {
    * Gérer le succès de la notation
    */
   onRatingSubmitted(): void {
-    console.log('✅ Notation envoyée avec succès');
     // Optionnel : rafraîchir les données de l'événement
     // this.evenementService.getEvenementById(this.evenementId).subscribe(...);
   }

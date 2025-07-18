@@ -34,7 +34,6 @@ export class adminRevueService{
       observe: 'events'
     }).pipe(
       tap((response) => {
-        console.log('Revue added successfully:', response);
       }),
       catchError((error) => {
         console.error('Error adding revue:', error);
@@ -47,7 +46,6 @@ export class adminRevueService{
     const url = `${this.apiUrl}/delete/${id}`;
     return this.http.delete(url, { withCredentials: true }).pipe(
       tap(() => {
-        console.log(`Revue with ID ${id} deleted successfully.`);
       }),
       catchError((error) => {
         console.error(`Error deleting revue with ID ${id}:`, error);

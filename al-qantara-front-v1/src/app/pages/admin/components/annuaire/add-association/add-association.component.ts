@@ -245,8 +245,6 @@ export class AddAssociationComponent implements OnInit {
         }
       });
 
-      console.log('Association data to send:', cleanedAssociation);
-      console.log('Logo file:', this.selectedLogoFile);
 
       // Utiliser la même méthode que community : passer le fichier directement
       const response = await this.annuaireService.creerAssociation(cleanedAssociation, this.selectedLogoFile || undefined).toPromise();

@@ -48,7 +48,6 @@ export class HomeContentComponent implements OnInit {
         const articlesArray = response.articles || response;
         // Prendre les 16 derniers articles
         this.articles = articlesArray.slice(-16).reverse();
-        console.log('Articles chargés:', this.articles);
       },
       error: (error) => {
         console.error('Erreur lors du chargement des articles:', error);
@@ -78,7 +77,6 @@ export class HomeContentComponent implements OnInit {
       next: (response) => {
         // Prendre les 6 dernières revues
         this.latestRevues = response.slice(-6).reverse();
-        console.log('Revues chargées:', this.latestRevues);
 
         // Debug: afficher les propriétés de chaque revue
         this.latestRevues.forEach((revue, index) => {

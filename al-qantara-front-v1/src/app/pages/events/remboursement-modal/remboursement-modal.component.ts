@@ -246,7 +246,6 @@ export class RemboursementModalComponent {
 
     this.remboursementService.demanderRemboursement(this.event.id, this.raison, this.rib).subscribe({
       next: (response) => {
-        console.log('✅ Demande de remboursement envoyée:', response);
         this.success.emit(response);
         this.close.emit();
       },

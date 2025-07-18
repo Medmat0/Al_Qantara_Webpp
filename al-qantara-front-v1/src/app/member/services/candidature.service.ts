@@ -30,7 +30,6 @@ export class CandidatureService {
     }).pipe(
       tap((response: any) => {
         if (response) {
-          console.log('Candidature ajoutée avec succès:', response);
         }
       }),
       catchError((error) => {
@@ -48,7 +47,6 @@ export class CandidatureService {
       withCredentials: true //envoi des credentials et reception cookies
     }).pipe(
       tap((response: any) => {
-        console.log('Candidature vérifiée avec succès:', response);
       }),
       catchError((error) => {
         console.error('Erreur lors de la vérification de la candidature', error);
@@ -66,7 +64,6 @@ export class CandidatureService {
       withCredentials: true //envoi des credentials et reception cookies
     }).pipe(tap((response: any) => {
         if (response) {
-          console.log('Candidature supprimée avec succès:', response);
         }
       }),
       catchError((error) => {
@@ -87,7 +84,6 @@ export class CandidatureService {
       withCredentials: true
     }).pipe(
       tap((response: any) => {
-        console.log('Données récupérées avec succès:', response);
       }),
       catchError((error) => {
         console.error('Erreur lors de la récupération des données', error);

@@ -66,7 +66,6 @@ export class UsersComponent implements OnInit {
     // Vérifier d'abord le statut d'authentification
     this.authService.checkAuthStatus().subscribe({
       next: (response) => {
-        console.log('Auth status response:', response);
         if (response.authenticated) {
           this.loadUsers();
         } else {
@@ -83,20 +82,15 @@ export class UsersComponent implements OnInit {
 
   loadUsers() {
     this.loading = true;
-    console.log('🔄 Loading users...');
     
     this.userService.getUsers().subscribe({
       next: (response: any) => {
-        console.log('✅ Users response:', response);
-        console.log('📊 Users data:', response.users);
-        console.log('📈 Stats data:', response.stats);
         
         this.users = response.users || [];
         this.stats = response.stats || null;
         this.filterUsers();
         this.loading = false;
         
-        console.log('🏁 Loading completed. Users count:', this.users.length);
       },
       error: (error) => {
         console.error('❌ Error loading users:', error);

@@ -56,7 +56,6 @@ export class ResetPasswordComponent{
         this.showResetForm = true;
         this.isError = false;
         this.emailSent = 'Un email de vérification a été envoyé à ' + email;
-        console.log('Verification code sent successfully', response);
       },
       error: (error) => {
         this.isError = true;
@@ -79,7 +78,6 @@ export class ResetPasswordComponent{
         // Handle successful password reset
         this.isError = false;
         this.message = 'Password reset successfully';
-        console.log('Password reset successfully', response);
         this.router.navigate(['/auth/login']).then(r => console.log(r));
       },
       error: (error) => {

@@ -73,7 +73,6 @@ export class EditRecruitmentComponent implements OnInit {
     this.recruitmentService.getOfferById(this.offerId).subscribe({
       next: (response: any) => {
         const offer = response.offre;
-        console.log('Données reçues:', offer);
 
         this.form.patchValue({
           title: offer.titre,

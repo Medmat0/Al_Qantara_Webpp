@@ -37,7 +37,6 @@ export class RemoveRevueComponent {
       next: (response) => {
         this.revues = response;
 
-        console.log('Revues fetched and formatted successfully:', this.revues);
       },
       error: (error) => {
         console.error('Error fetching revues:', error);
@@ -112,7 +111,6 @@ export class RemoveRevueComponent {
       this.adminRevueService.deleteRevueById(revueId).subscribe({
         next: () => {
           this.revues = this.revues.filter(revue => revue.id !== revueId);
-          console.log('Revue deleted successfully.');
         },
         error: (error) => {
           console.error('Error deleting revue:', error);
@@ -123,7 +121,6 @@ export class RemoveRevueComponent {
   }
 
   onRevueClick(revue: any): void {
-    console.log('Revue clicked:', revue);
     this.router.navigate(['/revues/revue-description/', revue.id]);
   }
 }
