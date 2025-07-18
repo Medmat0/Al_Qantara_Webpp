@@ -108,13 +108,33 @@
     </div>
 
     <div class="actions-right">
-      <button
-        *ngIf="isModerator || userId === post.auteurId"
-        (click)="deletePost($event)"
-        class="btn btn-danger delete-btn">
-        <span class="btn-icon"></span>
-        <span>Supprimer</span>
-      </button>
+      <ng-container *ngIf="isModerator || userId === post.auteurId">
+        <button
+          *ngIf="!showDeleteConfirm"
+          (click)="onDeleteClick($event)"
+          class="btn btn-danger delete-btn">
+          <span class="btn-icon"></span>
+          <span>Supprimer</span>
+        </button>
+        <div *ngIf="showDeleteConfirm" class="delete-confirm-buttons">
+          <button
+            (click)="confirmDeletePost($event)"
+            class="btn btn-success btn-icon-only">
+            <!-- Croix verte -->
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M5 10L9 14L15 6" stroke="#2ecc40" stroke-width="2" fill="none"/>
+            </svg>
+          </button>
+          <button
+            (click)="cancelDeletePost($event)"
+            class="btn btn-danger btn-icon-only">
+            <!-- Croix rouge -->
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M6 6L14 14M14 6L6 14" stroke="#ff4136" stroke-width="2" fill="none"/>
+            </svg>
+          </button>
+        </div>
+      </ng-container>
     </div>
   </footer>
 </article>

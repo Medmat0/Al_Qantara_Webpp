@@ -3,10 +3,11 @@ import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { ModalService } from '../services/banishedmodal.service';
 
 @Injectable()
 export class MemberInterceptor implements HttpInterceptor {
-  constructor(private router: Router) {}
+  constructor(private router: Router, private modalService: ModalService) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(req).pipe(
@@ -33,11 +34,9 @@ export class MemberInterceptor implements HttpInterceptor {
           error.error &&
           error.error.message === "Vous êtes banni de cette communauté, vous ne pouvez pas continuer"
         ) {
-          // Extraction de l'id de la communauté depuis l'URL
           const match = req.url.match(/communities\/(\d+)/);
           if (match && match[1]) {
-            alert("Vous êtes banni de cette communauté et ne pouvez pas effectuer cette action.");
-
+            this.modalService.openBanishedModal();
           }
         }
 

@@ -26,6 +26,8 @@ export class CommunityPostDescriptionComponent implements OnInit {
   voteError: string | null = null;
   voteSuccess = false;
 
+  showDeleteConfirm = false;
+
 
   newCommentContent: string = '';
   replyFormVisible: { [key: number]: boolean } = {};
@@ -262,11 +264,21 @@ export class CommunityPostDescriptionComponent implements OnInit {
     });
   }
 
+  onDeleteClick() {
+    this.showDeleteConfirm = true;
+  }
+
+  confirmDeletePost() {
+    this.deletePost();
+    this.showDeleteConfirm = false;
+  }
+
+  cancelDeletePost() {
+    this.showDeleteConfirm = false;
+  }
 
   deletePost() {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer ce post ? Cette action est irréversible.')) {
-      return;
-    }
+
     this.communityService.deletePost(this.communityId, this.postId).subscribe({
       next: () => {
         console.log('Post deleted successfully');
