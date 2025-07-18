@@ -117,6 +117,31 @@
         </div>
       </div>
 
+      <!-- Section remboursement harmonisée -->
+      <div *ngIf="evenement?.isPayant && canRequestRefund" class="refund-request-section mb-2">
+        <div class="custom-notification notification-warning" style="margin-bottom: 12px;">
+          <div class="notification-content">
+            <div class="notification-message">
+              <strong>Demande de remboursement</strong><br>
+              <span>Vous pouvez demander un remboursement pour cet événement payant.</span>
+            </div>
+            <button (click)="openRemboursementModal()" class="btn-refund" style="margin-left:16px;">Demander un remboursement</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Message si demande de remboursement déjà envoyée -->
+      <div *ngIf="evenement?.isPayant && hasRequestedRefund" class="refund-requested-message mb-2">
+        <div class="custom-notification notification-info">
+          <div class="notification-content">
+            <div class="notification-message">
+              Votre demande de remboursement a été envoyée.<br>
+              Vous recevrez une réponse par email.
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="mb-2">
         <strong>Commentaires</strong>
         <form (ngSubmit)="handleCommentSubmit()" class="mb-2">
