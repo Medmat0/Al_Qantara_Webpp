@@ -23,6 +23,8 @@ export class CommunityPostComponent implements OnInit {
   isAuthenticated = false;
   userId: number | null = null;
 
+  showDeleteConfirm = false;
+
   // For comments/replies
   replyFormVisible: { [key: number]: boolean } = {};
   replyContent: { [key: number]: string } = {};
@@ -81,18 +83,30 @@ export class CommunityPostComponent implements OnInit {
     });
   }
 
-  deletePost(event: MouseEvent) {
+  onDeleteClick(event: MouseEvent) {
     event.stopPropagation();
-    if (confirm('Voulez-vous vraiment supprimer ce post ?')) {
-      this.communityService.deletePost(this.post.communityId, this.post.id).subscribe({
-        next: () => {
-          this.postEvent.emit({ type: 'deleted', postId: this.post.id });
-        },
-        error: (err) => {
-          console.error('Erreur lors de la suppression du post:', err);
-        }
-      });
-    }
+    event.preventDefault();
+    this.showDeleteConfirm = true;
+  }
+
+  confirmDeletePost(event: MouseEvent) {
+    event.stopPropagation();
+    event.preventDefault();
+    this.communityService.deletePost(this.post.communityId, this.post.id).subscribe({
+      next: () => {
+        this.postEvent.emit({ type: 'deleted', postId: this.post.id });
+      },
+      error: (err) => {
+        console.error('Erreur lors de la suppression du post:', err);
+      }
+    });
+    this.showDeleteConfirm = false;
+  }
+
+  cancelDeletePost(event: MouseEvent) {
+    event.stopPropagation();
+    event.preventDefault();
+    this.showDeleteConfirm = false;
   }
 
   isPollClosed(): boolean {

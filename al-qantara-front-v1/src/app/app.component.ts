@@ -5,10 +5,12 @@ import { AuthService } from './member/services/auth.service';
 import { AuthModalService } from './services/auth-modal.service';
 import { AuthRequiredModalComponent } from './pages/auth-required-modal/auth-required-modal.component';
 import { CommonModule } from '@angular/common';
+import { ModalService } from './member/services/banishedmodal.service';
+import {BanishedModal} from './pages/bannished-modal/banished-modal';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, NavBarComponent, AuthRequiredModalComponent, CommonModule],
+  imports: [RouterOutlet, NavBarComponent, AuthRequiredModalComponent,BanishedModal ,CommonModule],
   template: `
     <main>
       <app-nav-bar></app-nav-bar>
@@ -19,6 +21,7 @@ import { CommonModule } from '@angular/common';
         *ngIf="showAuthModal"
         (close)="onAuthModalClose()">
       </app-auth-required-modal>
+      <app-banished-modal *ngIf="showBanishedModal" (close)="showBanishedModal = false"></app-banished-modal>
     </main>
   `,
   styles: [],
@@ -27,10 +30,12 @@ import { CommonModule } from '@angular/common';
 export class AppComponent implements OnInit {
   title = 'Al Qantara';
   showAuthModal = false;
+  showBanishedModal = false;
 
   constructor(
     private authService: AuthService,
-    private authModalService: AuthModalService
+    private authModalService: AuthModalService,
+    private modalService: ModalService
   ) {}
 
   ngOnInit(): void {
@@ -39,6 +44,10 @@ export class AppComponent implements OnInit {
       error: (err) => {
         console.warn('User is not authenticated:', err.message || err);
       }
+    });
+
+    this.modalService.banishedModal$.subscribe(() => {
+      this.showBanishedModal = true;
     });
 
     // Écouter l'état du modal d'authentification
