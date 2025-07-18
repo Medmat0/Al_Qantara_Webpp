@@ -192,7 +192,7 @@ export class EditEvenementComponent implements OnInit {
     return fin > debut;
   }
 
-  onSubmit(_form: NgForm) {
+  async onSubmit(_form: NgForm) {
     this.resetErrors();
     this.errorMessage = '';
     this.successMessage = '';
@@ -203,7 +203,6 @@ export class EditEvenementComponent implements OnInit {
 
     this.isSubmitting = true;
 
-    // Créer un objet avec seulement les champs modifiés
     const changedData: any = {};
 
     // Comparer titre
@@ -259,10 +258,28 @@ export class EditEvenementComponent implements OnInit {
     if (JSON.stringify(this.event.images) !== JSON.stringify(this.originalEventData.images)) {
       changedData.images = this.event.images;
     }
-
     // Comparer vidéo
     if (this.event.video !== this.originalEventData.video) {
       changedData.video = this.event.video;
+    }
+
+    // Gérer l'upload des nouvelles images/vidéo
+    try {
+      // Upload des images sélectionnées
+      if (this.selectedImages && this.selectedImages.length > 0) {
+        const uploadedImageUrls = await this.adminEvenementService.uploadImages(this.selectedImages);
+        // Ajouter les nouvelles images aux images existantes
+        changedData.images = [...(changedData.images || this.event.images), ...uploadedImageUrls];
+      }
+      // Upload de la vidéo sélectionnée
+      if (this.selectedVideo) {
+        const uploadedVideoUrl = await this.adminEvenementService.uploadVideo(this.selectedVideo);
+        changedData.video = uploadedVideoUrl;
+      }
+    } catch (uploadError) {
+      this.errorMessage = 'Erreur lors de l\'upload des fichiers. Veuillez réessayer.';
+      this.isSubmitting = false;
+      return;
     }
 
     // Vérifier s'il y a des changements
@@ -278,8 +295,6 @@ export class EditEvenementComponent implements OnInit {
       next: (response: any) => {
         this.successMessage = 'Événement modifié avec succès !';
         this.isSubmitting = false;
-
-        // Émettre l'événement mis à jour
         setTimeout(() => {
           this.eventUpdated.emit(response.evenement || response);
         }, 1000);

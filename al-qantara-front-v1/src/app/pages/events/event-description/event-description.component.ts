@@ -260,6 +260,12 @@ export class EventDescriptionComponent {
 
     if (!this.checkAuthentication()) return;
 
+    // Vérifier si l'utilisateur peut participer à ce type d'événement
+    if (!this.canParticipateToEvent(evenement)) {
+      this.error = "Vous ne pouvez participer qu'aux événements externes. Cet événement est réservé aux membres de l'association.";
+      return;
+    }
+
     this.loading = true;
     this.error = '';
     this.evenementService.addParticipationToEvenement(evenement.id).subscribe({
@@ -462,6 +468,12 @@ export class EventDescriptionComponent {
     // Vérifier l'authentification avant de procéder à l'achat
     if (!this.checkAuthentication()) return;
 
+    // Vérifier si l'utilisateur peut participer à ce type d'événement
+    if (!this.canParticipateToEvent(this.evenement)) {
+      this.errorPaymentMessage = "Vous ne pouvez participer qu'aux événements externes. Cet événement est réservé aux membres de l'association.";
+      return;
+    }
+
     this.errorPaymentMessage = '';
     const utilisateur = JSON.parse(localStorage.getItem('utilisateur') || '{}');
     if (
@@ -560,6 +572,35 @@ export class EventDescriptionComponent {
     }
   }
 
+  /**
+   * Vérifier si l'utilisateur connecté peut participer à cet événement
+   * Les utilisateurs avec le rôle USER ne peuvent participer qu'aux événements EXTERNE
+   */
+  canParticipateToEvent(evenement: any): boolean {
+    if (!evenement) return false;
+
+    const utilisateur = JSON.parse(localStorage.getItem('utilisateur') || '{}');
+    const userRole = utilisateur.role || 'USER';
+
+    // Si l'utilisateur est USER, il ne peut participer qu'aux événements EXTERNE
+    if (userRole === 'USER' && evenement.type === 'INTERNE') {
+      return false;
+    }
+
+    // Pour tous les autres cas (ADMIN, MEMBRE ou événements EXTERNE), autoriser
+    return true;
+  }
+
+  /**
+   * Vérifier si l'utilisateur peut voir les boutons de participation
+   */
+  canShowParticipationButtons(evenement: any): boolean {
+    return this.canParticipateToEvent(evenement) &&
+           evenement.placesRestantes > 0 &&
+           !this.isEventPassed() &&
+           !this.isParticipating;
+  }
+
   private showToastMessage(message: string): void {
     this.toastMessage = message;
     this.showToast = true;
@@ -569,4 +610,10 @@ export class EventDescriptionComponent {
     }, 3000);
   }
 
+  /**
+   * Naviguer vers la page d'adhésion
+   */
+  navigateToAdhesion(): void {
+    this.router.navigate(['/adhesion']);
+  }
 }

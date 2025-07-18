@@ -76,7 +76,7 @@ const deletePostCommentService = async (req) => {
     }
 
     // Vérifie que l'utilisateur est l'auteur du commentaire ou un modérateur
-    if (comment.auteurId !== userId && userCommunityRole !== "MODERATEUR") {
+    if (comment.auteurId !== userId && userCommunityRole !== "MODERATEUR" && userCommunityRole !== "ADMIN") {
         const err = new Error("Vous n'êtes pas autorisé à supprimer ce commentaire.");
         err.status = 403;
         throw err;

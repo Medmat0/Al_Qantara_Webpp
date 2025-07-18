@@ -56,7 +56,7 @@
         </div>
 
         <!-- Boutons de participation dans la section actions -->
-        <ng-container *ngIf="!isParticipating && evenement.placesRestantes > 0 && !isEventPassed()">
+        <ng-container *ngIf="canShowParticipationButtons(evenement)">
           <button
             *ngIf="evenement.isPayant"
             (click)="onPayWithHelloAsso()"
@@ -72,6 +72,7 @@
             {{ loading ? 'Participation en cours...' : 'Participer à l\'événement' }}
           </button>
         </ng-container>
+
         <button
           *ngIf="isParticipating && !isEventPassed()"
           (click)="onUnsubscribeEvenement(evenement)"
@@ -86,6 +87,14 @@
           [disabled]="loading"
           class="btn-participate">
           Noter l'événement
+        </button>
+      </div>
+
+      <!-- Message d'information pour les événements INTERNE et utilisateurs USER - En dehors de la section actions -->
+      <div *ngIf="!canParticipateToEvent(evenement) && evenement.placesRestantes > 0 && !isEventPassed() && !isParticipating" class="event-restriction-message">
+        <span class="event-restriction-text">Cet événement est réservé aux membres de l'association.</span>
+        <button (click)="navigateToAdhesion()" class="btn-adhesion">
+          Adhérer à l'association
         </button>
       </div>
 
