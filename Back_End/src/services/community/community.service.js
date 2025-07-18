@@ -297,7 +297,24 @@ const modifyCommunityService = async (req) => {
 
     // Modif des champs rentrées dans la requête
     const data = {};
-    if (nom !== undefined) data.nom = nom;
+    if (nom !== undefined) {
+        // Vérifie si une autre communauté porte déjà ce nom
+        const existingCommunity = await prisma.community.findFirst({
+            where: {
+                nom: {
+                    equals: nom,
+                    mode: 'insensitive'
+                },
+                id: { not: parseInt(communityId) }
+            }
+        });
+        if (existingCommunity) {
+            const err = new Error("Une communauté avec ce nom existe déjà.");
+            err.status = 409;
+            throw err;
+        }
+        data.nom = nom;
+    }
     if (description !== undefined) data.description = description;
 
     if (logo) {
