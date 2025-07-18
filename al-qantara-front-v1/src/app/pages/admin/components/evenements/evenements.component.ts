@@ -347,7 +347,9 @@ export class EvenementsComponent {
 
   exportToPDF(): void {
     if (this.participants.length === 0) {
-      alert('Aucun participant à exporter.');
+      this.showModal = true;
+      this.modalTitle = 'Export impossible';
+      this.modalMessage = 'Aucun participant à exporter.';
       return;
     }
 
@@ -394,7 +396,9 @@ export class EvenementsComponent {
 
   exportToCSV(): void {
     if (this.participants.length === 0) {
-      alert('Aucun participant à exporter.');
+        this.showModal = true;
+        this.modalTitle = 'Export impossible';
+        this.modalMessage = 'Aucun participant à exporter.';
       return;
     }
 
@@ -427,7 +431,9 @@ export class EvenementsComponent {
 
   exportRemboursementsToPDF(): void {
     if (this.remboursements.length === 0) {
-      alert('Aucune demande de remboursement à exporter.');
+      this.showModal = true;
+      this.modalTitle = 'Export impossible';
+      this.modalMessage = 'Aucune demande de remboursement à exporter.';
       return;
     }
 
@@ -483,7 +489,9 @@ export class EvenementsComponent {
 
   exportRemboursementsToCSV(): void {
     if (this.remboursements.length === 0) {
-      alert('Aucune demande de remboursement à exporter.');
+      this.showModal = true;
+      this.modalTitle = 'Export impossible';
+      this.modalMessage = 'Aucune demande de remboursement à exporter.';
       return;
     }
 
