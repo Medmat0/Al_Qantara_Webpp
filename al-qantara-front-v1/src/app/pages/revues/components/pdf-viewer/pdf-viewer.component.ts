@@ -90,19 +90,12 @@ export class PdfViewerComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    const pdfUrl = this.route.snapshot.queryParamMap.get('url');
-    console.log('PDF URL received (encoded):', pdfUrl);
-    
+    // Récupère l'URL du PDF depuis le state de navigation Angular
+    const pdfUrl = history.state.pdfUrl;
     if (pdfUrl) {
-      try {
-        const decodedUrl = decodeURIComponent(pdfUrl);
-        console.log('PDF URL decoded:', decodedUrl);
-        this.loadPdfFromCloudinary(decodedUrl);
-      } catch (error) {
-        console.error('Error decoding URL:', error);
-      }
+      this.loadPdfFromCloudinary(pdfUrl);
     } else {
-      console.error('No PDF URL provided');
+      console.error('No PDF URL provided in navigation state');
     }
   }
 
