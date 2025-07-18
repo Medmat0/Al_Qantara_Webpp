@@ -28,7 +28,7 @@ export class MemberInterceptor implements HttpInterceptor {
         if (
           error.status === 403 &&
           error.error &&
-          error.error.message === "Vous êtes banni de cette communauté, vous ne pouvez pas continuer"
+          error.error.message === "Vous êtes banni de cette communauté, vous ne pouvez pas continuer "
         ) {
           const match = req.url.match(/communities\/(\d+)/);
           if (match && match[1]) {

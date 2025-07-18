@@ -18,7 +18,7 @@
   width: 100%;
   overflow: hidden;
   transition: all 0.3s ease;
-  
+
   &:hover {
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
   }
@@ -33,12 +33,12 @@
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  
+
   .image-wrapper {
     position: relative;
     width: 100%;
     max-width: 350px;
-    
+
     img {
       width: 100%;
       height: auto;
@@ -47,12 +47,12 @@
       border-radius: 16px;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
       transition: transform 0.3s ease;
-      
+
       &:hover {
         transform: scale(1.02);
       }
     }
-    
+
     .image-overlay {
       position: absolute;
       bottom: 0;
@@ -62,14 +62,14 @@
       color: white;
       padding: 1.5rem;
       border-radius: 0 0 16px 16px;
-      
+
       .overlay-content {
         h3 {
           margin: 0 0 0.5rem 0;
           font-size: 1.25rem;
           font-weight: 700;
         }
-        
+
         p {
           margin: 0;
           font-size: 0.875rem;
@@ -84,10 +84,10 @@
 .community-form-section {
   flex: 1;
   padding: 2.5rem;
-  
+
   .form-header {
     margin-bottom: 2rem;
-    
+
     h2 {
       display: flex;
       align-items: center;
@@ -96,12 +96,12 @@
       font-size: 1.75rem;
       font-weight: 700;
       color: #2d3748;
-      
+
       .header-icon {
         font-size: 1.5rem;
       }
     }
-    
+
     p {
       margin: 0;
       color: #718096;
@@ -121,7 +121,7 @@ form {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  
+
   label {
     display: flex;
     align-items: center;
@@ -130,12 +130,12 @@ form {
     color: #2d3748;
     font-size: 1rem;
     margin-bottom: 0.5rem;
-    
+
     .label-icon {
       font-size: 1.125rem;
     }
   }
-  
+
   input[type="text"],
   textarea {
     width: 100%;
@@ -147,18 +147,18 @@ form {
     transition: all 0.2s ease;
     box-sizing: border-box;
     font-family: inherit;
-    
+
     &:focus {
       outline: none;
       border-color: #ea6a66;
       box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
     }
-    
+
     &::placeholder {
       color: #a0aec0;
     }
   }
-  
+
   textarea {
     resize: vertical;
     min-height: 100px;
@@ -169,7 +169,7 @@ form {
 // File Input Styling
 .file-input-wrapper {
   position: relative;
-  
+
   input[type="file"] {
     position: absolute;
     opacity: 0;
@@ -178,7 +178,7 @@ form {
     cursor: pointer;
     z-index: 2;
   }
-  
+
   .file-input-display {
     display: flex;
     flex-direction: column;
@@ -190,28 +190,28 @@ form {
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.2s ease;
-    
+
     &:hover {
       background: #edf2f7;
       border-color: #ea6666;
-      
+
       .upload-icon {
         transform: translateY(-2px);
       }
     }
-    
+
     .upload-icon {
       font-size: 2rem;
       margin-bottom: 0.5rem;
       transition: transform 0.2s ease;
     }
-    
+
     span {
       font-weight: 600;
       color: #684a4a;
       margin-bottom: 0.25rem;
     }
-    
+
     small {
       color: #967171;
       font-size: 0.875rem;
@@ -226,7 +226,7 @@ form {
   margin-top: 1rem;
   padding-top: 1.5rem;
   border-top: 1px solid #e2e8f0;
-  
+
   .btn {
     display: flex;
     align-items: center;
@@ -239,25 +239,25 @@ form {
     cursor: pointer;
     transition: all 0.2s ease;
     text-decoration: none;
-    
+
     .btn-icon {
       font-size: 1.125rem;
     }
-    
+
     &.btn-primary {
       background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
       color: white;
-      
+
       &:hover {
         transform: translateY(-1px);
         box-shadow: 0 8px 25px rgba(72, 187, 120, 0.3);
       }
     }
-    
+
     &.btn-danger {
       background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
       color: white;
-      
+
       &:hover {
         transform: translateY(-1px);
         box-shadow: 0 8px 25px rgba(245, 101, 101, 0.3);
@@ -277,7 +277,7 @@ form {
   border-radius: 8px;
   border: 1px solid #feb2b2;
   font-weight: 500;
-  
+
   .error-icon {
     font-size: 1.125rem;
     flex-shrink: 0;
@@ -292,10 +292,10 @@ form {
   padding: 4rem;
   background: white;
   min-height: 100vh;
-  
+
   .loading-content {
     text-align: center;
-    
+
     .spinner {
       width: 50px;
       height: 50px;
@@ -305,14 +305,14 @@ form {
       animation: spin 1s linear infinite;
       margin: 0 auto 1.5rem;
     }
-    
+
     h3 {
       margin: 0 0 0.5rem 0;
       font-size: 1.25rem;
       font-weight: 600;
       color: #482e2d;
     }
-    
+
     p {
       margin: 0;
       color: #967171;
@@ -330,34 +330,34 @@ form {
   .community-settings-container {
     padding: 1rem;
   }
-  
+
   .community-card {
     flex-direction: column;
     border-radius: 16px;
   }
-  
+
   .community-image-section {
     flex: none;
     padding: 1.5rem;
-    
+
     .image-wrapper {
       max-width: 250px;
     }
   }
-  
+
   .community-form-section {
     padding: 1.5rem;
-    
+
     .form-header {
       h2 {
         font-size: 1.5rem;
       }
     }
   }
-  
+
   .form-actions {
     flex-direction: column;
-    
+
     .btn {
       justify-content: center;
       padding: 1rem;
@@ -369,11 +369,11 @@ form {
   .community-settings-container {
     padding: 0.5rem;
   }
-  
+
   .community-form-section {
     padding: 1rem;
   }
-  
+
   .form-actions {
     gap: 0.75rem;
   }
@@ -390,4 +390,292 @@ button:focus {
 // Smooth transitions
 * {
   transition: all 0.2s ease;
+}
+
+// Variables - Palette Al-Qantara
+$primary-color: #835353;
+$primary-hover: #6b2e2e;
+$secondary-color: #d59c9c;
+$secondary-hover: #bfa6a6;
+$accent-color: #06b6d4;
+$background-light: #ffffff;
+$background-card: #ffffff;
+$background-section: #f8f9fa;
+$text-primary: #1f2937;
+$text-secondary: #6b7280;
+$text-muted: #9ca3af;
+$border-color: #e5e7eb;
+$border-light: #f3f4f6;
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+$shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+$gradient-primary: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
+
+// Mixins
+@mixin smooth-transition($properties: all, $duration: 0.3s) {
+  transition: $properties $duration cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Animation d'entrée
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  @include flex-center;
+  z-index: 9999;
+  padding: 1rem;
+  animation: fadeIn 0.3s ease-out;
+
+  .modal-container {
+    background: $background-card;
+    border-radius: 24px;
+    padding: 2rem;
+    max-width: 480px;
+    width: 100%;
+    box-shadow: $shadow-xl;
+    position: relative;
+    animation: slideUp 0.4s ease-out;
+    border: 1px solid $border-light;
+
+    .modal-header {
+      text-align: center;
+      margin-bottom: 2rem;
+
+
+      .modal-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: $text-primary;
+        margin: 0;
+        font-family: 'Cormorant Garamond', serif;
+        background: $gradient-primary;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+    }
+
+    .modal-content {
+      text-align: center;
+      margin-bottom: 2rem;
+
+      .modal-message {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: $text-primary;
+        margin: 0 0 1rem 0;
+        line-height: 1.5;
+      }
+
+
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+
+      .btn-secondary,
+      .btn-primary {
+        padding: 0.875rem 2rem;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        @include smooth-transition;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        min-width: 120px;
+        border: none;
+
+        svg {
+          width: 20px;
+          height: 20px;
+        }
+      }
+
+      .btn-secondary {
+        background: $background-section;
+        color: $text-secondary;
+        border: 1px solid $border-color;
+
+        &:hover {
+          background: $border-light;
+          color: $text-primary;
+          transform: translateY(-1px);
+          box-shadow: $shadow-sm;
+        }
+      }
+
+      .btn-primary {
+        background: $gradient-primary;
+        color: white;
+        box-shadow: $shadow-md;
+
+        &:hover {
+          background: linear-gradient(135deg, $primary-hover 0%, $secondary-hover 100%);
+          transform: translateY(-2px);
+          box-shadow: $shadow-lg;
+        }
+
+        &:active {
+          transform: translateY(0);
+        }
+
+        svg {
+          fill: currentColor;
+          stroke: currentColor;
+        }
+      }
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .modal-overlay {
+    padding: 1rem 0.5rem;
+
+    .modal-container {
+      max-width: 100%;
+      padding: 1.5rem;
+      border-radius: 20px;
+
+      .modal-header {
+        margin-bottom: 1.5rem;
+
+
+
+        .modal-title {
+          font-size: 1.6rem;
+        }
+      }
+
+      .modal-content {
+        margin-bottom: 1.5rem;
+
+        .modal-message {
+          font-size: 1.1rem;
+        }
+
+
+      }
+
+      .modal-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+
+        .btn-secondary,
+        .btn-primary {
+          width: 100%;
+          padding: 1rem 1.5rem;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-overlay {
+    padding: 0.5rem 0.25rem;
+
+    .modal-container {
+      padding: 1.25rem;
+      border-radius: 16px;
+
+      .modal-header {
+        margin-bottom: 1.25rem;
+
+
+
+        .modal-title {
+          font-size: 1.4rem;
+        }
+      }
+
+      .modal-content {
+        margin-bottom: 1.25rem;
+
+        .modal-message {
+          font-size: 1rem;
+        }
+
+
+      }
+
+      .modal-actions {
+        gap: 0.5rem;
+
+        .btn-secondary,
+        .btn-primary {
+          padding: 0.875rem 1.25rem;
+          font-size: 0.95rem;
+        }
+      }
+    }
+  }
+}
+
+// Animation pour fermeture
+.modal-overlay.closing {
+  animation: fadeOut 0.2s ease-out;
+}
+
+.modal-overlay.closing .modal-container {
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(20px);
+  }
 }

@@ -23,6 +23,10 @@ export class CommunityHubSettingsComponent implements OnInit {
   loading = true;
   error: string | null = null;
 
+  showConfirmModal = false;
+  confirmType: 'modify' | 'delete' | null = null;
+
+
   constructor(
     private authService: AuthService,
     private communityService: CommunityService,
@@ -72,38 +76,8 @@ export class CommunityHubSettingsComponent implements OnInit {
     });
   }
 
-  modifyCommunity() {
-    const logo = this.community.logoFile ?? null; // Utilise le fichier
-    const nom = this.community.nom ?? '';
-    const description = this.community.description ?? '';
-    if (!confirm('Êtes-vous sûr de vouloir modifier cette communauté ?')) {
-      return;
-    }
-    this.communityService.modifyCommunity(this.communityId, logo, nom, description).subscribe({
-      next: () => {
-        console.log('Communauté modifiée avec succès');
-        this.router.navigate(['/communities', this.communityId]);
-      },
-      error: (err) => {
-        this.error = err.error?.message || 'Erreur lors de la modification de la communauté.';
-      }
-    });
-  }
 
-  deleteCommunity() {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer cette communauté ? Cette action est irréversible.')) {
-      return;
-    }
-    this.communityService.deleteCommunity(this.communityId).subscribe({
-      next: () => {
-        console.log('Communauté supprimée avec succès');
-        this.router.navigate(['/communities']);
-      },
-      error: (err) => {
-        this.error = err.error?.message || 'Erreur lors de la suppression de la communauté.';
-      }
-    });
-  }
+
 
 
   onLogoFileSelected($event: Event) {
@@ -130,5 +104,63 @@ export class CommunityHubSettingsComponent implements OnInit {
     } else {
       this.error = 'Aucun fichier sélectionné.';
     }
+  }
+
+  openConfirm(type: 'modify' | 'delete') {
+    this.confirmType = type;
+    this.showConfirmModal = true;
+  }
+
+  onCancelConfirm() {
+    this.showConfirmModal = false;
+  }
+
+  onConfirm() {
+    if (this.confirmType === 'modify') {
+      this.modifyCommunityAction();
+    } else if (this.confirmType === 'delete') {
+      this.deleteCommunityAction();
+    }
+    this.showConfirmModal = false;
+  }
+
+  onOverlayClick(event: MouseEvent) {
+    if (event.target === event.currentTarget) {
+      this.onCancelConfirm();
+    }
+  }
+
+  modifyCommunity() {
+    this.openConfirm('modify');
+  }
+
+  deleteCommunity() {
+    this.openConfirm('delete');
+  }
+
+// Actions réelles
+  modifyCommunityAction() {
+    const logo = this.community.logoFile ?? null;
+    const nom = this.community.nom ?? '';
+    const description = this.community.description ?? '';
+    this.communityService.modifyCommunity(this.communityId, logo, nom, description).subscribe({
+      next: () => {
+        this.router.navigate(['/communities', this.communityId]);
+      },
+      error: (err) => {
+        this.error = err.error?.message || 'Erreur lors de la modification de la communauté.';
+      }
+    });
+  }
+
+  deleteCommunityAction() {
+    this.communityService.deleteCommunity(this.communityId).subscribe({
+      next: () => {
+        this.router.navigate(['/communities']);
+      },
+      error: (err) => {
+        this.error = err.error?.message || 'Erreur lors de la suppression de la communauté.';
+      }
+    });
   }
 }
