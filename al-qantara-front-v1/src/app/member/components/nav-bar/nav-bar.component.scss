@@ -18,11 +18,12 @@ header {
   }
 
   h2 {
-    font-family: Cormorant Garamond, serif;
+    font-family: 'Cormorant Garamond', serif;
     font-size: 2.5em;
     font-weight: 400;
     margin: 0 60px 0 0;
     color: black;
+    cursor: pointer;
   }
 }
 
@@ -48,9 +49,6 @@ nav {
 
 .hamburger {
   display: none;
-  background: none;
-  border: none;
-  cursor: pointer;
   z-index: 1001;
   transition: transform 0.3s ease;
 
@@ -72,24 +70,8 @@ nav {
   width: 100%;
   transition: all 0.3s ease;
 
-  @media (max-width: 768px) {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    background: white;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    transform: translateX(100%);
-    z-index: 1000;
-    padding-top: 80px;
-    padding-bottom: 20px;
-    overflow-y: auto;
-    overflow-x: hidden;
-
-    &.active {
+  &.active {
+    @media (max-width: 768px) {
       transform: translateX(0);
     }
   }
@@ -97,136 +79,221 @@ nav {
 
 .nav-links {
   display: flex;
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
+  list-style: none;
   gap: 20px;
+  padding: 0;
+  margin: 0;
 
+  li {
+    a {
+      font-family: Inter, sans-serif;
+      font-size: larger;
+      font-weight: 500;
+      text-decoration: none;
+      color: grey;
+      cursor: pointer;
+      transition: color 0.3s;
+
+      &:hover {
+        color: black;
+      }
+    }
+  }
+
+  .dropdown {
+    position: relative;
+
+    > a {
+      display: flex;
+      align-items: center;
+
+      &::after {
+        content: '▼';
+        margin-left: 8px;
+        font-size: 0.8em;
+        transition: transform 0.3s ease;
+      }
+    }
+
+    &:hover > a::after {
+      transform: rotate(180deg);
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      min-width: 200px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+      z-index: 1000;
+      list-style: none;
+      padding: 8px 0;
+      margin: 0;
+
+      li {
+        a {
+          display: block;
+          padding: 12px 16px;
+          font-size: 14px;
+          font-weight: 400;
+          color: #333;
+          text-decoration: none;
+          transition: background-color 0.2s ease;
+
+          &:hover {
+            background-color: #f8f9fa;
+            color: #6b1c1c;
+          }
+        }
+      }
+    }
+
+    &:hover .dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+  }
+
+  // Styles spécifiques pour mobile dans la section responsive
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: center;
-    margin-bottom: 2rem;
-    gap: 30px;
-  }
+    width: 100%;
+    gap: 40px;
 
-  li a {
-    font-family: Inter, sans-serif;
-    font-size: larger;
-    font-weight: 500;
-    text-decoration: none;
-    color: grey;
-    cursor: pointer;
-    transition: color 0.3s;
+    li {
+      width: 100%;
+      text-align: center;
 
-    &:hover {
-      color: #000000;
+      a {
+        font-size: 1.3rem;
+        display: block;
+        width: 100%;
+        color: grey;
+
+        &:hover {
+          color: black;
+        }
+      }
     }
 
-    @media (max-width: 768px) {
-      font-size: 1.5rem;
+    // Supprimer complètement les dropdowns sur mobile
+    .dropdown {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+
+      // Cacher le lien principal du dropdown
+      > a {
+        display: none !important;
+      }
+
+      // Afficher directement les liens du dropdown comme des éléments normaux
+      .dropdown-menu {
+        position: static !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        border-radius: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        min-width: auto !important;
+        display: flex !important;
+        flex-direction: column;
+        gap: 40px;
+        list-style: none;
+
+        li {
+          width: 100%;
+          margin: 0;
+
+          a {
+            font-size: 1.3rem;
+            font-weight: 500;
+            text-align: center;
+            padding: 0;
+            color: grey;
+            display: block;
+            width: 100%;
+
+            &:hover {
+              color: black;
+              background-color: transparent;
+            }
+          }
+        }
+      }
     }
   }
 }
 
 .ConnectingOptions {
   display: flex;
-  width: fit-content;
   justify-content: flex-end;
   align-items: center;
   gap: 20px;
   margin-left: auto;
 
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: center;
-    margin-left: 0;
-    gap: 30px;
+  .login-register {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
   }
-}
 
-.login-register {
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
+  button {
+    border-radius: 6px;
+    font-size: 90%;
+    height: 44px;
+    padding: 0 25px;
+    color: white;
+    font-family: -apple-system, system-ui, 'Segoe UI', Roboto, sans-serif;
+    cursor: pointer;
+    box-shadow: rgba(0, 0, 0, .07) 0 1px 1px 0;
+    transition: all 0.2s;
 
-  @media (max-width: 768px) {
-    flex-direction: column;
-    gap: 15px;
+    &.register {
+      background-color: #3a0706;
+    }
+
+    &.login {
+      background-color: #988C8C;
+    }
+
+    &.become-member {
+      background-color: #6b1c1c;
+      color: #fff8f0;
+      font-weight: 600;
+      margin: 0 10px;
+      border-radius: 8px;
+
+      &:hover {
+        background-color: #4d1010;
+        color: #c9b18e;
+      }
+    }
   }
-}
-
-.register {
-  background-color: #3a0706;
-}
-
-.login {
-  background-color: #988C8C;
-}
-
-.ConnectingOptions button {
-  backface-visibility: hidden;
-  border-radius: 6px;
-  border-width: 0;
-  box-shadow: rgba(50, 50, 93, .1) 0 0 0 1px inset, rgba(50, 50, 93, .1) 0 2px 5px 0, rgba(0, 0, 0, .07) 0 1px 1px 0;
-  box-sizing: border-box;
-  color: #fff;
-  cursor: pointer;
-  font-family: -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Ubuntu, sans-serif;
-  font-size: 90%;
-  height: 44px;
-  line-height: 1.15;
-  margin: 12px 0 0;
-  outline: none;
-  overflow: hidden;
-  padding: 0 25px;
-  position: relative;
-  text-align: center;
-  text-transform: none;
-  transform: translateZ(0);
-  transition: all .2s, box-shadow .08s ease-in;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  width: 100%;
-
-  @media (max-width: 768px) {
-    width: 200px;
-    font-size: 1rem;
-  }
-}
-
-.become-member {
-  background-color: #6b1c1c;
-  color: #fff8f0;
-  font-weight: 600;
-  margin-left: 10px;
-  margin-right: 10px;
-  border-radius: 8px;
-  padding: 0 25px;
-  transition: background 0.2s;
-}
-.become-member:hover {
-  background-color: #4d1010;
-  color: #c9b18e;
 }
 
 .user-menu {
   position: relative;
 
   .user-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 50%;
-    transition: background-color 0.2s;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     display: flex;
-    align-items: center;
     justify-content: center;
-
-    &:hover {
-      background-color: rgba(0, 0, 0, 0.05);
-    }
+    align-items: center;
 
     svg {
       width: 28px;
@@ -251,28 +318,26 @@ nav {
       margin: 0;
       display: flex;
       flex-direction: column;
-      gap: 0;
 
       li {
-        a, button {
+        a,
+        button {
           display: block;
           padding: 12px 16px;
           color: #333;
-          text-decoration: none;
-          text-align: left;
-          border: none;
           background: none;
           font-size: 14px;
           cursor: pointer;
           transition: background-color 0.2s;
+          text-align: left;
 
           &:hover {
             background-color: #f5f5f5;
           }
 
           &.logout-link {
-            color: #fff;
             background-color: #dc3545;
+            color: white;
 
             &:hover {
               background-color: #c82333;
@@ -288,27 +353,210 @@ nav {
   }
 }
 
+// ------------------ Responsive ------------------
+
 @media (max-width: 768px) {
   .hamburger {
     display: block;
+    position: absolute;
+    top: 16px;
+    right: 16px;
   }
 
-  .logo {
-    h2 {
-      font-size: 1.8rem;
-      margin-right: 1rem;
+  .logo h2 {
+    font-size: 1.8rem;
+    margin-right: 1rem;
+  }
+
+  .nav-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100%;
+    background: white;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+    padding-top: 80px;
+    padding-bottom: 20px;
+    overflow-y: auto;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 40px;
+
+    li {
+      width: 100%;
+      text-align: center;
+
+      a {
+        font-size: 1.3rem;
+        display: block;
+        width: 100%;
+        color: grey;
+
+        &:hover {
+          color: black;
+        }
+      }
     }
+
+    // Supprimer complètement les dropdowns sur mobile
+    .dropdown {
+      // Cacher le lien principal du dropdown
+      > a {
+        display: none !important;
+      }
+
+      // Afficher directement les liens du dropdown comme des éléments normaux
+      .dropdown-menu {
+        position: static !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        border-radius: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        min-width: auto !important;
+        display: flex !important;
+        flex-direction: column;
+        gap: 40px;
+        list-style: none;
+
+        li {
+          width: 100%;
+          margin: 0;
+
+          a {
+            font-size: 1.3rem;
+            font-weight: 500;
+            text-align: center;
+            padding: 0;
+            color: grey;
+            display: block;
+            width: 100%;
+
+            &:hover {
+              color: black;
+              background-color: transparent;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .ConnectingOptions {
+    flex-direction: column;
+    align-items: center;
+    margin-top: 30px;
+    gap: 25px;
+    width: 100%;
+
+    .login-register {
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      width: 100%;
+    }
+
+    button {
+      width: 200px;
+    }
+  }
+
+  .user-menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    width: 100%;
+
+    .user-button {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      padding: 12px;
+    }
+
+    .user-dropdown {
+      position: static;
+      width: 100%;
+      max-width: 250px;
+      margin-top: 10px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      text-align: center;
+
+      ul {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+
+        li {
+          border-bottom: 1px solid #eee;
+
+          &:last-child {
+            border-bottom: none;
+          }
+
+          a,
+          button {
+            display: block;
+            width: 100%;
+            padding: 12px 16px;
+            background: none;
+            border: none;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #333;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            text-align: center;
+
+            &:hover {
+              background-color: #f5f5f5;
+              color: #000;
+            }
+
+            &.logout-link {
+              background-color: #dc3545;
+              color: white;
+              border-radius: 0 0 10px 10px;
+
+              &:hover {
+                background-color: #c82333;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  h2 {
+    font-size: 1.6rem;
+    text-align: center;
+    margin: 0 auto;
   }
 }
 
 @media (max-width: 480px) {
-  .logo {
-    h2 {
-      font-size: 1.5rem;
-    }
+  .logo h2 {
+    font-size: 1.5rem;
   }
 
   .nav-links li a {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
   }
 }
