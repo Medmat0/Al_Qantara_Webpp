@@ -422,6 +422,9 @@ export class CommunityHubComponent implements OnInit {
   onPostEvent(event: any) {
     if (event?.type === 'deleted') {
       this.posts = this.posts.filter(post => post.id !== event.postId);
+      if (this.community && typeof this.community.nbrPosts === 'number' && this.community.nbrPosts > 0) {
+        this.community.nbrPosts--;
+      }
     }
   }
 
