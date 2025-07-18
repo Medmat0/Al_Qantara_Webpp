@@ -216,8 +216,7 @@
 <!-- Modal de remboursement -->
 <app-remboursement-modal
   *ngIf="showRemboursementModal"
-  [isVisible]="showRemboursementModal"
-  [evenement]="evenement"
+  [event]="evenement"
   (close)="closeRemboursementModal()"
   (success)="onRemboursementSuccess($event)">
 </app-remboursement-modal>
