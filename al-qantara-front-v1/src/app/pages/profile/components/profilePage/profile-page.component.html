@@ -10,7 +10,7 @@
       <h1>{{ user?.prenom }} {{ user?.nom }}</h1>
       <div class="badges-container">
         <p class="role-badge" [ngClass]="user?.role?.toLowerCase()">{{ user?.role }}</p>
-        <span class="adherent-badge" *ngIf="user?.role === 'ADHERENT'" [ngClass]="'adherent'">
+        <span class="adherent-badge" *ngIf="user?.adhesion?.statut === 'ACTIF'" [ngClass]="'adherent'">
           <i class="fas fa-star"></i>
           Adhérent Actif
         </span>
@@ -91,10 +91,10 @@
     </div>
 
     <!-- Adhesion Card -->
-    <div class="info-card adhesion-card" *ngIf="user?.role === 'ADHERENT'">
+    <div class="info-card adhesion-card" *ngIf="user?.adhesion">
       <div class="card-header">
         <h3><i class="fas fa-star"></i> Statut Adhérent</h3>
-        <span class="badge adherent-active">Actif</span>
+        <span class="badge adherent-active">{{ user?.adhesion?.statut }}</span>
       </div>
       <div class="card-content">
         <div class="adhesion-info">
@@ -103,11 +103,11 @@
               <i class="fas fa-check-circle"></i>
             </div>
             <div class="status-details">
-              <h4>Adhésion Active</h4>
-              <p>Vous êtes membre actif d'Al Qantara</p>
+              <h4>Adhésion {{ user?.adhesion?.statut }}</h4>
+              <p *ngIf="user?.adhesion?.dateDebut">Depuis le {{ formatDate(user?.adhesion?.dateDebut) }}</p>
+              <p *ngIf="user?.adhesion?.dateFin">Jusqu'au {{ formatDate(user?.adhesion?.dateFin) }}</p>
             </div>
           </div>
-          
           <div class="adhesion-benefits">
             <h5>Vos avantages adhérent :</h5>
             <ul>
@@ -118,16 +118,6 @@
             </ul>
           </div>
         </div>
-      </div>
-    </div>
-
-    <!-- Adhesion Card (if exists) -->
-    <div class="info-card" *ngIf="user?.adhesion && user?.role !== 'ADHERENT'">
-      <div class="card-header">
-        <h3><i class="fas fa-id-card"></i> Adhésion</h3>
-      </div>
-      <div class="card-content">
-        <p>{{ user?.adhesion }}</p>
       </div>
     </div>
 

@@ -1,3 +1,5 @@
+import { HttpClient } from '@angular/common/http';
+import { API_URL } from '../../../utils/config';
 import { Component, HostListener } from '@angular/core';
 import {Router, RouterLink} from '@angular/router';
 import { NgIf, NgClass } from '@angular/common';
@@ -19,12 +21,14 @@ export class NavBarComponent {
   isUserMenuOpen: boolean = false;
   isMenuOpen = false;
   userRole: string | null = null;
+  user: any = null; // Ajouté pour stocker l'utilisateur complet
 
   constructor(
     private authService: AuthService,
     private navbarService: NavbarService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private http: HttpClient
   ) {}
 
   ngOnInit() {
@@ -35,14 +39,23 @@ export class NavBarComponent {
     this.authService.authStatus$.subscribe((status) => {
       this.isAuthenticated = status;
       if (status) {
-        const user = localStorage.getItem('utilisateur');
-        if (user) {
-          const userObj = JSON.parse(user);
-          this.username = userObj.prenom;
-          this.userRole = userObj.role || null;
-          this.cdr.detectChanges();
-        }
+        // Récupérer l'utilisateur via l'API du profil pour avoir l'adhésion
+        this.http.get<any>(`${API_URL}/user/profile`, { withCredentials: true })
+          .subscribe({
+            next: (res) => {
+              this.user = res.user;
+              this.username = this.user.prenom;
+              this.userRole = this.user.role || null;
+              this.cdr.detectChanges();
+            },
+            error: (err) => {
+              this.user = null;
+              this.username = null;
+              this.userRole = null;
+            }
+          });
       } else {
+        this.user = null;
         this.username = null;
         this.userRole = null;
       }
@@ -97,8 +110,11 @@ export class NavBarComponent {
 
   // Affiche le bouton "Devenir membre" si l'utilisateur est connecté, a le rôle "user" (non "membre" ou "admin")
   showBecomeMemberButton(): boolean {
-    // Correction : certains backends stockent le rôle en majuscule ou minuscule, on gère les deux
-    return this.isAuthenticated && (this.userRole?.toLowerCase() === 'user');
+    // Affiche le bouton si l'utilisateur n'a pas une adhésion active (comme dans le profil)
+     if (!this.isAuthenticated || !this.user) return false;
+    console.log('User adhésion status:', this.user.adhesion);
+    // On cache le bouton si le statut est ACTIF ou ACCEPTE
+    return !this.user.adhesion || (this.user.adhesion && this.user.adhesion.statut !== 'ACTIF' && this.user.adhesion.statut !== 'ACCEPTE');
   }
 
   goToAdhesion(): void {
