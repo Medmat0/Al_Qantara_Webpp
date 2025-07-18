@@ -247,6 +247,12 @@ export class EventModalComponent implements OnChanges {
     // Vérifier l'authentification avant de procéder à l'achat
     if (!this.checkAuthentication()) return;
 
+    // Vérifier si l'utilisateur peut participer à ce type d'événement
+    if (!this.canParticipateToEvent(this.event)) {
+      this.errorPaymentMessage = "Vous ne pouvez participer qu'aux événements externes. Cet événement est réservé aux membres de l'association.";
+      return;
+    }
+
     this.errorPaymentMessage = '';
     const utilisateur = JSON.parse(localStorage.getItem('utilisateur') || '{}');
     if (
@@ -456,5 +462,41 @@ export class EventModalComponent implements OnChanges {
     setTimeout(() => {
       this.showToast = false;
     }, 3000);
+  }
+
+  /**
+   * Naviguer vers la page d'adhésion
+   */
+  navigateToAdhesion(): void {
+    this.router.navigate(['/adhesion']);
+  }
+
+  /**
+   * Vérifier si l'utilisateur connecté peut participer à cet événement
+   * Les utilisateurs avec le rôle USER ne peuvent participer qu'aux événements EXTERNE
+   */
+  canParticipateToEvent(event: any): boolean {
+    if (!event) return false;
+
+    const utilisateur = JSON.parse(localStorage.getItem('utilisateur') || '{}');
+    const userRole = utilisateur.role || 'USER';
+
+    // Si l'utilisateur est USER, il ne peut participer qu'aux événements EXTERNE
+    if (userRole === 'USER' && event.type === 'INTERNE') {
+      return false;
+    }
+
+    // Pour tous les autres cas (ADMIN, MEMBRE ou événements EXTERNE), autoriser
+    return true;
+  }
+
+  /**
+   * Vérifier si l'utilisateur peut voir les boutons de participation
+   */
+  canShowParticipationButtons(event: any): boolean {
+    return this.canParticipateToEvent(event) &&
+           event.placesRestantes > 0 &&
+           !this.isEventPassed() &&
+           !this.isParticipating;
   }
 }
