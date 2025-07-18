@@ -57,14 +57,14 @@ const registerUser = asyncHandler(async (req, res) => {
         <div style="max-width: 600px; margin: auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
           <div style="text-align: center; padding: 24px 0;">
             <img src='https://al-qantara.com/assets/main-icon.jpg' alt='Al Qantara' style='width: 80px; margin-bottom: 16px;' />
-            <h2 style="color: #006699; margin-bottom: 8px;">Bienvenue sur Al Qantara</h2>
+            <h2 style="color: #990000ff; margin-bottom: 8px;">Bienvenue sur Al Qantara</h2>
           </div>
           <div style="padding: 0 32px 24px 32px;">
-            <h3 style="color: #006699;">Vérification de l'email</h3>
+            <h3 style="color: #990000ff;">Vérification de l'email</h3>
             <p>Bonjour <b>${nom}</b>,</p>
             <p>Merci de vous être inscrit sur Al Qantara ! Pour activer votre compte, veuillez cliquer sur le bouton ci-dessous :</p>
             <div style="text-align: center; margin: 24px 0;">
-              <a href="${verifyLink}" style="background: #006699; color: #fff; padding: 12px 32px; border-radius: 4px; text-decoration: none; font-weight: bold;">Vérifier mon email</a>
+              <a href="${verifyLink}" style="background: #990000ff; color: #fff; padding: 12px 32px; border-radius: 4px; text-decoration: none; font-weight: bold;">Vérifier mon email</a>
             </div>
             <p style="font-size: 14px; color: #888;">Si le bouton ne fonctionne pas, copiez et collez ce lien dans votre navigateur :<br><span style="word-break: break-all;">${verifyLink}</span></p>
             <hr style="margin: 32px 0; border: none; border-top: 1px solid #eee;" />

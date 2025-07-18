@@ -59,13 +59,30 @@ const login = asyncHandler(async (req, res, next) => {
     // Envoi du mail de vérification
     const info = {
       to: email,
-      subject: "Email verification",
-      text: "Verify your email",
-      html: `<h1>Email verification </h1>
-          <p>Hello ${utilisateur.nom}, Please follow this link to verify your account. </p><a href= "${verifyLink}"> Click link </a>
-          <p>If you did not verify your account, you won't be able to use many website features.</p>`,
+      subject: "Vérification de votre email",
+      text: "Veuillez vérifier votre email",
+      html: `
+        <div style="font-family: Arial, sans-serif; background: #f9f9f9; padding: 32px; color: #222;">
+          <div style="max-width: 600px; margin: auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+            <div style="text-align: center; padding: 24px 0;">
+              <img src='https://al-qantara.com/assets/main-icon.jpg' alt='Al Qantara' style='width: 80px; margin-bottom: 16px;' />
+              <h2 style="color: #990000ff; margin-bottom: 8px;">Vérification de votre email</h2>
+            </div>
+            <div style="padding: 0 32px 24px 32px;">
+              <h3 style="color: #990000ff;">Lien de vérification</h3>
+              <p>Bonjour <b>${utilisateur.nom}</b>,</p>
+              <p>Merci de vous connecter sur Al Qantara ! Pour activer votre compte, veuillez cliquer sur le bouton ci-dessous :</p>
+              <div style="text-align: center; margin: 24px 0;">
+                <a href="${verifyLink}" style="background: #990000ff; color: #fff; padding: 12px 32px; border-radius: 4px; text-decoration: none; font-weight: bold;">Vérifier mon email</a>
+              </div>
+              <p style="font-size: 14px; color: #888;">Si le bouton ne fonctionne pas, copiez et collez ce lien dans votre navigateur :<br><span style="word-break: break-all;">${verifyLink}</span></p>
+              <hr style="margin: 32px 0; border: none; border-top: 1px solid #eee;" />
+              <p style="font-size: 13px; color: #888; text-align: center;">L'équipe Al Qantara<br>contact@al-qantara.com</p>
+            </div>
+          </div>
+        </div>
+      `,
     };
-   
     const value = await sendEmailToUser(info);
     console.log(value)
     return res.status(401).json({ message: "Verify your account please!" });
