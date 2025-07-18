@@ -43,6 +43,7 @@ export class ApplicantListComponent implements OnInit, OnChanges {
   meetingDate: string = '';
   meetingApplicantId: number | null = null;
   meetingError: string = '';
+  meetingSuccess: string = '';
 
   showCvViewer: boolean = false;
   currentCvUrl: string = '';
@@ -117,6 +118,7 @@ export class ApplicantListComponent implements OnInit, OnChanges {
     this.meetingApplicantId = null;
     this.meetingDate = '';
     this.meetingError = '';
+    this.meetingSuccess = '';
   }
 
   planifierReunion(): void {
@@ -128,8 +130,12 @@ export class ApplicantListComponent implements OnInit, OnChanges {
     const dateEntretien = new Date(this.meetingDate).toISOString().slice(0, 19) + '.000';
     this.recruitmentService.scheduleInterviewZoom(this.offerId, this.meetingApplicantId, dateEntretien).subscribe({
       next: () => {
-        this.closeMeetingModal();
-        alert('Réunion planifiée avec succès !');
+        this.meetingError = '';
+        this.meetingSuccess = 'Réunion planifiée avec succès !';
+        // Fermer le modal après 3 secondes
+        setTimeout(() => {
+          this.closeMeetingModal();
+        }, 3000);
       },
       error: (err) => {
         this.meetingError = 'Erreur lors de la planification de la réunion.';
