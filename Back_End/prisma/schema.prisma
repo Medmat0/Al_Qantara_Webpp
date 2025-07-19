@@ -16,7 +16,7 @@ model Utilisateur {
   photoProfil              String?                  @db.VarChar(255)
   telephone                String?                  @db.VarChar(20)
   role                     Role
-  dateInscription          DateTime
+  dateInscription          DateTime?                @default(now())
   statut                   Statut
   statutEnLigne            StatutEnLigne            @default(HORS_LIGNE)
   derniereActivite         DateTime?                @default(now())
