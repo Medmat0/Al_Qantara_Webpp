@@ -34,8 +34,8 @@ const registerUser = asyncHandler(async (req, res) => {
       motDePasse: hashedPassword,
       telephone,
       role: userRole,
-      statut: STATUS.EN_ATTENTE_VERIFICATION,
       dateInscription: new Date(), 
+      statut: STATUS.EN_ATTENTE_VERIFICATION,
 
     },
   });
