@@ -35,7 +35,7 @@ const registerUser = asyncHandler(async (req, res) => {
       telephone,
       role: userRole,
       dateInscription: new Date(), 
-      statut: STATUS.EN_ATTENTE_VERIFICATION,
+      statut: "waiting_verification",
 
     },
   });
