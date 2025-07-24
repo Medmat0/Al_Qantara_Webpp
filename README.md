@@ -174,18 +174,6 @@ prisma/
 - Points d'intérêt culturels
 
 
-
-## 🔧 Scripts Disponibles
-
-### Frontend
-- `npm start` - Démarrage en mode développement
-- `npm run build` - Build de production
-
-### Backend
-- `npm start` - Démarrage du serveur
-
-
-
 ## 🔒 Sécurité
 
 - Authentification JWT
