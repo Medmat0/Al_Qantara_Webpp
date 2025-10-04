@@ -29,7 +29,7 @@
             <div class="applicant-details">
               <p class="email">{{ applicant.utilisateur.email }}</p>
 
-              <div class="score-container">
+              <div class="score-container" style="display: none;">
                 <span class="score-label">Score:</span>
                 <div class="progress-bar">
                   <div class="progress-fill" [ngClass]="getScoreColorClass(applicant.score)" [style.width.%]="applicant.score"></div>

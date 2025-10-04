@@ -10,20 +10,19 @@ import { HttpClient } from "@angular/common/http";
 export class CandidatureService {
   private readonly apiUrl = `${API_URL}/offres`;
   private readonly cvWebServiceUrl = `${CV_WEB_SERVICE_URL}`;
-  
+
   constructor(
     private http: HttpClient
   ) {}
-  
-  
-  
-  addCandidature(offreId: number, candidatCV: File, experiences:string[], skills:string[], lettreMotivation: string): Observable<any> {
+
+
+
+  addCandidature(offreId: number, candidatCV: File, experiences:string[], skills:string[]): Observable<any> {
     const url = `${this.apiUrl}/${offreId}/apply`;
     const formData = new FormData();
     formData.append('candidatCV', candidatCV);
     formData.append('experiences', JSON.stringify(experiences));
     formData.append('skills', JSON.stringify(skills));
-    formData.append('lettreMotivation', lettreMotivation);
 
     return this.http.post(url, formData, {
       withCredentials: true
@@ -40,7 +39,7 @@ export class CandidatureService {
       })
     );
   }
-  
+
   checkCandidature(offreId: number): Observable<any> {
     const url = `${this.apiUrl}/${offreId}/apply/check`;
     return this.http.get(url, {
@@ -93,6 +92,6 @@ export class CandidatureService {
       })
     );
   }
-  
+
 
 }

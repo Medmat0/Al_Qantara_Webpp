@@ -73,8 +73,7 @@ export class CandidatureFormComponent implements OnInit, OnChanges {
     ], Validators.required),
     competences: this.fb.array([
       this.fb.control('', Validators.required)
-    ], Validators.required),
-    motivation: ['']
+    ], Validators.required)
   });
 
   get experiences() {
@@ -84,8 +83,6 @@ export class CandidatureFormComponent implements OnInit, OnChanges {
   get competences() {
     return this.candidatureForm.get('competences') as FormArray;
   }
-
-
 
   addExperience() {
     this.experiences.push(this.fb.control('', Validators.required));
@@ -124,8 +121,7 @@ export class CandidatureFormComponent implements OnInit, OnChanges {
         this.offre.id,
         this.selectedCVFile,
         candidature.experiences,
-        candidature.competences,
-        candidature.motivation
+        candidature.competences
       ).subscribe({
         next: (response) => {
           this.showCustomNotification('Votre candidature a été envoyée avec succès ! Nous vous contacterons bientôt.', 'success');
@@ -158,51 +154,13 @@ export class CandidatureFormComponent implements OnInit, OnChanges {
     this.selectedCVFile = input.files[0];
   }
 
-  autoFillForm() {
-    if (!this.selectedCVFile) {
-      return;
-    }
-    this.loadingCV = true;
-    this.candidatureService.getJsonFromCVWebService(this.selectedCVFile).subscribe({
-      next: (json: any) => {
-        // Auto-fill experiences (add only new ones, remplace le premier champ vide si présent)
-        if (json.Experiences && Array.isArray(json.Experiences)) {
-          let existingExperiences = this.experiences.controls.map(ctrl => ctrl.value);
-          if (this.experiences.length === 1 && !existingExperiences[0]) {
-            this.experiences.removeAt(0);
-          }
-          json.Experiences.forEach((exp: any) => {
-            const expString = `${exp.company ? exp.company + ' - ' : ''}${exp.position ? exp.position + ' - ' : ''}${exp.description || ''}`;
-            if (!this.experiences.controls.some(ctrl => ctrl.value === expString)) {
-              this.experiences.push(this.fb.control(expString, Validators.required));
-            }
-          });
-        }
-        // Auto-fill competences (add only new ones, remplace le premier champ vide si présent)
-        if (json.Skills && Array.isArray(json.Skills)) {
-          let existingSkills = this.competences.controls.map(ctrl => ctrl.value);
-          if (this.competences.length === 1 && !existingSkills[0]) {
-            this.competences.removeAt(0);
-          }
-          json.Skills.forEach((skill: string) => {
-            if (!this.competences.controls.some(ctrl => ctrl.value === skill)) {
-              this.competences.push(this.fb.control(skill, Validators.required));
-            }
-          });
-        }
-        this.loadingCV = false;
-      },
-      error: () => {
-        this.loadingCV = false;
-      }
-    });
-  }
+
 
   showCustomNotification(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') {
     this.notificationMessage = message;
     this.notificationType = type;
     this.showNotification = true;
-    
+
     // Fermer automatiquement après 5 secondes
     setTimeout(() => {
       this.closeNotification();
