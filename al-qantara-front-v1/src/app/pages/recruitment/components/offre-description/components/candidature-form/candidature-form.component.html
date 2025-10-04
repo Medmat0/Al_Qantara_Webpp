@@ -48,7 +48,7 @@
     <div class="cv-upload-container">
         <label for="cv">Charger votre CV :</label>
         <input type="file" id="cv" name="cv" accept=".pdf" (change)="onFileSelected($event)" />
-        <button type="button" (click)="autoFillForm()" [disabled]="!selectedCVFile || loadingCV" class="autofill-btn">Auto-remplir depuis le CV</button>
+        <button type="button" [disabled]="!selectedCVFile || loadingCV" class="autofill-btn">Auto-remplir depuis le CV</button>
         <div class="circular-loader" *ngIf="loadingCV">
             <div class="spinner"></div>
         </div>
@@ -91,12 +91,6 @@
             </div>
         </div>
         </div>
-
-    <!-- Section: Lettre de motivation -->
-    <div>
-        <label for="motivation">Lettre de motivation :</label>
-        <textarea id="motivation" formControlName="motivation" rows="6"></textarea>
-    </div>
 
     <button type="submit" [disabled]="candidatureForm.invalid || loadingSubmit">
         <span *ngIf="!loadingSubmit">Envoyer la candidature</span>

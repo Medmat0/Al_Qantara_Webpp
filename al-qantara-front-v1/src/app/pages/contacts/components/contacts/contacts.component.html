@@ -114,21 +114,5 @@
       </div>
     </div>
 
-    <!-- Chatbot -->
-    <div class="chatbot-container">
-      <div class="chatbot-header">
-        <img src="assets/main-icon.jpg" alt="Bot" class="chatbot-avatar" />
-        <span>Bot Al Qantara</span>
-      </div>
-      <div class="chatbot-messages" id="chatbot-messages">
-        <div *ngFor="let msg of messages" class="chatbot-message" [ngClass]="msg.from">
-          <div class="chatbot-bubble">{{ msg.text }}</div>
-        </div>
-      </div>
-      <form class="chatbot-input-row" (submit)="sendMessage(); $event.preventDefault()" autocomplete="off">
-        <input type="text" [(ngModel)]="userMessage" name="userMessage" placeholder="Écrivez votre question..." class="chatbot-input" required />
-        <button type="submit" class="chatbot-send-btn">Envoyer</button>
-      </form>
-    </div>
   </div>
 </div>

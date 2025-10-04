@@ -5,36 +5,12 @@ import {createZoomMeeting} from "../zoom.service.js";
 
 const prisma = new PrismaClient();
 
-const getCandidatureScore = async (offreRef, experiences, skills, motivation) => {
-    const response = await fetch(process.env.WEB_SERVICE_URL + "/cv_score", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            offreEmploi: {
-                offreEmploiId: offreRef.id,
-                ...offreRef
-            },
-            experiences: experiences ? JSON.parse(experiences) : [],
-            skills: skills ? JSON.parse(skills) : [],
-            motivation: motivation || ""        })
-    });
 
-    const responseBody = await response.text();
-    if (!response.ok) {
-        throw new Error(`Erreur lors de la récupération du score: ${response.status} - ${responseBody}`);
-    }
-
-    const { score } = JSON.parse(responseBody);
-    console.log("Score de la candidature:", score);
-    return Number(score);
-};
 
 const addCandidatureService = async (req) => {
     const { id } = req.params;
     const candidatCV = req.file;
-    const { experiences, skills, lettreMotivation } = req.body;
+    const { experiences, skills} = req.body;
 
     if (!candidatCV) {
         const err = new Error("Veuillez ajouter un CV.");
@@ -79,12 +55,7 @@ const addCandidatureService = async (req) => {
         }
     });
 
-    const candidatureScore = await getCandidatureScore(
-        offreRef,
-        experiences,
-        skills,
-        lettreMotivation
-    );
+
 
     const uploadResult = await cloudinary.uploader.upload(candidatCV.path, {
         resource_type: "auto",
@@ -103,11 +74,11 @@ const addCandidatureService = async (req) => {
         data: {
             offreId: parseInt(id),
             utilisateurId: req.user.id,
-            lettreMotivation:lettreMotivation,
+            lettreMotivation: "",
             cv: uploadResult.secure_url,
             skills: Array.isArray(skills) ? skills : skills ? JSON.parse(skills) : [],
             experiences: Array.isArray(experiences) ? experiences : experiences ? JSON.parse(experiences) : [],
-            score: candidatureScore,
+            score: 0,
         },
         include: {
             offre: true,

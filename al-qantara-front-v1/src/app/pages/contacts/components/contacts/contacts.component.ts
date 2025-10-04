@@ -45,7 +45,7 @@ export class ContactsComponent implements OnInit, AfterViewInit {
   @ViewChild('chatbotMessages') chatbotMessagesRef!: ElementRef;
 
   constructor(
-    private http: HttpClient, 
+    private http: HttpClient,
     private newsletterService: NewsletterService,
     private router: Router
   ) {}
@@ -84,7 +84,7 @@ export class ContactsComponent implements OnInit, AfterViewInit {
 
   checkNewsletterSubscription(): void {
     if (!this.utilisateur?.email) return;
-    
+
     this.checkingSubscription = true;
     this.newsletterService.getStatutAbonnement(this.utilisateur.email).subscribe({
       next: (response) => {
@@ -97,37 +97,6 @@ export class ContactsComponent implements OnInit, AfterViewInit {
         this.checkingSubscription = false;
       }
     });
-  }
-
-  sendMessage() {
-    if (!this.userMessage.trim() || this.isTyping) return;
-    const message = this.userMessage.trim();
-    this.messages.push({ from: 'user', text: message });
-    this.userMessage = '';
-    this.isTyping = true;
-    this.messages.push({ from: 'typing', text: 'Le bot est en train d’écrire...' });
-    this.scrollToBottom();
-
-    this.http.post<{ response: string }>(this.CV_WEBSERVICE_ASK_URL, { message })
-      .subscribe({
-        next: (res) => {
-          this.removeTyping();
-          this.messages.push({ from: 'bot', text: res.response || 'Réponse indisponible.' });
-          this.isTyping = false;
-          this.scrollToBottom();
-        },
-        error: () => {
-          this.removeTyping();
-          this.messages.push({ from: 'bot', text: 'Erreur de connexion au bot.' });
-          this.isTyping = false;
-          this.scrollToBottom();
-        }
-      });
-  }
-
-  removeTyping() {
-    const idx = this.messages.findIndex(m => m.from === 'typing');
-    if (idx !== -1) this.messages.splice(idx, 1);
   }
 
   scrollToBottom() {
